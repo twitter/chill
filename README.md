@@ -32,8 +32,9 @@ Current version is 0.0.2. groupid="com.twitter" artifact="chill_2.9.2".
 
 ## Authors
 
-* Oscar Boykin <http://twitter.com/posco>
-* Sam Ritchie <http://twitter.com/sritchie>
+* Oscar Boykin <https://twitter.com/posco>
+* Mike Gagnon <https://twitter.com/MichaelNGagnon>
+* Sam Ritchie <https://twitter.com/sritchie>
 
 ## License
 
