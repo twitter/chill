@@ -20,34 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-class MapSerializer[K,V,T <: Map[K,V]](emptyMap : Map[K,V]) extends KSerializer[T] {
-  // Maps are immutable, no need to copy them
-  setImmutable(true)
-  def write(kser: Kryo, out: Output, obj: T) {
-    out.writeInt(obj.size, true)
-    obj.foreach { pair : (K,V) =>
-      val kRef = pair._1.asInstanceOf[AnyRef]
-      kser.writeClassAndObject(out, kRef)
-      out.flush
-
-      val vRef = pair._2.asInstanceOf[AnyRef]
-      kser.writeClassAndObject(out, vRef)
-      out.flush
-    }
-  }
-
-  def read(kser: Kryo, in: Input, cls: Class[T]) : T = {
-    val size = in.readInt(true)
-    if (size == 0) {
-      emptyMap.asInstanceOf[T]
-    }
-    else {
-      (0 until size).foldLeft(emptyMap) { (map, i) =>
-        val key = kser.readClassAndObject(in).asInstanceOf[K]
-        val value = kser.readClassAndObject(in).asInstanceOf[V]
-
-        map + (key -> value)
-      }.asInstanceOf[T]
-    }
-  }
+class MapSerializer[K,V,T <: Map[K,V]](emptyMap : T) extends TraversableSerializer[(K,V),T] {
+  def empty(size: Int) = emptyMap
+  def update(old: T, idx: Int, v: (K,V)): T = (old + v).asInstanceOf[T]
 }
