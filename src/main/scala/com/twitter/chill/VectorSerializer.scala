@@ -20,35 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-class VectorSerializer[T] extends KSerializer[Vector[T]] {
-  // Vectors are immutable, no need to copy them
-  setImmutable(true)
-  def write(kser: Kryo, out: Output, obj: Vector[T]) {
-    //Write the size:
-    out.writeInt(obj.size, true)
-    obj.foreach { t  =>
-      val tRef = t.asInstanceOf[AnyRef]
-      kser.writeClassAndObject(out, tRef)
-      // After each intermediate object, flush
-      out.flush
-    }
-  }
-
-  def read(kser: Kryo, in: Input, cls: Class[Vector[T]]) : Vector[T] = {
-    //Produce the reversed list:
-    val size = in.readInt(true)
-    if (size == 0) {
-      /*
-       * this is only here at compile time.  The type T is erased, but the
-       * compiler verifies that we are intending to return a type T here.
-       */
-      Vector.empty[T]
-    }
-    else {
-      (0 until size).foldLeft(Vector.empty[T]) { (vec, i) =>
-        val iT = kser.readClassAndObject(in).asInstanceOf[T]
-        vec :+ iT
-      }
-    }
-  }
+class VectorSerializer[T] extends TraversableSerializer[T,Vector[T]] {
+  override def empty(sz: Int) = Vector.empty[T]
+  override def update(old: Vector[T], idx: Int, v: T) = old :+ v
 }
