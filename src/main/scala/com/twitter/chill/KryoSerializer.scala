@@ -23,6 +23,32 @@ import com.esotericsoftware.kryo.io.{ Input, Output }
 import org.apache.commons.codec.binary.Base64
 import org.objenesis.strategy.StdInstantiatorStrategy
 
+import scala.collection.immutable.ListMap
+import scala.collection.immutable.HashMap
+
+object KryoSerializer {
+  def registerCollectionSerializers(newK: Kryo) {
+    newK.addDefaultSerializer(classOf[List[Any]],
+      new ListSerializer[AnyRef,List[AnyRef]](List[AnyRef]()))
+    newK.addDefaultSerializer(classOf[Vector[Any]], new VectorSerializer[Any])
+    newK.addDefaultSerializer(classOf[Set[Any]], new SetSerializer[Any,Set[Any]](Set[Any]()))
+    newK.register(classOf[Symbol], new SymbolSerializer)
+    // Add some maps
+    newK.addDefaultSerializer(classOf[ListMap[Any,Any]],
+      new MapSerializer[Any,Any,ListMap[Any,Any]](ListMap[Any,Any]()))
+    newK.addDefaultSerializer(classOf[HashMap[Any,Any]],
+      new MapSerializer[Any,Any,HashMap[Any,Any]](HashMap[Any,Any]()))
+    newK.addDefaultSerializer(classOf[Map[Any,Any]],
+      new MapSerializer[Any,Any,Map[Any,Any]](Map[Any,Any]()))
+  }
+
+  def registerAll(k: Kryo) {
+    registerCollectionSerializers(k)
+    //Register all 22 tuple serializers and specialized serializers
+    ScalaTupleSerialization.register(k)
+  }
+}
+
 trait KryoSerializer {
   def getKryo : Kryo = {
     val k = new Kryo {
@@ -43,6 +69,7 @@ trait KryoSerializer {
 
     k.setRegistrationRequired(false)
     k.setInstantiatorStrategy(new StdInstantiatorStrategy)
+    KryoSerializer.registerAll(k)
     k
   }
 
