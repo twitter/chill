@@ -22,11 +22,11 @@ parallelExecution in Test := true
 publishMavenStyle := true
 
 publishTo <<= version { (v: String) =>
-  val nexus = "http://artifactory.local.twitter.com/"
+  val nexus = "https://oss.sonatype.org/"
   if (v.trim.endsWith("SNAPSHOT"))
-    Some("twitter-snapshots" at nexus + "libs-snapshots-local")
+    Some("snapshots" at nexus + "content/repositories/snapshots")
   else
-    Some("twitter-releases"  at nexus + "libs-releases-local")
+    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
 publishArtifact in Test := false
