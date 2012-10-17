@@ -14,6 +14,7 @@ case class TestCaseClassForSerialization(x : String, y : Int)
 
 case class TestValMap(val map : Map[String,Double])
 case class TestValHashMap(val map : HashMap[String,Double])
+case class TestVarArgs(vargs: String*)
 
 class KryoTest extends Specification with KryoSerializer {
 
@@ -37,6 +38,8 @@ class KryoTest extends Specification with KryoSerializer {
                       TestValMap(Map("you" -> 1.0, "every" -> 2.0, "body" -> 3.0, "a" -> 1.0,
                         "b" -> 2.0, "c" -> 3.0, "d" -> 4.0)),
                       TestValHashMap(HashMap("you" -> 1.0)),
+                      TestVarArgs("hey", "you", "guys"),
+                      implicitly[ClassManifest[(Int,Int)]],
                       Vector(1,2,3,4,5),
                       TestValMap(null),
                       Some("junk"),
@@ -45,6 +48,11 @@ class KryoTest extends Specification with KryoSerializer {
 
       val rtTest = test map { serialize(_) } map { deserialize[AnyRef](_) }
       rtTest must be_==(test)
+    }
+    "handle manifests" in {
+      rt(manifest[Int]) must be_==(manifest[Int])
+      rt(manifest[(Int,Int)]) must be_==(manifest[(Int,Int)])
+      rt(manifest[Array[Int]]) must be_==(manifest[Array[Int]])
     }
     "handle arrays" in {
       def arrayRT[T](arr : Array[T]) {
