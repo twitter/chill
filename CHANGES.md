@@ -1,5 +1,11 @@
 # chill #
 
+### Version 0.0.3 ###
+
+* Added Manifest serializations
+* Added Traversable serializer
+* Added KryoSerializer object for easy registration
+
 ### Version 0.0.2 ###
 
 * Added TupleSerializers for all tuple types.
