@@ -20,11 +20,15 @@ Chill provides support for singletons, scala Objects and the following types:
 
 * Scala primitives
   * scala.Symbol
+  * scala.reflect.Manifest
+  * scala.reflect.ClassManifest
 * Collections and sequences
   * scala.collection.immutable.Map
   * scala.collection.immutable.List
   * scala.collection.immutable.Vector
   * scala.collection.immutable.Set
+  * scala.collection.mutable.WrappedArray
+  * all 22 scala tuples
 
 ## Maven
 
@@ -32,8 +36,9 @@ Current version is 0.0.2. groupid="com.twitter" artifact="chill_2.9.2".
 
 ## Authors
 
-* Oscar Boykin <http://twitter.com/posco>
-* Sam Ritchie <http://twitter.com/sritchie>
+* Oscar Boykin <https://twitter.com/posco>
+* Mike Gagnon <https://twitter.com/MichaelNGagnon>
+* Sam Ritchie <https://twitter.com/sritchie>
 
 ## License
 
