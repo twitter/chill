@@ -20,11 +20,15 @@ Chill provides support for singletons, scala Objects and the following types:
 
 * Scala primitives
   * scala.Symbol
+  * scala.reflect.Manifest
+  * scala.reflect.ClassManifest
 * Collections and sequences
   * scala.collection.immutable.Map
   * scala.collection.immutable.List
   * scala.collection.immutable.Vector
   * scala.collection.immutable.Set
+  * scala.collection.mutable.WrappedArray
+  * all 22 scala tuples
 
 ## Maven
 
