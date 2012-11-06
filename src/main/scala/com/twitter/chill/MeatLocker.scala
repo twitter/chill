@@ -18,5 +18,6 @@ package com.twitter.chill
 
 class MeatLocker[T](@transient t: T) extends KryoSerializer with java.io.Serializable {
   protected val tBytes = serialize(t.asInstanceOf[AnyRef])
-  lazy val get : T = deserialize[T](tBytes)
+  lazy val get: T = getOnce
+  def getOnce: T = deserialize[T](tBytes)
 }
