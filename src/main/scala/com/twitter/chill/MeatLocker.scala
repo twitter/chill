@@ -16,6 +16,10 @@ limitations under the License.
 
 package com.twitter.chill
 
+object MeatLocker {
+  def apply[T](t: T) = new MeatLocker(t)
+}
+
 class MeatLocker[T](@transient t: T) extends KryoSerializer with java.io.Serializable {
   protected val tBytes = serialize(t.asInstanceOf[AnyRef])
   lazy val get: T = copy
