@@ -1,5 +1,9 @@
 # chill #
 
+### Version 0.0.4 ###
+
+* Added "copy" method to the MeatLocker
+
 ### Version 0.0.3 ###
 
 * Added Manifest serializations
