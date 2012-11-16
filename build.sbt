@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
   "org.scala-tools.testing" % "specs_2.9.0-1" % "1.6.8" % "test",
   "com.esotericsoftware.kryo" % "kryo" % "2.17",
-  "commons-codec" % "commons-codec" % "1.7"
+  "commons-codec" % "commons-codec" % "1.7",
+  "org.ow2.asm" % "asm-commons" % "4.0"
 )
 
 parallelExecution in Test := true
