@@ -14,6 +14,8 @@ val decoded = codec.get.decode(encoded)
 decoded == 1L // true
 ```
 
+To retrieve the boxed item without caching the deserialized value, use `meatlockerInstance.copy`.
+
 ### Handled classes
 
 Chill provides support for singletons, scala Objects and the following types:
