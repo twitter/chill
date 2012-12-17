@@ -32,6 +32,11 @@ case class TestValMap(val map : Map[String,Double])
 case class TestValHashMap(val map : HashMap[String,Double])
 case class TestVarArgs(vargs: String*)
 
+object WeekDay extends Enumeration {
+ type WeekDay = Value
+ val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
+}
+
 class KryoSpec extends Specification with KryoSerializer {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
@@ -92,6 +97,11 @@ class KryoSpec extends Specification with KryoSerializer {
       list2.size must be_==(bigList.size)
       //Specs, it turns out, also doesn't deal with giant lists well:
       list2.zip(bigList).foreach { tup => tup._1 must be_==(tup._2) }
+    }
+    "Handle scala enums" in {
+       WeekDay.values.foreach { v =>
+         rt(v) must be_==(v)
+       }
     }
   }
 }
