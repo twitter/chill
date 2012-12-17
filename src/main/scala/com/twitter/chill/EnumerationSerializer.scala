@@ -20,24 +20,34 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-class EnumerationSerializer extends KSerializer[Enumeration$Value] {
+import scala.collection.mutable.{Map => MMap}
 
-  private def enumOf(v: AnyRef): Enumeration =
-    //TODO: hacky, but not clear how to fix:
-    v.getClass
-      .getMethod("scala$Enumeration$$outerEnum")
-      .invoke(v)
-      .asInstanceOf[scala.Enumeration]
+class EnumerationSerializer extends KSerializer[Enumeration#Value] {
 
-  def write(kser: Kryo, out: Output, obj: Enumeration$Value) {
+  private val enumMethod = "scala$Enumeration$$outerEnum"
+  private val outerMethod = classOf[Enumeration#Value].getMethod(enumMethod)
+  // Cache the enum lookup:
+  private val enumMap = MMap[Enumeration#Value, Enumeration]()
+
+  private def enumOf(v: Enumeration#Value): Enumeration =
+    enumMap.synchronized {
+      //TODO: hacky, but not clear how to fix:
+      enumMap.getOrElseUpdate(v, outerMethod
+        .invoke(v)
+        .asInstanceOf[scala.Enumeration])
+    }
+
+  def write(kser: Kryo, out: Output, obj: Enumeration#Value) {
     val enum = enumOf(obj)
+    // Note due to the ObjectSerializer, this only really writes the class.
     kser.writeClassAndObject(out, enum)
     // Now, we just write the ID:
     out.writeInt(obj.id)
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[Enumeration$Value]): Enumeration$Value = {
+  def read(kser: Kryo, in: Input, cls: Class[Enumeration#Value]): Enumeration#Value = {
+    // Note due to the ObjectSerializer, this only really writes the class.
     val enum = kser.readClassAndObject(in).asInstanceOf[Enumeration]
-    enum(in.readInt).asInstanceOf[Enumeration$Value]
+    enum(in.readInt).asInstanceOf[Enumeration#Value]
   }
 }
