@@ -20,7 +20,8 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import org.apache.commons.codec.binary.Base64
+import com.twitter.bijection.{ Base64String, Bijection }
+
 import org.objenesis.strategy.StdInstantiatorStrategy
 
 import scala.collection.immutable.ListMap
@@ -28,6 +29,41 @@ import scala.collection.immutable.HashMap
 import scala.collection.mutable.WrappedArray
 
 object KryoSerializer {
+  def alreadyRegistered(k: Kryo, klass: Class[_]) =
+    k.getClassResolver.getRegistration(klass) != null
+
+  def registerBijections(newK: Kryo, pairs: TraversableOnce[BijectionPair[_]]) {
+    pairs.foreach { pair: BijectionPair[_] =>
+      if (!alreadyRegistered(newK, pair.klass)) {
+        val serializer = BijectiveSerializer.asKryo(pair.bijection)
+        newK.register(pair.klass)
+      } else {
+        System.err.printf("%s is already registered in registerBijections.",
+                          Array[String](pair.klass.getName))
+      }
+    }
+  }
+
+  def registerBijectionDefaults(newK: Kryo, pairs: TraversableOnce[BijectionPair[_]]) {
+    pairs.foreach { pair: BijectionPair[_] =>
+      if (!alreadyRegistered(newK, pair.klass)) {
+        val serializer = BijectiveSerializer.asKryo(pair.bijection)
+        newK.addDefaultSerializer(pair.klass, serializer)
+        newK.register(pair.klass)
+      } else {
+        System.err.printf("%s is already registered in registerBijectionDefaults.",
+                          Array[String](pair.klass.getName))
+      }
+    }
+  }
+
+  def registerClasses(newK: Kryo, klasses: TraversableOnce[Class[_]]) {
+    klasses.foreach { klass: Class[_] =>
+      if (!alreadyRegistered(newK, klass))
+        newK.register(klass)
+    }
+  }
+
   def registerCollectionSerializers(newK: Kryo) {
     newK.register(classOf[Symbol], new SymbolSerializer)
 
@@ -65,6 +101,13 @@ object KryoSerializer {
   }
 }
 
+// TODO: Cache the kryo returned by getKryo.
+object KryoBijection extends Bijection[AnyRef, Array[Byte]] with KryoSerializer {
+  override def apply(obj: AnyRef): Array[Byte] = serialize(obj)
+  override def invert(bytes: Array[Byte]) = deserialize[AnyRef](bytes)
+}
+
+@deprecated("Use com.twitter.chill.KryoBijection instead", "0.1.0")
 trait KryoSerializer {
   def getKryo : Kryo = {
     val k = new Kryo {
@@ -101,8 +144,8 @@ trait KryoSerializer {
   }
 
   def serializeBase64(ag: AnyRef): String =
-    Base64.encodeBase64String(serialize(ag))
+    Bijection[Array[Byte], Base64String](serialize(ag)).str
 
-  def deserializeBase64[T](string: String): T =
-    deserialize[T](Base64.decodeBase64(string))
+  def deserializeBase64[T](str: String): T =
+    deserialize[T](Bijection.invert[Array[Byte], Base64String](Base64String(str)))
 }
