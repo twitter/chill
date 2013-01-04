@@ -1,5 +1,9 @@
 # chill #
 
+### 0.1.0
+
+* adds `BijectiveSerializer` and `BijectivePair` with accompanying registrations in `KryoSerializer`
+
 ### 0.0.5
 
 * ClosureCleaner and Specs (Thanks to the Spark project!)
