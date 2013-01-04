@@ -19,6 +19,7 @@ To retrieve the boxed item without caching the deserialized value, use `meatlock
 Chill provides support for singletons, scala Objects and the following types:
 
 * Scala primitives
+  * scala.Enumeration values
   * scala.Symbol
   * scala.reflect.Manifest
   * scala.reflect.ClassManifest
@@ -32,7 +33,7 @@ Chill provides support for singletons, scala Objects and the following types:
 
 ## Maven
 
-Current version is `0.0.4`. groupid=`"com.twitter"` artifact=`"chill_2.9.2"`.
+Current version is `0.1.0`. groupid=`"com.twitter"` artifact=`"chill_2.9.2"`.
 
 ## Authors
 

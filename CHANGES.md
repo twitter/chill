@@ -3,6 +3,7 @@
 ### 0.1.0
 
 * adds `BijectiveSerializer` and `BijectivePair` with accompanying registrations in `KryoSerializer`
+* adds Enumeration support
 
 ### 0.0.5
 
