@@ -61,6 +61,7 @@ object KryoSerializer {
     ScalaTupleSerialization.register(k)
     k.register(classOf[ClassManifest[_]], new ClassManifestSerializer[Any])
     k.addDefaultSerializer(classOf[Manifest[_]], new ManifestSerializer[Any])
+    k.addDefaultSerializer(classOf[scala.Enumeration$Value], new EnumerationSerializer)
   }
 }
 
