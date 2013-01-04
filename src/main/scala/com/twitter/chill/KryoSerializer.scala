@@ -101,6 +101,13 @@ object KryoSerializer {
   }
 }
 
+// TODO: Cache the kryo returned by getKryo.
+object KryoBijection extends Bijection[AnyRef, Array[Byte]] with KryoSerializer {
+  override def apply(obj: AnyRef): Array[Byte] = serialize(obj)
+  override def invert(bytes: Array[Byte]) = deserialize[AnyRef](bytes)
+}
+
+@deprecated("Use com.twitter.chill.KryoBijection instead", "0.1.0")
 trait KryoSerializer {
   def getKryo : Kryo = {
     val k = new Kryo {
