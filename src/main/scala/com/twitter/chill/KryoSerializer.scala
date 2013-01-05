@@ -137,7 +137,7 @@ object KryoSerializer {
     registerCollectionSerializers(k)
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
-    k.register(classOf[Symbol], new SymbolSerializer)
+    registerViaBijection[Symbol, String](k)
     k.register(classOf[ClassManifest[_]], new ClassManifestSerializer[Any])
     k.addDefaultSerializer(classOf[Manifest[_]], new ManifestSerializer[Any])
     k.addDefaultSerializer(classOf[scala.Enumeration$Value], new EnumerationSerializer)
@@ -145,10 +145,10 @@ object KryoSerializer {
 
   /** B has to already be registered
    */
-  def registerViaBijection[A,B](k: Kryo)(implicit bij: Bijection[A,B], cmf: ClassManifest[B]) {
-    val cls = cmf.erasure
-    val kserb = k.getSerializer(cls).asInstanceOf[KSerializer[B]]
-    k.register(cls, viaBijection[A,B](kserb))
+  def registerViaBijection[A,B](k: Kryo)
+    (implicit bij: Bijection[A,B], acmf: ClassManifest[A], bcmf: ClassManifest[B]) {
+    val kserb = k.getSerializer(bcmf.erasure).asInstanceOf[KSerializer[B]]
+    k.register(acmf.erasure, viaBijection[A,B](kserb))
   }
 
   /** Use a bijection[A,B] then the KSerializer on B
