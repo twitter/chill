@@ -21,6 +21,8 @@ import org.specs._
 import scala.collection.immutable.ListMap
 import scala.collection.immutable.HashMap
 
+import com.twitter.bijection.Bijection
+
 /*
 * This is just a test case for Kryo to deal with. It should
 * be outside KryoSpec, otherwise the enclosing class, KryoSpec
@@ -41,7 +43,10 @@ class KryoSpec extends Specification with KryoSerializer {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
 
-  def rt[T](t : T): T = deserialize[T](serialize(t.asInstanceOf[AnyRef]))
+  def rt[T](t : T): T = rt[T](this, t)
+  def rt[T](k: KryoSerializer, t : T): T = {
+    k.deserialize[T](k.serialize(t.asInstanceOf[AnyRef]))
+  }
 
   "KryoSerializers and KryoDeserializers" should {
     "round trip any non-array object" in {
@@ -102,6 +107,25 @@ class KryoSpec extends Specification with KryoSerializer {
        WeekDay.values.foreach { v =>
          rt(v) must be_==(v)
        }
+    }
+    "use bijections" in {
+      implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
+        (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
+
+      val k = new KryoSerializer { override def getKryo = {
+        val kryo = super.getKryo
+        KryoSerializer.registerViaBijection[TestCaseClassForSerialization, (String,Int)](kryo)
+        kryo
+      }}
+      rt(k, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
+    }
+    "use java serialization" in {
+      val k = new KryoSerializer { override def getKryo = {
+        val kryo = super.getKryo
+        KryoSerializer.useJava[TestCaseClassForSerialization](kryo)
+        kryo
+      }}
+      rt(k, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
   }
 }
