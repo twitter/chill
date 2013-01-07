@@ -109,21 +109,21 @@ class KryoSpec extends Specification with KryoSerializer {
        }
     }
     "use bijections" in {
+      import KryoImplicits.toRich
+
       implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
         (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
 
       val k = new KryoSerializer { override def getKryo = {
-        val kryo = super.getKryo
-        KryoSerializer.registerViaBijection[TestCaseClassForSerialization, (String,Int)](kryo)
-        kryo
+        super.getKryo.forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
       }}
       rt(k, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "use java serialization" in {
+      import KryoImplicits.toRich
+
       val k = new KryoSerializer { override def getKryo = {
-        val kryo = super.getKryo
-        KryoSerializer.useJava[TestCaseClassForSerialization](kryo)
-        kryo
+        super.getKryo.javaForClass[TestCaseClassForSerialization]
       }}
       rt(k, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
