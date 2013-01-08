@@ -1,6 +1,6 @@
 name := "chill"
 
-version := "0.1.1-SNAPSHOT"
+version := "0.1.1"
 
 organization := "com.twitter"
 
