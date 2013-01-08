@@ -148,22 +148,7 @@ object KryoBijection extends Bijection[AnyRef, Array[Byte]] with KryoSerializer 
 @deprecated("Use com.twitter.chill.KryoBijection instead", "0.1.0")
 trait KryoSerializer {
   def getKryo : Kryo = {
-    val k = new Kryo {
-      lazy val objSer = new ObjectSerializer[AnyRef]
-
-      override def getDefaultSerializer(klass : Class[_]) : KSerializer[_] = {
-        if(isSingleton(klass))
-          objSer
-        else
-          super.getDefaultSerializer(klass)
-      }
-
-      def isSingleton(klass : Class[_]) : Boolean = {
-        classOf[scala.ScalaObject].isAssignableFrom(klass) &&
-          klass.getName.last == '$'
-      }
-    }
-
+    val k = new KryoBase
     k.setRegistrationRequired(false)
     k.setInstantiatorStrategy(new StdInstantiatorStrategy)
     KryoSerializer.registerAll(k)
