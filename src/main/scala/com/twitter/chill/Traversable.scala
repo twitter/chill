@@ -20,13 +20,11 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-abstract class TraversableSerializer[T, C <: Traversable[T]] extends KSerializer[C] {
+import scala.collection.mutable.Builder
 
-  def empty(size: Int): C
-  def update(old: C, idx: Int, v: T): C
-  // Override this if you need to:
-  def finish(c: C): C = c
-  override val isImmutable = true
+class TraversableSerializer[T, C <: Traversable[T]](builder: Builder[T, C],
+  override val isImmutable: Boolean = true)
+  extends KSerializer[C] {
 
   def write(kser: Kryo, out: Output, obj: C) {
     //Write the size:
@@ -41,10 +39,10 @@ abstract class TraversableSerializer[T, C <: Traversable[T]] extends KSerializer
 
   def read(kser: Kryo, in: Input, cls: Class[C]) : C = {
     val size = in.readInt(true)
-    finish {
-      (0 until size).foldLeft(empty(size)) { (col, idx) =>
-        update(col, idx, kser.readClassAndObject(in).asInstanceOf[T])
-      }
+    builder.clear()
+    (0 until size).foreach { idx =>
+      builder += kser.readClassAndObject(in).asInstanceOf[T]
     }
+    builder.result()
   }
 }

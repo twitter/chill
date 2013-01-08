@@ -20,15 +20,32 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import com.twitter.bijection.{ Base64String, Bijection }
+import com.twitter.bijection.{ Base64String, Bijection, Bufferable }
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
-import scala.collection.immutable.ListMap
-import scala.collection.immutable.HashMap
-import scala.collection.mutable.WrappedArray
+import scala.collection.immutable.{
+  ListMap,
+  HashMap,
+  Queue
+}
+
+import scala.collection.mutable.{
+  Builder,
+  WrappedArray,
+  Map => MMap,
+  Set => MSet,
+  ListBuffer,
+  Queue => MQueue,
+  Buffer
+}
 
 object KryoSerializer {
+
+  import KryoImplicits.toRich //Add methods to Kryo
+
+  // TODO: remove the registration methods, and use RichKryo
+
   def alreadyRegistered(k: Kryo, klass: Class[_]) =
     k.getClassResolver.getRegistration(klass) != null
 
@@ -36,7 +53,7 @@ object KryoSerializer {
     pairs.foreach { pair: BijectionPair[_] =>
       if (!alreadyRegistered(newK, pair.klass)) {
         val serializer = BijectiveSerializer.asKryo(pair.bijection)
-        newK.register(pair.klass)
+        newK.register(pair.klass, serializer)
       } else {
         System.err.printf("%s is already registered in registerBijections.",
                           Array[String](pair.klass.getName))
@@ -65,40 +82,61 @@ object KryoSerializer {
   }
 
   def registerCollectionSerializers(newK: Kryo) {
-    newK.register(classOf[Symbol], new SymbolSerializer)
-
-    // Subclass-based (addDefaultSerializers)
-
-    /* Note that you should go from MOST specific, to least to specific when using
+    /*
+     * Note that subclass-based use: addDefaultSerializers, else: register
+     * You should go from MOST specific, to least to specific when using
      * default serializers. The FIRST one found is the one used
      */
     // wrapper array is abstract
-    newK.addDefaultSerializer(classOf[WrappedArray[Any]], new WrappedArraySerializer[Any])
-
-    // List is a sealed class, so there are only two subclasses:
-    newK.addDefaultSerializer(classOf[List[Any]],
-      new ListSerializer[AnyRef,List[AnyRef]](List[AnyRef]()))
-    //Vector is a final class
-    newK.addDefaultSerializer(classOf[Vector[Any]], new VectorSerializer[Any])
-    newK.addDefaultSerializer(classOf[Set[Any]], new SetSerializer[Any,Set[Any]](Set[Any]()))
-    // Add some maps
-    newK.addDefaultSerializer(classOf[ListMap[Any,Any]],
-      new MapSerializer[Any,Any,ListMap[Any,Any]](ListMap[Any,Any]()))
-    newK.addDefaultSerializer(classOf[HashMap[Any,Any]],
-      new MapSerializer[Any,Any,HashMap[Any,Any]](HashMap[Any,Any]()))
-    // The above ListMap/HashMap must appear before this:
-    newK.addDefaultSerializer(classOf[Map[Any,Any]],
-      new MapSerializer[Any,Any,Map[Any,Any]](Map[Any,Any]()))
+    newK.forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
+      .forTraversableSubclass(Queue.newBuilder[Any])
+      // List is a sealed class, so there are only two subclasses:
+      .forTraversableSubclass(List.newBuilder[Any])
+      //Vector is a final class
+      .forTraversableClass(Vector.newBuilder[Any])
+      .forTraversableSubclass(IndexedSeq.newBuilder[Any])
+      .forTraversableSubclass(Set.newBuilder[Any])
+      // Add some maps
+      .forTraversableSubclass(ListMap.newBuilder[Any,Any])
+      .forTraversableSubclass(HashMap.newBuilder[Any,Any])
+      // The above ListMap/HashMap must appear before this:
+      .forTraversableSubclass(Map.newBuilder[Any,Any])
+      // here are the mutable ones:
+      .forTraversableSubclass(MQueue.newBuilder[Any], isImmutable = false)
+      .forTraversableSubclass(MMap.newBuilder[Any,Any], isImmutable = false)
+      .forTraversableSubclass(MSet.newBuilder[Any], isImmutable = false)
+      .forTraversableSubclass(ListBuffer.newBuilder[Any], isImmutable = false)
+      .forTraversableSubclass(Buffer.newBuilder[Any], isImmutable = false)
+      // This should be last, lots of things are seq/iterable/traversable
+      // These are questionable and might break things.
+      // rarely will you only expect an iterable/traversable on the reverse
+      .forTraversableSubclass(Seq.newBuilder[Any])
+      .forTraversableSubclass(Iterable.newBuilder[Any])
+      .forTraversableSubclass(Traversable.newBuilder[Any])
   }
 
   def registerAll(k: Kryo) {
     registerCollectionSerializers(k)
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
-    k.register(classOf[ClassManifest[_]], new ClassManifestSerializer[Any])
-    k.addDefaultSerializer(classOf[Manifest[_]], new ManifestSerializer[Any])
-    k.addDefaultSerializer(classOf[scala.Enumeration$Value], new EnumerationSerializer)
+    k.forClassViaBijection[Symbol, String]
+      .forClass[ClassManifest[Any]](new ClassManifestSerializer[Any])
+      .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
+      .forSubclass[scala.Enumeration#Value](new EnumerationSerializer)
   }
+
+  /** Use a bijection[A,B] then the KSerializer on B
+   */
+  def viaBijection[A,B](kser: KSerializer[B])
+    (implicit bij: Bijection[A,B], cmf: ClassManifest[B]): KSerializer[A] =
+    new KSerializer[A] {
+      def write(k: Kryo, out: Output, obj: A) { kser.write(k, out, bij(obj)) }
+      def read(k: Kryo, in: Input, cls: Class[A]) =
+        bij.invert(kser.read(k, in, cmf.erasure.asInstanceOf[Class[B]]))
+    }
+
+  def viaBufferable[T](implicit b: Bufferable[T]): KSerializer[T] =
+    BijectiveSerializer.asKryo[T](Bufferable.bijectionOf[T])
 }
 
 // TODO: Cache the kryo returned by getKryo.

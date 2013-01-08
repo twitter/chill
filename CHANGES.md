@@ -1,5 +1,12 @@
 # chill #
 
+### 0.1.1
+
+* adds RichKryo enrichment with many methods simplifying adding Serializers.
+* adds ability to serialize any Traversable with a Builder.
+* support for mutable scala collections.
+* adds support for bijection.Bufferable as a serializer.
+
 ### 0.1.0
 
 * adds `BijectiveSerializer` and `BijectivePair` with accompanying registrations in `KryoSerializer`
