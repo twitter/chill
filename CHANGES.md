@@ -1,5 +1,8 @@
 # chill #
 
+### 0.1.2
+* Fixed a long standing bug with serializing some anonymous functions as vals in traits
+
 ### 0.1.1
 
 * adds RichKryo enrichment with many methods simplifying adding Serializers.
