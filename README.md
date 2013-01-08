@@ -28,7 +28,7 @@ Chill provides support for singletons, scala Objects and the following types:
   * scala.collection.immutable.List
   * scala.collection.immutable.Vector
   * scala.collection.immutable.Set
-  * scala.collection.mutable.WrappedArray
+  * scala.collection.mutable.{Map, Set, Buffer, WrappedArray}
   * all 22 scala tuples
 
 ## Maven
