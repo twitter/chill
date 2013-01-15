@@ -23,12 +23,13 @@ class ClosureCleanerSpec extends Specification {
     println(x.getClass)
     println(x.getClass.getDeclaredFields.map { _.toString }.mkString("  "))
   }
-  "Should clean normal objects" in {
+  "ClosureCleaner" should {
+  "clean normal objects" in {
     val myList = List(1,2,3)
     ClosureCleaner(myList)
     myList must be_==(List(1,2,3))
   }
-  "Should clean actual closures" in {
+  "clean actual closures" in {
     val myFun = { x: Int => x*2 }
 
     ClosureCleaner(myFun)
@@ -41,7 +42,7 @@ class ClosureCleanerSpec extends Specification {
     t must be_==(Test(3))
   }
 
-  "Should handle outers with constructors" in {
+  "handle outers with constructors" in {
 
     class Test(x: String) {
       val l = x.size
@@ -54,5 +55,17 @@ class ClosureCleanerSpec extends Specification {
     //println(ClosureCleaner.getOutersOf(fn))
     ClosureCleaner(fn)
     fn("hey") must be_==(20)
+  }
+  "Handle functions in traits" in {
+    val fn = BaseFns2.timesByMult
+    ClosureCleaner(fn)
+    fn(10) must be_==(50)
+  }
+  "Handle captured vals" in {
+    val answer = 42
+    val fn = { x: Int => answer * x }
+    ClosureCleaner(fn)
+    fn(10) must be_==(420)
+  }
   }
 }
