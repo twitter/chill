@@ -99,7 +99,9 @@ object ClosureCleaner {
         // myOuter = obj.$outer
         val myOuter = f.get(obj)
         // This is (Class[T], T) into the hierarchy:
-        getOutersOf(myOuter, (f.getType, myOuter) :: hierarchy)
+        // Note that if you use f.getType you might get an interface. No good
+        val outerType = myOuter.getClass
+        getOutersOf(myOuter, (outerType, myOuter) :: hierarchy)
       }
     }
 
@@ -160,7 +162,7 @@ object ClosureCleaner {
     // I know the cool kids use Options, but this code
     // will avoid an allocation in the usual case of
     // no $outer
-    if (newCleanedOuter != null) setOuter(obj, newCleanedOuter)
+    setOuter(obj, newCleanedOuter)
   }
 
   /** Return a new bottom-most $outer instance of this obj
@@ -173,10 +175,12 @@ object ClosureCleaner {
       .foldLeft(null: AnyRef) { (prevOuter, clsData) =>
         val (thisOuterCls, realOuter) = clsData
         // create a new outer class that does not have the constructor
-        // called on it. We are populate its $outer variable with the
+        // called on it.
+        val nextOuter = instantiateClass(thisOuterCls);
+        // We are populate its $outer variable with the
         // previous outer, and then we go down, and set the accessed
         // fields below:
-        val nextOuter = instantiateClass(thisOuterCls, prevOuter);
+        setOuter(nextOuter, prevOuter)
         // for each of the accessed fields of this class
         // set the fields from the parents of in:
         accessedFieldsOf(thisOuterCls)
@@ -193,27 +197,21 @@ object ClosureCleaner {
   }
 
   private def setOuter(obj: AnyRef, outer: AnyRef) {
-    val field = outerFieldOf(obj.getClass).get
-    field.setAccessible(true)
-    field.set(obj, outer)
-  }
-
-  private val objectCtor = classOf[java.lang.Object].getDeclaredConstructor();
-  private def instantiateClass(cls: Class[_], outer: AnyRef): AnyRef = {
-    // Use reflection to instantiate object without calling constructor
-    val obj = sun.reflect.ReflectionFactory
-                .getReflectionFactory
-                .newConstructorForSerialization(cls, objectCtor)
-                .newInstance()
-                .asInstanceOf[AnyRef]
-
-    if (outer != null) {
-      val field = outerFieldOf(cls).get
+    if (null != outer) {
+      val field = outerFieldOf(obj.getClass).get
       field.setAccessible(true)
       field.set(obj, outer)
     }
-    obj
   }
+
+  private val objectCtor = classOf[java.lang.Object].getDeclaredConstructor();
+  // Use reflection to instantiate object without calling constructor
+  private def instantiateClass(cls: Class[_]): AnyRef =
+    sun.reflect.ReflectionFactory
+      .getReflectionFactory
+      .newConstructorForSerialization(cls, objectCtor)
+      .newInstance()
+      .asInstanceOf[AnyRef]
 }
 
 
