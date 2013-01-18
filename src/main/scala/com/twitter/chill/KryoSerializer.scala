@@ -24,6 +24,8 @@ import com.twitter.bijection.{ Base64String, Bijection, Bufferable }
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
+import scala.collection.BitSet
+
 import scala.collection.immutable.{
   ListMap,
   HashMap,
@@ -89,6 +91,7 @@ object KryoSerializer {
      */
     // wrapper array is abstract
     newK.forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
+      .forTraversableSubclass(BitSet.newBuilder)
       .forTraversableSubclass(Queue.newBuilder[Any])
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.newBuilder[Any])
