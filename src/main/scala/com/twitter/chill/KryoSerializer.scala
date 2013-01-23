@@ -90,7 +90,7 @@ object KryoSerializer {
      */
     // wrapper array is abstract
     newK.forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
-      .forTraversableSubclass(new BitSetBuilder)
+      .forSubclass[BitSet](new BitSetSerializer)
       .forTraversableSubclass(Queue.newBuilder[Any])
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.newBuilder[Any])
@@ -145,31 +145,6 @@ object KryoSerializer {
 object KryoBijection extends Bijection[AnyRef, Array[Byte]] with KryoSerializer {
   override def apply(obj: AnyRef): Array[Byte] = serialize(obj)
   override def invert(bytes: Array[Byte]) = deserialize[AnyRef](bytes)
-}
-
-class BitSetBuilder(initialsize : Int = 1024) extends Builder[Int, BitSet] {
-  protected var bits = new Array[Long](initialsize)
-
-  def resize(new_size : Int) : Unit = {
-    val b = new Array[Long](new_size)
-    Array.copy(bits, 0, b, 0, bits.size)
-    bits = b
-  }
-
-  def +=(x: Int): this.type = {
-    val idx = x / 64
-    if(idx >= bits.size) {
-      var newsize = bits.size
-      while(idx >= newsize){ newsize *= 2 }
-      resize(newsize)
-    }
-    bits(idx) |= 1L << (x % 64)
-    this
-  }
-
-  def clear() { bits = new Array[Long](initialsize) }
-
-  def result: BitSet = BitSet.fromArray(bits)
 }
 
 @deprecated("Use com.twitter.chill.KryoBijection instead", "0.1.0")
