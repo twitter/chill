@@ -29,6 +29,15 @@ object BaseFns extends AwesomeFns {
   def apply(x: Int) = myfun.apply(x)
 }
 
+trait AwesomeFn2 {
+  def mult: Int
+  val timesByMult = { x: Int => mult * x }
+}
+
+object BaseFns2 extends AwesomeFn2 {
+  def mult = 5
+}
+
 class FunctionSerialization extends Specification with KryoSerializer {
   noDetailedDiffs() //Fixes issue for scala 2.9
 
@@ -48,6 +57,10 @@ class FunctionSerialization extends Specification with KryoSerializer {
     }
     "roundtrip the object" in {
       rt(BaseFns) must be_==(BaseFns)
+    }
+    "Handle traits with abstract vals/def" in {
+      rt(BaseFns2) must be_==(BaseFns2)
+      rt(BaseFns2.timesByMult).apply(10) must be_==(50)
     }
   }
 }
