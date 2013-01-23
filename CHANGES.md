@@ -1,5 +1,8 @@
 # chill #
 
+### 0.1.3
+* Improved serialization of scala BitSet
+
 ### 0.1.2
 * Fixed a long standing bug with serializing some anonymous functions as vals in traits
 

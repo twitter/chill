@@ -33,7 +33,7 @@ Chill provides support for singletons, scala Objects and the following types:
 
 ## Maven
 
-Current version is `0.1.2`. groupid=`"com.twitter"` artifact=`"chill_2.9.2"`.
+Current version is `0.1.3`. groupid=`"com.twitter"` artifact=`"chill_2.9.2"`.
 
 ## Authors
 
