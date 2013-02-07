@@ -94,6 +94,10 @@ class KryoSpec extends Specification with KryoSerializer {
       arrayRT(Array((0,1)))
       arrayRT(Array(None, Nil, None, Nil))
     }
+    "handle lists of lists" in {
+      val lol = List(("us", List(1)), ("jp", List(3, 2)), ("gb", List(3, 1)))
+      rt(lol) must be_==(lol)
+    }
     "handle scala singletons" in {
       val test = List(Nil, None)
       //Serialize each:
