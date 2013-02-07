@@ -18,6 +18,7 @@ package com.twitter.chill
 
 import org.specs._
 
+import scala.collection.immutable.BitSet
 import scala.collection.immutable.ListMap
 import scala.collection.immutable.HashMap
 
@@ -58,6 +59,8 @@ class KryoSpec extends Specification with KryoSerializer {
                       (0 to 42).toList, Seq(1,100,1000),
                       Map("good" -> 0.5, "bad" -> -1.0),
                       Set(1,2,3,4,10),
+                      BitSet(),
+                      BitSet((0 until 1000).map{ x : Int => x*x } : _*),
                       ListMap("good" -> 0.5, "bad" -> -1.0),
                       HashMap("good" -> 0.5, "bad" -> -1.0),
                       TestCaseClassForSerialization("case classes are: ", 10),
@@ -90,6 +93,10 @@ class KryoSpec extends Specification with KryoSerializer {
       arrayRT(Array("hey"))
       arrayRT(Array((0,1)))
       arrayRT(Array(None, Nil, None, Nil))
+    }
+    "handle lists of lists" in {
+      val lol = List(("us", List(1)), ("jp", List(3, 2)), ("gb", List(3, 1)))
+      rt(lol) must be_==(lol)
     }
     "handle scala singletons" in {
       val test = List(Nil, None)
