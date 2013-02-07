@@ -1,5 +1,8 @@
 # chill #
 
+### 0.1.4
+* Serious bugfix with serialization of recursive types.
+
 ### 0.1.3
 * Improved serialization of scala BitSet
 
