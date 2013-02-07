@@ -37,12 +37,16 @@ class TraversableSerializer[T, C <: Traversable[T]](builder: Builder[T, C],
     }
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[C]) : C = {
+  def read(kser: Kryo, in: Input, cls: Class[C]): C = {
     val size = in.readInt(true)
+    // Go ahead and be faster, and not as functional cool, and be mutable in here
+    val asArray = new Array[AnyRef](size)
+    var idx = 0
+    while(idx < size) { asArray(idx) = kser.readClassAndObject(in); idx += 1 }
+    // the builder is shared, so only one Serializer at a time should use it:
+    // That the array of T is materialized, build:
     builder.clear()
-    (0 until size).foreach { idx =>
-      builder += kser.readClassAndObject(in).asInstanceOf[T]
-    }
+    asArray.foreach { item => builder += item.asInstanceOf[T] }
     builder.result()
   }
 }
