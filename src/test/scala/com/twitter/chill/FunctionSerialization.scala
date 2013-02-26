@@ -38,13 +38,8 @@ object BaseFns2 extends AwesomeFn2 {
   def mult = 5
 }
 
-class FunctionSerialization extends Specification with KryoSerializer {
+class FunctionSerialization extends Specification with BaseProperties {
   noDetailedDiffs() //Fixes issue for scala 2.9
-
-  def rt[T](t : T): T = rt[T](this, t)
-  def rt[T](k: KryoSerializer, t : T): T = {
-    k.deserialize[T](k.serialize(t.asInstanceOf[AnyRef]))
-  }
 
   "Serialize objects with Fns" should {
     "fn calling" in {

@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
   "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
   "org.scala-tools.testing" %% "specs" % "1.6.9" % "test",
   "com.esotericsoftware.kryo" % "kryo" % "2.17",
-  "com.twitter" %% "bijection-core" %% "0.3.0",
+  "com.twitter" %% "bijection-core" % "0.3.0",
   "org.ow2.asm" % "asm-commons" % "4.0"
 )
 

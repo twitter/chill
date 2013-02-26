@@ -34,14 +34,14 @@ class RichKryo(k: Kryo) {
 
   def bijectionForClass[T](implicit bij: Bijection[T, Array[Byte]], cmf: ClassManifest[T]):
     Kryo = {
-      k.register(cmf.erasure, BijectiveSerializer.asKryo[T])
+      k.register(cmf.erasure, InjectiveSerializer.asKryo[T])
       k
     }
 
-  def bijectionForClasses(pairs: TraversableOnce[BijectionPair[_]]): Kryo = {
-    pairs.foreach { pair: BijectionPair[_] =>
+  def bijectionForClasses(pairs: TraversableOnce[InjectionPair[_]]): Kryo = {
+    pairs.foreach { pair: InjectionPair[_] =>
       if (!alreadyRegistered(ClassManifest.fromClass(pair.klass))) {
-        val serializer = BijectiveSerializer.asKryo(pair.bijection)
+        val serializer = InjectiveSerializer.asKryo(pair.injection)
         k.register(pair.klass, serializer)
       } else {
         System.err.printf("%s is already registered in registerBijections.",
@@ -53,14 +53,14 @@ class RichKryo(k: Kryo) {
 
   def bijectionForSubclass[T](implicit bij: Bijection[T, Array[Byte]], cmf: ClassManifest[T]):
     Kryo = {
-      k.addDefaultSerializer(cmf.erasure, BijectiveSerializer.asKryo[T])
+      k.addDefaultSerializer(cmf.erasure, InjectiveSerializer.asKryo[T])
       k
     }
 
-  def bijectionForSubclasses(pairs: TraversableOnce[BijectionPair[_]]): Kryo = {
-    pairs.foreach { pair: BijectionPair[_] =>
+  def bijectionForSubclasses(pairs: TraversableOnce[InjectionPair[_]]): Kryo = {
+    pairs.foreach { pair: InjectionPair[_] =>
       if (!alreadyRegistered(ClassManifest.fromClass(pair.klass))) {
-        val serializer = BijectiveSerializer.asKryo(pair.bijection)
+        val serializer = InjectiveSerializer.asKryo(pair.injection)
         k.addDefaultSerializer(pair.klass, serializer)
         k.register(pair.klass)
       } else {
