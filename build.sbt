@@ -6,6 +6,8 @@ organization := "com.twitter"
 
 crossScalaVersions := Seq("2.9.2", "2.10.0")
 
+scalacOptions ++= Seq("-unchecked", "-deprecation")
+
 resolvers ++= Seq(
   "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
   "sonatype-releases"  at "http://oss.sonatype.org/content/repositories/releases"

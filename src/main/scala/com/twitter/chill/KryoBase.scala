@@ -127,7 +127,7 @@ object Instantiators {
       c.getConstructor()
     }
     catch {
-      case _ => {
+      case _: Throwable => {
         val cons = c.getDeclaredConstructor()
         cons.setAccessible(true)
         cons
