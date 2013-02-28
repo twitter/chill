@@ -147,6 +147,12 @@ class KryoSpec extends Specification with KryoSerializer {
       toList(newQ) must be_==(qlist)
       newQ.add((1,1))
       newQ.add((2,1)) must beTrue
+      // Now without an ordering:
+      val qi = new java.util.PriorityQueue[Int](3)
+      qi.add(2)
+      qi.add(5)
+      val qilist = toList(qi)
+      toList(rt(qi)) must be_==(qilist)
     }
   }
 }
