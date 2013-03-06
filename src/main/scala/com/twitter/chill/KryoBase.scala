@@ -46,10 +46,7 @@ class KryoBase extends Kryo {
 
   /** return true if this class is a scala "object"
    */
-  def isSingleton(klass : Class[_]) : Boolean = {
-    classOf[scala.ScalaObject].isAssignableFrom(klass) &&
-      klass.getName.last == '$'
-  }
+  def isSingleton(klass : Class[_]) : Boolean =  objSer.accepts(klass)
 
   // Get the strategy if it is not null
   def tryStrategy(cls: Class[_]): InstantiatorStrategy =

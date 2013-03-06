@@ -140,24 +140,3 @@ object KryoSerializer {
   def viaBufferable[T](implicit b: Bufferable[T]): KSerializer[T] =
     InjectiveSerializer.asKryo[T](Bufferable.injectionOf[T])
 }
-
-// TODO: Cache the kryo returned by getKryo.
-trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
-  def getKryo: Kryo = {
-    val k = new KryoBase
-    k.setRegistrationRequired(false)
-    k.setInstantiatorStrategy(new StdInstantiatorStrategy)
-    KryoSerializer.registerAll(k)
-    k
-  }
-
-  override def apply(obj: AnyRef): Array[Byte] = {
-    val output = new Output(1 << 12, 1 << 30)
-    getKryo.writeClassAndObject(output, obj)
-    output.toBytes
-  }
-  override def invert(bytes: Array[Byte]) =
-    getKryo.readClassAndObject(new Input(bytes))
-}
-
-object KryoBijection extends KryoBijection
