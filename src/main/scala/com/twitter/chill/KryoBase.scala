@@ -20,6 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.KryoException
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.reflectasm.ConstructorAccess;
+import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 import org.objenesis.instantiator.ObjectInstantiator;
 import org.objenesis.strategy.InstantiatorStrategy;
@@ -37,11 +38,21 @@ class KryoBase extends Kryo {
 
   protected var strategy: Option[InstantiatorStrategy] = None
 
-  override def getDefaultSerializer(klass : Class[_]) : KSerializer[_] = {
-    if(isSingleton(klass))
+  override def newDefaultSerializer(klass : Class[_]) : KSerializer[_] = {
+    if(isSingleton(klass)) {
       objSer
-    else
-      super.getDefaultSerializer(klass)
+    }
+    else {
+      super.newDefaultSerializer(klass) match {
+        case fs: FieldSerializer[_] =>
+        //Scala has a lot of synthetic fields that must be serialized:
+          if(classOf[scala.Serializable].isAssignableFrom(klass)) {
+            fs.setIgnoreSyntheticFields(false)
+          }
+          fs
+        case x: KSerializer[_] => x
+      }
+    }
   }
 
   /** return true if this class is a scala "object"

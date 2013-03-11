@@ -20,6 +20,8 @@ import org.specs._
 
 import com.twitter.bijection.Bijection
 
+import com.esotericsoftware.kryo.serializers.FieldSerializer
+
 trait AwesomeFns {
   val myfun = { x: Int => 2*x }
 }
@@ -54,8 +56,12 @@ class FunctionSerialization extends Specification with BaseProperties {
       rt(BaseFns) must be_==(BaseFns)
     }
     "Handle traits with abstract vals/def" in {
-      rt(BaseFns2) must be_==(BaseFns2)
-      rt(BaseFns2.timesByMult).apply(10) must be_==(50)
+      val bf2 = rt(BaseFns2)
+      (bf2 eq BaseFns2) must beTrue
+      bf2 must be_==(BaseFns2)
+      bf2.timesByMult(10) must be_==(50)
+      val rtTBM = rt(BaseFns2.timesByMult)
+      rtTBM.apply(10) must be_==(50)
     }
   }
 }

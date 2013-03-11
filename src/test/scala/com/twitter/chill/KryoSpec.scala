@@ -97,6 +97,7 @@ class KryoSpec extends Specification with BaseProperties {
       val test = List(Nil, None)
       //Serialize each:
       rt(test) must be_==(test)
+      (rt(None) eq None) must beTrue
     }
     "Serialize a giant list" in {
       val bigList = (1 to 100000).toList
