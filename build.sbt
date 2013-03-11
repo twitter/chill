@@ -1,24 +1,23 @@
 name := "chill"
 
-version := "0.1.5-SNAPSHOT"
+version := "0.2.0-SNAPSHOT"
 
 organization := "com.twitter"
 
-scalaVersion := "2.9.2"
+crossScalaVersions := Seq("2.9.2", "2.10.0")
 
-// Use ScalaCheck
+scalacOptions ++= Seq("-unchecked", "-deprecation")
+
 resolvers ++= Seq(
   "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
-  "sonatype-releases"  at "http://oss.sonatype.org/content/repositories/releases",
-  "Twitter Maven" at "http://maven.twttr.com"
+  "sonatype-releases"  at "http://oss.sonatype.org/content/repositories/releases"
 )
 
-// Use ScalaCheck
 libraryDependencies ++= Seq(
   "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-  "org.scala-tools.testing" % "specs_2.9.0-1" % "1.6.8" % "test",
+  "org.scala-tools.testing" %% "specs" % "1.6.9" % "test",
   "com.esotericsoftware.kryo" % "kryo" % "2.17",
-  "com.twitter" %% "bijection-core" % "0.1.0",
+  "com.twitter" %% "bijection-core" % "0.3.0",
   "org.ow2.asm" % "asm-commons" % "4.0"
 )
 

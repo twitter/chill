@@ -40,14 +40,9 @@ object WeekDay extends Enumeration {
  val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
 }
 
-class KryoSpec extends Specification with KryoSerializer {
+class KryoSpec extends Specification with BaseProperties {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
-
-  def rt[T](t : T): T = rt[T](this, t)
-  def rt[T](k: KryoSerializer, t : T): T = {
-    k.deserialize[T](k.serialize(t.asInstanceOf[AnyRef]))
-  }
 
   "KryoSerializers and KryoDeserializers" should {
     "round trip any non-array object" in {
@@ -102,6 +97,7 @@ class KryoSpec extends Specification with KryoSerializer {
       val test = List(Nil, None)
       //Serialize each:
       rt(test) must be_==(test)
+      (rt(None) eq None) must beTrue
     }
     "Serialize a giant list" in {
       val bigList = (1 to 100000).toList
@@ -121,17 +117,22 @@ class KryoSpec extends Specification with KryoSerializer {
       implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
         (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
 
-      val k = new KryoSerializer { override def getKryo = {
-        super.getKryo.forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
-      }}
+      val k = new KryoBijection {
+        override def getKryo = {
+          KryoBijection.getKryo
+            .forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
+        }
+      }
       rt(k, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "use java serialization" in {
       import KryoImplicits.toRich
 
-      val k = new KryoSerializer { override def getKryo = {
-        super.getKryo.javaForClass[TestCaseClassForSerialization]
-      }}
+      val k = new KryoBijection {
+        override def getKryo = {
+          KryoBijection.getKryo.javaForClass[TestCaseClassForSerialization]
+        }
+      }
       rt(k, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "Handle PriorityQueue" in {
