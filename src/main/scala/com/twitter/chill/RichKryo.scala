@@ -43,7 +43,7 @@ class RichKryo(k: Kryo) {
         val serializer = InjectiveSerializer.asKryo(pair.injection)
         k.register(pair.klass, serializer)
       } else {
-        System.err.printf("%s is already registered in registerBijections.", pair.klass.getName)
+        System.err.printf("%s is already registered in injectionForClasses.", pair.klass.getName)
       }
     }
     k
@@ -61,7 +61,7 @@ class RichKryo(k: Kryo) {
         k.addDefaultSerializer(pair.klass, serializer)
         k.register(pair.klass)
       } else {
-        System.err.printf("%s is already registered in registerBijectionDefaults.", pair.klass.getName)
+        System.err.printf("%s is already registered in injectionForSubclasses.", pair.klass.getName)
       }
     }
     k
