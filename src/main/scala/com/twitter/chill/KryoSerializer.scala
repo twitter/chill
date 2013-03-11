@@ -20,7 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import com.twitter.bijection.{ Base64String, Bijection, Bufferable, Injection }
+import com.twitter.bijection.{ Base64String, Bufferable, ImplicitBijection, Injection }
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
@@ -129,8 +129,7 @@ object KryoSerializer {
 
   /** Use a bijection[A,B] then the KSerializer on B
    */
-  def viaBijection[A,B](kser: KSerializer[B])
-    (implicit bij: Bijection[A,B], cmf: ClassManifest[B]): KSerializer[A] =
+  def viaBijection[A,B](kser: KSerializer[B])(implicit bij: ImplicitBijection[A,B], cmf: ClassManifest[B]): KSerializer[A] =
     new KSerializer[A] {
       def write(k: Kryo, out: Output, obj: A) { kser.write(k, out, bij(obj)) }
       def read(k: Kryo, in: Input, cls: Class[A]) =
