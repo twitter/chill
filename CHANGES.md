@@ -1,5 +1,11 @@
 # chill #
 
+### 0.2.0
+
+* Upgrade chill to work with scala 2.10.
+* Upgrade to Bijection 0.3.0. This release gained the Injection type, so the BijectiveSerializer is now an InjectiveSerializer.
+* Remove KryoSerializer trait in favor of `KryoBijection` and `KryoInjection`.
+
 ### 0.1.4
 * Serious bugfix with serialization of recursive types.
 

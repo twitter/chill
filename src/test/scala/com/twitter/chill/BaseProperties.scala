@@ -1,4 +1,4 @@
-/**
+/*
 Copyright 2012 Twitter, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +16,14 @@ limitations under the License.
 
 package com.twitter.chill
 
-object MeatLocker {
-  def apply[T](t: T) = new MeatLocker(t)
-}
+trait BaseProperties {
+  def serialize[T](t: T): Array[Byte] = KryoBijection(t.asInstanceOf[AnyRef])
+  def deserialize[T](bytes: Array[Byte]): T =
+    KryoBijection.invert(bytes).asInstanceOf[T]
 
-// TODO: Use Injection and return an Option[T]. Or upgrade to scala
-// 2.10 fully and return a Try[T].
-class MeatLocker[T](@transient t: T) extends java.io.Serializable {
-  protected val tBytes = KryoBijection(t.asInstanceOf[AnyRef])
-  lazy val get: T = copy
-  def copy: T = KryoBijection.invert(tBytes).asInstanceOf[T]
+  def rt[T](t: T): T = rt[T](KryoBijection, t)
+  def rt[T](k: KryoBijection, t: T): T = {
+    val bytes = k(t.asInstanceOf[AnyRef])
+    k.invert(bytes).asInstanceOf[T]
+  }
 }

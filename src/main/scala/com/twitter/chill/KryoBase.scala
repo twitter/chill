@@ -20,6 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.KryoException
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.reflectasm.ConstructorAccess;
+import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 import org.objenesis.instantiator.ObjectInstantiator;
 import org.objenesis.strategy.InstantiatorStrategy;
@@ -37,19 +38,27 @@ class KryoBase extends Kryo {
 
   protected var strategy: Option[InstantiatorStrategy] = None
 
-  override def getDefaultSerializer(klass : Class[_]) : KSerializer[_] = {
-    if(isSingleton(klass))
+  override def newDefaultSerializer(klass : Class[_]) : KSerializer[_] = {
+    if(isSingleton(klass)) {
       objSer
-    else
-      super.getDefaultSerializer(klass)
+    }
+    else {
+      super.newDefaultSerializer(klass) match {
+        case fs: FieldSerializer[_] =>
+        //Scala has a lot of synthetic fields that must be serialized:
+          if(classOf[scala.Serializable].isAssignableFrom(klass)) {
+            fs.setIgnoreSyntheticFields(false)
+          }
+          fs
+        case x: KSerializer[_] => x
+      }
+    }
   }
 
   /** return true if this class is a scala "object"
    */
-  def isSingleton(klass : Class[_]) : Boolean = {
-    classOf[scala.ScalaObject].isAssignableFrom(klass) &&
-      klass.getName.last == '$'
-  }
+  def isSingleton(klass : Class[_]) : Boolean =
+    klass.getName.last == '$' && objSer.accepts(klass)
 
   // Get the strategy if it is not null
   def tryStrategy(cls: Class[_]): InstantiatorStrategy =
@@ -127,7 +136,7 @@ object Instantiators {
       c.getConstructor()
     }
     catch {
-      case _ => {
+      case _: Throwable => {
         val cons = c.getDeclaredConstructor()
         cons.setAccessible(true)
         cons

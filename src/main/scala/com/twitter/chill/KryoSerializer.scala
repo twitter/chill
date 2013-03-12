@@ -20,7 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import com.twitter.bijection.{ Base64String, Bijection, Bufferable }
+import com.twitter.bijection.{ Base64String, Bufferable, ImplicitBijection, Injection }
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
@@ -50,26 +50,26 @@ object KryoSerializer {
   def alreadyRegistered(k: Kryo, klass: Class[_]) =
     k.getClassResolver.getRegistration(klass) != null
 
-  def registerBijections(newK: Kryo, pairs: TraversableOnce[BijectionPair[_]]) {
-    pairs.foreach { pair: BijectionPair[_] =>
+  def registerInjections(newK: Kryo, pairs: TraversableOnce[InjectionPair[_]]) {
+    pairs.foreach { pair: InjectionPair[_] =>
       if (!alreadyRegistered(newK, pair.klass)) {
-        val serializer = BijectiveSerializer.asKryo(pair.bijection)
+        val serializer = InjectiveSerializer.asKryo(pair.injection)
         newK.register(pair.klass, serializer)
       } else {
-        System.err.printf("%s is already registered in registerBijections.",
+        System.err.printf("%s is already registered in registerInjections.",
                           Array[String](pair.klass.getName))
       }
     }
   }
 
-  def registerBijectionDefaults(newK: Kryo, pairs: TraversableOnce[BijectionPair[_]]) {
-    pairs.foreach { pair: BijectionPair[_] =>
+  def registerInjectionDefaults(newK: Kryo, pairs: TraversableOnce[InjectionPair[_]]) {
+    pairs.foreach { pair: InjectionPair[_] =>
       if (!alreadyRegistered(newK, pair.klass)) {
-        val serializer = BijectiveSerializer.asKryo(pair.bijection)
+        val serializer = InjectiveSerializer.asKryo(pair.injection)
         newK.addDefaultSerializer(pair.klass, serializer)
         newK.register(pair.klass)
       } else {
-        System.err.printf("%s is already registered in registerBijectionDefaults.",
+        System.err.printf("%s is already registered in registerInjectionDefaults.",
                           Array[String](pair.klass.getName))
       }
     }
@@ -91,6 +91,7 @@ object KryoSerializer {
     // wrapper array is abstract
     newK.forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
+      .forSubclass[java.util.PriorityQueue[AnyRef]](new PriorityQueueSerializer[AnyRef])
       .forTraversableSubclass(Queue.newBuilder[Any])
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.newBuilder[Any])
@@ -129,8 +130,7 @@ object KryoSerializer {
 
   /** Use a bijection[A,B] then the KSerializer on B
    */
-  def viaBijection[A,B](kser: KSerializer[B])
-    (implicit bij: Bijection[A,B], cmf: ClassManifest[B]): KSerializer[A] =
+  def viaBijection[A,B](kser: KSerializer[B])(implicit bij: ImplicitBijection[A,B], cmf: ClassManifest[B]): KSerializer[A] =
     new KSerializer[A] {
       def write(k: Kryo, out: Output, obj: A) { kser.write(k, out, bij(obj)) }
       def read(k: Kryo, in: Input, cls: Class[A]) =
@@ -138,39 +138,5 @@ object KryoSerializer {
     }
 
   def viaBufferable[T](implicit b: Bufferable[T]): KSerializer[T] =
-    BijectiveSerializer.asKryo[T](Bufferable.bijectionOf[T])
-}
-
-// TODO: Cache the kryo returned by getKryo.
-object KryoBijection extends Bijection[AnyRef, Array[Byte]] with KryoSerializer {
-  override def apply(obj: AnyRef): Array[Byte] = serialize(obj)
-  override def invert(bytes: Array[Byte]) = deserialize[AnyRef](bytes)
-}
-
-@deprecated("Use com.twitter.chill.KryoBijection instead", "0.1.0")
-trait KryoSerializer {
-  def getKryo : Kryo = {
-    val k = new KryoBase
-    k.setRegistrationRequired(false)
-    k.setInstantiatorStrategy(new StdInstantiatorStrategy)
-    KryoSerializer.registerAll(k)
-    k
-  }
-
-  def serialize(ag : AnyRef) : Array[Byte] = {
-    val output = new Output(1 << 12, 1 << 30)
-    getKryo.writeClassAndObject(output, ag)
-    output.toBytes
-  }
-
-  def deserialize[T](bytes : Array[Byte]) : T = {
-    getKryo.readClassAndObject(new Input(bytes))
-      .asInstanceOf[T]
-  }
-
-  def serializeBase64(ag: AnyRef): String =
-    Bijection[Array[Byte], Base64String](serialize(ag)).str
-
-  def deserializeBase64[T](str: String): T =
-    deserialize[T](Bijection.invert[Array[Byte], Base64String](Base64String(str)))
+    InjectiveSerializer.asKryo[T](Bufferable.injectionOf[T])
 }
