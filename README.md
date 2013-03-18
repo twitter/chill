@@ -5,7 +5,9 @@ Scala extensions for the [Kryo serialization library](http://code.google.com/p/k
 Chill provides a a number of Kryo serializers and an Option-like type called the MeatLocker. The MeatLocker allows you to box Kryo-serializable objects and deserialize them lazily on the first call to `get`:
 
 ```scala
-val boxedItem = com.twitter.chill.MeatLocker(someItem)
+import com.twitter.chill.MeatLocker
+
+val boxedItem = MeatLocker(someItem)
 
 // boxedItem is java.io.Serializable no matter what it contains.
 val box = roundTripThroughJava(boxedItem)
@@ -13,6 +15,15 @@ box.get == boxedItem.get // true!
 ```
 
 To retrieve the boxed item without caching the deserialized value, use `meatlockerInstance.copy`.
+
+To serialize to bytes and deserialize from bytes:
+
+```scala
+import com.twitter.chill.KryoInjection
+
+val bytes:  Array[Byte]    = KryoInjection(someItem)
+val option: Option[AnyRef] = KryoInjection.invert(bytes)  // None is returned on failure
+```
 
 ### Handled classes
 
