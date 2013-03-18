@@ -21,8 +21,8 @@ To serialize to bytes and deserialize from bytes:
 ```scala
 import com.twitter.chill.KryoInjection
 
-val bytes  = KryoInjection(someItem)
-val option = KryoInjection.invert(bytes)  // None is returned on failure
+val bytes:  Array[Byte]    = KryoInjection(someItem)
+val option: Option[AnyRef] = KryoInjection.invert(bytes)  // None is returned on failure
 ```
 
 ### Handled classes
