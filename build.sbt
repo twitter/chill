@@ -1,3 +1,6 @@
+import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifact
+
 name := "chill"
 
 version := "0.2.1-SNAPSHOT"
@@ -65,3 +68,7 @@ pomExtra := (
       <url>http://twitter.com/sritchie</url>
     </developer>
   </developers>)
+
+mimaDefaultSettings
+
+previousArtifact := Some("com.twitter" % "chill_2.9.2" % "0.2.0")
