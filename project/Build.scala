@@ -89,6 +89,8 @@ object ChillBuild extends Build {
     publishLocal := { }
   ).aggregate(chill)
 
+  // We usually do the pattern of having a core module, but we don't want to cause
+  // pain for legacy deploys. With this, they can stay the same.
   lazy val chill = Project(
     id = "chill",
     base = file("chill-scala"),
