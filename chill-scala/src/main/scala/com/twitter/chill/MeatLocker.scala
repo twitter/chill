@@ -22,8 +22,15 @@ object MeatLocker {
 
 // TODO: Use Injection and return an Option[T]. Or upgrade to scala
 // 2.10 fully and return a Try[T].
-class MeatLocker[T](@transient t: T) extends java.io.Serializable {
+class MeatLocker[T](@transient protected var t: T) extends java.io.Serializable {
   protected val tBytes = KryoBijection(t.asInstanceOf[AnyRef])
-  lazy val get: T = copy
+  def get: T = {
+    if(null == t) {
+      // we were serialized
+      t = copy
+    }
+    t
+  }
+
   def copy: T = KryoBijection.invert(tBytes).asInstanceOf[T]
 }

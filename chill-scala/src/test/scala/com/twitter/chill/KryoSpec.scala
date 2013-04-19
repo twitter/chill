@@ -155,5 +155,10 @@ class KryoSpec extends Specification with BaseProperties {
       val qilist = toList(qi)
       toList(rt(qi)) must be_==(qilist)
     }
+    "Work with Meatlocker" in {
+      val l = List(1,2,3)
+      val ml = MeatLocker(l)
+      jrt(ml).get must_==(l)
+    }
   }
 }
