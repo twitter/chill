@@ -29,7 +29,7 @@ trait BaseProperties {
     k.invert(bytes).asInstanceOf[T]
   }
 
-  // using java serialization
+  // using java serialization. TODO: remove when this is shipped in bijection
   def jserialize[T <: Serializable](t: T): Array[Byte] = {
     val bos = new ByteArrayOutputStream
     val out = new ObjectOutputStream(bos)
