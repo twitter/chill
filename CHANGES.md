@@ -1,5 +1,10 @@
 # chill #
 
+### 0.2.1
+* Improve MeatLocker (safe to call get before serialization)
+* Fix a bug with serialization of mutable collections
+* Reorganize source for multiple subprojects
+
 ### 0.2.0
 
 * Upgrade chill to work with scala 2.10.
