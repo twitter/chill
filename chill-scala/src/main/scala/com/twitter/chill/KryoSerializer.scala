@@ -57,7 +57,7 @@ object KryoSerializer {
         newK.register(pair.klass, serializer)
       } else {
         System.err.printf("%s is already registered in registerInjections.",
-                          Array[String](pair.klass.getName))
+                          pair.klass.getName)
       }
     }
   }
@@ -70,7 +70,7 @@ object KryoSerializer {
         newK.register(pair.klass)
       } else {
         System.err.printf("%s is already registered in registerInjectionDefaults.",
-                          Array[String](pair.klass.getName))
+                          pair.klass.getName)
       }
     }
   }
