@@ -20,7 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import scala.collection.mutable.Builder
+import scala.collection.mutable.{Builder, Cloneable}
 
 class TraversableSerializer[T, C <: Traversable[T]](builder: Builder[T, C],
   override val isImmutable: Boolean = true)
@@ -47,6 +47,16 @@ class TraversableSerializer[T, C <: Traversable[T]](builder: Builder[T, C],
     // That the array of T is materialized, build:
     builder.clear()
     asArray.foreach { item => builder += item.asInstanceOf[T] }
-    builder.result()
+    copyIfMutable(builder.result)
   }
+
+  // TODO remove this and use CanBuildFrom from rather than Builder
+  // when we bump major versions
+  protected def copyIfMutable(c: C): C = c match {
+      case m: scala.Mutable => m match {
+          case toclone: Cloneable[C] => toclone.clone
+          case _ => throw new Exception("Cannot use TraversableSerializer with non-clonable mutables")
+        }
+      case _ => c
+    }
 }

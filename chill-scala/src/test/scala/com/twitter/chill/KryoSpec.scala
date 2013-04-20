@@ -22,6 +22,8 @@ import scala.collection.immutable.BitSet
 import scala.collection.immutable.ListMap
 import scala.collection.immutable.HashMap
 
+import scala.collection.mutable.{HashMap => MHashMap}
+
 import com.twitter.bijection.Bijection
 
 /*
@@ -53,6 +55,7 @@ class KryoSpec extends Specification with BaseProperties {
                       0 to 100,
                       (0 to 42).toList, Seq(1,100,1000),
                       Map("good" -> 0.5, "bad" -> -1.0),
+                      List(Some(MHashMap(1->1, 2->2)), None, Some(MHashMap(3->4))),
                       Set(1,2,3,4,10),
                       BitSet(),
                       BitSet((0 until 1000).map{ x : Int => x*x } : _*),
@@ -71,7 +74,9 @@ class KryoSpec extends Specification with BaseProperties {
         .asInstanceOf[List[AnyRef]]
 
       val rtTest = test map { serialize(_) } map { deserialize[AnyRef](_) }
-      rtTest must be_==(test)
+      rtTest.zip(test).foreach { case (serdeser, orig) =>
+        serdeser must be_==(orig)
+      }
     }
     "handle manifests" in {
       rt(manifest[Int]) must be_==(manifest[Int])
