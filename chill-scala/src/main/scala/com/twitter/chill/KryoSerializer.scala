@@ -95,6 +95,8 @@ object KryoSerializer {
       .forTraversableSubclass(Queue.newBuilder[Any])
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.newBuilder[Any])
+      // add mutable Buffer before Vector, otherwise Vector is used
+      .forTraversableSubclass(Buffer.newBuilder[Any], isImmutable = false)
       //Vector is a final class
       .forTraversableClass(Vector.newBuilder[Any])
       .forTraversableSubclass(IndexedSeq.newBuilder[Any])
@@ -109,7 +111,6 @@ object KryoSerializer {
       .forTraversableSubclass(MMap.newBuilder[Any,Any], isImmutable = false)
       .forTraversableSubclass(MSet.newBuilder[Any], isImmutable = false)
       .forTraversableSubclass(ListBuffer.newBuilder[Any], isImmutable = false)
-      .forTraversableSubclass(Buffer.newBuilder[Any], isImmutable = false)
       // This should be last, lots of things are seq/iterable/traversable
       // These are questionable and might break things.
       // rarely will you only expect an iterable/traversable on the reverse
