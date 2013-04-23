@@ -165,5 +165,11 @@ class KryoSpec extends Specification with BaseProperties {
       val ml = MeatLocker(l)
       jrt(ml).get must_==(l)
     }
+    "Handle Regex" in {
+      val test = """\bhilarious""".r
+      val roundtripped = rt(test)
+      roundtripped.pattern.pattern must be_==(test.pattern.pattern)
+      roundtripped.findFirstIn("hilarious").isDefined must beTrue
+    }
   }
 }
