@@ -23,7 +23,7 @@ class InjectiveSerializer[T] private (injection: Injection[T, Array[Byte]]) exte
   def write(kser: Kryo, out: Output, obj: T) {
     val bytes = injection(obj)
     out.writeInt(bytes.length, true)
-    out.writeBytes(bytes);
+    out.writeBytes(bytes)
   }
 
   def read(kser: Kryo, in: Input, cls: Class[T]): T = {

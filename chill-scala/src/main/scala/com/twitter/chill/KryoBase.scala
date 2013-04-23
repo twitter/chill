@@ -19,19 +19,19 @@ package com.twitter.chill
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.KryoException
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
-import com.esotericsoftware.reflectasm.ConstructorAccess;
+import com.esotericsoftware.reflectasm.ConstructorAccess
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 
-import org.objenesis.instantiator.ObjectInstantiator;
-import org.objenesis.strategy.InstantiatorStrategy;
+import org.objenesis.instantiator.ObjectInstantiator
+import org.objenesis.strategy.InstantiatorStrategy
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.Constructor
+import java.lang.reflect.Modifier
+
 /*
  * This is the base class of Kryo we use to fix specific scala
  * related issues discovered (ideally, this should be fixed in Kryo)
  */
-
 class KryoBase extends Kryo {
 
   lazy val objSer = new ObjectSerializer[AnyRef]
