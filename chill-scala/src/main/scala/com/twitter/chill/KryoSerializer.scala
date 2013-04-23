@@ -20,9 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import com.twitter.bijection.{ Base64String, Bufferable, ImplicitBijection, Injection }
-
-import org.objenesis.strategy.StdInstantiatorStrategy
+import com.twitter.bijection.{ Bufferable, ImplicitBijection }
 
 import scala.collection.immutable.{
   BitSet,
@@ -32,7 +30,6 @@ import scala.collection.immutable.{
 }
 
 import scala.collection.mutable.{
-  Builder,
   WrappedArray,
   Map => MMap,
   Set => MSet,
@@ -40,6 +37,7 @@ import scala.collection.mutable.{
   Queue => MQueue,
   Buffer
 }
+import scala.util.matching.Regex
 
 object KryoSerializer {
 
@@ -88,8 +86,10 @@ object KryoSerializer {
      * You should go from MOST specific, to least to specific when using
      * default serializers. The FIRST one found is the one used
      */
-    // wrapper array is abstract
-    newK.forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
+    newK
+      .forSubclass[Regex](new RegexSerializer)
+      // wrapper array is abstract
+      .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
       .forSubclass[java.util.PriorityQueue[AnyRef]](new PriorityQueueSerializer[AnyRef])
       .forTraversableSubclass(Queue.newBuilder[Any])
