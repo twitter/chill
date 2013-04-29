@@ -20,9 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import com.twitter.bijection.{ Base64String, Bufferable, ImplicitBijection, Injection }
-
-import org.objenesis.strategy.StdInstantiatorStrategy
+import com.twitter.bijection.{ Bufferable, ImplicitBijection }
 
 import scala.collection.immutable.{
   BitSet,
@@ -32,7 +30,6 @@ import scala.collection.immutable.{
 }
 
 import scala.collection.mutable.{
-  Builder,
   WrappedArray,
   Map => MMap,
   Set => MSet,
@@ -40,6 +37,7 @@ import scala.collection.mutable.{
   Queue => MQueue,
   Buffer
 }
+import scala.util.matching.Regex
 
 object KryoSerializer {
 
@@ -88,13 +86,17 @@ object KryoSerializer {
      * You should go from MOST specific, to least to specific when using
      * default serializers. The FIRST one found is the one used
      */
-    // wrapper array is abstract
-    newK.forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
+    newK
+      .forSubclass[Regex](new RegexSerializer)
+      // wrapper array is abstract
+      .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
       .forSubclass[java.util.PriorityQueue[AnyRef]](new PriorityQueueSerializer[AnyRef])
       .forTraversableSubclass(Queue.newBuilder[Any])
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.newBuilder[Any])
+      // add mutable Buffer before Vector, otherwise Vector is used
+      .forTraversableSubclass(Buffer.newBuilder[Any], isImmutable = false)
       //Vector is a final class
       .forTraversableClass(Vector.newBuilder[Any])
       .forTraversableSubclass(IndexedSeq.newBuilder[Any])
@@ -109,7 +111,6 @@ object KryoSerializer {
       .forTraversableSubclass(MMap.newBuilder[Any,Any], isImmutable = false)
       .forTraversableSubclass(MSet.newBuilder[Any], isImmutable = false)
       .forTraversableSubclass(ListBuffer.newBuilder[Any], isImmutable = false)
-      .forTraversableSubclass(Buffer.newBuilder[Any], isImmutable = false)
       // This should be last, lots of things are seq/iterable/traversable
       // These are questionable and might break things.
       // rarely will you only expect an iterable/traversable on the reverse

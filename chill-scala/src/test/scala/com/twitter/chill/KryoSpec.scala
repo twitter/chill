@@ -22,7 +22,7 @@ import scala.collection.immutable.BitSet
 import scala.collection.immutable.ListMap
 import scala.collection.immutable.HashMap
 
-import scala.collection.mutable.{HashMap => MHashMap}
+import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 
 import com.twitter.bijection.Bijection
 
@@ -33,8 +33,8 @@ import com.twitter.bijection.Bijection
 */
 case class TestCaseClassForSerialization(x : String, y : Int)
 
-case class TestValMap(val map : Map[String,Double])
-case class TestValHashMap(val map : HashMap[String,Double])
+case class TestValMap(map: Map[String,Double])
+case class TestValHashMap(map: HashMap[String,Double])
 case class TestVarArgs(vargs: String*)
 
 object WeekDay extends Enumeration {
@@ -55,6 +55,7 @@ class KryoSpec extends Specification with BaseProperties {
                       0 to 100,
                       (0 to 42).toList, Seq(1,100,1000),
                       Map("good" -> 0.5, "bad" -> -1.0),
+                      MArrayBuffer(1,2,3,4,5),
                       List(Some(MHashMap(1->1, 2->2)), None, Some(MHashMap(3->4))),
                       Set(1,2,3,4,10),
                       BitSet(),
@@ -164,6 +165,12 @@ class KryoSpec extends Specification with BaseProperties {
       val l = List(1,2,3)
       val ml = MeatLocker(l)
       jrt(ml).get must_==(l)
+    }
+    "Handle Regex" in {
+      val test = """\bhilarious""".r
+      val roundtripped = rt(test)
+      roundtripped.pattern.pattern must be_==(test.pattern.pattern)
+      roundtripped.findFirstIn("hilarious").isDefined must beTrue
     }
   }
 }
