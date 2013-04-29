@@ -1,5 +1,10 @@
 # chill #
 
+### 0.2.2
+
+* Custom RegexSerializer
+* ArrayBuffer serialization fix (#48)
+
 ### 0.2.1
 * Improve MeatLocker (safe to call get before serialization)
 * Fix a bug with serialization of mutable collections
