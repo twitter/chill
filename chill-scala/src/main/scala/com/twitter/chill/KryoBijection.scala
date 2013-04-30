@@ -57,30 +57,24 @@ trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
  */
 object KryoInjection extends Injection[AnyRef, Array[Byte]] {
   // Create a default injection to use, 4KB init, max 16 MB
-  private val kinject = withBufferSize(1 << 12, 1 << 24)
+  private val kinject = instance(init = 1 << 12, max = 1 << 24)
 
   override def apply(obj: AnyRef) = kinject.synchronized { kinject(obj) }
   override def invert(bytes: Array[Byte]) = kinject.synchronized { kinject.invert(bytes) }
 
   /**
-   * Create a new instance with a shared buffer with given init, max sizes
+   * Create a new KryoInjection instance that serializes items using
+   * the supplied Kryo instance. The buffer used for serialization is
+   * initialized, by default, to 1KB, with a max size of
+   * 16MB. Configure these limits by passing in new values for "init"
+   * and "max" respectively.
    */
-  def withBufferSize(init: Int, max: Int): Injection[AnyRef, Array[Byte]] =
-    new KryoInjectionInstance(KryoBijection.getKryo, new Output(init, max))
-
-  /**
-   * Create a new instance with a shared buffer with given max size
-   * Initial size is 1 KB
-   */
-  def withMaxBufferSize(max: Int): Injection[AnyRef, Array[Byte]] =
-    new KryoInjectionInstance(KryoBijection.getKryo, new Output(1 << 10, max))
-
-  /**
-   * Create a new instance with a shared buffer with given max size
-   * Initial size is 1 KB
-   */
-  def withMaxBufferSize(max: Int, kryo: => Kryo): Injection[AnyRef, Array[Byte]] =
-    new KryoInjectionInstance(kryo, new Output(1 << 10, max))
+  def instance(
+    kryo: Kryo = KryoBijection.getKryo,
+    init: Int = 1 << 10,
+    max: Int = 1 << 24
+  ): Injection[AnyRef, Array[Byte]] =
+    new KryoInjectionInstance(kryo, new Output(init, max))
 }
 
 /**

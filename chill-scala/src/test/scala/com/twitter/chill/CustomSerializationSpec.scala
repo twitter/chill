@@ -44,8 +44,8 @@ class CustomSerializationSpec extends Specification with BaseProperties {
         ColoredPoint.unapply(_).get)(
         (ColoredPoint.apply _).tupled)
 
-      val MyKryoBijection = new KryoBijection {
-        override def getKryo = super.getKryo
+      val myKryoInjection = KryoInjection.instance {
+        KryoBijection.getKryo
           .forClassViaBijection[Point, (Int,Int)]
           .forClassViaBijection[Color, (String)]
           .forClassViaBijection[ColoredPoint, (Color, Point)]
@@ -55,7 +55,7 @@ class CustomSerializationSpec extends Specification with BaseProperties {
       val point = Point(5, 6)
       val coloredPoint = ColoredPoint(color, point)
 
-      rt(MyKryoBijection, coloredPoint) must_== coloredPoint
+      rt(myKryoInjection, coloredPoint) must_== coloredPoint
     }
   }
 }
