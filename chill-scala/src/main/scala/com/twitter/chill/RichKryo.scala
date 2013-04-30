@@ -20,7 +20,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import com.twitter.bijection.{ Bufferable, ImplicitBijection, Injection }
+import com.twitter.bijection.{ Bufferable, Bijection, ImplicitBijection, Injection }
 
 import scala.collection.mutable.Builder
 
@@ -98,6 +98,12 @@ class RichKryo(k: Kryo) {
     val kserb = k.getSerializer(bcmf.erasure).asInstanceOf[KSerializer[B]]
     k.register(acmf.erasure, KryoSerializer.viaBijection[A,B](kserb))
     k
+  }
+
+  /** Helpful override to alleviate rewriting types. */
+  def forClassViaBijection[A,B](bij: Bijection[A,B])(implicit acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
+    implicit def implicitBij = bij
+    this.forClassViaBijection[A, B]
   }
 
   /** Use Java serialization, which is very slow.
