@@ -126,14 +126,14 @@ class KryoSpec extends Specification with BaseProperties {
 
       val kryo = KryoBijection.getKryo
             .forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
-      val inj = KryoInjection.withMaxBufferSize(1 << 24, kryo)
+      val inj = KryoInjection.instance(kryo)
       rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "use java serialization" in {
       import KryoImplicits.toRich
 
       val kryo = KryoBijection.getKryo.javaForClass[TestCaseClassForSerialization]
-      val inj = KryoInjection.withMaxBufferSize(1 << 24, kryo)
+      val inj = KryoInjection.instance(kryo)
       rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "Handle PriorityQueue" in {
