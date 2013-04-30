@@ -20,19 +20,18 @@ import org.specs._
 
 import com.twitter.bijection.Bijection
 
-/*
-* This is just a test case for Kryo to deal with. It should
-* be outside KryoSpec, otherwise the enclosing class, KryoSpec
-* will also need to be serialized
-*/
-case class Point(x: Int, y: Int)
-case class Color(name: String)
-case class ColoredPoint(color: Color, point: Point)
-
 class CustomSerializationSpec extends Specification with BaseProperties {
   "Custom KryoSerializers and KryoDeserializers" should {
     "serialize objects that have registered serialization" in {
       import KryoImplicits.toRich
+
+      /* These classes can be inside CustomSerializationSpec since their
+       * serialization is precisely specified. */
+      case class Point(x: Int, y: Int)
+      case class Color(name: String)
+      case class ColoredPoint(color: Color, point: Point) {
+        override def toString = color + ":" + point
+      }
 
       // write bijections
       implicit val pointBijection = Bijection.build[Point, (Int,Int)](
@@ -45,7 +44,7 @@ class CustomSerializationSpec extends Specification with BaseProperties {
         ColoredPoint.unapply(_).get)(
         (ColoredPoint.apply _).tupled)
 
-      val MyKryoInjection = new KryoBijection {
+      val MyKryoBijection = new KryoBijection {
         override def getKryo = super.getKryo
           .forClassViaBijection[Point, (Int,Int)]
           .forClassViaBijection[Color, (String)]
@@ -56,7 +55,7 @@ class CustomSerializationSpec extends Specification with BaseProperties {
       val point = Point(5, 6)
       val coloredPoint = ColoredPoint(color, point)
 
-      rt(coloredPoint) must_== coloredPoint
+      rt(MyKryoBijection, coloredPoint) must_== coloredPoint
     }
   }
 }
