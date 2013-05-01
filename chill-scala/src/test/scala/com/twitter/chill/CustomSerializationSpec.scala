@@ -46,9 +46,12 @@ class CustomSerializationSpec extends Specification with BaseProperties {
 
       val myKryoInjection = KryoInjection.instance {
         KryoBijection.getKryo
+          // use the implicit bijection by specifying the type
           .forClassViaBijection[Point, (Int,Int)]
-          .forClassViaBijection[Color, (String)]
-          .forClassViaBijection[ColoredPoint, (Color, Point)]
+          // use an explicit bijection, avoiding specifying the type
+          .forClassViaBijection(pointBijection)
+          .forClassViaBijection(colorBijection)
+          .forClassViaBijection(coloredPointBijection)
       }
 
       val color = Color("blue")
