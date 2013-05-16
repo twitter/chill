@@ -1,5 +1,10 @@
 # chill #
 
+### 0.2.3
+* Update to Kryo 2.21
+* Update to Bijection 0.4.0
+* Improve Traversable Serializer
+
 ### 0.2.2
 
 * Custom RegexSerializer
