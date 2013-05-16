@@ -26,6 +26,18 @@ class TraversableSerializer[T, C <: Traversable[T]](builder: Builder[T, C],
   override val isImmutable: Boolean = true)
   extends KSerializer[C] {
 
+  sealed trait Finisher {
+    def apply(in: C): C
+  }
+  case object Clone extends Finisher {
+    def apply(in: C) = in.asInstanceOf[Cloneable[C]].clone
+  }
+  case object Pass extends Finisher {
+    def apply(in: C) = in
+  }
+
+  var finisher: Option[Finisher] = None
+
   def write(kser: Kryo, out: Output, obj: C) {
     //Write the size:
     out.writeInt(obj.size, true)
@@ -52,11 +64,16 @@ class TraversableSerializer[T, C <: Traversable[T]](builder: Builder[T, C],
 
   // TODO remove this and use CanBuildFrom from rather than Builder
   // when we bump major versions
-  protected def copyIfMutable(c: C): C = c match {
-      case m: scala.Mutable => m match {
-          case toclone: Cloneable[C] => toclone.clone
-          case _ => throw new Exception("Cannot use TraversableSerializer with non-clonable mutables")
-        }
-      case _ => c
-    }
+  protected def copyIfMutable(c: C): C = finisher.getOrElse {
+      val fin = c match {
+        case m: scala.Mutable => m match {
+            case toclone: Cloneable[C] => Clone
+            case _ => throw new Exception("Cannot use TraversableSerializer with non-clonable mutables")
+          }
+        case _ => Pass
+      }
+      // Cache this for next time
+      finisher = Some(fin)
+      fin
+    }.apply(c)
 }
