@@ -8,12 +8,12 @@ import com.typesafe.tools.mima.plugin.MimaKeys._
 import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
-  val kryoVersion = "2.17"
+  val kryoVersion = "2.21"
 
   val sharedSettings = Project.defaultSettings ++
     mimaDefaultSettings ++ Seq(
 
-  version := "0.2.1",
+  version := "0.2.3",
 
   organization := "com.twitter",
 
@@ -97,9 +97,9 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.9.2" % "0.2.0"),
+    previousArtifact := Some("com.twitter" % "chill_2.9.2" % "0.2.2"),
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-core" % "0.3.0",
+      "com.twitter" %% "bijection-core" % "0.4.0",
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
   )

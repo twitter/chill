@@ -56,6 +56,43 @@ trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
  * TODO: Delete KryoBijection, use KryoInjection everywhere.
  */
 object KryoInjection extends Injection[AnyRef, Array[Byte]] {
-  override def apply(obj: AnyRef) = KryoBijection(obj)
-  override def invert(bytes: Array[Byte]) = allCatch.opt(KryoBijection.invert(bytes))
+  // Create a default injection to use, 4KB init, max 16 MB
+  private val kinject = instance(init = 1 << 12, max = 1 << 24)
+
+  override def apply(obj: AnyRef) = kinject.synchronized { kinject(obj) }
+  override def invert(bytes: Array[Byte]) = kinject.synchronized { kinject.invert(bytes) }
+
+  /**
+   * Create a new KryoInjection instance that serializes items using
+   * the supplied Kryo instance. The buffer used for serialization is
+   * initialized, by default, to 1KB, with a max size of
+   * 16MB. Configure these limits by passing in new values for "init"
+   * and "max" respectively.
+   */
+  def instance(
+    kryo: Kryo = KryoBijection.getKryo,
+    init: Int = 1 << 10,
+    max: Int = 1 << 24
+  ): Injection[AnyRef, Array[Byte]] =
+    new KryoInjectionInstance(kryo, new Output(init, max))
+}
+
+/**
+ * Reuse the Output and Kryo, which is faster
+ * register any additional serializers you need before passing in the
+ * Kryo instance
+ */
+class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[AnyRef, Array[Byte]] {
+  private val input: Input = new Input
+
+  def apply(obj: AnyRef): Array[Byte] = {
+    output.clear
+    kryo.writeClassAndObject(output, obj)
+    output.toBytes
+  }
+
+  def invert(b: Array[Byte]): Option[AnyRef] = {
+    input.setBuffer(b)
+    allCatch.opt(kryo.readClassAndObject(input))
+  }
 }

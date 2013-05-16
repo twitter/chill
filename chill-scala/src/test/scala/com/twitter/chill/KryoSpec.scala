@@ -22,9 +22,10 @@ import scala.collection.immutable.BitSet
 import scala.collection.immutable.ListMap
 import scala.collection.immutable.HashMap
 
-import scala.collection.mutable.{HashMap => MHashMap}
+import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 
 import com.twitter.bijection.Bijection
+import java.io._
 
 /*
 * This is just a test case for Kryo to deal with. It should
@@ -33,8 +34,8 @@ import com.twitter.bijection.Bijection
 */
 case class TestCaseClassForSerialization(x : String, y : Int)
 
-case class TestValMap(val map : Map[String,Double])
-case class TestValHashMap(val map : HashMap[String,Double])
+case class TestValMap(map: Map[String,Double])
+case class TestValHashMap(map: HashMap[String,Double])
 case class TestVarArgs(vargs: String*)
 
 object WeekDay extends Enumeration {
@@ -55,6 +56,7 @@ class KryoSpec extends Specification with BaseProperties {
                       0 to 100,
                       (0 to 42).toList, Seq(1,100,1000),
                       Map("good" -> 0.5, "bad" -> -1.0),
+                      MArrayBuffer(1,2,3,4,5),
                       List(Some(MHashMap(1->1, 2->2)), None, Some(MHashMap(3->4))),
                       Set(1,2,3,4,10),
                       BitSet(),
@@ -122,23 +124,17 @@ class KryoSpec extends Specification with BaseProperties {
       implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
         (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
 
-      val k = new KryoBijection {
-        override def getKryo = {
-          KryoBijection.getKryo
+      val kryo = KryoBijection.getKryo
             .forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
-        }
-      }
-      rt(k, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
+      val inj = KryoInjection.instance(kryo)
+      rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "use java serialization" in {
       import KryoImplicits.toRich
 
-      val k = new KryoBijection {
-        override def getKryo = {
-          KryoBijection.getKryo.javaForClass[TestCaseClassForSerialization]
-        }
-      }
-      rt(k, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
+      val kryo = KryoBijection.getKryo.javaForClass[TestCaseClassForSerialization]
+      val inj = KryoInjection.instance(kryo)
+      rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "Handle PriorityQueue" in {
       import scala.collection.JavaConverters._
@@ -164,6 +160,12 @@ class KryoSpec extends Specification with BaseProperties {
       val l = List(1,2,3)
       val ml = MeatLocker(l)
       jrt(ml).get must_==(l)
+    }
+    "Handle Regex" in {
+      val test = """\bhilarious""".r
+      val roundtripped = rt(test)
+      roundtripped.pattern.pattern must be_==(test.pattern.pattern)
+      roundtripped.findFirstIn("hilarious").isDefined must beTrue
     }
   }
 }

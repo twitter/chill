@@ -17,16 +17,17 @@ limitations under the License.
 package com.twitter.chill
 
 import java.io._
+import com.twitter.bijection.Injection
 
 trait BaseProperties {
-  def serialize[T](t: T): Array[Byte] = KryoBijection(t.asInstanceOf[AnyRef])
+  def serialize[T](t: T): Array[Byte] = KryoInjection(t.asInstanceOf[AnyRef])
   def deserialize[T](bytes: Array[Byte]): T =
-    KryoBijection.invert(bytes).asInstanceOf[T]
+    KryoInjection.invert(bytes).get.asInstanceOf[T]
 
-  def rt[T](t: T): T = rt[T](KryoBijection, t)
-  def rt[T](k: KryoBijection, t: T): T = {
+  def rt[T](t: T): T = rt[T](KryoInjection, t)
+  def rt[T](k: Injection[AnyRef, Array[Byte]], t: T): T = {
     val bytes = k(t.asInstanceOf[AnyRef])
-    k.invert(bytes).asInstanceOf[T]
+    k.invert(bytes).get.asInstanceOf[T]
   }
 
   // using java serialization. TODO: remove when this is shipped in bijection

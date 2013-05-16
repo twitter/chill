@@ -28,6 +28,7 @@
 /src/intellij/*.iws
 /.cache
 /.idea
+/.idea_modules
 /.settings
 
 # bak files produced by ./cleanup-commit
