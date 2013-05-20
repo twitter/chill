@@ -46,6 +46,7 @@ class TraversableSerializer[T, C <: Traversable[T]]
     // the builder is shared, so only one Serializer at a time should use it:
     // That the array of T is materialized, build:
     val builder = cbf()
+    builder.sizeHint(size)
     asArray.foreach { item => builder += item.asInstanceOf[T] }
     builder.result()
   }
