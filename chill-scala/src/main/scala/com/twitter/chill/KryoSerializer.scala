@@ -92,31 +92,31 @@ object KryoSerializer {
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
       .forSubclass[java.util.PriorityQueue[AnyRef]](new PriorityQueueSerializer[AnyRef])
-      .forTraversableSubclass(Queue.newBuilder[Any])
+      .forTraversableSubclass(Queue.empty[Any])
       // List is a sealed class, so there are only two subclasses:
-      .forTraversableSubclass(List.newBuilder[Any])
+      .forTraversableSubclass(List.empty[Any])
       // add mutable Buffer before Vector, otherwise Vector is used
-      .forTraversableSubclass(Buffer.newBuilder[Any], isImmutable = false)
+      .forTraversableSubclass(Buffer.empty[Any], isImmutable = false)
       //Vector is a final class
-      .forTraversableClass(Vector.newBuilder[Any])
-      .forTraversableSubclass(IndexedSeq.newBuilder[Any])
-      .forTraversableSubclass(Set.newBuilder[Any])
+      .forTraversableClass(Vector.empty[Any])
+      .forTraversableSubclass(IndexedSeq.empty[Any])
+      .forTraversableSubclass(Set.empty[Any])
       // Add some maps
-      .forTraversableSubclass(ListMap.newBuilder[Any,Any])
-      .forTraversableSubclass(HashMap.newBuilder[Any,Any])
+      .forTraversableSubclass(ListMap.empty[Any,Any])
+      .forTraversableSubclass(HashMap.empty[Any,Any])
       // The above ListMap/HashMap must appear before this:
-      .forTraversableSubclass(Map.newBuilder[Any,Any])
+      .forTraversableSubclass(Map.empty[Any,Any])
       // here are the mutable ones:
-      .forTraversableSubclass(MQueue.newBuilder[Any], isImmutable = false)
-      .forTraversableSubclass(MMap.newBuilder[Any,Any], isImmutable = false)
-      .forTraversableSubclass(MSet.newBuilder[Any], isImmutable = false)
-      .forTraversableSubclass(ListBuffer.newBuilder[Any], isImmutable = false)
+      .forTraversableSubclass(MQueue.empty[Any], isImmutable = false)
+      .forTraversableSubclass(MMap.empty[Any,Any], isImmutable = false)
+      .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
+      .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
       // This should be last, lots of things are seq/iterable/traversable
       // These are questionable and might break things.
       // rarely will you only expect an iterable/traversable on the reverse
-      .forTraversableSubclass(Seq.newBuilder[Any])
-      .forTraversableSubclass(Iterable.newBuilder[Any])
-      .forTraversableSubclass(Traversable.newBuilder[Any])
+      .forTraversableSubclass(Seq.empty[Any])
+      .forTraversableSubclass(Iterable.empty[Any])
+      .forTraversableSubclass(Traversable.empty[Any])
   }
 
   def registerAll(k: Kryo) {

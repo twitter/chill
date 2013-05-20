@@ -20,23 +20,11 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import scala.collection.mutable.{Builder, Cloneable}
+import scala.collection.generic.CanBuildFrom
 
-class TraversableSerializer[T, C <: Traversable[T]](builder: Builder[T, C],
-  override val isImmutable: Boolean = true)
+class TraversableSerializer[T, C <: Traversable[T]]
+  (override val isImmutable: Boolean = true)(implicit cbf: CanBuildFrom[C, T, C])
   extends KSerializer[C] {
-
-  sealed trait Finisher {
-    def apply(in: C): C
-  }
-  case object Clone extends Finisher {
-    def apply(in: C) = in.asInstanceOf[Cloneable[C]].clone
-  }
-  case object Pass extends Finisher {
-    def apply(in: C) = in
-  }
-
-  var finisher: Option[Finisher] = None
 
   def write(kser: Kryo, out: Output, obj: C) {
     //Write the size:
@@ -45,7 +33,7 @@ class TraversableSerializer[T, C <: Traversable[T]](builder: Builder[T, C],
       val tRef = t.asInstanceOf[AnyRef]
       kser.writeClassAndObject(out, tRef)
       // After each intermediate object, flush
-      out.flush
+      out.flush()
     }
   }
 
@@ -57,23 +45,8 @@ class TraversableSerializer[T, C <: Traversable[T]](builder: Builder[T, C],
     while(idx < size) { asArray(idx) = kser.readClassAndObject(in); idx += 1 }
     // the builder is shared, so only one Serializer at a time should use it:
     // That the array of T is materialized, build:
-    builder.clear()
+    val builder = cbf()
     asArray.foreach { item => builder += item.asInstanceOf[T] }
-    copyIfMutable(builder.result)
+    builder.result()
   }
-
-  // TODO remove this and use CanBuildFrom from rather than Builder
-  // when we bump major versions
-  protected def copyIfMutable(c: C): C = finisher.getOrElse {
-      val fin = c match {
-        case m: scala.Mutable => m match {
-            case toclone: Cloneable[C] => Clone
-            case _ => throw new Exception("Cannot use TraversableSerializer with non-clonable mutables")
-          }
-        case _ => Pass
-      }
-      // Cache this for next time
-      finisher = Some(fin)
-      fin
-    }.apply(c)
 }
