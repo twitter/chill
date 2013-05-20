@@ -18,11 +18,10 @@ package com.twitter.chill
 
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
 
 import com.twitter.bijection.{ Bufferable, Bijection, ImplicitBijection, Injection }
 
-import scala.collection.mutable.Builder
+import scala.collection.generic.CanBuildFrom
 
 /** Enrichment pattern to add methods to Kryo objects
  * TODO: make this a value-class in scala 2.10
@@ -77,9 +76,9 @@ class RichKryo(k: Kryo) {
     k
   }
 
-  def forTraversableSubclass[T, C <: Traversable[T]](b: Builder[T,C], isImmutable: Boolean = true)
-    (implicit mf: ClassManifest[C]): Kryo = {
-    k.addDefaultSerializer(mf.erasure, new TraversableSerializer(b, isImmutable))
+  def forTraversableSubclass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)
+    (implicit mf: ClassManifest[C], cbf: CanBuildFrom[C, T, C]): Kryo = {
+    k.addDefaultSerializer(mf.erasure, new TraversableSerializer(isImmutable)(cbf))
     k
   }
 
@@ -88,9 +87,9 @@ class RichKryo(k: Kryo) {
     k
   }
 
-  def forTraversableClass[T, C <: Traversable[T]](b: Builder[T,C], isImmutable: Boolean = true)
-    (implicit mf: ClassManifest[C]): Kryo =
-    forClass(new TraversableSerializer(b, isImmutable))(mf)
+  def forTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)
+    (implicit mf: ClassManifest[C], cbf: CanBuildFrom[C, T, C]): Kryo =
+    forClass(new TraversableSerializer(isImmutable)(cbf))
 
   /** B has to already be registered, then use the KSerializer[B] to create KSerialzer[A]
    */

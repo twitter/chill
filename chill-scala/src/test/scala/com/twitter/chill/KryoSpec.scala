@@ -25,7 +25,6 @@ import scala.collection.immutable.HashMap
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 
 import com.twitter.bijection.Bijection
-import java.io._
 
 /*
 * This is just a test case for Kryo to deal with. It should
