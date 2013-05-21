@@ -16,12 +16,14 @@ limitations under the License.
 
 package com.twitter.chill
 
+import java.io.InputStream
+import java.nio.ByteBuffer
+import scala.util.control.Exception.allCatch
+
 import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.io.{ ByteBufferInputStream, Input, Output }
 import com.twitter.bijection.{ Bijection, Injection }
 import org.objenesis.strategy.StdInstantiatorStrategy
-
-import scala.util.control.Exception.allCatch
 
 /**
  * KryoBijection is split into a trait and companion object to allow
@@ -59,8 +61,11 @@ object KryoInjection extends Injection[AnyRef, Array[Byte]] {
   // Create a default injection to use, 4KB init, max 16 MB
   private val kinject = instance(init = 1 << 12, max = 1 << 24)
 
-  override def apply(obj: AnyRef) = kinject.synchronized { kinject(obj) }
+  override def apply(obj: AnyRef)         = kinject.synchronized { kinject(obj) }
   override def invert(bytes: Array[Byte]) = kinject.synchronized { kinject.invert(bytes) }
+
+  def invert(inputStream: InputStream) = kinject.synchronized { kinject.invert(inputStream) }
+  def invert(byteBuffer: ByteBuffer)   = kinject.synchronized { kinject.invert(byteBuffer) }
 
   /**
    * Create a new KryoInjection instance that serializes items using
@@ -71,10 +76,9 @@ object KryoInjection extends Injection[AnyRef, Array[Byte]] {
    */
   def instance(
     kryo: Kryo = KryoBijection.getKryo,
-    init: Int = 1 << 10,
-    max: Int = 1 << 24
-  ): Injection[AnyRef, Array[Byte]] =
-    new KryoInjectionInstance(kryo, new Output(init, max))
+    init: Int  = 1 << 10,
+    max:  Int  = 1 << 24
+  ) = new KryoInjectionInstance(kryo, new Output(init, max))
 }
 
 /**
@@ -83,7 +87,8 @@ object KryoInjection extends Injection[AnyRef, Array[Byte]] {
  * Kryo instance
  */
 class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[AnyRef, Array[Byte]] {
-  private val input: Input = new Input
+  // For invert(Array[Byte])
+  private val byteInput: Input = new Input
 
   def apply(obj: AnyRef): Array[Byte] = {
     output.clear
@@ -92,7 +97,20 @@ class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[AnyRef
   }
 
   def invert(b: Array[Byte]): Option[AnyRef] = {
-    input.setBuffer(b)
-    allCatch.opt(kryo.readClassAndObject(input))
+    byteInput.setBuffer(b)
+    allCatch.opt(kryo.readClassAndObject(byteInput))
+  }
+
+  def invert(s: InputStream): Option[AnyRef] = {
+    // Can't reuse Input and call Input#setInputStream everytime
+    val streamInput = new Input(s)
+    allCatch.opt(kryo.readClassAndObject(streamInput))
+  }
+
+  def invert(b: ByteBuffer): Option[AnyRef] = {
+    // Can't reuse Input and call Input#setInputStream everytime
+    val s           = new ByteBufferInputStream(b)
+    val streamInput = new Input(s)
+    allCatch.opt(kryo.readClassAndObject(streamInput))
   }
 }
