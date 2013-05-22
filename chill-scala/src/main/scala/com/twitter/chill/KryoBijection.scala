@@ -59,13 +59,13 @@ trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
  */
 object KryoInjection extends Injection[AnyRef, Array[Byte]] {
   // Create a default injection to use, 4KB init, max 16 MB
-  private val kinject = instance(init = 1 << 12, max = 1 << 24)
+  private val kinject = instance(init = 1 << 12, max = 1 << 24).asInstanceOf[KryoInjectionInstance]
 
   override def apply(obj: AnyRef)         = kinject.synchronized { kinject(obj) }
   override def invert(bytes: Array[Byte]) = kinject.synchronized { kinject.invert(bytes) }
 
-  def invert(inputStream: InputStream) = kinject.synchronized { kinject.invert(inputStream) }
-  def invert(byteBuffer: ByteBuffer)   = kinject.synchronized { kinject.invert(byteBuffer) }
+  def fromInputStream(inputStream: InputStream) = kinject.synchronized { kinject.fromInputStream(inputStream) }
+  def fromByteBuffer(byteBuffer: ByteBuffer)    = kinject.synchronized { kinject.fromByteBuffer(byteBuffer) }
 
   /**
    * Create a new KryoInjection instance that serializes items using
@@ -78,7 +78,8 @@ object KryoInjection extends Injection[AnyRef, Array[Byte]] {
     kryo: Kryo = KryoBijection.getKryo,
     init: Int  = 1 << 10,
     max:  Int  = 1 << 24
-  ) = new KryoInjectionInstance(kryo, new Output(init, max))
+  ): Injection[AnyRef, Array[Byte]] =
+    new KryoInjectionInstance(kryo, new Output(init, max))
 }
 
 /**
@@ -101,13 +102,13 @@ class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[AnyRef
     allCatch.opt(kryo.readClassAndObject(byteInput))
   }
 
-  def invert(s: InputStream): Option[AnyRef] = {
+  def fromInputStream(s: InputStream): Option[AnyRef] = {
     // Can't reuse Input and call Input#setInputStream everytime
     val streamInput = new Input(s)
     allCatch.opt(kryo.readClassAndObject(streamInput))
   }
 
-  def invert(b: ByteBuffer): Option[AnyRef] = {
+  def fromByteBuffer(b: ByteBuffer): Option[AnyRef] = {
     // Can't reuse Input and call Input#setInputStream everytime
     val s           = new ByteBufferInputStream(b)
     val streamInput = new Input(s)

@@ -173,12 +173,12 @@ class KryoSpec extends Specification with BaseProperties {
 
       val inputStream = new java.io.ByteArrayInputStream(bytes)
 
-      val opt1 = KryoInjection.invert(inputStream)
+      val opt1 = KryoInjection.fromInputStream(inputStream)
       opt1 must be_==(Option(obj))
 
       // Test again to make sure it still works
       inputStream.reset()
-      val opt2 = KryoInjection.invert(inputStream)
+      val opt2 = KryoInjection.fromInputStream(inputStream)
       opt2 must be_==(Option(obj))
     }
     "deserialize ByteBuffer" in {
@@ -187,12 +187,12 @@ class KryoSpec extends Specification with BaseProperties {
 
       val byteBuffer = java.nio.ByteBuffer.wrap(bytes)
 
-      val opt1 = KryoInjection.invert(byteBuffer)
+      val opt1 = KryoInjection.fromByteBuffer(byteBuffer)
       opt1 must be_==(Option(obj))
 
       // Test again to make sure it still works
       byteBuffer.rewind()
-      val opt2 = KryoInjection.invert(byteBuffer)
+      val opt2 = KryoInjection.fromByteBuffer(byteBuffer)
       opt2 must be_==(Option(obj))
     }
   }

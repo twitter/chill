@@ -16,16 +16,20 @@ box.get == boxedItem.get // true!
 
 To retrieve the boxed item without caching the deserialized value, use `meatlockerInstance.copy`.
 
-To serialize to bytes and deserialize from bytes, java.io.InputStream, or java.nio.ByteBuffer:
+To serialize to bytes and deserialize from bytes:
 
 ```scala
 import com.twitter.chill.KryoInjection
 
 val bytes:  Array[Byte]    = KryoInjection(someItem)
 val option: Option[AnyRef] = KryoInjection.invert(bytes)  // None is returned on failure
+```
 
-val option2 = KryoInjection.invert(myInputStream)
-val option3 = KryoInjection.invert(myByteBuffer)
+To deserialize from java.io.InputStream, or java.nio.ByteBuffer:
+
+```scala
+val option1 = KryoInjection.fromInputStream(myInputStream)
+val option2 = KryoInjection.fromByteBuffer(myByteBuffer)
 ```
 
 ### Handled classes
