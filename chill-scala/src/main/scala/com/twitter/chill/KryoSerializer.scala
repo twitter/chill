@@ -101,6 +101,12 @@ object KryoSerializer {
       .forTraversableClass(Vector.empty[Any])
       .forTraversableSubclass(IndexedSeq.empty[Any])
       .forTraversableSubclass(Set.empty[Any])
+      // specifically register small maps since Scala represents them differently
+      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a))
+      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b))
+      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c))
+      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd))
+      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
       // Add some maps
       .forTraversableSubclass(ListMap.empty[Any,Any])
       .forTraversableSubclass(HashMap.empty[Any,Any])

@@ -166,5 +166,18 @@ class KryoSpec extends Specification with BaseProperties {
       roundtripped.pattern.pattern must be_==(test.pattern.pattern)
       roundtripped.findFirstIn("hilarious").isDefined must beTrue
     }
+    "Handle small immutable maps when registration is required" in {
+      val kryo = KryoBijection.getKryo
+      kryo.setRegistrationRequired(true)
+      val inj = KryoInjection.instance(kryo)
+      val m1 = Map('a -> 'a)
+      val m2 = Map('a -> 'a, 'b -> 'b)
+      val m3 = Map('a -> 'a, 'b -> 'b, 'c -> 'c)
+      val m4 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd)
+      val m5 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e)
+      Seq(m1, m2, m3, m4, m5).foreach { m =>
+        rt(inj, m) must be_==(m)
+      }
+    }
   }
 }
