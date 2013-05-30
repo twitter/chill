@@ -179,5 +179,18 @@ class KryoSpec extends Specification with BaseProperties {
         rt(inj, m) must be_==(m)
       }
     }
+    "Handle small immutable sets when registration is required" in {
+      val kryo = KryoBijection.getKryo
+      kryo.setRegistrationRequired(true)
+      val inj = KryoInjection.instance(kryo)
+      val s1 = Set('a)
+      val s2 = Set('a, 'b)
+      val s3 = Set('a, 'b, 'c)
+      val s4 = Set('a, 'b, 'c, 'd)
+      val s5 = Set('a, 'b, 'c, 'd, 'e)
+      Seq(s1, s2, s3, s4, s5).foreach { s =>
+        rt(inj, s) must be_==(s)
+      }
+    }
   }
 }
