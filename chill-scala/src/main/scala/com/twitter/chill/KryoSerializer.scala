@@ -97,9 +97,15 @@ object KryoSerializer {
       .forTraversableSubclass(List.empty[Any])
       // add mutable Buffer before Vector, otherwise Vector is used
       .forTraversableSubclass(Buffer.empty[Any], isImmutable = false)
-      //Vector is a final class
+      // Vector is a final class
       .forTraversableClass(Vector.empty[Any])
       .forTraversableSubclass(IndexedSeq.empty[Any])
+      // specifically register small sets since Scala represents them differently
+      .forConcreteTraversableClass(Set[Any]('a))
+      .forConcreteTraversableClass(Set[Any]('a, 'b))
+      .forConcreteTraversableClass(Set[Any]('a, 'b, 'c))
+      .forConcreteTraversableClass(Set[Any]('a, 'b, 'c, 'd))
+      .forConcreteTraversableClass(Set[Any]('a, 'b, 'c, 'd, 'e))
       .forTraversableSubclass(Set.empty[Any])
       // specifically register small maps since Scala represents them differently
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a))
