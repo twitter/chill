@@ -91,6 +91,14 @@ class RichKryo(k: Kryo) {
     (implicit mf: ClassManifest[C], cbf: CanBuildFrom[C, T, C]): Kryo =
     forClass(new TraversableSerializer(isImmutable)(cbf))
 
+  def forConcreteTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)
+    (implicit cbf: CanBuildFrom[C, T, C]): Kryo = {
+    // a ClassManifest is not used here since its erasure method does not return the concrete internal type
+    // that Scala uses for small immutable maps (i.e., scala.collection.immutable.Map$Map1)
+    k.register(c.getClass, new TraversableSerializer(isImmutable)(cbf))
+    k
+  }
+
   /** B has to already be registered, then use the KSerializer[B] to create KSerialzer[A]
    */
   def forClassViaBijection[A,B](implicit bij: ImplicitBijection[A,B], acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
