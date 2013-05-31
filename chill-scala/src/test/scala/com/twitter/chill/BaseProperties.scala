@@ -20,13 +20,13 @@ import java.io._
 import com.twitter.bijection.Injection
 
 trait BaseProperties {
-  def serialize[T](t: T): Array[Byte] = KryoInjection(t.asInstanceOf[AnyRef])
+  def serialize[T](t: T): Array[Byte] = KryoInjection(t)
   def deserialize[T](bytes: Array[Byte]): T =
     KryoInjection.invert(bytes).get.asInstanceOf[T]
 
   def rt[T](t: T): T = rt[T](KryoInjection, t)
-  def rt[T](k: Injection[AnyRef, Array[Byte]], t: T): T = {
-    val bytes = k(t.asInstanceOf[AnyRef])
+  def rt[T](k: Injection[Any, Array[Byte]], t: T): T = {
+    val bytes = k(t)
     k.invert(bytes).get.asInstanceOf[T]
   }
 
