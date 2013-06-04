@@ -32,7 +32,7 @@ import scala.util.control.Exception.allCatch
 
 object KryoBijection extends KryoBijection
 
-trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
+trait KryoBijection extends Bijection[Any, Array[Byte]] {
   def getKryo: Kryo = {
     val k = new KryoBase
     k.setRegistrationRequired(false)
@@ -41,7 +41,7 @@ trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
     k
   }
 
-  override def apply(obj: AnyRef): Array[Byte] = {
+  override def apply(obj: Any): Array[Byte] = {
     val output = new Output(1 << 12, 1 << 30)
     getKryo.writeClassAndObject(output, obj)
     output.toBytes
@@ -55,11 +55,11 @@ trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
 /**
  * TODO: Delete KryoBijection, use KryoInjection everywhere.
  */
-object KryoInjection extends Injection[AnyRef, Array[Byte]] {
+object KryoInjection extends Injection[Any, Array[Byte]] {
   // Create a default injection to use, 4KB init, max 16 MB
   private val kinject = instance(init = 1 << 12, max = 1 << 24)
 
-  override def apply(obj: AnyRef) = kinject.synchronized { kinject(obj) }
+  override def apply(obj: Any) = kinject.synchronized { kinject(obj) }
   override def invert(bytes: Array[Byte]) = kinject.synchronized { kinject.invert(bytes) }
 
   /**
@@ -73,7 +73,7 @@ object KryoInjection extends Injection[AnyRef, Array[Byte]] {
     kryo: Kryo = KryoBijection.getKryo,
     init: Int = 1 << 10,
     max: Int = 1 << 24
-  ): Injection[AnyRef, Array[Byte]] =
+  ): Injection[Any, Array[Byte]] =
     new KryoInjectionInstance(kryo, new Output(init, max))
 }
 
@@ -82,16 +82,16 @@ object KryoInjection extends Injection[AnyRef, Array[Byte]] {
  * register any additional serializers you need before passing in the
  * Kryo instance
  */
-class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[AnyRef, Array[Byte]] {
+class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[Any, Array[Byte]] {
   private val input: Input = new Input
 
-  def apply(obj: AnyRef): Array[Byte] = {
+  def apply(obj: Any): Array[Byte] = {
     output.clear
     kryo.writeClassAndObject(output, obj)
     output.toBytes
   }
 
-  def invert(b: Array[Byte]): Option[AnyRef] = {
+  def invert(b: Array[Byte]): Option[Any] = {
     input.setBuffer(b)
     allCatch.opt(kryo.readClassAndObject(input))
   }
