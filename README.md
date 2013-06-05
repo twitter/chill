@@ -28,8 +28,11 @@ val option: Option[AnyRef] = KryoInjection.invert(bytes)  // None is returned on
 To deserialize from java.io.InputStream, or java.nio.ByteBuffer:
 
 ```scala
-val option1 = KryoInjection.fromInputStream(myInputStream)
-val option2 = KryoInjection.fromByteBuffer(myByteBuffer)
+val kryo = KryoBijection.getKryo
+val rich = new RichKryo(kryo)
+
+val option1 = rich.fromInputStream(myInputStream)
+val option2 = rich.fromByteBuffer(myByteBuffer)
 ```
 
 ### Handled classes

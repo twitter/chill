@@ -25,7 +25,6 @@ import scala.collection.immutable.HashMap
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 
 import com.twitter.bijection.Bijection
-import java.io._
 
 /*
 * This is just a test case for Kryo to deal with. It should
@@ -167,18 +166,47 @@ class KryoSpec extends Specification with BaseProperties {
       roundtripped.pattern.pattern must be_==(test.pattern.pattern)
       roundtripped.findFirstIn("hilarious").isDefined must beTrue
     }
+    "handle small immutable maps when registration is required" in {
+      val kryo = KryoBijection.getKryo
+      kryo.setRegistrationRequired(true)
+      val inj = KryoInjection.instance(kryo)
+      val m1 = Map('a -> 'a)
+      val m2 = Map('a -> 'a, 'b -> 'b)
+      val m3 = Map('a -> 'a, 'b -> 'b, 'c -> 'c)
+      val m4 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd)
+      val m5 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e)
+      Seq(m1, m2, m3, m4, m5).foreach { m =>
+        rt(inj, m) must be_==(m)
+      }
+    }
+    "handle small immutable sets when registration is required" in {
+      val kryo = KryoBijection.getKryo
+      kryo.setRegistrationRequired(true)
+      val inj = KryoInjection.instance(kryo)
+      val s1 = Set('a)
+      val s2 = Set('a, 'b)
+      val s3 = Set('a, 'b, 'c)
+      val s4 = Set('a, 'b, 'c, 'd)
+      val s5 = Set('a, 'b, 'c, 'd, 'e)
+      Seq(s1, s2, s3, s4, s5).foreach { s =>
+        rt(inj, s) must be_==(s)
+      }
+    }
     "deserialize InputStream" in {
       val obj   = Seq(1, 2, 3)
       val bytes = KryoInjection(obj)
 
       val inputStream = new java.io.ByteArrayInputStream(bytes)
 
-      val opt1 = KryoInjection.fromInputStream(inputStream)
+      val kryo = KryoBijection.getKryo
+      val rich = new RichKryo(kryo)
+
+      val opt1 = rich.fromInputStream(inputStream)
       opt1 must be_==(Option(obj))
 
       // Test again to make sure it still works
       inputStream.reset()
-      val opt2 = KryoInjection.fromInputStream(inputStream)
+      val opt2 = rich.fromInputStream(inputStream)
       opt2 must be_==(Option(obj))
     }
     "deserialize ByteBuffer" in {
@@ -187,12 +215,15 @@ class KryoSpec extends Specification with BaseProperties {
 
       val byteBuffer = java.nio.ByteBuffer.wrap(bytes)
 
-      val opt1 = KryoInjection.fromByteBuffer(byteBuffer)
+      val kryo = KryoBijection.getKryo
+      val rich = new RichKryo(kryo)
+
+      val opt1 = rich.fromByteBuffer(byteBuffer)
       opt1 must be_==(Option(obj))
 
       // Test again to make sure it still works
       byteBuffer.rewind()
-      val opt2 = KryoInjection.fromByteBuffer(byteBuffer)
+      val opt2 = rich.fromByteBuffer(byteBuffer)
       opt2 must be_==(Option(obj))
     }
   }

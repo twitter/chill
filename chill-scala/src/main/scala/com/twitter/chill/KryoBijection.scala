@@ -16,14 +16,12 @@ limitations under the License.
 
 package com.twitter.chill
 
-import java.io.InputStream
-import java.nio.ByteBuffer
-import scala.util.control.Exception.allCatch
-
 import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.{ ByteBufferInputStream, Input, Output }
+import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.twitter.bijection.{ Bijection, Injection }
 import org.objenesis.strategy.StdInstantiatorStrategy
+
+import scala.util.control.Exception.allCatch
 
 /**
  * KryoBijection is split into a trait and companion object to allow
@@ -34,7 +32,7 @@ import org.objenesis.strategy.StdInstantiatorStrategy
 
 object KryoBijection extends KryoBijection
 
-trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
+trait KryoBijection extends Bijection[Any, Array[Byte]] {
   def getKryo: Kryo = {
     val k = new KryoBase
     k.setRegistrationRequired(false)
@@ -43,7 +41,7 @@ trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
     k
   }
 
-  override def apply(obj: AnyRef): Array[Byte] = {
+  override def apply(obj: Any): Array[Byte] = {
     val output = new Output(1 << 12, 1 << 30)
     getKryo.writeClassAndObject(output, obj)
     output.toBytes
@@ -57,15 +55,12 @@ trait KryoBijection extends Bijection[AnyRef, Array[Byte]] {
 /**
  * TODO: Delete KryoBijection, use KryoInjection everywhere.
  */
-object KryoInjection extends Injection[AnyRef, Array[Byte]] {
+object KryoInjection extends Injection[Any, Array[Byte]] {
   // Create a default injection to use, 4KB init, max 16 MB
-  private val kinject = instance(init = 1 << 12, max = 1 << 24).asInstanceOf[KryoInjectionInstance]
+  private val kinject = instance(init = 1 << 12, max = 1 << 24)
 
-  override def apply(obj: AnyRef)         = kinject.synchronized { kinject(obj) }
+  override def apply(obj: Any) = kinject.synchronized { kinject(obj) }
   override def invert(bytes: Array[Byte]) = kinject.synchronized { kinject.invert(bytes) }
-
-  def fromInputStream(inputStream: InputStream) = kinject.synchronized { kinject.fromInputStream(inputStream) }
-  def fromByteBuffer(byteBuffer: ByteBuffer)    = kinject.synchronized { kinject.fromByteBuffer(byteBuffer) }
 
   /**
    * Create a new KryoInjection instance that serializes items using
@@ -76,9 +71,9 @@ object KryoInjection extends Injection[AnyRef, Array[Byte]] {
    */
   def instance(
     kryo: Kryo = KryoBijection.getKryo,
-    init: Int  = 1 << 10,
-    max:  Int  = 1 << 24
-  ): Injection[AnyRef, Array[Byte]] =
+    init: Int = 1 << 10,
+    max: Int = 1 << 24
+  ): Injection[Any, Array[Byte]] =
     new KryoInjectionInstance(kryo, new Output(init, max))
 }
 
@@ -87,31 +82,17 @@ object KryoInjection extends Injection[AnyRef, Array[Byte]] {
  * register any additional serializers you need before passing in the
  * Kryo instance
  */
-class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[AnyRef, Array[Byte]] {
-  // For invert(Array[Byte])
-  private val byteInput: Input = new Input
+class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[Any, Array[Byte]] {
+  private val input: Input = new Input
 
-  def apply(obj: AnyRef): Array[Byte] = {
+  def apply(obj: Any): Array[Byte] = {
     output.clear
     kryo.writeClassAndObject(output, obj)
     output.toBytes
   }
 
-  def invert(b: Array[Byte]): Option[AnyRef] = {
-    byteInput.setBuffer(b)
-    allCatch.opt(kryo.readClassAndObject(byteInput))
-  }
-
-  def fromInputStream(s: InputStream): Option[AnyRef] = {
-    // Can't reuse Input and call Input#setInputStream everytime
-    val streamInput = new Input(s)
-    allCatch.opt(kryo.readClassAndObject(streamInput))
-  }
-
-  def fromByteBuffer(b: ByteBuffer): Option[AnyRef] = {
-    // Can't reuse Input and call Input#setInputStream everytime
-    val s           = new ByteBufferInputStream(b)
-    val streamInput = new Input(s)
-    allCatch.opt(kryo.readClassAndObject(streamInput))
+  def invert(b: Array[Byte]): Option[Any] = {
+    input.setBuffer(b)
+    allCatch.opt(kryo.readClassAndObject(input))
   }
 }
