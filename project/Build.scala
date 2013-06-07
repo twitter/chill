@@ -87,7 +87,10 @@ object ChillBuild extends Build {
     test := { },
     publish := { },
     publishLocal := { }
-  ).aggregate(chill)
+  ).aggregate(
+    chill,
+    chillStorm
+  )
 
   // We usually do the pattern of having a core module, but we don't want to cause
   // pain for legacy deploys. With this, they can stay the same.
@@ -103,4 +106,13 @@ object ChillBuild extends Build {
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
   )
+
+  lazy val chillStorm = Project(
+    id = "chill-storm",
+    base = file("chill-storm"),
+    settings = sharedSettings
+  ).settings(
+    name := "chill-storm",
+    libraryDependencies += "storm" % "storm" % "0.9.0-wip9"
+  ).dependsOn(chill)
 }
