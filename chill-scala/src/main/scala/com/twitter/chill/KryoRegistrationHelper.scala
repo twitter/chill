@@ -37,10 +37,14 @@ object Base64StringUnwrap extends Bijection[Base64String, String] {
   override def invert(str: String) = Base64String(str)
 }
 
-object KryoRegistrationHelper {
-  val INJECTION_PAIRS = "summingbird.injection.pairs"
-  val INJECTION_DEFAULT_PAIRS = "summingbird.injection.pairs.default"
-  val CLASS_REGISTRATIONS = "summingbird.class.registrations"
+/**
+  * Prefix is the namespace used for all registrations within the
+  * configuration supplied to each registration method.
+  */
+case class KryoRegistrationHelper(prefix: String) {
+  val INJECTION_PAIRS = prefix + ".injection.pairs"
+  val INJECTION_DEFAULT_PAIRS = prefix + ".injection.pairs.default"
+  val CLASS_REGISTRATIONS = prefix + ".class.registrations"
   val SEPARATOR = ":"
 
   implicit def toBase64String[T: Manifest]: Injection[T, String] =

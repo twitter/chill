@@ -147,10 +147,11 @@ class RichKryo(k: Kryo) {
     * within the supplied configuration map (using the methods defined
     * in KryoRegistrationHelper).
     */
-  def populateFromConfig(conf: JMap[_,_]): Kryo = {
-    KryoRegistrationHelper.registerInjections(k, conf)
-    KryoRegistrationHelper.registerInjectionDefaults(k, conf)
-    KryoRegistrationHelper.registerKryoClasses(k, conf)
+  def populateFromConfig(prefix: String, conf: JMap[_,_]): Kryo = {
+    val helper = KryoRegistrationHelper(prefix)
+    helper.registerInjections(k, conf)
+    helper.registerInjectionDefaults(k, conf)
+    helper.registerKryoClasses(k, conf)
     k
   }
 
