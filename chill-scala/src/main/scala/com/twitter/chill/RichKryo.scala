@@ -18,10 +18,15 @@ package com.twitter.chill
 
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
+import com.esotericsoftware.kryo.io.{ ByteBufferInputStream, Input, Output }
 
 import com.twitter.bijection.{ Bufferable, Bijection, ImplicitBijection, Injection }
 
+import java.io.InputStream
+import java.nio.ByteBuffer
+
 import scala.collection.generic.CanBuildFrom
+import scala.util.control.Exception.allCatch
 
 /** Enrichment pattern to add methods to Kryo objects
  * TODO: make this a value-class in scala 2.10
@@ -134,6 +139,19 @@ class RichKryo(k: Kryo) {
         k.register(klass)
     }
     k
+  }
+
+  def fromInputStream(s: InputStream): Option[AnyRef] = {
+    // Can't reuse Input and call Input#setInputStream everytime
+    val streamInput = new Input(s)
+    allCatch.opt(k.readClassAndObject(streamInput))
+  }
+
+  def fromByteBuffer(b: ByteBuffer): Option[AnyRef] = {
+    // Can't reuse Input and call Input#setInputStream everytime
+    val s           = new ByteBufferInputStream(b)
+    val streamInput = new Input(s)
+    allCatch.opt(k.readClassAndObject(streamInput))
   }
 }
 

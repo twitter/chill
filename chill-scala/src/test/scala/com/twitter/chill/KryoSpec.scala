@@ -105,14 +105,14 @@ class KryoSpec extends Specification with BaseProperties {
       rt(test) must be_==(test)
       (rt(None) eq None) must beTrue
     }
-    "Serialize a giant list" in {
+    "serialize a giant list" in {
       val bigList = (1 to 100000).toList
       val list2 = rt(bigList)
       list2.size must be_==(bigList.size)
       //Specs, it turns out, also doesn't deal with giant lists well:
       list2.zip(bigList).foreach { tup => tup._1 must be_==(tup._2) }
     }
-    "Handle scala enums" in {
+    "handle scala enums" in {
        WeekDay.values.foreach { v =>
          rt(v) must be_==(v)
        }
@@ -135,7 +135,7 @@ class KryoSpec extends Specification with BaseProperties {
       val inj = KryoInjection.instance(kryo)
       rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
-    "Handle PriorityQueue" in {
+    "handle PriorityQueue" in {
       import scala.collection.JavaConverters._
       val ord = Ordering.fromLessThan[(Int,Int)] { (l, r) => l._1 < r._1 }
       val q = new java.util.PriorityQueue[(Int,Int)](3, ord)
@@ -155,18 +155,18 @@ class KryoSpec extends Specification with BaseProperties {
       val qilist = toList(qi)
       toList(rt(qi)) must be_==(qilist)
     }
-    "Work with Meatlocker" in {
+    "work with Meatlocker" in {
       val l = List(1,2,3)
       val ml = MeatLocker(l)
       jrt(ml).get must_==(l)
     }
-    "Handle Regex" in {
+    "handle Regex" in {
       val test = """\bhilarious""".r
       val roundtripped = rt(test)
       roundtripped.pattern.pattern must be_==(test.pattern.pattern)
       roundtripped.findFirstIn("hilarious").isDefined must beTrue
     }
-    "Handle small immutable maps when registration is required" in {
+    "handle small immutable maps when registration is required" in {
       val kryo = KryoBijection.getKryo
       kryo.setRegistrationRequired(true)
       val inj = KryoInjection.instance(kryo)
@@ -179,7 +179,7 @@ class KryoSpec extends Specification with BaseProperties {
         rt(inj, m) must be_==(m)
       }
     }
-    "Handle small immutable sets when registration is required" in {
+    "handle small immutable sets when registration is required" in {
       val kryo = KryoBijection.getKryo
       kryo.setRegistrationRequired(true)
       val inj = KryoInjection.instance(kryo)
@@ -191,6 +191,40 @@ class KryoSpec extends Specification with BaseProperties {
       Seq(s1, s2, s3, s4, s5).foreach { s =>
         rt(inj, s) must be_==(s)
       }
+    }
+    "deserialize InputStream" in {
+      val obj   = Seq(1, 2, 3)
+      val bytes = KryoInjection(obj)
+
+      val inputStream = new java.io.ByteArrayInputStream(bytes)
+
+      val kryo = KryoBijection.getKryo
+      val rich = new RichKryo(kryo)
+
+      val opt1 = rich.fromInputStream(inputStream)
+      opt1 must be_==(Option(obj))
+
+      // Test again to make sure it still works
+      inputStream.reset()
+      val opt2 = rich.fromInputStream(inputStream)
+      opt2 must be_==(Option(obj))
+    }
+    "deserialize ByteBuffer" in {
+      val obj   = Seq(1, 2, 3)
+      val bytes = KryoInjection(obj)
+
+      val byteBuffer = java.nio.ByteBuffer.wrap(bytes)
+
+      val kryo = KryoBijection.getKryo
+      val rich = new RichKryo(kryo)
+
+      val opt1 = rich.fromByteBuffer(byteBuffer)
+      opt1 must be_==(Option(obj))
+
+      // Test again to make sure it still works
+      byteBuffer.rewind()
+      val opt2 = rich.fromByteBuffer(byteBuffer)
+      opt2 must be_==(Option(obj))
     }
   }
 }
