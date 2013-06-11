@@ -113,6 +113,10 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill-storm",
+    resolvers ++= Seq(
+      "Clojars Repository" at "http://clojars.org/repo",
+      "Conjars Repository" at "http://conjars.org/repo"
+    ),
     libraryDependencies += "storm" % "storm" % "0.9.0-wip9"
   ).dependsOn(chill)
 }
