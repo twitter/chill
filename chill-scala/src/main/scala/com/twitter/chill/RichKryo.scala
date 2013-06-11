@@ -24,6 +24,7 @@ import com.twitter.bijection.{ Bufferable, Bijection, ImplicitBijection, Injecti
 
 import java.io.InputStream
 import java.nio.ByteBuffer
+import java.util.{ Map => JMap }
 
 import scala.collection.generic.CanBuildFrom
 import scala.util.control.Exception.allCatch
@@ -138,6 +139,18 @@ class RichKryo(k: Kryo) {
       if (!alreadyRegistered(ClassManifest.fromClass(klass)))
         k.register(klass)
     }
+    k
+  }
+
+  /**
+    * Populate the wrapped KryoInstance with Injections registered
+    * within the supplied configuration map (using the methods defined
+    * in KryoRegistrationHelper).
+    */
+  def populateFromConfig(conf: JMap[_,_]): Kryo = {
+    KryoRegistrationHelper.registerInjections(k, conf)
+    KryoRegistrationHelper.registerInjectionDefaults(k, conf)
+    KryoRegistrationHelper.registerKryoClasses(k, conf)
     k
   }
 
