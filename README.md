@@ -25,6 +25,16 @@ val bytes:  Array[Byte]    = KryoInjection(someItem)
 val option: Option[AnyRef] = KryoInjection.invert(bytes)  // None is returned on failure
 ```
 
+To deserialize from java.io.InputStream, or java.nio.ByteBuffer:
+
+```scala
+val kryo = KryoBijection.getKryo
+val rich = new RichKryo(kryo)
+
+val option1 = rich.fromInputStream(myInputStream)
+val option2 = rich.fromByteBuffer(myByteBuffer)
+```
+
 ### Handled classes
 
 Chill provides support for singletons, scala Objects and the following types:
