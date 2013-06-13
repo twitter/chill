@@ -22,6 +22,7 @@ import com.twitter.bijection.Conversion.asMethod
 
 import java.util.{ Map => JMap }
 
+
 /**
   * Helpful methods for registering Injections as serializers by way
   * of a Configuration map.
@@ -32,7 +33,11 @@ import java.util.{ Map => JMap }
   */
 
 // unsafe. remove when commons-codec issue gets resolved.
-object Base64StringUnwrap extends Bijection[Base64String, String] {
+//
+// TODO: change this to Injection[Base64String, String] and just use
+// allCatch on inverting the decode.
+
+object UnsafeBase64StringUnwrap extends Bijection[Base64String, String] {
   override def apply(bs: Base64String) = bs.str
   override def invert(str: String) = Base64String(str)
 }
@@ -51,7 +56,7 @@ case class KryoRegistrationHelper(prefix: String) {
     CastInjection.of[T, Any]
       .andThen(KryoInjection)
       .andThen(Bijection.connect[Array[Byte], Base64String])
-      .andThen(Base64StringUnwrap)
+      .andThen(UnsafeBase64StringUnwrap)
 
   // TODO: can we store type params in here too and prevent the cast?
   def getConfValue[T](conf: JMap[_, _], key: String): Option[T] =
