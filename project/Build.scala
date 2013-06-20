@@ -89,7 +89,8 @@ object ChillBuild extends Build {
     publishLocal := { }
   ).aggregate(
     chill,
-    chillStorm
+    chillStorm,
+    chillJava
   )
 
   // We usually do the pattern of having a core module, but we don't want to cause
@@ -105,6 +106,16 @@ object ChillBuild extends Build {
       "com.twitter" %% "bijection-core" % "0.4.0",
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
+  )
+
+  lazy val chillJava = Project(
+    id = "chill-java",
+    base = file("chill-java"),
+    settings = sharedSettings
+  ).settings(
+    autoScalaLibrary := false,
+    name := "chill-java",
+    previousArtifact := None
   )
 
   lazy val chillStorm = Project(
