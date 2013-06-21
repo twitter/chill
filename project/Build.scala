@@ -89,7 +89,8 @@ object ChillBuild extends Build {
     publishLocal := { }
   ).aggregate(
     chill,
-    chillStorm
+    chillStorm,
+    chillHadoop
   )
 
   // We usually do the pattern of having a core module, but we don't want to cause
@@ -119,4 +120,19 @@ object ChillBuild extends Build {
     ),
     libraryDependencies += "storm" % "storm" % "0.9.0-wip9"
   ).dependsOn(chill)
+
+  lazy val chillHadoop = Project(
+    id = "chill-hadoop",
+    base = file("chill-hadoop"),
+    settings = sharedSettings
+  ).settings(
+    autoScalaLibrary := false,
+    name := "chill-hadoop",
+    libraryDependencies ++= Seq(
+      "org.apache.hadoop" % "hadoop-core" % "0.20.2" % "provided",
+      "org.slf4j" % "slf4j-api" % "1.6.6",
+      "org.slf4j" % "slf4j-log4j12" % "1.6.6" % "provided"
+    ),
+    previousArtifact := None
+  )
 }
