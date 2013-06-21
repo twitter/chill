@@ -135,26 +135,6 @@ class KryoSpec extends Specification with BaseProperties {
       val inj = KryoInjection.instance(kryo)
       rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
-    "handle PriorityQueue" in {
-      import scala.collection.JavaConverters._
-      val ord = Ordering.fromLessThan[(Int,Int)] { (l, r) => l._1 < r._1 }
-      val q = new java.util.PriorityQueue[(Int,Int)](3, ord)
-      q.add((2,3))
-      q.add((4,5))
-      def toList[A](q: java.util.PriorityQueue[A]): List[A] =
-        q.iterator.asScala.toList
-      val qlist = toList(q)
-      val newQ = rt(q)
-      toList(newQ) must be_==(qlist)
-      newQ.add((1,1))
-      newQ.add((2,1)) must beTrue
-      // Now without an ordering:
-      val qi = new java.util.PriorityQueue[Int](3)
-      qi.add(2)
-      qi.add(5)
-      val qilist = toList(qi)
-      toList(rt(qi)) must be_==(qilist)
-    }
     "work with Meatlocker" in {
       val l = List(1,2,3)
       val ml = MeatLocker(l)
