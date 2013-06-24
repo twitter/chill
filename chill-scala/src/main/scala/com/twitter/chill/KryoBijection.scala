@@ -21,7 +21,7 @@ import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.twitter.bijection.{ Bijection, Injection }
 import org.objenesis.strategy.StdInstantiatorStrategy
 
-import scala.util.control.Exception.allCatch
+import scala.util.control.Exception.catching
 
 /**
  * KryoBijection is split into a trait and companion object to allow
@@ -93,6 +93,6 @@ class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[Any, A
 
   def invert(b: Array[Byte]): Option[Any] = {
     input.setBuffer(b)
-    allCatch.opt(kryo.readClassAndObject(input))
+    catching(classOf[Exception]).opt(kryo.readClassAndObject(input))
   }
 }
