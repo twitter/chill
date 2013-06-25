@@ -2,6 +2,7 @@ package com.twitter.chill.hadoop;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.UnsafeInput;
 import org.apache.hadoop.io.serializer.Deserializer;
 
 import java.io.DataInputStream;
@@ -34,7 +35,7 @@ public class KryoDeserializer implements Deserializer<Object> {
         byte[] bytes = new byte[inputStream.readInt()];
         inputStream.readFully( bytes );
 
-        return kryo.readObject(new Input(bytes), klass);
+        return kryo.readObject(new UnsafeInput(bytes), klass);
     }
 
     // TODO: Bump the kryo version, add a kryo.reset();

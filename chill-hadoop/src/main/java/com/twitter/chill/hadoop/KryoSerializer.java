@@ -2,6 +2,7 @@ package com.twitter.chill.hadoop;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.io.UnsafeOutput;
 import org.apache.hadoop.io.serializer.Serializer;
 
 import java.io.ByteArrayOutputStream;
@@ -32,7 +33,7 @@ public class KryoSerializer implements Serializer<Object> {
         // Clear buffer.
         byteStream.reset();
         // Write output to temorary buffer.
-        Output ko = new Output(byteStream);
+        Output ko = new UnsafeOutput(byteStream);
         kryo.writeObject(ko, o);
         ko.flush();
         // Copy from buffer to output stream.
