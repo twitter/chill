@@ -8,7 +8,7 @@ import com.typesafe.tools.mima.plugin.MimaKeys._
 import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
-  val kryoVersion = "2.21"
+  val kryoVersion = "2.22-SNAPSHOT"
 
   val sharedSettings = Project.defaultSettings ++
     mimaDefaultSettings ++ Seq(
