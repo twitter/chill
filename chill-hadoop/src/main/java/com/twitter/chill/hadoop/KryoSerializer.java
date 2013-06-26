@@ -41,12 +41,10 @@ public class KryoSerializer implements Serializer<Object> {
     }
 
     public void serialize(Object o) throws IOException {
+        // The outputs are borrowed in a clean state, ready to use
         Output ko =  kryoSerialization.borrowOutput();
-        // Clear buffer.
-        ko.clear();
         // kryoSerialization ALWAYS puts these types into the buffer
         ByteArrayOutputStream byteStream = (ByteArrayOutputStream)ko.getOutputStream();
-        byteStream.reset();
         // Get a Kryo:
         Kryo kryo = kryoSerialization.borrowKryo();
         try {

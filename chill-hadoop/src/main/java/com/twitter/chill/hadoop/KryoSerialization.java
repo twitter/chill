@@ -95,7 +95,14 @@ public class KryoSerialization extends Configured implements Serialization<Objec
 
     public final Output borrowOutput() { return outputPool.borrow(); }
 
-    public final void releaseOutput(Output o) { outputPool.release(o); }
+    public final void releaseOutput(Output o) {
+      // Clear buffer.
+      o.clear();
+      ByteArrayOutputStream byteStream = (ByteArrayOutputStream)o.getOutputStream();
+      byteStream.reset();
+
+      outputPool.release(o);
+    }
 
     /**
      * Initializes Kryo instance from the JobConf on the first run. If the ACCEPT_ALL key in
