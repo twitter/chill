@@ -24,14 +24,25 @@ import com.esotericsoftware.kryo.io.Output;
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
+import java.io.{ByteArrayOutputStream => BAOut, ByteArrayInputStream => BAIn}
+
 class HadoopTests extends Specification {
   noDetailedDiffs() //Fixes issue for scala 2.9
 
-  def rt[A](k: Kryo, a: A): A = {
-    val out = new Output(1000, -1)
-    k.writeClassAndObject(out, a.asInstanceOf[AnyRef])
-    val in = new Input(out.toBytes)
-    k.readClassAndObject(in).asInstanceOf[A]
+  def rt[A <: AnyRef](k: KryoSerialization, a: A): A = {
+    val out = new BAOut
+    val cls = a.getClass.asInstanceOf[Class[AnyRef]]
+    val ks = k.getSerializer(cls)
+    ks.open(out)
+    ks.serialize(a)
+    ks.close
+
+    val in = new BAIn(out.toByteArray)
+    val kd = k.getDeserializer(cls)
+    kd.open(in)
+    val res = kd.deserialize(null)
+    kd.close
+    res.asInstanceOf[A]
   }
 
   "KryoSerialization" should {
@@ -54,6 +65,12 @@ class HadoopTests extends Specification {
         ks.releaseKryo(k)
         k
       }.toSet.size must be_==(1)
+    }
+    "Serialize a list of random things" in {
+      val ks = new KryoSerialization
+      val things = List(1.asInstanceOf[AnyRef], "hey", (1, 2))
+
+      things.map { rt(ks, _) } must be_==(things)
     }
   }
 }
