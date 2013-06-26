@@ -16,14 +16,20 @@ limitations under the License.
 
 package com.twitter.chill
 
-class ClassManifestSerializer[T] extends KSerializer[ClassManifest[T]] {
-
-  def write(kser: Kryo, out: Output, obj: ClassManifest[T]) {
-    kser.writeObject(out, obj.erasure)
+class EitherSerializer[A, B] extends KSerializer[Either[A, B]] {
+  def write(kser: Kryo, out: Output, either: Either[A, B]) {
+    val (item, isLeft) = either match {
+      case Left(l) => (l, true)
+      case Right(r) => (r, false)
+    }
+    out.writeBoolean(isLeft)
+    kser.writeClassAndObject(out, item)
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[ClassManifest[T]]) : ClassManifest[T] = {
-    val clazz = kser.readObject(in, classOf[Class[T]]).asInstanceOf[Class[T]]
-    ClassManifest.fromClass[T](clazz)
+  def read(kser: Kryo, in: Input, cls: Class[Either[A, B]]): Either[A, B] = {
+    if (in.readBoolean)
+      Left(kser.readClassAndObject(in).asInstanceOf[A])
+    else
+      Right(kser.readClassAndObject(in).asInstanceOf[B])
   }
 }

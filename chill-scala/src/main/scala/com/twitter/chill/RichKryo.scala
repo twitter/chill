@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.{ Serializer => KSerializer }
-import com.esotericsoftware.kryo.io.{ ByteBufferInputStream, Input, Output }
-
 import com.twitter.bijection.{ Bufferable, Bijection, ImplicitBijection, Injection }
 
 import java.io.InputStream

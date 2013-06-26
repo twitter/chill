@@ -16,7 +16,6 @@
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
 import com.twitter.bijection.{ Base64String, Bijection, CastInjection, Injection }
 import com.twitter.bijection.Conversion.asMethod
 

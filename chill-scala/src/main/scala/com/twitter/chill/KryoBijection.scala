@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.twitter.bijection.{ Bijection, Injection }
 import org.objenesis.strategy.StdInstantiatorStrategy
 
