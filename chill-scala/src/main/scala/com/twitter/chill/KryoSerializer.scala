@@ -87,8 +87,9 @@ object KryoSerializer {
       // wrapper array is abstract
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
-      .forSubclass[Some[Any]](new SomeSerializer[Any])
-      .forSubclass[Either[Any, Any]](new EitherSerializer[Any, Any])
+      .forClass[Some[Any]](new SomeSerializer[Any])
+      .forClass[Left[Any, Any]](new LeftSerializer[Any, Any])
+      .forClass[Right[Any, Any]](new RightSerializer[Any, Any])
       .forTraversableSubclass(Queue.empty[Any])
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.empty[Any])

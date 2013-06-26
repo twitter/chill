@@ -16,20 +16,20 @@ limitations under the License.
 
 package com.twitter.chill
 
-class EitherSerializer[A, B] extends KSerializer[Either[A, B]] {
-  def write(kser: Kryo, out: Output, either: Either[A, B]) {
-    val (item, isLeft) = either match {
-      case Left(l) => (l, true)
-      case Right(r) => (r, false)
-    }
-    out.writeBoolean(isLeft)
-    kser.writeClassAndObject(out, item)
+class LeftSerializer[A, B] extends KSerializer[Left[A, B]] {
+  def write(kser: Kryo, out: Output, left: Left[A, B]) {
+    kser.writeClassAndObject(out, left.a)
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[Either[A, B]]): Either[A, B] = {
-    if (in.readBoolean)
-      Left(kser.readClassAndObject(in).asInstanceOf[A])
-    else
-      Right(kser.readClassAndObject(in).asInstanceOf[B])
+  def read(kser: Kryo, in: Input, cls: Class[Left[A, B]]): Left[A, B] =
+    Left(kser.readClassAndObject(in).asInstanceOf[A])
+}
+
+class RightSerializer[A, B] extends KSerializer[Right[A, B]] {
+  def write(kser: Kryo, out: Output, right: Right[A, B]) {
+    kser.writeClassAndObject(out, right.b)
   }
+
+  def read(kser: Kryo, in: Input, cls: Class[Right[A, B]]): Right[A, B] =
+    Right(kser.readClassAndObject(in).asInstanceOf[B])
 }
