@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.{ Serializer => KSerializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
-
 class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
 
   val singletons : IndexedSeq[Manifest[_]] = IndexedSeq(Manifest.Any, Manifest.AnyVal,

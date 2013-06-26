@@ -1,7 +1,5 @@
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.{ Kryo, Serializer => KSerializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
 import com.twitter.bijection.Injection
 
 /**

@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.{ Serializer => KSerializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
-
 import com.twitter.bijection.{ Bufferable, ImplicitBijection }
 
 import scala.collection.immutable.{
@@ -91,6 +87,9 @@ object KryoSerializer {
       // wrapper array is abstract
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
+      .forClass[Some[Any]](new SomeSerializer[Any])
+      .forClass[Left[Any, Any]](new LeftSerializer[Any, Any])
+      .forClass[Right[Any, Any]](new RightSerializer[Any, Any])
       .forTraversableSubclass(Queue.empty[Any])
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.empty[Any])
