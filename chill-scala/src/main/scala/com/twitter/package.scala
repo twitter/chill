@@ -14,16 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.twitter.chill
+package com.twitter
 
-class ClassManifestSerializer[T] extends KSerializer[ClassManifest[T]] {
-
-  def write(kser: Kryo, out: Output, obj: ClassManifest[T]) {
-    kser.writeObject(out, obj.erasure)
-  }
-
-  def read(kser: Kryo, in: Input, cls: Class[ClassManifest[T]]) : ClassManifest[T] = {
-    val clazz = kser.readObject(in, classOf[Class[T]]).asInstanceOf[Class[T]]
-    ClassManifest.fromClass[T](clazz)
-  }
+/**
+  * Scala extensions to the Kryo serialization library.
+  */
+package object chill {
+  type Kryo = com.esotericsoftware.kryo.Kryo
+  type KSerializer[T] = com.esotericsoftware.kryo.Serializer[T]
+  type Input = com.esotericsoftware.kryo.io.Input
+  type Output = com.esotericsoftware.kryo.io.Output
 }
