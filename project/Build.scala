@@ -109,6 +109,7 @@ object ChillBuild extends Build {
     )
   )
 
+  // This can only have java deps!
   lazy val chillJava = Project(
     id = "chill-java",
     base = file("chill-java"),
@@ -132,6 +133,7 @@ object ChillBuild extends Build {
     libraryDependencies += "storm" % "storm" % "0.9.0-wip9"
   ).dependsOn(chill)
 
+  // This can only have java deps!
   lazy val chillHadoop = Project(
     id = "chill-hadoop",
     base = file("chill-hadoop"),
@@ -145,5 +147,5 @@ object ChillBuild extends Build {
       "org.slf4j" % "slf4j-log4j12" % "1.6.6" % "provided"
     ),
     previousArtifact := None
-  )
+  ).dependsOn(chillJava)
 }
