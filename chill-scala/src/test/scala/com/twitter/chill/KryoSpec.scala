@@ -54,7 +54,7 @@ class KryoSpec extends Specification with BaseProperties {
                       Map(1->2,4->5),
                       0 to 100,
                       (0 to 42).toList, Seq(1,100,1000),
-                      Right(Map("hello" -> "world".toInt)),
+                      Right(Map("hello" -> 100)),
                       Left(Map(1->"YO!")),
                       Some(Left(10)),
                       Map("good" -> 0.5, "bad" -> -1.0),
