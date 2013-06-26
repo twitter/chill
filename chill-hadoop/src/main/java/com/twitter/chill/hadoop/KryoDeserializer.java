@@ -26,7 +26,6 @@ import java.io.InputStream;
 
 public class KryoDeserializer implements Deserializer<Object> {
 
-    private Kryo kryo;
     private final KryoSerialization kryoSerialization;
     private final Class<Object> klass;
 
@@ -37,22 +36,7 @@ public class KryoDeserializer implements Deserializer<Object> {
         this.klass = klass;
     }
 
-    private void initKryo() {
-      if(null == kryo) {
-        kryo = kryoSerialization.borrowKryo();
-      }
-    }
-
-    private void closeKryo() {
-      if(null != kryo) {
-        kryoSerialization.releaseKryo(kryo);
-        kryo = null;
-      }
-    }
-
     public void open(InputStream in) throws IOException {
-        initKryo();
-
         if( in instanceof DataInputStream)
             inputStream = (DataInputStream) in;
         else
@@ -60,20 +44,25 @@ public class KryoDeserializer implements Deserializer<Object> {
     }
 
     public Object deserialize(Object o) throws IOException {
+        // TODO, we could share these buffers if we see that alloc is bottlenecking
         byte[] bytes = new byte[inputStream.readInt()];
         inputStream.readFully( bytes );
 
-        return kryo.readObject(new Input(bytes), klass);
+        Kryo kryo = kryoSerialization.borrowKryo();
+        try {
+          return kryo.readObject(new Input(bytes), klass);
+        }
+        finally {
+          kryoSerialization.releaseKryo(kryo);
+        }
     }
 
-    // TODO: Bump the kryo version, add a kryo.reset();
     public void close() throws IOException {
         try {
             if( inputStream != null )
                 inputStream.close();
         } finally {
             inputStream = null;
-            closeKryo();
         }
     }
 }

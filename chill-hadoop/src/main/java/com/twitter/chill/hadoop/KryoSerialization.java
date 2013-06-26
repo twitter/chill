@@ -17,6 +17,8 @@ limitations under the License.
 package com.twitter.chill.hadoop;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.serializer.Deserializer;
@@ -26,12 +28,15 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import com.twitter.chill.java.ResourcePool;
 
+import java.io.ByteArrayOutputStream;
+
 public class KryoSerialization extends Configured implements Serialization<Object> {
 
     Kryo kryo;
     KryoFactory factory;
 
-    ResourcePool<Kryo> kryoPool;
+    final ResourcePool<Kryo> kryoPool;
+    final ResourcePool<Output> outputPool;
 
     public KryoSerialization() {
         this(new Configuration());
@@ -44,9 +49,16 @@ public class KryoSerialization extends Configured implements Serialization<Objec
      */
     public KryoSerialization( Configuration conf ) {
         super( conf );
-        kryoPool = new ResourcePool<Kryo>(100) {
+        int MAX_CACHED_RESOURCE = 100;
+        kryoPool = new ResourcePool<Kryo>(MAX_CACHED_RESOURCE) {
           protected Kryo newInstance() {
             return populatedKryo();
+          }
+        };
+
+        outputPool = new ResourcePool<Output>(MAX_CACHED_RESOURCE) {
+          protected Output newInstance() {
+            return new Output(new ByteArrayOutputStream());
           }
         };
     }
@@ -77,12 +89,19 @@ public class KryoSerialization extends Configured implements Serialization<Objec
         return k;
     }
 
-    public final Kryo borrowKryo() {
-      return kryoPool.borrow();
-    }
+    public final Kryo borrowKryo() { return kryoPool.borrow(); }
 
-    public final void releaseKryo(Kryo k) {
-      kryoPool.release(k);
+    public final void releaseKryo(Kryo k) { kryoPool.release(k); }
+
+    public final Output borrowOutput() { return outputPool.borrow(); }
+
+    public final void releaseOutput(Output o) {
+      // Clear buffer.
+      o.clear();
+      ByteArrayOutputStream byteStream = (ByteArrayOutputStream)o.getOutputStream();
+      byteStream.reset();
+
+      outputPool.release(o);
     }
 
     /**
