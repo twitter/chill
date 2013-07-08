@@ -23,8 +23,7 @@ import com.esotericsoftware.kryo.serializers.FieldSerializer
 import org.objenesis.instantiator.ObjectInstantiator
 import org.objenesis.strategy.InstantiatorStrategy
 
-import java.lang.reflect.Constructor
-import java.lang.reflect.Modifier
+import _root_.java.lang.reflect.{Constructor, Modifier}
 
 /*
  * This is the base class of Kryo we use to fix specific scala

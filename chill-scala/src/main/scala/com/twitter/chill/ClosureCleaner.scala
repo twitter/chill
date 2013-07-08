@@ -30,7 +30,7 @@
 
 package com.twitter.chill
 
-import java.lang.reflect.Field
+import _root_.java.lang.reflect.Field
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.{Set => MSet, Map => MMap}
