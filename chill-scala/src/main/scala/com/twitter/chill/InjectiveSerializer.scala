@@ -27,11 +27,6 @@ class InjectiveSerializer[T] private (injection: Injection[T, Array[Byte]]) exte
   def read(kser: Kryo, in: Input, cls: Class[T]): T = {
     val bytes = new Array[Byte](in.readInt(true))
     in.readBytes(bytes)
-    injection.invert(bytes) match {
-      case Some(t) => t
-      case None => throw new RuntimeException(
-        "Could not deserialize instance of " + cls.getName
-      )
-    }
+    injection.invert(bytes).get
   }
 }
