@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.twitter.bijection.{ Bijection, Injection }
+import com.twitter.bijection.{ Bijection, Injection, Inversion }
 import org.objenesis.strategy.StdInstantiatorStrategy
 
 import scala.util.control.Exception.catching
@@ -89,8 +89,8 @@ class KryoInjectionInstance(kryo: Kryo, output: Output) extends Injection[Any, A
     output.toBytes
   }
 
-  def invert(b: Array[Byte]): Option[Any] = {
+  def invert(b: Array[Byte]) = {
     input.setBuffer(b)
-    catching(classOf[Exception]).opt(kryo.readClassAndObject(input))
+    Inversion.attempt(b) { _ => kryo.readClassAndObject(input) }
   }
 }

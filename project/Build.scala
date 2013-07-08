@@ -17,7 +17,9 @@ object ChillBuild extends Build {
 
   organization := "com.twitter",
 
-  crossScalaVersions := Seq("2.9.2", "2.10.0"),
+  scalaVersion := "2.9.3",
+
+  crossScalaVersions := Seq("2.9.3", "2.10.0"),
 
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
 
@@ -104,7 +106,7 @@ object ChillBuild extends Build {
     name := "chill",
     previousArtifact := Some("com.twitter" % "chill_2.9.2" % "0.2.2"),
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-core" % "0.4.0",
+      "com.twitter" %% "bijection-core" % "0.5.2",
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
   )
