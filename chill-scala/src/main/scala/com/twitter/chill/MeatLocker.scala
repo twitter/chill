@@ -16,13 +16,14 @@ limitations under the License.
 
 package com.twitter.chill
 
+import _root_.java.io.Serializable
 object MeatLocker {
   def apply[T](t: T) = new MeatLocker(t)
 }
 
 // TODO: Use Injection and return an Option[T]. Or upgrade to scala
 // 2.10 fully and return a Try[T].
-class MeatLocker[T](@transient protected var t: T) extends java.io.Serializable {
+class MeatLocker[T](@transient protected var t: T) extends Serializable {
   protected val tBytes = KryoBijection(t.asInstanceOf[AnyRef])
   def get: T = {
     if(null == t) {

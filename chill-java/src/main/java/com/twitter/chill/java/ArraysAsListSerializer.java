@@ -16,6 +16,8 @@
  */
 package com.twitter.chill.java;
 
+import com.twitter.chill.IKryoRegistrar;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -37,8 +39,12 @@ import com.esotericsoftware.kryo.io.Output;
  */
 public class ArraysAsListSerializer extends Serializer<List<?>> {
 
-    static public void register(Kryo k) {
-      k.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+    static public IKryoRegistrar registrar() {
+      return new IKryoRegistrar() {
+        public void apply(Kryo k) {
+          k.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+        }
+      };
     }
 
     private Field _arrayField;

@@ -5,9 +5,19 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+import com.twitter.chill.IKryoRegistrar;
+
 import java.util.UUID;
 
 public class UUIDSerializer extends Serializer<UUID> {
+
+   static public IKryoRegistrar registrar() {
+      return new IKryoRegistrar() {
+        public void apply(Kryo k) {
+          k.register(UUID.class, new UUIDSerializer());
+        }
+      };
+    }
 
     @Override
     public void write(Kryo kryo, Output output, UUID uuid) {

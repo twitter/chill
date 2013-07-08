@@ -5,9 +5,19 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+import com.twitter.chill.IKryoRegistrar;
+
 import java.util.regex.Pattern;
 
 public class RegexSerializer extends Serializer<Pattern> {
+
+    static public IKryoRegistrar registrar() {
+      return new IKryoRegistrar() {
+        public void apply(Kryo k) {
+          k.register(Pattern.class, new RegexSerializer());
+        }
+      };
+    }
 
     @Override
     public void write(Kryo kryo, Output output, Pattern pattern) {

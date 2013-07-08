@@ -107,7 +107,7 @@ object ChillBuild extends Build {
       "com.twitter" %% "bijection-core" % "0.4.0",
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
-  )
+  ).dependsOn(chillJava)
 
   // This can only have java deps!
   lazy val chillJava = Project(
