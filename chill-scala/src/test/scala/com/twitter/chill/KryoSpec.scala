@@ -179,7 +179,7 @@ class KryoSpec extends Specification with BaseProperties {
       val obj   = Seq(1, 2, 3)
       val bytes = KryoInjection(obj)
 
-      val inputStream = new java.io.ByteArrayInputStream(bytes)
+      val inputStream = new _root_.java.io.ByteArrayInputStream(bytes)
 
       val kryo = KryoBijection.getKryo
       val rich = new RichKryo(kryo)
@@ -196,7 +196,7 @@ class KryoSpec extends Specification with BaseProperties {
       val obj   = Seq(1, 2, 3)
       val bytes = KryoInjection(obj)
 
-      val byteBuffer = java.nio.ByteBuffer.wrap(bytes)
+      val byteBuffer = _root_.java.nio.ByteBuffer.wrap(bytes)
 
       val kryo = KryoBijection.getKryo
       val rich = new RichKryo(kryo)
