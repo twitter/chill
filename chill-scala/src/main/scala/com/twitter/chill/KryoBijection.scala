@@ -31,13 +31,7 @@ import scala.util.control.Exception.catching
 object KryoBijection extends KryoBijection
 
 trait KryoBijection extends Bijection[Any, Array[Byte]] {
-  def getKryo: Kryo = {
-    val k = new KryoBase
-    k.setRegistrationRequired(false)
-    k.setInstantiatorStrategy(new StdInstantiatorStrategy)
-    KryoSerializer.registerAll(k)
-    k
-  }
+  def getKryo: Kryo = KryoSerializer.registered.newKryo
 
   override def apply(obj: Any): Array[Byte] = {
     val output = new Output(1 << 12, 1 << 30)
@@ -68,7 +62,7 @@ object KryoInjection extends Injection[Any, Array[Byte]] {
    * and "max" respectively.
    */
   def instance(
-    kryo: Kryo = KryoBijection.getKryo,
+    kryo: Kryo = KryoSerializer.registered.newKryo,
     init: Int = 1 << 10,
     max: Int = 1 << 24
   ): Injection[Any, Array[Byte]] =

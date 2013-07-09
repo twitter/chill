@@ -19,13 +19,16 @@ package com.twitter.chill;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 
-public class SingleRegistrar<T> implements IKryoRegistrar {
+/** Use reflection to instantiate a serializer.
+ * Used when serializer classes are written to config files
+ */
+public class ReflectingRegistrar<T> implements IKryoRegistrar {
   final Class<T> klass;
-  final Serializer<T> serializer;
-  public SingleRegistrar(Class<T> cls, Serializer<T> ser) {
+  final Class<? extends Serializer<T>> serializerKlass;
+  public ReflectingRegistrar(Class<T> cls, Class<? extends Serializer<T>> ser) {
     klass = cls;
-    serializer = ser;
+    serializerKlass = ser;
   }
   @Override
-  public void apply(Kryo k) { k.register(klass, serializer); }
+  public void apply(Kryo k) { k.register(klass, k.newSerializer(serializerKlass, klass)); }
 }

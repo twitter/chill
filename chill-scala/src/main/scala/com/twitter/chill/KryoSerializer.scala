@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.twitter.chill
 
+import com.twitter.chill.java.PackageRegistrar
+
 import com.twitter.bijection.{ Bufferable, ImplicitBijection }
 
 import scala.collection.immutable.{
@@ -38,6 +40,22 @@ import scala.util.matching.Regex
 object KryoSerializer {
 
   import KryoImplicits.toRich //Add methods to Kryo
+
+  /** Return an instantiator that is configured to work well with scala
+   * objects/classes, but has no serializers registered
+   */
+  def empty: KryoInstantiator = new KryoInstantiator {
+    def newKryo = {
+      val k = new KryoBase
+      k.setRegistrationRequired(false)
+      k.setInstantiatorStrategy(new org.objenesis.strategy.StdInstantiatorStrategy)
+      k
+    }
+  }
+  /** Return an instantiator that is configured to work well with scala
+   * objects/classes, but has no serializers registered
+   */
+  def registered: KryoInstantiator = empty.withRegistrar(registerAll)
 
   def registerCollectionSerializers: IKryoRegistrar = new IKryoRegistrar {
     def apply(newK: Kryo) {
@@ -103,6 +121,7 @@ object KryoSerializer {
         .forClass[ClassManifest[Any]](new ClassManifestSerializer[Any])
         .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
         .forSubclass[scala.Enumeration#Value](new EnumerationSerializer)
+      PackageRegistrar.all()(k)
     }
   }
 
