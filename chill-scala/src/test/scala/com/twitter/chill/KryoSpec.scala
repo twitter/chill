@@ -121,7 +121,6 @@ class KryoSpec extends Specification with BaseProperties {
        }
     }
     "use bijections" in {
-      import KryoImplicits.toRich
 
       implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
         (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
@@ -132,7 +131,6 @@ class KryoSpec extends Specification with BaseProperties {
       rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "use java serialization" in {
-      import KryoImplicits.toRich
 
       val kryo = KryoBijection.getKryo.javaForClass[TestCaseClassForSerialization]
       val inj = KryoInjection.instance(kryo)

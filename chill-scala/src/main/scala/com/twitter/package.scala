@@ -24,4 +24,27 @@ package object chill {
   type KSerializer[T] = com.esotericsoftware.kryo.Serializer[T]
   type Input = com.esotericsoftware.kryo.io.Input
   type Output = com.esotericsoftware.kryo.io.Output
+
+  implicit def toRich(k: Kryo): RichKryo = new RichKryo(k)
+  implicit def toInstantiator(fn: Function0[Kryo]): KryoInstantiator = new KryoInstantiator {
+    def newKryo = fn.apply
+  }
+  implicit def toRegistrar(fn: Function1[Kryo,Unit]): IKryoRegistrar = new IKryoRegistrar {
+    def apply(k: Kryo) = fn(k)
+  }
+  implicit def toRegistrar(items: Iterable[IKryoRegistrar]): IKryoRegistrar = new IKryoRegistrar {
+    def apply(k: Kryo) { items.foreach { _.apply(k) } }
+  }
+  def printIfRegistered(cls: Class[_]): IKryoRegistrar = new IKryoRegistrar {
+    def apply(k: Kryo) {
+      if (k.alreadyRegistered(cls)) {
+        System.err.printf("%s is already registered.", cls.getName)
+      }
+    }
+  }
+  def assertNotRegistered(cls: Class[_]): IKryoRegistrar = new IKryoRegistrar {
+    def apply(k: Kryo) {
+      assert(!k.alreadyRegistered(cls), String.format("%s is already registered.", cls.getName))
+    }
+  }
 }

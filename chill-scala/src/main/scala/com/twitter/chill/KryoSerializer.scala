@@ -39,8 +39,6 @@ import scala.util.matching.Regex
 
 object KryoSerializer {
 
-  import KryoImplicits.toRich //Add methods to Kryo
-
   /** Return an instantiator that is configured to work well with scala
    * objects/classes, but has no serializers registered
    */
