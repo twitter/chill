@@ -23,7 +23,6 @@ import com.twitter.bijection.Bijection
 class CustomSerializationSpec extends Specification with BaseProperties {
   "Custom KryoSerializers and KryoDeserializers" should {
     "serialize objects that have registered serialization" in {
-      import KryoImplicits.toRich
 
       /* These classes can be inside CustomSerializationSpec since their
        * serialization is precisely specified. */
