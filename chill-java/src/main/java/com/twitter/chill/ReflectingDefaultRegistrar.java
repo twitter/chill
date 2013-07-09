@@ -19,13 +19,15 @@ package com.twitter.chill;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 
-public class SingleRegistrar<T> implements IKryoRegistrar {
+/** Set the default serializers for subclasses of the given class
+ */
+public class ReflectingDefaultRegistrar<T> implements IKryoRegistrar {
   final Class<T> klass;
-  final Serializer<T> serializer;
-  public SingleRegistrar(Class<T> cls, Serializer<T> ser) {
+  final Class<? extends Serializer<T>> serializerKlass;
+  public ReflectingDefaultRegistrar(Class<T> cls, Class<? extends Serializer<T>> ser) {
     klass = cls;
-    serializer = ser;
+    serializerKlass = ser;
   }
   @Override
-  public void apply(Kryo k) { k.register(klass, serializer); }
+  public void apply(Kryo k) { k.addDefaultSerializer(klass, k.newSerializer(serializerKlass, klass)); }
 }
