@@ -40,7 +40,7 @@ class PriorityQueueSpec extends Specification {
 
       val kryo = new Kryo()
       kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
-      PriorityQueueSerializer.register(kryo)
+      PriorityQueueSerializer.registrar()(kryo)
       val ord = Ordering.fromLessThan[(Int,Int)] { (l, r) => l._1 < r._1 }
       val q = new java.util.PriorityQueue[(Int,Int)](3, ord)
       q.add((2,3))

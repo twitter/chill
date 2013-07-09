@@ -19,8 +19,9 @@ package com.twitter.chill
 import com.twitter.bijection.{ Base64String, Bijection, CastInjection, Injection }
 import com.twitter.bijection.Conversion.asMethod
 
-import java.util.{ Map => JMap }
+import _root_.java.util.{ Map => JMap }
 
+import KryoImplicits.toRich
 
 /**
   * Helpful methods for registering Injections as serializers by way
@@ -128,16 +129,16 @@ case class KryoRegistrationHelper(prefix: String) {
     */
   def registerInjections(k: Kryo, conf: JMap[_,_]) {
     getRegisteredInjections(conf)
-      .foreach { KryoSerializer.registerInjections(k, _) }
+      .foreach { k.injectionForClasses(_) }
   }
 
   def registerInjectionDefaults(k: Kryo, conf: JMap[_,_]) {
     getRegisteredInjectionDefaults(conf)
-      .foreach { KryoSerializer.registerInjectionDefaults(k, _) }
+      .foreach { k.injectionForSubclasses(_) }
   }
 
   def registerKryoClasses(k: Kryo, conf: JMap[_,_]) {
     getRegisteredClasses(conf)
-      .foreach { KryoSerializer.registerClasses(k, _) }
+      .foreach { k.registerClasses(_) }
   }
 }

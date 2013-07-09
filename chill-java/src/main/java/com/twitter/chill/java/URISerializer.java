@@ -5,9 +5,16 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+import com.twitter.chill.IKryoRegistrar;
+import com.twitter.chill.SingleRegistrar;
+
 import java.net.URI;
 
 public class URISerializer extends Serializer<java.net.URI> {
+
+    static public IKryoRegistrar registrar() {
+      return new SingleRegistrar(URI.class, new URISerializer());
+    }
 
     @Override
     public void write(Kryo kryo, Output output, URI uri) {

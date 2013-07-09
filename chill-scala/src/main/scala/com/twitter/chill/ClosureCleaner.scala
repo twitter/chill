@@ -30,7 +30,7 @@
 
 package com.twitter.chill
 
-import java.lang.reflect.Field
+import _root_.java.lang.reflect.Field
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.{Set => MSet, Map => MMap}
@@ -204,7 +204,7 @@ object ClosureCleaner {
     }
   }
 
-  private val objectCtor = classOf[java.lang.Object].getDeclaredConstructor();
+  private val objectCtor = classOf[_root_.java.lang.Object].getDeclaredConstructor();
   // Use reflection to instantiate object without calling constructor
   private def instantiateClass(cls: Class[_]): AnyRef =
     sun.reflect.ReflectionFactory

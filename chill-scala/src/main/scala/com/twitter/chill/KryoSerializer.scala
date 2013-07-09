@@ -39,44 +39,8 @@ object KryoSerializer {
 
   import KryoImplicits.toRich //Add methods to Kryo
 
-  // TODO: remove the registration methods, and use RichKryo
-
-  def alreadyRegistered(k: Kryo, klass: Class[_]) =
-    k.getClassResolver.getRegistration(klass) != null
-
-  def registerInjections(newK: Kryo, pairs: TraversableOnce[InjectionPair[_]]) {
-    pairs.foreach { pair: InjectionPair[_] =>
-      if (!alreadyRegistered(newK, pair.klass)) {
-        val serializer = InjectiveSerializer.asKryo(pair.injection)
-        newK.register(pair.klass, serializer)
-      } else {
-        System.err.printf("%s is already registered in registerInjections.",
-                          pair.klass.getName)
-      }
-    }
-  }
-
-  def registerInjectionDefaults(newK: Kryo, pairs: TraversableOnce[InjectionPair[_]]) {
-    pairs.foreach { pair: InjectionPair[_] =>
-      if (!alreadyRegistered(newK, pair.klass)) {
-        val serializer = InjectiveSerializer.asKryo(pair.injection)
-        newK.addDefaultSerializer(pair.klass, serializer)
-        newK.register(pair.klass)
-      } else {
-        System.err.printf("%s is already registered in registerInjectionDefaults.",
-                          pair.klass.getName)
-      }
-    }
-  }
-
-  def registerClasses(newK: Kryo, klasses: TraversableOnce[Class[_]]) {
-    klasses.foreach { klass: Class[_] =>
-      if (!alreadyRegistered(newK, klass))
-        newK.register(klass)
-    }
-  }
-
-  def registerCollectionSerializers(newK: Kryo) {
+  def registerCollectionSerializers: IKryoRegistrar = new IKryoRegistrar {
+    def apply(newK: Kryo) {
     /*
      * Note that subclass-based use: addDefaultSerializers, else: register
      * You should go from MOST specific, to least to specific when using
@@ -127,16 +91,19 @@ object KryoSerializer {
       .forTraversableSubclass(Seq.empty[Any])
       .forTraversableSubclass(Iterable.empty[Any])
       .forTraversableSubclass(Traversable.empty[Any])
+    }
   }
 
-  def registerAll(k: Kryo) {
-    registerCollectionSerializers(k)
-    // Register all 22 tuple serializers and specialized serializers
-    ScalaTupleSerialization.register(k)
-    k.forClassViaBijection[Symbol, String]
-      .forClass[ClassManifest[Any]](new ClassManifestSerializer[Any])
-      .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
-      .forSubclass[scala.Enumeration#Value](new EnumerationSerializer)
+  def registerAll: IKryoRegistrar = new IKryoRegistrar {
+    def apply(k: Kryo) {
+      registerCollectionSerializers(k)
+      // Register all 22 tuple serializers and specialized serializers
+      ScalaTupleSerialization.register(k)
+      k.forClassViaBijection[Symbol, String]
+        .forClass[ClassManifest[Any]](new ClassManifestSerializer[Any])
+        .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
+        .forSubclass[scala.Enumeration#Value](new EnumerationSerializer)
+    }
   }
 
   /** Use a bijection[A,B] then the KSerializer on B

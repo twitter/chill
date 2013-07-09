@@ -5,9 +5,16 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+import com.twitter.chill.IKryoRegistrar;
+import com.twitter.chill.SingleRegistrar;
+
 import java.util.BitSet;
 
 public class BitSetSerializer extends Serializer<BitSet> {
+
+    static public IKryoRegistrar registrar() {
+      return new SingleRegistrar(BitSet.class, new BitSetSerializer());
+    }
 
     @Override
     public void write(Kryo kryo, Output output, BitSet bitSet) {
