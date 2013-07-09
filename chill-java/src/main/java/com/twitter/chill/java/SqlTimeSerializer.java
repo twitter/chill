@@ -5,9 +5,16 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+import com.twitter.chill.IKryoRegistrar;
+import com.twitter.chill.SingleRegistrar;
+
 import java.sql.Time;
 
 public class SqlTimeSerializer extends Serializer<Time> {
+
+    static public IKryoRegistrar registrar() {
+      return new SingleRegistrar(Time.class, new SqlTimeSerializer());
+    }
 
     @Override
     public void write(Kryo kryo, Output output, Time time) {

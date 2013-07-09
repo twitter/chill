@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import java.io._
+import _root_.java.io._
 import com.twitter.bijection.Injection
 
 trait BaseProperties {

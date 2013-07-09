@@ -16,6 +16,9 @@ limitations under the License.
 
 package com.twitter.chill.java;
 
+import com.twitter.chill.IKryoRegistrar;
+import com.twitter.chill.SingleRegistrar;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
@@ -28,8 +31,8 @@ import java.util.Comparator;
 class PriorityQueueSerializer extends Serializer<PriorityQueue<?>> {
   private Field compField;
 
-  static public void register(Kryo k) {
-    k.register(PriorityQueue.class, new PriorityQueueSerializer());
+  static public IKryoRegistrar registrar() {
+      return new SingleRegistrar(PriorityQueue.class, new PriorityQueueSerializer());
   }
 
   public PriorityQueueSerializer() {

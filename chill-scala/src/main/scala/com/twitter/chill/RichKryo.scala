@@ -19,9 +19,9 @@ package com.twitter.chill
 import com.esotericsoftware.kryo.io.ByteBufferInputStream
 import com.twitter.bijection.{ Bufferable, Bijection, ImplicitBijection, Injection }
 
-import java.io.InputStream
-import java.nio.ByteBuffer
-import java.util.{ Map => JMap }
+import _root_.java.io.{InputStream, Serializable}
+import _root_.java.nio.ByteBuffer
+import _root_.java.util.{ Map => JMap }
 
 import scala.collection.generic.CanBuildFrom
 import scala.util.control.Exception.allCatch
@@ -119,14 +119,14 @@ class RichKryo(k: Kryo) {
   /** Use Java serialization, which is very slow.
    * avoid this if possible, but for very rare classes it is probably fine
    */
-  def javaForClass[T<:java.io.Serializable](implicit cmf: ClassManifest[T]): Kryo = {
+  def javaForClass[T<:Serializable](implicit cmf: ClassManifest[T]): Kryo = {
     k.register(cmf.erasure, new com.esotericsoftware.kryo.serializers.JavaSerializer)
     k
   }
   /** Use Java serialization, which is very slow.
    * avoid this if possible, but for very rare classes it is probably fine
    */
-  def javaForSubclass[T<:java.io.Serializable](implicit cmf: ClassManifest[T]): Kryo = {
+  def javaForSubclass[T<:Serializable](implicit cmf: ClassManifest[T]): Kryo = {
     k.addDefaultSerializer(cmf.erasure, new com.esotericsoftware.kryo.serializers.JavaSerializer)
     k
   }
