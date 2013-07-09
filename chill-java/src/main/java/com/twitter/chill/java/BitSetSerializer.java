@@ -6,17 +6,14 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import com.twitter.chill.IKryoRegistrar;
+import com.twitter.chill.SingleRegistrar;
 
 import java.util.BitSet;
 
 public class BitSetSerializer extends Serializer<BitSet> {
 
     static public IKryoRegistrar registrar() {
-      return new IKryoRegistrar() {
-        public void apply(Kryo k) {
-          k.register(BitSet.class, new BitSetSerializer());
-        }
-      };
+      return new SingleRegistrar(BitSet.class, new BitSetSerializer());
     }
 
     @Override

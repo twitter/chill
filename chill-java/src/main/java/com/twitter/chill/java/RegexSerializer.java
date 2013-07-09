@@ -6,17 +6,14 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import com.twitter.chill.IKryoRegistrar;
+import com.twitter.chill.SingleRegistrar;
 
 import java.util.regex.Pattern;
 
 public class RegexSerializer extends Serializer<Pattern> {
 
     static public IKryoRegistrar registrar() {
-      return new IKryoRegistrar() {
-        public void apply(Kryo k) {
-          k.register(Pattern.class, new RegexSerializer());
-        }
-      };
+      return new SingleRegistrar(Pattern.class, new RegexSerializer());
     }
 
     @Override

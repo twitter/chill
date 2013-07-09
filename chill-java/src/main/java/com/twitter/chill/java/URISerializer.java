@@ -6,17 +6,14 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import com.twitter.chill.IKryoRegistrar;
+import com.twitter.chill.SingleRegistrar;
 
 import java.net.URI;
 
 public class URISerializer extends Serializer<java.net.URI> {
 
     static public IKryoRegistrar registrar() {
-      return new IKryoRegistrar() {
-        public void apply(Kryo k) {
-          k.register(URI.class, new URISerializer());
-        }
-      };
+      return new SingleRegistrar(URI.class, new URISerializer());
     }
 
     @Override

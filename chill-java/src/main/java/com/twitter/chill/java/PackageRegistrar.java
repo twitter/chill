@@ -28,18 +28,15 @@ import java.util.ArrayList;
 public class PackageRegistrar {
 
   static public IKryoRegistrar all() {
-    ArrayList<IKryoRegistrar> regs = new ArrayList<IKryoRegistrar>();
-
-    regs.add(ArraysAsListSerializer.registrar());
-    regs.add(BitSetSerializer.registrar());
-    regs.add(PriorityQueueSerializer.registrar());
-    regs.add(RegexSerializer.registrar());
-    regs.add(SqlDateSerializer.registrar());
-    regs.add(SqlTimeSerializer.registrar());
-    regs.add(TimestampSerializer.registrar());
-    regs.add(URISerializer.registrar());
-    regs.add(UUIDSerializer.registrar());
-
-    return new IterableRegistrar(regs);
+    return new IterableRegistrar(
+      ArraysAsListSerializer.registrar(),
+      BitSetSerializer.registrar(),
+      PriorityQueueSerializer.registrar(),
+      RegexSerializer.registrar(),
+      SqlDateSerializer.registrar(),
+      SqlTimeSerializer.registrar(),
+      TimestampSerializer.registrar(),
+      URISerializer.registrar(),
+      UUIDSerializer.registrar());
   }
 }

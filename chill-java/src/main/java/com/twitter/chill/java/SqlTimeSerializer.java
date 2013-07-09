@@ -6,17 +6,14 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import com.twitter.chill.IKryoRegistrar;
+import com.twitter.chill.SingleRegistrar;
 
 import java.sql.Time;
 
 public class SqlTimeSerializer extends Serializer<Time> {
 
     static public IKryoRegistrar registrar() {
-      return new IKryoRegistrar() {
-        public void apply(Kryo k) {
-          k.register(Time.class, new SqlTimeSerializer());
-        }
-      };
+      return new SingleRegistrar(Time.class, new SqlTimeSerializer());
     }
 
     @Override
