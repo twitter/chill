@@ -31,41 +31,18 @@ import scala.util.control.Exception.allCatch
  * This also follows the builder pattern to allow easily chaining this calls
  */
 class RichKryo(k: Kryo) {
-  def alreadyRegistered[T](implicit cmf: ClassManifest[T]): Boolean =
-    k.getClassResolver.getRegistration(cmf.erasure) != null
+  def alreadyRegistered(klass: Class[_]): Boolean =
+    k.getClassResolver.getRegistration(klass) != null
+
+  def alreadyRegistered[T](implicit cmf: ClassManifest[T]): Boolean = alreadyRegistered(cmf.erasure)
 
   def injectionForClass[T](implicit inj: Injection[T, Array[Byte]], cmf: ClassManifest[T]): Kryo = {
     k.register(cmf.erasure, InjectiveSerializer.asKryo[T])
     k
   }
 
-  def injectionForClasses(pairs: TraversableOnce[InjectionPair[_]]): Kryo = {
-    pairs.foreach { pair: InjectionPair[_] =>
-      if (!alreadyRegistered(ClassManifest.fromClass(pair.klass))) {
-        val serializer = InjectiveSerializer.asKryo(pair.injection)
-        k.register(pair.klass, serializer)
-      } else {
-        System.err.printf("%s is already registered in injectionForClasses.", pair.klass.getName)
-      }
-    }
-    k
-  }
-
   def injectionForSubclass[T](implicit inj: Injection[T, Array[Byte]], cmf: ClassManifest[T]): Kryo = {
     k.addDefaultSerializer(cmf.erasure, InjectiveSerializer.asKryo[T])
-    k
-  }
-
-  def injectionForSubclasses(pairs: TraversableOnce[InjectionPair[_]]): Kryo = {
-    pairs.foreach { pair: InjectionPair[_] =>
-      if (!alreadyRegistered(ClassManifest.fromClass(pair.klass))) {
-        val serializer = InjectiveSerializer.asKryo(pair.injection)
-        k.addDefaultSerializer(pair.klass, serializer)
-        k.register(pair.klass)
-      } else {
-        System.err.printf("%s is already registered in injectionForSubclasses.", pair.klass.getName)
-      }
-    }
     k
   }
 
@@ -146,9 +123,7 @@ class RichKryo(k: Kryo) {
     */
   def populateFromConfig(prefix: String, conf: JMap[_,_]): Kryo = {
     val helper = KryoRegistrationHelper(prefix)
-    helper.registerInjections(k, conf)
-    helper.registerInjectionDefaults(k, conf)
-    helper.registerKryoClasses(k, conf)
+    helper.asRegistrar(conf)(k)
     k
   }
 
@@ -164,8 +139,4 @@ class RichKryo(k: Kryo) {
     val streamInput = new Input(s)
     allCatch.opt(k.readClassAndObject(streamInput))
   }
-}
-
-object KryoImplicits {
-  implicit def toRich(k: Kryo): RichKryo = new RichKryo(k)
 }

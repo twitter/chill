@@ -21,8 +21,6 @@ import com.twitter.bijection.Conversion.asMethod
 
 import _root_.java.util.{ Map => JMap }
 
-import KryoImplicits.toRich
-
 /**
   * Helpful methods for registering Injections as serializers by way
   * of a Configuration map.
@@ -47,8 +45,7 @@ object UnsafeBase64StringUnwrap extends Bijection[Base64String, String] {
   * configuration supplied to each registration method.
   */
 case class KryoRegistrationHelper(prefix: String) {
-  val INJECTION_PAIRS = prefix + ".injection.pairs"
-  val INJECTION_DEFAULT_PAIRS = prefix + ".injection.pairs.default"
+  val REGISTRARS = prefix + ".registrars"
   val CLASS_REGISTRATIONS = prefix + ".class.registrations"
   val SEPARATOR = ":"
 
@@ -95,24 +92,14 @@ case class KryoRegistrationHelper(prefix: String) {
   }
 
   /**
-    * Injections for specific classes.
+    * Serialize these instances or registrars
     */
-  def resetInjections(conf: JMap[String, AnyRef]) { conf.remove(INJECTION_PAIRS) }
-  def registerInjections(conf: JMap[String, AnyRef], pairs: TraversableOnce[InjectionPair[_]]) {
-    appendAll(conf, INJECTION_PAIRS, pairs)
+  def resetRegistrars(conf: JMap[String, AnyRef]) { conf.remove(REGISTRARS) }
+  def addRegistrars(conf: JMap[String, AnyRef], pairs: TraversableOnce[IKryoRegistrar]) {
+    appendAll(conf, REGISTRARS, pairs)
   }
-  def getRegisteredInjections(conf: JMap[_,_]): Option[Iterable[InjectionPair[_]]] =
-    getAll(conf, INJECTION_PAIRS)
-
-  /**
-    * Injections for subclasses.
-    */
-  def resetInjectionDefaults(conf: JMap[_, _]) { conf.remove(INJECTION_PAIRS) }
-  def registerInjectionDefaults(conf: JMap[String,AnyRef], pairs: TraversableOnce[InjectionPair[_]]) {
-    appendAll(conf, INJECTION_DEFAULT_PAIRS, pairs)
-  }
-  def getRegisteredInjectionDefaults(conf: JMap[_, _]): Option[Iterable[InjectionPair[_]]] =
-    getAll(conf, INJECTION_DEFAULT_PAIRS)
+  def getRegistrars(conf: JMap[_,_]): Option[Iterable[IKryoRegistrar]] =
+    getAll(conf, REGISTRARS)
 
   /**
     * Registration for classes.
@@ -127,18 +114,13 @@ case class KryoRegistrationHelper(prefix: String) {
   /**
     * Actual Kryo registration.
     */
-  def registerInjections(k: Kryo, conf: JMap[_,_]) {
-    getRegisteredInjections(conf)
-      .foreach { k.injectionForClasses(_) }
-  }
+  def asRegistrar(conf: JMap[_,_]): IKryoRegistrar = new IKryoRegistrar {
+    def apply(k: Kryo) {
+      getRegistrars(conf)
+        .foreach { krs => krs.foreach { _.apply(k) } }
 
-  def registerInjectionDefaults(k: Kryo, conf: JMap[_,_]) {
-    getRegisteredInjectionDefaults(conf)
-      .foreach { k.injectionForSubclasses(_) }
-  }
-
-  def registerKryoClasses(k: Kryo, conf: JMap[_,_]) {
-    getRegisteredClasses(conf)
-      .foreach { k.registerClasses(_) }
+      getRegisteredClasses(conf)
+        .foreach { k.registerClasses(_) }
+    }
   }
 }
