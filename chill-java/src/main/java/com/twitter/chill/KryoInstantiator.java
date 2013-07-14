@@ -23,8 +23,8 @@ import org.objenesis.strategy.InstantiatorStrategy;
  * Used in initial configuration or pooling of Kryo objects.
  * These objects are immutable (and hopefully Kryo serializable)
  */
-abstract public class KryoInstantiator {
-  abstract public Kryo newKryo();
+public class KryoInstantiator {
+  public Kryo newKryo() { return new Kryo(); }
 
   /** If true, Kryo will error if it sees a class that has not been registered
    */

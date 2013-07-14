@@ -43,7 +43,7 @@ object KryoSerializer {
    * objects/classes, but has no serializers registered
    */
   def empty: KryoInstantiator = new KryoInstantiator {
-    def newKryo = {
+    override def newKryo = {
       val k = new KryoBase
       k.setRegistrationRequired(false)
       k.setInstantiatorStrategy(new org.objenesis.strategy.StdInstantiatorStrategy)

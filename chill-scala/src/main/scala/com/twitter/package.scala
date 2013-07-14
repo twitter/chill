@@ -27,7 +27,7 @@ package object chill {
 
   implicit def toRich(k: Kryo): RichKryo = new RichKryo(k)
   implicit def toInstantiator(fn: Function0[Kryo]): KryoInstantiator = new KryoInstantiator {
-    def newKryo = fn.apply
+    override def newKryo = fn.apply
   }
   implicit def toRegistrar(fn: Function1[Kryo,Unit]): IKryoRegistrar = new IKryoRegistrar {
     def apply(k: Kryo) = fn(k)
