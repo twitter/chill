@@ -54,7 +54,22 @@ Chill provides support for singletons, scala Objects and the following types:
 
 ## Maven
 
-Current version is `0.2.3`. groupid=`"com.twitter"` artifact=`"chill_2.9.2"` or artifact=`"chill_2.10"`.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.2.3`.
+
+Current published artifacts are
+
+* `chill-_2.9.2`
+* `chill_2.10`
+* `chill-java_2.9.2`
+* `chill-java_2.10`
+* `chill-storm_2.9.2`
+* `chill-storm_2.10`
+* `chill-hadoop_2.9.2`
+* `chill-hadoop_2.10`
+* `chill-akka_2.9.2`
+* `chill-akka_2.10`
+
+The suffix denotes the scala version.
 
 ## Authors
 
