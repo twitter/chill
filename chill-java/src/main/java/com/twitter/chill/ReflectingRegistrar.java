@@ -24,11 +24,32 @@ import com.esotericsoftware.kryo.Serializer;
  */
 public class ReflectingRegistrar<T> implements IKryoRegistrar {
   final Class<T> klass;
-  final Class<? extends Serializer<T>> serializerKlass;
-  public ReflectingRegistrar(Class<T> cls, Class<? extends Serializer<T>> ser) {
+  // Some serializers handle any class (FieldsSerializer, for instance)
+  final Class<? extends Serializer<?>> serializerKlass;
+
+  public Class<T> getRegisteredClass() { return klass; }
+  public Class<? extends Serializer<?>> getSerializerClass() { return serializerKlass; }
+
+  public ReflectingRegistrar(Class<T> cls, Class<? extends Serializer<?>> ser) {
     klass = cls;
     serializerKlass = ser;
   }
   @Override
   public void apply(Kryo k) { k.register(klass, k.newSerializer(serializerKlass, klass)); }
+  @Override
+  public int hashCode() { return klass.hashCode() ^ serializerKlass.hashCode(); }
+
+  @Override
+  public boolean equals(Object that) {
+    if(null == that) {
+      return false;
+    }
+    else if(that instanceof ReflectingRegistrar) {
+      return klass.equals(((ReflectingRegistrar)that).klass) &&
+        serializerKlass.equals(((ReflectingRegistrar)that).serializerKlass);
+    }
+    else {
+      return false;
+    }
+  }
 }

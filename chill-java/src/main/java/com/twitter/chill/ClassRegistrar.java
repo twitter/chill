@@ -25,6 +25,24 @@ public class ClassRegistrar<T> implements IKryoRegistrar {
     klass = cls;
   }
 
+  public Class<T> getRegisteredClass() { return klass; }
+
   @Override
   public void apply(Kryo k) { k.register(klass); }
+
+  @Override
+  public int hashCode() { return klass.hashCode(); }
+
+  @Override
+  public boolean equals(Object that) {
+    if(null == that) {
+      return false;
+    }
+    else if(that instanceof ClassRegistrar) {
+      return klass.equals(((ClassRegistrar)that).klass);
+    }
+    else {
+      return false;
+    }
+  }
 }
