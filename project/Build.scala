@@ -96,6 +96,27 @@ object ChillBuild extends Build {
     chillHadoop
   )
 
+  /**
+    * This returns the youngest jar we released that is compatible
+    * with the current.
+    */
+  val unreleasedModules = Set[String](
+    "akka", "scala", "hadoop", "storm", "java"
+  )
+
+  def youngestForwardCompatible(subProj: String) =
+    Some(subProj)
+      .filterNot(unreleasedModules.contains(_))
+      .map { s => "com.twitter" % ("chill-" + s + "_2.9.2") % "0.4.0" }
+
+  def module(name: String) = {
+    val id = "chill-%s".format(name)
+    Project(id = id, base = file(id), settings = sharedSettings ++ Seq(
+      Keys.name := id,
+      previousArtifact := youngestForwardCompatible(name))
+    )
+  }
+
   // We usually do the pattern of having a core module, but we don't want to cause
   // pain for legacy deploys. With this, they can stay the same.
   lazy val chill = Project(
@@ -112,22 +133,11 @@ object ChillBuild extends Build {
   ).dependsOn(chillJava)
 
   // This can only have java deps!
-  lazy val chillJava = Project(
-    id = "chill-java",
-    base = file("chill-java"),
-    settings = sharedSettings
-  ).settings(
-    autoScalaLibrary := false,
-    name := "chill-java",
-    previousArtifact := None
+  lazy val chillJava = module("java").settings(
+    autoScalaLibrary := false
   )
 
-  lazy val chillStorm = Project(
-    id = "chill-storm",
-    base = file("chill-storm"),
-    settings = sharedSettings
-  ).settings(
-    name := "chill-storm",
+  lazy val chillStorm = module("storm").settings(
     resolvers ++= Seq(
       "Clojars Repository" at "http://clojars.org/repo",
       "Conjars Repository" at "http://conjars.org/repo"
@@ -136,18 +146,12 @@ object ChillBuild extends Build {
   ).dependsOn(chill)
 
   // This can only have java deps!
-  lazy val chillHadoop = Project(
-    id = "chill-hadoop",
-    base = file("chill-hadoop"),
-    settings = sharedSettings
-  ).settings(
+  lazy val chillHadoop = module("hadoop").settings(
     autoScalaLibrary := false,
-    name := "chill-hadoop",
     libraryDependencies ++= Seq(
       "org.apache.hadoop" % "hadoop-core" % "0.20.2" % "provided",
       "org.slf4j" % "slf4j-api" % "1.6.6",
       "org.slf4j" % "slf4j-log4j12" % "1.6.6" % "provided"
-    ),
-    previousArtifact := None
+    )
   ).dependsOn(chillJava)
 }

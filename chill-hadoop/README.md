@@ -8,9 +8,6 @@ was never coupled to Cascading.
 We only use Java in the main of this project for compatibility with
 [Cascalog](https://github.com/nathanmarz/cascalog).
 
-## Maven
-groupid=`"com.twitter"` artifact=`"chill-hadoop"`.
-
 ## License
 
 Copyright 2013 Twitter, Inc.
