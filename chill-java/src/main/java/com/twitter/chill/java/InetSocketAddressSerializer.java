@@ -24,21 +24,24 @@ import com.esotericsoftware.kryo.io.Output;
 import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.SingleRegistrar;
 
-import java.util.regex.Pattern;
+import java.net.InetSocketAddress;
 
-public class RegexSerializer extends Serializer<Pattern> {
+public class InetSocketAddressSerializer extends Serializer<InetSocketAddress> {
 
-    static public IKryoRegistrar registrar() {
-      return new SingleRegistrar(Pattern.class, new RegexSerializer());
-    }
+  static public IKryoRegistrar registrar() {
+    return new SingleRegistrar(InetSocketAddress.class, new InetSocketAddressSerializer());
+  }
 
-    @Override
-    public void write(Kryo kryo, Output output, Pattern pattern) {
-        output.writeString(pattern.pattern());
-    }
+  @Override
+  public void write(Kryo kryo, Output output, InetSocketAddress obj) {
+    output.writeString(obj.getHostName());
+    output.writeInt(obj.getPort(), true);
+  }
 
-    @Override
-    public Pattern read(Kryo kryo, Input input, Class<Pattern> patternClass) {
-        return Pattern.compile(input.readString());
-    }
+  @Override
+  public InetSocketAddress read(Kryo kryo, Input input, Class<InetSocketAddress> klass) {
+    String host = input.readString();
+    int port = input.readInt(true);
+    return new InetSocketAddress(host, port);
+  }
 }
