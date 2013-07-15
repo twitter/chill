@@ -16,55 +16,77 @@ limitations under the License.
 
 package com.twitter.chill.config;
 import com.twitter.chill.KryoInstantiator;
+import com.twitter.chill.Base64;
 
 import java.lang.reflect.InvocationTargetException;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+
 /**
  * This is the standard Config based KryoInstantiator.
  * It delegates to another KryoInstantiator that is described a Config
- * object. This is either done via reflection or serialization.
+ * object. This is either done via reflection or reflection AND serialization.
+ *
+ * In the case of reflection, the class name of the delegate instantiator is given.
+ *
+ * In the case of serialization, we first reflect to create the KryoInstatiator
+ * we use to get the Kryo we need to deserialize.
  */
-public final class ConfiguredInstantiator extends KryoInstantiator {
+public class ConfiguredInstantiator extends KryoInstantiator {
   protected final KryoInstantiator delegate;
 
-  /** Mode is one of three:
-   * reflect: instantiate the named class via new instance. If this class has a constructor
-   *   that accepts Config, that is used, else the no-arg constructor.
-   *
-   * serialized: use a default (new Kryo) to deserialize the instance in base64
+  /** Key we use to configure this class.
+   * Format: <class of KryoInstantiator>(:<base64 serialized instantiator>)
+   * if there is no serialized instantiator, we use the reflected instance
+   * as the delegate
    */
-  public static final String MODE_KEY = "com.twitter.chill.config.configuredinstantiator.mode";
-  public static final String REFLECT_MODE = "reflect";
-  public static final String SERIALIZED_MODE = "serialized";
-
-  public static final String VALUE_KEY = "com.twitter.chill.config.configuredinstantiator.value";
+  public static final String KEY = "com.twitter.chill.config.configuredinstantiator";
 
   public ConfiguredInstantiator(Config conf) throws ConfigurationException {
-    String mode = conf.get(MODE_KEY);
-    if(REFLECT_MODE == mode) {
-      try { delegate = reflect((Class<? extends KryoInstantiator>)Class.forName(conf.get(VALUE_KEY)), conf); }
-      catch(ClassNotFoundException x) {
-        throw new ConfigurationException("Could not find class for: " + conf.get(VALUE_KEY), x);
+    String[] parts = conf.get(KEY).split(":");
+    if(parts.length != 1 && parts.length != 2) {
+      throw new ConfigurationException("Invalid Config Key: " + conf.get(KEY));
+    }
+    KryoInstantiator reflected = null;
+    try { reflected = reflect((Class<? extends KryoInstantiator>)Class.forName(parts[0]), conf); }
+    catch(ClassNotFoundException x) {
+      throw new ConfigurationException("Could not find class for: " + parts[0], x);
+    }
+
+    if(parts.length == 2) {
+      delegate = deserialize(reflected.newKryo(), parts[1]);
+      if(null == delegate) {
+        throw new ConfigurationException("Null delegate from: " + parts[1]);
       }
     }
-    else if (SERIALIZED_MODE == mode) {
-      //Kryo k = new Kryo();
-      delegate = deserialize(conf.get(VALUE_KEY));
-    }
     else {
-      throw new ConfigurationException("Unknown mode: " + mode);
+      delegate = reflected;
     }
   }
 
+  /** Calls through to the delegate */
   public Kryo newKryo() { return delegate.newKryo(); }
 
-  public static void setReflect(Config conf, Class<? extends KryoInstantiator> instClass) {
-    conf.set(MODE_KEY, REFLECT_MODE);
-    conf.set(VALUE_KEY, instClass.getName());
+  /** Return the delegated KryoInstantiator */
+  public KryoInstantiator getDelegate() {
+    return delegate;
   }
 
-  public static KryoInstantiator reflect(Class<? extends KryoInstantiator> instClass, Config optConf)
+  /** In this mode, we are just refecting to another delegated class. This is preferred
+   * if you don't have any configuration to do at runtime (i.e. you can make a named class
+   * that has all the logic for your KryoInstantiator).
+   */
+  public static void setReflect(Config conf, Class<? extends KryoInstantiator> instClass) {
+    conf.set(KEY, instClass.getName());
+  }
+
+  /** This instantiates a KryoInstantiator by:
+   * 1) checking if it has a constructor that takes Config
+   * 2) checking for a no-arg constructor
+   */
+  static KryoInstantiator reflect(Class<? extends KryoInstantiator> instClass, Config optConf)
     throws ConfigurationException {
     try {
       try {
@@ -84,15 +106,38 @@ public final class ConfiguredInstantiator extends KryoInstantiator {
     }
   }
 
-  public static void setSerialized(Config conf, KryoInstantiator ki) {
-    conf.set(MODE_KEY, SERIALIZED_MODE);
-    conf.set(VALUE_KEY, serialize(ki));
+  /** Use the default KryoInstantiator to serialize the KryoInstantiator ki
+   * same as: setSerialized(conf, KryoInstantiator.class, ki)
+   */
+  public static void setSerialized(Config conf, KryoInstantiator ki)
+    throws ConfigurationException {
+    setSerialized(conf, KryoInstantiator.class, ki);
   }
 
-  public static KryoInstantiator deserialize(String base64Value) {
-    throw new RuntimeException("TODO");
+  /** If this reflector needs config to be set, that should be done PRIOR to making this call.
+   * This mode serializes an instance (ki) to be used as the delegate.
+   * Only use this mode if reflection alone will not work.
+   */
+  public static void setSerialized(Config conf, Class<? extends KryoInstantiator> reflector, KryoInstantiator ki)
+    throws ConfigurationException {
+    KryoInstantiator refki = reflect(reflector, conf);
+    String kistr = serialize(refki.newKryo(), ki);
+    // Verify, that deserialization works:
+    deserialize(refki.newKryo(), kistr); // ignore the result, just see if it throws
+    conf.set(KEY, reflector.getName() + ":" + kistr);
   }
-  public static String serialize(KryoInstantiator ki) {
-    throw new RuntimeException("TODO");
+
+  protected static KryoInstantiator deserialize(Kryo k, String base64Value) throws ConfigurationException {
+    try {
+      return (KryoInstantiator)k.readClassAndObject(new Input(Base64.decode(base64Value)));
+    }
+    catch(java.io.IOException iox) {
+      throw new ConfigurationException("could not deserialize: " + base64Value, iox);
+    }
+  }
+  protected static String serialize(Kryo k, KryoInstantiator ki) {
+    Output out = new Output(1 << 10, 1 << 19); // 1 MB in config is too much
+    k.writeClassAndObject(out, ki);
+    return Base64.encodeBytes(out.toBytes());
   }
 }
