@@ -37,6 +37,7 @@ public class PackageRegistrar {
       SqlTimeSerializer.registrar(),
       TimestampSerializer.registrar(),
       URISerializer.registrar(),
+      InetSocketAddressSerializer.registrar(),
       UUIDSerializer.registrar());
   }
 }
