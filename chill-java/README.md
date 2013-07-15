@@ -8,10 +8,6 @@ together without diamond dependency issues.
 Also see [Kryo Serializers](https://github.com/magro/kryo-serializers) which has a similar mission,
 and from which we took the ArraysAsListSerializer.
 
-## Maven
-
-Current version is `0.2.4`. groupid=`"com.twitter"` artifact=`"chill-java"`.
-
 ## License
 
 Copyright 2012 Twitter, Inc.
