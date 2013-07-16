@@ -46,6 +46,8 @@ class KryoSpec extends Specification with BaseProperties {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
 
+  def getKryo = KryoSerializer.registered.newKryo
+
   "KryoSerializers and KryoDeserializers" should {
     "round trip any non-array object" in {
       val test = List(1,2,"hey",(1,2),
@@ -125,15 +127,16 @@ class KryoSpec extends Specification with BaseProperties {
       implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
         (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
 
-      val kryo = KryoBijection.getKryo
-            .forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
-      val inj = KryoInjection.instance(kryo)
+      val inj = KryoInjection.instance { () =>
+        getKryo.forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
+      }
       rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "use java serialization" in {
 
-      val kryo = KryoBijection.getKryo.javaForClass[TestCaseClassForSerialization]
-      val inj = KryoInjection.instance(kryo)
+      val inj = KryoInjection.instance { () =>
+        getKryo.javaForClass[TestCaseClassForSerialization]
+      }
       rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "work with Meatlocker" in {
@@ -148,9 +151,11 @@ class KryoSpec extends Specification with BaseProperties {
       roundtripped.findFirstIn("hilarious").isDefined must beTrue
     }
     "handle small immutable maps when registration is required" in {
-      val kryo = KryoBijection.getKryo
-      kryo.setRegistrationRequired(true)
-      val inj = KryoInjection.instance(kryo)
+      val inj = KryoInjection.instance { () =>
+        val kryo = KryoSerializer.registered.newKryo
+        kryo.setRegistrationRequired(true)
+        kryo
+      }
       val m1 = Map('a -> 'a)
       val m2 = Map('a -> 'a, 'b -> 'b)
       val m3 = Map('a -> 'a, 'b -> 'b, 'c -> 'c)
@@ -161,9 +166,11 @@ class KryoSpec extends Specification with BaseProperties {
       }
     }
     "handle small immutable sets when registration is required" in {
-      val kryo = KryoBijection.getKryo
-      kryo.setRegistrationRequired(true)
-      val inj = KryoInjection.instance(kryo)
+      val inj = KryoInjection.instance { () =>
+        val kryo = getKryo
+        kryo.setRegistrationRequired(true)
+        kryo
+      }
       val s1 = Set('a)
       val s2 = Set('a, 'b)
       val s3 = Set('a, 'b, 'c)
@@ -179,7 +186,7 @@ class KryoSpec extends Specification with BaseProperties {
 
       val inputStream = new _root_.java.io.ByteArrayInputStream(bytes)
 
-      val kryo = KryoBijection.getKryo
+      val kryo = getKryo
       val rich = new RichKryo(kryo)
 
       val opt1 = rich.fromInputStream(inputStream)
@@ -196,7 +203,7 @@ class KryoSpec extends Specification with BaseProperties {
 
       val byteBuffer = _root_.java.nio.ByteBuffer.wrap(bytes)
 
-      val kryo = KryoBijection.getKryo
+      val kryo = getKryo
       val rich = new RichKryo(kryo)
 
       val opt1 = rich.fromByteBuffer(byteBuffer)
@@ -206,6 +213,12 @@ class KryoSpec extends Specification with BaseProperties {
       byteBuffer.rewind()
       val opt2 = rich.fromByteBuffer(byteBuffer)
       opt2 must be_==(Option(obj))
+    }
+    "Make sure KryoInjection and instances are Java Serializable" in {
+      val ki = jrt(KryoInjection)
+      ki.invert(ki(1)).get must be_==(1)
+      val kii = jrt(KryoInjection.instance(new ScalaKryoInstantiator))
+      kii.invert(kii(1)).get must be_==(1)
     }
   }
 }

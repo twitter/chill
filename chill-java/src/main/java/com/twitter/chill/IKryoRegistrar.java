@@ -17,6 +17,7 @@ limitations under the License.
 package com.twitter.chill;
 
 import com.esotericsoftware.kryo.Kryo;
+import java.io.Serializable;
 
 /**
  * A Registrar adds registrations to a given Kryo instance.
@@ -24,6 +25,6 @@ import com.esotericsoftware.kryo.Kryo;
  * for all objects in a given package.
  * comes from Storm, which took it from cascading.kryo
  */
-public interface IKryoRegistrar {
+public interface IKryoRegistrar implements Serializable {
   void apply(Kryo k);
 }
