@@ -26,7 +26,7 @@ import org.apache.hadoop.io.serializer.Serialization;
 import org.apache.hadoop.io.serializer.Serializer;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import com.twitter.chill.java.ResourcePool;
+import com.twitter.chill.ResourcePool;
 
 import java.io.ByteArrayOutputStream;
 
