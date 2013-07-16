@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.twitter.chill.hadoop;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
 import org.apache.hadoop.io.serializer.Serializer;
 
 import java.io.ByteArrayOutputStream;
@@ -25,12 +23,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import com.twitter.chill.KryoPool;
+import com.twitter.chill.SerDeState;
+
 public class KryoSerializer implements Serializer<Object> {
-    private final KryoSerialization kryoSerialization;
+    private final KryoPool kryoPool;
     private DataOutputStream outputStream;
 
-    public KryoSerializer(KryoSerialization kryoSerialization) {
-        this.kryoSerialization = kryoSerialization;
+    public KryoSerializer(KryoPool kp) {
+      kryoPool = kp;
     }
 
     public void open(OutputStream out) throws IOException {
@@ -42,21 +43,15 @@ public class KryoSerializer implements Serializer<Object> {
 
     public void serialize(Object o) throws IOException {
         // The outputs are borrowed in a clean state, ready to use
-        Output ko =  kryoSerialization.borrowOutput();
-        // kryoSerialization ALWAYS puts these types into the buffer
-        ByteArrayOutputStream byteStream = (ByteArrayOutputStream)ko.getOutputStream();
-        // Get a Kryo:
-        Kryo kryo = kryoSerialization.borrowKryo();
+        SerDeState st = kryoPool.borrow();
         try {
-          kryo.writeObject(ko, o);
-          ko.flush();
+          st.writeObject(o);
           // Copy from buffer to output stream.
-          outputStream.writeInt(byteStream.size());
-          byteStream.writeTo(outputStream);
+          outputStream.writeInt(st.numOfWrittenBytes());
+          st.writeOutputTo(outputStream);
         }
         finally {
-          kryoSerialization.releaseKryo(kryo);
-          kryoSerialization.releaseOutput(ko);
+          kryoPool.release(st);
         }
         outputStream.flush();
     }

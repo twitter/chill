@@ -16,23 +16,24 @@ limitations under the License.
 
 package com.twitter.chill.hadoop;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import org.apache.hadoop.io.serializer.Deserializer;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.hadoop.io.serializer.Deserializer;
+
+import com.twitter.chill.KryoPool;
+import com.twitter.chill.SerDeState;
+
 public class KryoDeserializer implements Deserializer<Object> {
 
-    private final KryoSerialization kryoSerialization;
+    private final KryoPool kryoPool;
     private final Class<Object> klass;
 
     private DataInputStream inputStream;
 
-    public KryoDeserializer(KryoSerialization kryoSerialization, Class<Object> klass) {
-        this.kryoSerialization =  kryoSerialization;
+    public KryoDeserializer(KryoPool kp, Class<Object> klass) {
+        this.kryoPool = kp;
         this.klass = klass;
     }
 
@@ -48,12 +49,13 @@ public class KryoDeserializer implements Deserializer<Object> {
         byte[] bytes = new byte[inputStream.readInt()];
         inputStream.readFully( bytes );
 
-        Kryo kryo = kryoSerialization.borrowKryo();
+        SerDeState st = kryoPool.borrow();
+        st.setInput(bytes);
         try {
-          return kryo.readObject(new Input(bytes), klass);
+          return st.readObject(klass);
         }
         finally {
-          kryoSerialization.releaseKryo(kryo);
+          kryoPool.release(st);
         }
     }
 

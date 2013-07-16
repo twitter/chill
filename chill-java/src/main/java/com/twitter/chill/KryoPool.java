@@ -30,6 +30,12 @@ import java.io.IOException;
 abstract public class KryoPool extends ResourcePool<SerDeState> {
 
   protected KryoPool(int poolSize) { super(poolSize); }
+
+  @Override
+  public void release(SerDeState st) {
+    st.clear();
+    super.release(st);
+  }
   /** Output is created with new Output(outBufferMin, outBufferMax);
    */
   public static KryoPool withBuffer(int poolSize,
