@@ -25,6 +25,6 @@ import java.io.Serializable;
  * for all objects in a given package.
  * comes from Storm, which took it from cascading.kryo
  */
-public interface IKryoRegistrar implements Serializable {
+public interface IKryoRegistrar extends Serializable {
   void apply(Kryo k);
 }
