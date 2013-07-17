@@ -21,10 +21,11 @@ object MeatLocker {
   def apply[T](t: T) = new MeatLocker(t)
 }
 
-// TODO: Use Injection and return an Option[T]. Or upgrade to scala
-// 2.10 fully and return a Try[T].
+/** Use Kryo to provide a "box" which is efficiently Java serializable even
+ * if the underlying t is not, as long as it is serializable with Kryo.
+ */
 class MeatLocker[T](@transient protected var t: T) extends Serializable {
-  protected val tBytes = KryoBijection(t.asInstanceOf[AnyRef])
+  protected val tBytes = KryoInjection(t)
   def get: T = {
     if(null == t) {
       // we were serialized
@@ -33,5 +34,5 @@ class MeatLocker[T](@transient protected var t: T) extends Serializable {
     t
   }
 
-  def copy: T = KryoBijection.invert(tBytes).asInstanceOf[T]
+  def copy: T = KryoInjection.invert(tBytes).get.asInstanceOf[T]
 }
