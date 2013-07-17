@@ -137,13 +137,15 @@ object ChillBuild extends Build {
     autoScalaLibrary := false
   )
 
+  // This can only have java deps!
   lazy val chillStorm = module("storm").settings(
+    autoScalaLibrary := false,
     resolvers ++= Seq(
       "Clojars Repository" at "http://clojars.org/repo",
       "Conjars Repository" at "http://conjars.org/repo"
     ),
     libraryDependencies += "storm" % "storm" % "0.9.0-wip9"
-  ).dependsOn(chill)
+  ).dependsOn(chillJava)
 
   // This can only have java deps!
   lazy val chillHadoop = module("hadoop").settings(
