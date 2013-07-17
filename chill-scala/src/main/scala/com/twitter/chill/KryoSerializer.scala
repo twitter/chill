@@ -20,108 +20,21 @@ import com.twitter.chill.java.PackageRegistrar
 
 import com.twitter.bijection.{ Bufferable, ImplicitBijection }
 
-import scala.collection.immutable.{
-  BitSet,
-  ListMap,
-  HashMap,
-  Queue
-}
-
-import scala.collection.mutable.{
-  WrappedArray,
-  Map => MMap,
-  Set => MSet,
-  ListBuffer,
-  Queue => MQueue,
-  Buffer
-}
-import scala.util.matching.Regex
-
 object KryoSerializer {
 
   /** Return an instantiator that is configured to work well with scala
    * objects/classes, but has no serializers registered
    */
-  def empty: KryoInstantiator = new KryoInstantiator {
-    override def newKryo = {
-      val k = new KryoBase
-      k.setRegistrationRequired(false)
-      k.setInstantiatorStrategy(new org.objenesis.strategy.StdInstantiatorStrategy)
-      k
-    }
-  }
+  def empty: KryoInstantiator = new EmptyScalaKryoInstantiator
+
   /** Return an instantiator that is configured to work well with scala
    * objects/classes, but has no serializers registered
    */
-  def registered: KryoInstantiator = empty.withRegistrar(registerAll)
+  def registered: KryoInstantiator = new ScalaKryoInstantiator
 
-  def registerCollectionSerializers: IKryoRegistrar = new IKryoRegistrar {
-    def apply(newK: Kryo) {
-    /*
-     * Note that subclass-based use: addDefaultSerializers, else: register
-     * You should go from MOST specific, to least to specific when using
-     * default serializers. The FIRST one found is the one used
-     */
-    newK
-      .forSubclass[Regex](new RegexSerializer)
-      // wrapper array is abstract
-      .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
-      .forSubclass[BitSet](new BitSetSerializer)
-      .forClass[Some[Any]](new SomeSerializer[Any])
-      .forClass[Left[Any, Any]](new LeftSerializer[Any, Any])
-      .forClass[Right[Any, Any]](new RightSerializer[Any, Any])
-      .forTraversableSubclass(Queue.empty[Any])
-      // List is a sealed class, so there are only two subclasses:
-      .forTraversableSubclass(List.empty[Any])
-      // add mutable Buffer before Vector, otherwise Vector is used
-      .forTraversableSubclass(Buffer.empty[Any], isImmutable = false)
-      // Vector is a final class
-      .forTraversableClass(Vector.empty[Any])
-      .forTraversableSubclass(IndexedSeq.empty[Any])
-      // specifically register small sets since Scala represents them differently
-      .forConcreteTraversableClass(Set[Any]('a))
-      .forConcreteTraversableClass(Set[Any]('a, 'b))
-      .forConcreteTraversableClass(Set[Any]('a, 'b, 'c))
-      .forConcreteTraversableClass(Set[Any]('a, 'b, 'c, 'd))
-      .forConcreteTraversableClass(Set[Any]('a, 'b, 'c, 'd, 'e))
-      .forTraversableSubclass(Set.empty[Any])
-      // specifically register small maps since Scala represents them differently
-      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a))
-      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b))
-      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c))
-      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd))
-      .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
-      // Add some maps
-      .forTraversableSubclass(ListMap.empty[Any,Any])
-      .forTraversableSubclass(HashMap.empty[Any,Any])
-      // The above ListMap/HashMap must appear before this:
-      .forTraversableSubclass(Map.empty[Any,Any])
-      // here are the mutable ones:
-      .forTraversableSubclass(MQueue.empty[Any], isImmutable = false)
-      .forTraversableSubclass(MMap.empty[Any,Any], isImmutable = false)
-      .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
-      .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
-      // This should be last, lots of things are seq/iterable/traversable
-      // These are questionable and might break things.
-      // rarely will you only expect an iterable/traversable on the reverse
-      .forTraversableSubclass(Seq.empty[Any])
-      .forTraversableSubclass(Iterable.empty[Any])
-      .forTraversableSubclass(Traversable.empty[Any])
-    }
-  }
+  def registerCollectionSerializers: IKryoRegistrar = new ScalaCollectionsRegistrar
 
-  def registerAll: IKryoRegistrar = new IKryoRegistrar {
-    def apply(k: Kryo) {
-      registerCollectionSerializers(k)
-      // Register all 22 tuple serializers and specialized serializers
-      ScalaTupleSerialization.register(k)
-      k.forClassViaBijection[Symbol, String]
-        .forClass[ClassManifest[Any]](new ClassManifestSerializer[Any])
-        .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
-        .forSubclass[scala.Enumeration#Value](new EnumerationSerializer)
-      PackageRegistrar.all()(k)
-    }
-  }
+  def registerAll: IKryoRegistrar = new AllScalaRegistrar
 
   /** Use a bijection[A,B] then the KSerializer on B
    */

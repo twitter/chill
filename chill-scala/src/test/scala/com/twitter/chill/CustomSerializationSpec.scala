@@ -43,8 +43,8 @@ class CustomSerializationSpec extends Specification with BaseProperties {
         ColoredPoint.unapply(_).get)(
         (ColoredPoint.apply _).tupled)
 
-      val myKryoInjection = KryoInjection.instance {
-        KryoBijection.getKryo
+      val myKryoInjection = KryoInjection.instance { () =>
+        (new ScalaKryoInstantiator).newKryo
           // use the implicit bijection by specifying the type
           .forClassViaBijection[Point, (Int,Int)]
           // use an explicit bijection, avoiding specifying the type

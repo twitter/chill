@@ -18,12 +18,13 @@ package com.twitter.chill;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.objenesis.strategy.InstantiatorStrategy;
+import java.io.Serializable;
 
 /** Class to create a new Kryo instance.
  * Used in initial configuration or pooling of Kryo objects.
  * These objects are immutable (and hopefully Kryo serializable)
  */
-public class KryoInstantiator {
+public class KryoInstantiator implements Serializable {
   public Kryo newKryo() { return new Kryo(); }
 
   /** If true, Kryo will error if it sees a class that has not been registered
