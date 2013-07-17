@@ -26,7 +26,9 @@ import scala.collection.immutable.{
 import scala.collection.mutable.{
   WrappedArray,
   Map => MMap,
+  HashMap => MHashMap,
   Set => MSet,
+  HashSet => MHashSet,
   ListBuffer,
   Queue => MQueue,
   Buffer
@@ -99,6 +101,8 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       // The above ListMap/HashMap must appear before this:
       .forTraversableSubclass(Map.empty[Any,Any])
       // here are the mutable ones:
+      .forTraversableClass(MHashMap.empty[Any,Any], isImmutable = false)
+      .forTraversableClass(MHashSet.empty[Any], isImmutable = false)
       .forTraversableSubclass(MQueue.empty[Any], isImmutable = false)
       .forTraversableSubclass(MMap.empty[Any,Any], isImmutable = false)
       .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
