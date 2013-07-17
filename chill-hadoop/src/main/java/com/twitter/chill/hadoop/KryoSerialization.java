@@ -35,12 +35,18 @@ import com.twitter.chill.config.ConfigurationException;
 import java.io.ByteArrayOutputStream;
 
 public class KryoSerialization extends Configured implements Serialization<Object> {
-
+    // can't be final because we need to set them in setConf (for Configured)
     KryoPool kryoPool;
     Kryo testKryo;
-    protected static int MAX_CACHED_RESOURCE = 100;
+    /**
+     * Since each thread only needs 1 Kryo, the pool doesn't need more
+     * space than the number of threads. We guess that there are 4 hyperthreads /
+     * core and then multiple by the nember of cores.
+     */
+    protected static int GUESS_THREADS_PER_CORE = 4;
+    protected static int MAX_CACHED_KRYO = GUESS_THREADS_PER_CORE * Runtime.getRuntime().availableProcessors();
 
-    public KryoSerialization() throws ConfigurationException {
+    public KryoSerialization() {
         this(new Configuration());
     }
 
@@ -49,7 +55,7 @@ public class KryoSerialization extends Configured implements Serialization<Objec
      *
      * @param conf of type Configuration
      */
-    public KryoSerialization( Configuration conf ) throws ConfigurationException {
+    public KryoSerialization( Configuration conf ) {
         // Hadoop will then call setConf (yay! mutability!)
         super( conf );
     }
@@ -59,7 +65,7 @@ public class KryoSerialization extends Configured implements Serialization<Objec
       try {
         KryoInstantiator kryoInst = new ConfiguredInstantiator(new HadoopConfig(conf));
         testKryo = kryoInst.newKryo();
-        kryoPool = KryoPool.withByteArrayOutputStream(MAX_CACHED_RESOURCE, kryoInst);
+        kryoPool = KryoPool.withByteArrayOutputStream(MAX_CACHED_KRYO, kryoInst);
       }
       catch(ConfigurationException cx) {
         // This interface can't throw
