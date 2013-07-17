@@ -26,6 +26,7 @@ import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMa
 
 import com.twitter.bijection.Bijection
 
+import scala.collection.mutable
 /*
 * This is just a test case for Kryo to deal with. It should
 * be outside KryoSpec, otherwise the enclosing class, KryoSpec
@@ -179,6 +180,23 @@ class KryoSpec extends Specification with BaseProperties {
       Seq(s1, s2, s3, s4, s5).foreach { s =>
         rt(inj, s) must be_==(s)
       }
+    }
+    "handle nested mutable maps" in {
+      val inj = KryoInjection.instance { () =>
+        val kryo = getKryo
+        kryo.setRegistrationRequired(true)
+        kryo
+      }
+      val obj0 = mutable.Map(4 -> mutable.Set("house1", "house2"),
+                             1 -> mutable.Set("name3", "name4", "name1", "name2"),
+                             0 -> mutable.Set(1, 2, 3, 4))
+
+      // Make sure to make a totally separate map to check equality with
+      val obj1 = mutable.Map(4 -> mutable.Set("house1", "house2"),
+                             1 -> mutable.Set("name3", "name4", "name1", "name2"),
+                             0 -> mutable.Set(1, 2, 3, 4))
+
+      rt(inj, obj0) must be_==(obj1)
     }
     "deserialize InputStream" in {
       val obj   = Seq(1, 2, 3)
