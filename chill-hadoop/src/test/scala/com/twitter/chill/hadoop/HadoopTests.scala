@@ -25,7 +25,18 @@ import com.esotericsoftware.kryo.io.Output;
 import org.objenesis.strategy.StdInstantiatorStrategy
 
 import java.io.{ByteArrayOutputStream => BAOut, ByteArrayInputStream => BAIn}
+import org.apache.hadoop.conf.Configuration;
 
+import com.twitter.chill.config.ConfiguredInstantiator;
+import com.twitter.chill.KryoInstantiator;
+
+class StdKryoInstantiator extends KryoInstantiator {
+  override def newKryo = {
+    val k = new Kryo
+    k.setInstantiatorStrategy(new StdInstantiatorStrategy)
+    k
+  }
+}
 class HadoopTests extends Specification {
   noDetailedDiffs() //Fixes issue for scala 2.9
 
@@ -47,27 +58,22 @@ class HadoopTests extends Specification {
 
   "KryoSerialization" should {
     "accept anything" in {
-      val ks = new KryoSerialization
+      val conf = new Configuration
+      val hc = new HadoopConfig(conf)
+      ConfiguredInstantiator.setReflect(hc, classOf[KryoInstantiator])
+
+      val ks = new KryoSerialization(conf)
       Seq(classOf[List[_]], classOf[Int], this.getClass).forall { cls =>
         ks.accept(cls)
       } must beTrue
     }
-    "loan out Kryo instances" in {
-      val ks = new KryoSerialization
-      ks.borrowKryo must notBeNull
-    }
-    "accept returned Kryo instances with 100 total" in {
-      val ks = new KryoSerialization
-      (0 to 1000).map { i =>
-        val k = ks.borrowKryo
-        // don't do this in real code:
-        // since we release right away, only one is created
-        ks.releaseKryo(k)
-        k
-      }.toSet.size must be_==(1)
-    }
     "Serialize a list of random things" in {
-      val ks = new KryoSerialization
+      val conf = new Configuration
+      val hc = new HadoopConfig(conf)
+      // Scala needs this instantiator
+      ConfiguredInstantiator.setReflect(hc, classOf[StdKryoInstantiator])
+
+      val ks = new KryoSerialization(conf)
       val things = List(1.asInstanceOf[AnyRef], "hey", (1, 2))
 
       things.map { rt(ks, _) } must be_==(things)

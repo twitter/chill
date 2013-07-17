@@ -26,17 +26,25 @@ import org.apache.hadoop.io.serializer.Serialization;
 import org.apache.hadoop.io.serializer.Serializer;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import com.twitter.chill.ResourcePool;
+import com.twitter.chill.KryoPool;
+import com.twitter.chill.KryoInstantiator;
+import com.twitter.chill.config.Config;
+import com.twitter.chill.config.ConfiguredInstantiator;
+import com.twitter.chill.config.ConfigurationException;
 
 import java.io.ByteArrayOutputStream;
 
 public class KryoSerialization extends Configured implements Serialization<Object> {
-
-    Kryo kryo;
-    KryoFactory factory;
-
-    final ResourcePool<Kryo> kryoPool;
-    final ResourcePool<Output> outputPool;
+    // can't be final because we need to set them in setConf (for Configured)
+    KryoPool kryoPool;
+    Kryo testKryo;
+    /**
+     * Since each thread only needs 1 Kryo, the pool doesn't need more
+     * space than the number of threads. We guess that there are 4 hyperthreads /
+     * core and then multiple by the nember of cores.
+     */
+    protected static int GUESS_THREADS_PER_CORE = 4;
+    protected static int MAX_CACHED_KRYO = GUESS_THREADS_PER_CORE * Runtime.getRuntime().availableProcessors();
 
     public KryoSerialization() {
         this(new Configuration());
@@ -48,84 +56,41 @@ public class KryoSerialization extends Configured implements Serialization<Objec
      * @param conf of type Configuration
      */
     public KryoSerialization( Configuration conf ) {
+        // Hadoop will then call setConf (yay! mutability!)
         super( conf );
-        int MAX_CACHED_RESOURCE = 100;
-        kryoPool = new ResourcePool<Kryo>(MAX_CACHED_RESOURCE) {
-          protected Kryo newInstance() {
-            return populatedKryo();
-          }
-        };
+    }
 
-        outputPool = new ResourcePool<Output>(MAX_CACHED_RESOURCE) {
-          protected Output newInstance() {
-            return new Output(new ByteArrayOutputStream());
-          }
-        };
+    @Override
+    public void setConf(Configuration conf) {
+      try {
+        KryoInstantiator kryoInst = new ConfiguredInstantiator(new HadoopConfig(conf));
+        testKryo = kryoInst.newKryo();
+        kryoPool = KryoPool.withByteArrayOutputStream(MAX_CACHED_KRYO, kryoInst);
+      }
+      catch(ConfigurationException cx) {
+        // This interface can't throw
+        throw new RuntimeException(cx);
+      }
     }
 
     /**
-     * Mutate the given instance (add custom serializers)
-     * This is called BEFORE the factory adds serializers
-     */
-    public void decorateKryo(Kryo k) { }
-
-    /**
-     * override this to implement your own subclass of Kryo
-     * default is new Kryo with StdInstantiatorStrategy.
-     */
-    public Kryo newKryo() {
-      Kryo k = new Kryo();
-      k.setInstantiatorStrategy(new StdInstantiatorStrategy());
-      return k;
-    }
-
-    public final Kryo populatedKryo() {
-        if (factory == null)
-            factory = new KryoFactory(getConf());
-
-        Kryo k = newKryo();
-        decorateKryo(k);
-        factory.populateKryo(k);
-        return k;
-    }
-
-    public final Kryo borrowKryo() { return kryoPool.borrow(); }
-
-    public final void releaseKryo(Kryo k) { kryoPool.release(k); }
-
-    public final Output borrowOutput() { return outputPool.borrow(); }
-
-    public final void releaseOutput(Output o) {
-      // Clear buffer.
-      o.clear();
-      ByteArrayOutputStream byteStream = (ByteArrayOutputStream)o.getOutputStream();
-      byteStream.reset();
-
-      outputPool.release(o);
-    }
-
-    /**
-     * Initializes Kryo instance from the JobConf on the first run. If the ACCEPT_ALL key in
-     * the JobConf has been set to true, Kryo will return yes for everything; else, Kryo will only
-     * return true for classes with explicitly registered serializations.
+     * Uses the initialized Kryo instance from the JobConf to test if Kryo will accept the class
      * @param aClass
      * @return
      */
     public boolean accept(Class<?> aClass) {
-        if (kryo == null)
-            kryo = populatedKryo();
         try {
-            return (kryo.getRegistration(aClass) != null);
+            return (testKryo.getRegistration(aClass) != null);
         } catch (IllegalArgumentException e) {
-            return factory.getAcceptAll();
+            return false;
         }
     }
 
     public Serializer<Object> getSerializer(Class<Object> aClass) {
-        return new KryoSerializer(this);
+        return new KryoSerializer(kryoPool);
     }
 
     public Deserializer<Object> getDeserializer(Class<Object> aClass) {
-        return new KryoDeserializer(this, aClass);
+        return new KryoDeserializer(kryoPool, aClass);
     }
 }
