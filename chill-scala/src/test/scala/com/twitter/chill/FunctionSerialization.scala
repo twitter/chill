@@ -40,6 +40,8 @@ object BaseFns2 extends AwesomeFn2 {
   def mult = 5
 }
 
+object Foo { def Bar = 1 }
+
 class FunctionSerialization extends Specification with BaseProperties {
   noDetailedDiffs() //Fixes issue for scala 2.9
 
@@ -62,6 +64,11 @@ class FunctionSerialization extends Specification with BaseProperties {
       bf2.timesByMult(10) must be_==(50)
       val rtTBM = rt(BaseFns2.timesByMult)
       rtTBM.apply(10) must be_==(50)
+    }
+    "KryoInjection handle an example with closure to function" in {
+      val bytes = KryoInjection(() => Foo.Bar)
+      val x = KryoInjection.invert(bytes)
+      x.get.asInstanceOf[() => Int].apply() must be_==(Foo.Bar)
     }
   }
 }
