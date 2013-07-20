@@ -37,6 +37,7 @@ import scala.collection.mutable.{
 import scala.util.matching.Regex
 
 import com.twitter.chill.java.PackageRegistrar
+import _root_.java.io.Serializable
 
 /** This class has a no-arg constructor, suitable for use with reflection instantiation
  * It has no registered serializers, just the standard Kryo configured for Kryo.
@@ -47,6 +48,26 @@ class EmptyScalaKryoInstantiator extends KryoInstantiator {
     k.setRegistrationRequired(false)
     k.setInstantiatorStrategy(new org.objenesis.strategy.StdInstantiatorStrategy)
     k
+  }
+}
+
+object ScalaKryoInstantiator extends Serializable {
+  private val mutex = new AnyRef with Serializable // some serializable object
+  @transient private var kpool: KryoPool = null
+
+  /** Return a KryoPool that uses the ScalaKryoInstantiator
+   */
+  def defaultPool: KryoPool = mutex.synchronized {
+    if(null == kpool) {
+      kpool = KryoPool.withByteArrayOutputStream(guessThreads, new ScalaKryoInstantiator)
+    }
+    kpool
+  }
+
+  private def guessThreads: Int = {
+    val cores = Runtime.getRuntime.availableProcessors
+    val GUESS_THREADS_PER_CORE = 4
+    GUESS_THREADS_PER_CORE * cores
   }
 }
 
