@@ -52,7 +52,6 @@ class KryoBase extends Kryo {
           if(classOf[scala.Serializable].isAssignableFrom(klass)) {
             fs.setIgnoreSyntheticFields(false)
           }
-          // Todo: if it is a Function, call the ClosureCleaner on it.
           if(isFn(klass))
             new CleaningSerializer(fs.asInstanceOf[FieldSerializer[AnyRef]])
           else
