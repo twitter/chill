@@ -17,7 +17,6 @@ limitations under the License.
 package com.twitter.chill
 
 import com.esotericsoftware.kryo.io.ByteBufferInputStream
-import com.twitter.bijection.{ Bufferable, Bijection, ImplicitBijection, Injection }
 
 import _root_.java.io.{InputStream, Serializable}
 import _root_.java.nio.ByteBuffer
@@ -35,21 +34,6 @@ class RichKryo(k: Kryo) {
     k.getClassResolver.getRegistration(klass) != null
 
   def alreadyRegistered[T](implicit cmf: ClassManifest[T]): Boolean = alreadyRegistered(cmf.erasure)
-
-  def injectionForClass[T](implicit inj: Injection[T, Array[Byte]], cmf: ClassManifest[T]): Kryo = {
-    k.register(cmf.erasure, InjectiveSerializer.asKryo[T])
-    k
-  }
-
-  def injectionForSubclass[T](implicit inj: Injection[T, Array[Byte]], cmf: ClassManifest[T]): Kryo = {
-    k.addDefaultSerializer(cmf.erasure, InjectiveSerializer.asKryo[T])
-    k
-  }
-
-  def bufferableForClass[T](implicit b: Bufferable[T], cmf: ClassManifest[T]): Kryo = {
-    k.register(cmf.erasure, KryoSerializer.viaBufferable[T])
-    k
-  }
 
   def forSubclass[T](kser: KSerializer[T])(implicit cmf: ClassManifest[T]): Kryo = {
     k.addDefaultSerializer(cmf.erasure, kser)
@@ -79,20 +63,6 @@ class RichKryo(k: Kryo) {
     k
   }
 
-  /** B has to already be registered, then use the KSerializer[B] to create KSerialzer[A]
-   */
-  def forClassViaBijection[A,B](implicit bij: ImplicitBijection[A,B], acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
-    val kserb = k.getSerializer(bcmf.erasure).asInstanceOf[KSerializer[B]]
-    k.register(acmf.erasure, KryoSerializer.viaBijection[A,B](kserb))
-    k
-  }
-
-  /** Helpful override to alleviate rewriting types. */
-  def forClassViaBijection[A,B](bij: Bijection[A,B])(implicit acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
-    implicit def implicitBij = bij
-    this.forClassViaBijection[A, B]
-  }
-
   /** Use Java serialization, which is very slow.
    * avoid this if possible, but for very rare classes it is probably fine
    */
@@ -117,13 +87,10 @@ class RichKryo(k: Kryo) {
   }
 
   /**
-    * Populate the wrapped KryoInstance with Injections registered
-    * within the supplied configuration map (using the methods defined
-    * in KryoRegistrationHelper).
+    * Populate the wrapped Kryo instance with this registrar
     */
-  def populateFromConfig(prefix: String, conf: JMap[_,_]): Kryo = {
-    val helper = KryoRegistrationHelper(prefix)
-    helper.asRegistrar(conf)(k)
+  def populateFrom(reg: IKryoRegistrar): Kryo = {
+    reg(k)
     k
   }
 
@@ -133,10 +100,6 @@ class RichKryo(k: Kryo) {
     allCatch.opt(k.readClassAndObject(streamInput))
   }
 
-  def fromByteBuffer(b: ByteBuffer): Option[AnyRef] = {
-    // Can't reuse Input and call Input#setInputStream everytime
-    val s           = new ByteBufferInputStream(b)
-    val streamInput = new Input(s)
-    allCatch.opt(k.readClassAndObject(streamInput))
-  }
+  def fromByteBuffer(b: ByteBuffer): Option[AnyRef] =
+    fromInputStream(new ByteBufferInputStream(b))
 }

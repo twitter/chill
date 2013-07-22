@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.twitter.chill.java.PackageRegistrar
-
-import com.twitter.bijection.{ Bufferable, ImplicitBijection }
-
 object KryoSerializer {
 
   /** Return an instantiator that is configured to work well with scala
@@ -35,16 +31,4 @@ object KryoSerializer {
   def registerCollectionSerializers: IKryoRegistrar = new ScalaCollectionsRegistrar
 
   def registerAll: IKryoRegistrar = new AllScalaRegistrar
-
-  /** Use a bijection[A,B] then the KSerializer on B
-   */
-  def viaBijection[A,B](kser: KSerializer[B])(implicit bij: ImplicitBijection[A,B], cmf: ClassManifest[B]): KSerializer[A] =
-    new KSerializer[A] {
-      def write(k: Kryo, out: Output, obj: A) { kser.write(k, out, bij(obj)) }
-      def read(k: Kryo, in: Input, cls: Class[A]) =
-        bij.invert(kser.read(k, in, cmf.erasure.asInstanceOf[Class[B]]))
-    }
-
-  def viaBufferable[T](implicit b: Bufferable[T]): KSerializer[T] =
-    InjectiveSerializer.asKryo[T](Bufferable.injectionOf[T])
 }

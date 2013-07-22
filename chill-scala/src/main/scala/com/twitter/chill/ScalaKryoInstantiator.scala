@@ -144,7 +144,11 @@ class AllScalaRegistrar extends IKryoRegistrar {
     col(k)
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
-    k.forClassViaBijection[Symbol, String]
+    k.forClass[Symbol](new KSerializer[Symbol] {
+        override def isImmutable = true
+        def write(k: Kryo, out: Output, obj: Symbol) { out.writeString(obj.name) }
+        def read(k: Kryo, in: Input, cls: Class[Symbol]) = Symbol(in.readString)
+      })
       .forSubclass[Regex](new RegexSerializer)
       .forClass[ClassManifest[Any]](new ClassManifestSerializer[Any])
       .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
