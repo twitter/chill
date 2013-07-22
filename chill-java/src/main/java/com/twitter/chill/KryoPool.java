@@ -82,4 +82,49 @@ abstract public class KryoPool extends ResourcePool<SerDeState> {
       }
     };
   }
+
+  public Object fromBytes(byte[] ary) {
+    SerDeState serde = borrow();
+    try {
+      serde.setInput(ary);
+      return serde.readClassAndObject();
+    }
+    finally {
+      release(serde);
+    }
+  }
+
+  public <T> T fromBytes(byte[] ary, Class<T> cls) {
+    SerDeState serde = borrow();
+    try {
+      serde.setInput(ary);
+      return serde.readObject(cls);
+    }
+    finally {
+      release(serde);
+    }
+  }
+
+
+  public byte[] toBytesWithClass(Object obj) {
+    SerDeState serde = borrow();
+    try {
+      serde.writeClassAndObject(obj);
+      return serde.outputToBytes();
+    }
+    finally {
+      release(serde);
+    }
+  }
+
+  public byte[] toBytesWithoutClass(Object obj) {
+    SerDeState serde = borrow();
+    try {
+      serde.writeObject(obj);
+      return serde.outputToBytes();
+    }
+    finally {
+      release(serde);
+    }
+  }
 }

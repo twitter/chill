@@ -25,7 +25,9 @@ object MeatLocker {
  * if the underlying t is not, as long as it is serializable with Kryo.
  */
 class MeatLocker[T](@transient protected var t: T) extends Serializable {
-  protected val tBytes = KryoInjection(t)
+  protected def pool: KryoPool = ScalaKryoInstantiator.defaultPool
+  protected val tBytes = pool.toBytesWithClass(t)
+
   def get: T = {
     if(null == t) {
       // we were serialized
@@ -34,5 +36,5 @@ class MeatLocker[T](@transient protected var t: T) extends Serializable {
     t
   }
 
-  def copy: T = KryoInjection.invert(tBytes).get.asInstanceOf[T]
+  def copy: T = pool.fromBytes(tBytes).asInstanceOf[T]
 }
