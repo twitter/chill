@@ -13,7 +13,7 @@ object ChillBuild extends Build {
   val sharedSettings = Project.defaultSettings ++
     mimaDefaultSettings ++ Seq(
 
-  version := "0.2.3",
+  version := "0.3.0-SNAPSHOT",
 
   organization := "com.twitter",
 
@@ -22,6 +22,11 @@ object ChillBuild extends Build {
   crossScalaVersions := Seq("2.9.3", "2.10.0"),
 
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
+
+  // Twitter Hadoop needs this, sorry 1.7 fans
+  javacOptions ++= Seq("-target", "1.6", "-source", "1.6"),
+
+  javacOptions in doc := Seq("-source", "1.6"),
 
   resolvers ++= Seq(
     "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
