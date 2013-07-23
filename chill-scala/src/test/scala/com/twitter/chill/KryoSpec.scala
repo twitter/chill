@@ -23,7 +23,7 @@ import scala.collection.immutable.ListMap
 import scala.collection.immutable.HashMap
 
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
-
+import _root_.java.util.PriorityQueue
 import scala.collection.mutable
 /*
 * This is just a test case for Kryo to deal with. It should
@@ -216,6 +216,20 @@ class KryoSpec extends Specification with BaseProperties {
       byteBuffer.rewind()
       val opt2 = rich.fromByteBuffer(byteBuffer)
       opt2 must be_==(Option(obj))
+    }
+    "Handle Ordering.reverse" in {
+      // This is exercising the synthetic field serialization in 2.10
+      val ord = Ordering.fromLessThan[(Int,Int)] { (l, r) => l._1 < r._1 }
+      // Now with a reverse ordering:
+      val qr = new PriorityQueue[(Int,Int)](3, ord.reverse)
+      qr.add((2,3))
+      qr.add((4,5))
+      def toList[A](q: PriorityQueue[A]): List[A] = {
+        import scala.collection.JavaConverters._
+        q.iterator.asScala.toList
+      }
+      val qrlist = toList(qr)
+      toList(rt(qr)) must be_==(qrlist)
     }
   }
 }
