@@ -83,6 +83,10 @@ abstract public class KryoPool extends ResourcePool<SerDeState> {
     };
   }
 
+  public <T> T deepCopy(T obj) {
+    return (T)fromBytes(toBytesWithoutClass(obj), obj.getClass());
+  }
+
   public Object fromBytes(byte[] ary) {
     SerDeState serde = borrow();
     try {

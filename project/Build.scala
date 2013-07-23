@@ -134,11 +134,13 @@ object ChillBuild extends Build {
 
   // This can only have java deps!
   lazy val chillJava = module("java").settings(
+    crossPaths := false,
     autoScalaLibrary := false
   )
 
   // This can only have java deps!
   lazy val chillStorm = module("storm").settings(
+    crossPaths := false,
     autoScalaLibrary := false,
     resolvers ++= Seq(
       "Clojars Repository" at "http://clojars.org/repo",
@@ -149,6 +151,7 @@ object ChillBuild extends Build {
 
   // This can only have java deps!
   lazy val chillHadoop = module("hadoop").settings(
+    crossPaths := false,
     autoScalaLibrary := false,
     libraryDependencies ++= Seq(
       "org.apache.hadoop" % "hadoop-core" % "0.20.2" % "provided",

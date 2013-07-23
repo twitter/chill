@@ -46,6 +46,9 @@ public class KryoSerialization extends Configured implements Serialization<Objec
     protected static int GUESS_THREADS_PER_CORE = 4;
     protected static int MAX_CACHED_KRYO = GUESS_THREADS_PER_CORE * Runtime.getRuntime().availableProcessors();
 
+    /** By default, this is the constructor used by Hadoop.
+     * It will first call this, then setConf.
+     */
     public KryoSerialization() {
         this(new Configuration());
     }
