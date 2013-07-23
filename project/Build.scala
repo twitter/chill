@@ -96,6 +96,7 @@ object ChillBuild extends Build {
     publishLocal := { }
   ).aggregate(
     chill,
+    chillBijection,
     chillStorm,
     chillJava,
     chillHadoop
@@ -132,10 +133,15 @@ object ChillBuild extends Build {
     name := "chill",
     previousArtifact := Some("com.twitter" % "chill_2.9.2" % "0.2.2"),
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-core" % "0.5.2",
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
   ).dependsOn(chillJava)
+
+  lazy val chillBijection = module("bijection").settings(
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "bijection-core" % "0.5.2"
+    )
+  ).dependsOn(chill % "test->test;compile->compile")
 
   // This can only have java deps!
   lazy val chillJava = module("java").settings(

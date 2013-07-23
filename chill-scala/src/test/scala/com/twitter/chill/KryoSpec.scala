@@ -24,8 +24,6 @@ import scala.collection.immutable.HashMap
 
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 
-import com.twitter.bijection.Bijection
-
 import scala.collection.mutable
 /*
 * This is just a test case for Kryo to deal with. It should
@@ -123,22 +121,9 @@ class KryoSpec extends Specification with BaseProperties {
          rt(v) must be_==(v)
        }
     }
-    "use bijections" in {
-
-      implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
-        (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
-
-      val inj = KryoInjection.instance { () =>
-        getKryo.forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
-      }
-      rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
-    }
     "use java serialization" in {
-
-      val inj = KryoInjection.instance { () =>
-        getKryo.javaForClass[TestCaseClassForSerialization]
-      }
-      rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
+      val kinst = { () => getKryo.javaForClass[TestCaseClassForSerialization] }
+      rt(kinst, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
     "work with Meatlocker" in {
       val l = List(1,2,3)
@@ -152,7 +137,7 @@ class KryoSpec extends Specification with BaseProperties {
       roundtripped.findFirstIn("hilarious").isDefined must beTrue
     }
     "handle small immutable maps when registration is required" in {
-      val inj = KryoInjection.instance { () =>
+      val inst = { () =>
         val kryo = KryoSerializer.registered.newKryo
         kryo.setRegistrationRequired(true)
         kryo
@@ -163,11 +148,11 @@ class KryoSpec extends Specification with BaseProperties {
       val m4 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd)
       val m5 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e)
       Seq(m1, m2, m3, m4, m5).foreach { m =>
-        rt(inj, m) must be_==(m)
+        rt(inst, m) must be_==(m)
       }
     }
     "handle small immutable sets when registration is required" in {
-      val inj = KryoInjection.instance { () =>
+      val inst = { () =>
         val kryo = getKryo
         kryo.setRegistrationRequired(true)
         kryo
@@ -178,11 +163,11 @@ class KryoSpec extends Specification with BaseProperties {
       val s4 = Set('a, 'b, 'c, 'd)
       val s5 = Set('a, 'b, 'c, 'd, 'e)
       Seq(s1, s2, s3, s4, s5).foreach { s =>
-        rt(inj, s) must be_==(s)
+        rt(inst, s) must be_==(s)
       }
     }
     "handle nested mutable maps" in {
-      val inj = KryoInjection.instance { () =>
+      val inst = { () =>
         val kryo = getKryo
         kryo.setRegistrationRequired(true)
         kryo
@@ -196,11 +181,11 @@ class KryoSpec extends Specification with BaseProperties {
                              1 -> mutable.Set("name3", "name4", "name1", "name2"),
                              0 -> mutable.Set(1, 2, 3, 4))
 
-      rt(inj, obj0) must be_==(obj1)
+      rt(inst, obj0) must be_==(obj1)
     }
     "deserialize InputStream" in {
       val obj   = Seq(1, 2, 3)
-      val bytes = KryoInjection(obj)
+      val bytes = serialize(obj)
 
       val inputStream = new _root_.java.io.ByteArrayInputStream(bytes)
 
@@ -217,7 +202,7 @@ class KryoSpec extends Specification with BaseProperties {
     }
     "deserialize ByteBuffer" in {
       val obj   = Seq(1, 2, 3)
-      val bytes = KryoInjection(obj)
+      val bytes = serialize(obj)
 
       val byteBuffer = _root_.java.nio.ByteBuffer.wrap(bytes)
 
@@ -231,12 +216,6 @@ class KryoSpec extends Specification with BaseProperties {
       byteBuffer.rewind()
       val opt2 = rich.fromByteBuffer(byteBuffer)
       opt2 must be_==(Option(obj))
-    }
-    "Make sure KryoInjection and instances are Java Serializable" in {
-      val ki = jrt(KryoInjection)
-      ki.invert(ki(1)).get must be_==(1)
-      val kii = jrt(KryoInjection.instance(new ScalaKryoInstantiator))
-      kii.invert(kii(1)).get must be_==(1)
     }
   }
 }
