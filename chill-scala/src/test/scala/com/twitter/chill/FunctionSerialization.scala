@@ -18,8 +18,6 @@ package com.twitter.chill
 
 import org.specs._
 
-import com.twitter.bijection.Bijection
-
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 trait AwesomeFns {
@@ -71,9 +69,8 @@ class FunctionSerialization extends Specification with BaseProperties {
       rtTBM.apply(10) must be_==(50)
     }
     "KryoInjection handle an example with closure to function" in {
-      val bytes = KryoInjection(() => Foo.Bar)
-      val x = KryoInjection.invert(bytes)
-      x.get.asInstanceOf[() => Int].apply() must be_==(Foo.Bar)
+      val x = rt(() => Foo.Bar)
+      x() must be_==(Foo.Bar)
     }
       "handle a closure to println" in {
           Globals.temp = false

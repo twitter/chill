@@ -18,7 +18,9 @@ package com.twitter.chill
 
 import org.specs._
 
-import com.twitter.bijection.Bijection
+import com.twitter.bijection.{Bijection}
+
+import BijectionEnrichedKryo._
 
 class CustomSerializationSpec extends Specification with BaseProperties {
   "Custom KryoSerializers and KryoDeserializers" should {
@@ -43,7 +45,7 @@ class CustomSerializationSpec extends Specification with BaseProperties {
         ColoredPoint.unapply(_).get)(
         (ColoredPoint.apply _).tupled)
 
-      val myKryoInjection = KryoInjection.instance { () =>
+      val myInst = { () =>
         (new ScalaKryoInstantiator).newKryo
           // use the implicit bijection by specifying the type
           .forClassViaBijection[Point, (Int,Int)]
@@ -57,7 +59,24 @@ class CustomSerializationSpec extends Specification with BaseProperties {
       val point = Point(5, 6)
       val coloredPoint = ColoredPoint(color, point)
 
-      rt(myKryoInjection, coloredPoint) must_== coloredPoint
+      rt(myInst, coloredPoint) must_== coloredPoint
+    }
+    "use bijections" in {
+      implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
+        (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
+
+      val inst = { () =>
+        (new ScalaKryoInstantiator)
+          .newKryo
+          .forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
+      }
+      rt(inst, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
+    }
+    "Make sure KryoInjection and instances are Java Serializable" in {
+      val ki = jrt(KryoInjection)
+      ki.invert(ki(1)).get must be_==(1)
+      val kii = jrt(KryoInjection.instance(new ScalaKryoInstantiator))
+      kii.invert(kii(1)).get must be_==(1)
     }
   }
 }
