@@ -33,7 +33,7 @@ import com.twitter.chill.config.ConfigurationException;
  * To set this up, you probably want to use ConfiguredInstantitator with
  * the JavaMapConfig.
  */
-class BlizzardKryoFactory implements IKryoFactory {
+public class BlizzardKryoFactory implements IKryoFactory {
   public Kryo getKryo(Map conf) {
     KryoInstantiator kryoInst;
     try {

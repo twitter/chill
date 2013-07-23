@@ -29,6 +29,8 @@ import com.esotericsoftware.kryo.io.Output;
  * It delegates to another KryoInstantiator that is described a Config
  * object. This is either done via reflection or reflection AND serialization.
  *
+ * If the KEY is not set, the delegate is the default: new KryoInstantiator()
+ *
  * In the case of reflection, the class name of the delegate instantiator is given.
  *
  * In the case of serialization, we first reflect to create the KryoInstatiator
@@ -45,24 +47,30 @@ public class ConfiguredInstantiator extends KryoInstantiator {
   public static final String KEY = "com.twitter.chill.config.configuredinstantiator";
 
   public ConfiguredInstantiator(Config conf) throws ConfigurationException {
-    String[] parts = conf.get(KEY).split(":");
-    if(parts.length != 1 && parts.length != 2) {
-      throw new ConfigurationException("Invalid Config Key: " + conf.get(KEY));
-    }
-    KryoInstantiator reflected = null;
-    try { reflected = reflect((Class<? extends KryoInstantiator>)Class.forName(parts[0]), conf); }
-    catch(ClassNotFoundException x) {
-      throw new ConfigurationException("Could not find class for: " + parts[0], x);
-    }
-
-    if(parts.length == 2) {
-      delegate = deserialize(reflected.newKryo(), parts[1]);
-      if(null == delegate) {
-        throw new ConfigurationException("Null delegate from: " + parts[1]);
-      }
+    String key = conf.get(KEY);
+    if (null == key) {
+      delegate = new KryoInstantiator();
     }
     else {
-      delegate = reflected;
+      String[] parts = key.split(":");
+      if(parts.length != 1 && parts.length != 2) {
+        throw new ConfigurationException("Invalid Config Key: " + conf.get(KEY));
+      }
+      KryoInstantiator reflected = null;
+      try { reflected = reflect((Class<? extends KryoInstantiator>)Class.forName(parts[0]), conf); }
+      catch(ClassNotFoundException x) {
+        throw new ConfigurationException("Could not find class for: " + parts[0], x);
+      }
+
+      if(parts.length == 2) {
+        delegate = deserialize(reflected.newKryo(), parts[1]);
+        if(null == delegate) {
+          throw new ConfigurationException("Null delegate from: " + parts[1]);
+        }
+      }
+      else {
+        delegate = reflected;
+      }
     }
   }
 
