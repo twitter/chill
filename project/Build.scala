@@ -17,7 +17,7 @@ object ChillBuild extends Build {
 
   organization := "com.twitter",
 
-  scalaVersion := "2.9.3",
+  scalaVersion := "2.10.0",
 
   crossScalaVersions := Seq("2.9.3", "2.10.0"),
 
