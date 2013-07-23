@@ -58,6 +58,12 @@ class PriorityQueueSpec extends Specification {
       qi.add(5)
       val qilist = toList(qi)
       toList(rt(kryo, qi)) must be_==(qilist)
+      // Now with a reverse ordering:
+      val qr = new java.util.PriorityQueue[(Int,Int)](3, ord.reverse)
+      qr.add((2,3))
+      qr.add((4,5))
+      val qrlist = toList(qr)
+      toList(rt(kryo, qr)) must be_==(qrlist)
     }
   }
 }
