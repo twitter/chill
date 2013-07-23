@@ -10,80 +10,69 @@ import scala.collection.JavaConverters._
 object ChillBuild extends Build {
   val kryoVersion = "2.21"
 
-  val sharedSettings = Project.defaultSettings ++
-    mimaDefaultSettings ++ Seq(
+  val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
 
-  version := "0.3.0-SNAPSHOT",
+    version := "0.3.0-SNAPSHOT",
+    organization := "com.twitter",
+    scalaVersion := "2.9.3",
+    crossScalaVersions := Seq("2.9.3", "2.10.0"),
+    scalacOptions ++= Seq("-unchecked", "-deprecation"),
 
-  organization := "com.twitter",
+    // Twitter Hadoop needs this, sorry 1.7 fans
+    javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
+    javacOptions in doc := Seq("-source", "1.6"),
 
-  scalaVersion := "2.9.3",
+    resolvers ++= Seq(
+      Opts.resolver.sonatypeSnapshots,
+      Opts.resolver.sonatypeReleases
+    ),
+    libraryDependencies ++= Seq(
+      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
+      "org.scala-tools.testing" %% "specs" % "1.6.9" % "test",
+      "com.esotericsoftware.kryo" % "kryo" % kryoVersion
+    ),
 
-  crossScalaVersions := Seq("2.9.3", "2.10.0"),
+    parallelExecution in Test := true,
 
-  scalacOptions ++= Seq("-unchecked", "-deprecation"),
-
-  // Twitter Hadoop needs this, sorry 1.7 fans
-  javacOptions ++= Seq("-target", "1.6", "-source", "1.6"),
-
-  javacOptions in doc := Seq("-source", "1.6"),
-
-  resolvers ++= Seq(
-    "sonatype-snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
-    "sonatype-releases"  at "http://oss.sonatype.org/content/repositories/releases"
-  ),
-
-  libraryDependencies ++= Seq(
-    "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-    "org.scala-tools.testing" %% "specs" % "1.6.9" % "test",
-    "com.esotericsoftware.kryo" % "kryo" % kryoVersion
-  ),
-
-  parallelExecution in Test := true,
-
-  // Publishing options:
-
-  publishMavenStyle := true,
-
-  publishTo <<= version { (v: String) =>
-    val nexus = "https://oss.sonatype.org/"
-    if (v.trim.endsWith("SNAPSHOT"))
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-  },
-
-  publishArtifact in Test := false,
-
-  pomIncludeRepository := { x => false },
-
-  pomExtra := (
-    <url>https://github.com/twitter/chill</url>
-    <licenses>
-      <license>
+    // Publishing options:
+    publishMavenStyle := true,
+    publishTo <<= version { v =>
+      Some(
+        if (v.trim.toUpperCase.endsWith("SNAPSHOT"))
+          Opts.resolver.sonatypeSnapshots
+        else
+          Opts.resolver.sonatypeStaging
+      )
+    },
+    publishArtifact in Test := false,
+    pomIncludeRepository := { x => false },
+    pomExtra := (
+      <url>https://github.com/twitter/chill</url>
+          <licenses>
+        <license>
         <name>Apache 2</name>
         <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        <distribution>repo</distribution>
+          <distribution>repo</distribution>
         <comments>A business-friendly OSS license</comments>
-      </license>
-    </licenses>
-    <scm>
-      <url>git@github.com:twitter/chill.git</url>
-      <connection>scm:git:git@github.com:twitter/chill.git</connection>
-    </scm>
-    <developers>
-      <developer>
+        </license>
+        </licenses>
+        <scm>
+        <url>git@github.com:twitter/chill.git</url>
+        <connection>scm:git:git@github.com:twitter/chill.git</connection>
+        </scm>
+        <developers>
+        <developer>
         <id>oscar</id>
         <name>Oscar Boykin</name>
         <url>http://twitter.com/posco</url>
-      </developer>
-      <developer>
+          </developer>
+        <developer>
         <id>sritchie</id>
         <name>Sam Ritchie</name>
         <url>http://twitter.com/sritchie</url>
-      </developer>
-    </developers>)
-    )
+          </developer>
+        </developers>)
+  )
 
   // Aggregated project
   lazy val chillAll = Project(
@@ -107,13 +96,13 @@ object ChillBuild extends Build {
     * with the current.
     */
   val unreleasedModules = Set[String](
-    "akka", "scala", "hadoop", "storm", "java"
+    "bijection", "akka", "scala", "hadoop", "storm", "java"
   )
 
   def youngestForwardCompatible(subProj: String) =
     Some(subProj)
       .filterNot(unreleasedModules.contains(_))
-      .map { s => "com.twitter" % ("chill-" + s + "_2.9.2") % "0.4.0" }
+      .map { s => "com.twitter" % ("chill-" + s + "_2.9.3") % "0.3.0" }
 
   def module(name: String) = {
     val id = "chill-%s".format(name)
