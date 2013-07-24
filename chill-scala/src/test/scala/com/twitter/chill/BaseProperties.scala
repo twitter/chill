@@ -16,18 +16,17 @@ limitations under the License.
 
 package com.twitter.chill
 
-import java.io._
-import com.twitter.bijection.Injection
+import _root_.java.io._
 
 trait BaseProperties {
-  def serialize[T](t: T): Array[Byte] = KryoInjection(t.asInstanceOf[AnyRef])
+  def serialize[T](t: T): Array[Byte] = ScalaKryoInstantiator.defaultPool.toBytesWithClass(t)
   def deserialize[T](bytes: Array[Byte]): T =
-    KryoInjection.invert(bytes).get.asInstanceOf[T]
+    ScalaKryoInstantiator.defaultPool.fromBytes(bytes).asInstanceOf[T]
 
-  def rt[T](t: T): T = rt[T](KryoInjection, t)
-  def rt[T](k: Injection[AnyRef, Array[Byte]], t: T): T = {
-    val bytes = k(t.asInstanceOf[AnyRef])
-    k.invert(bytes).get.asInstanceOf[T]
+  def rt[T](t: T): T = deserialize(serialize(t))
+  def rt[T](k: KryoInstantiator, t: T): T = {
+    val pool = KryoPool.withByteArrayOutputStream(1, k)
+    pool.fromBytes(pool.toBytesWithClass(t)).asInstanceOf[T]
   }
 
   // using java serialization. TODO: remove when this is shipped in bijection

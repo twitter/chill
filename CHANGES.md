@@ -1,5 +1,28 @@
 # chill #
 
+### 0.3.0
+* Lots of refactoring around configuration (see chill.config in chill-java)
+* Issue #94 KryoPool for pooling Kryo instances and Output buffers
+* Issue #85 upgrade to bijection 0.5.2 and scala 2.9.3
+* Issue #78 Some, Left, Right serializers in chill(-scala)
+* Issue #70 create chill-java for Java only code
+* Issue #67 add chill-storm
+* Issue #65, #71 import cascading.kryo as chill-hadoop
+* Issue #64 fix KryoInjection to be from Any to Array[Byte]
+* Issues #61, #63 handle the case of small Map/Set in scala
+* Issue #57 use CanBuildFrom in Traversable serialization
+
+Contributors:
+
+94 commits
+* P. Oscar Boykin: 46 commits
+* Sam Ritchie: 38 commits
+* ryanlecompte: 5 commits
+* Ngoc Dao: 2 commits
+* Dao Ngoc: 1 commits
+* Michael Schmitz: 1 commits
+* Julien Le Dem: 1 commits
+
 ### 0.2.3
 * Update to Kryo 2.21
 * Update to Bijection 0.4.0

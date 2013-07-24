@@ -18,8 +18,6 @@ package com.twitter.chill
 
 import org.specs._
 
-import com.twitter.bijection.Bijection
-
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 trait AwesomeFns {

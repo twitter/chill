@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.{ Serializer => KSerializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
-
 class ClassManifestSerializer[T] extends KSerializer[ClassManifest[T]] {
 
   def write(kser: Kryo, out: Output, obj: ClassManifest[T]) {

@@ -16,13 +16,9 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.{ Serializer => KSerializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
-
 import scala.util.control.Exception.allCatch
 import scala.collection.mutable.{ Map => MMap }
-import java.lang.reflect.Field
+import _root_.java.lang.reflect.Field
 
 /**
  * Uses facts about how scala compiles object singletons to Java + reflection
