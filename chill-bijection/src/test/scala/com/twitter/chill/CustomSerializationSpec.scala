@@ -93,7 +93,9 @@ class CustomSerializationSpec extends Specification with BaseProperties {
   "handle a closure to println" in {
     Globals.temp = false
     val bytes = KryoInjection(() => {
-      println();
+      // println is in the CustomSpec, calling that creates a closure that gets
+      // the whole spec, which is not serializable
+      Predef.println();
       Globals.temp = true
     })
     val inv = KryoInjection.invert(bytes)

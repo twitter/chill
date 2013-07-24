@@ -52,10 +52,13 @@ class KryoBase extends Kryo {
           if(classOf[scala.Serializable].isAssignableFrom(klass)) {
             fs.setIgnoreSyntheticFields(false)
           }
-          // This is breaking scalding
+          /**
+           * This breaks scalding, but something like this should be used when
+           * working with the repl.
+           *
           if(isFn(klass))
             new CleaningSerializer(fs.asInstanceOf[FieldSerializer[AnyRef]])
-          else
+          else */
             fs
         case x: KSerializer[_] => x
       }
