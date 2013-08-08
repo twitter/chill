@@ -1,5 +1,8 @@
 # chill #
 
+### 0.3.1
+* Issue 115: fix for wrapped Arrays with non-primitives
+
 ### 0.3.0
 * Lots of refactoring around configuration (see chill.config in chill-java)
 * Issue #94 KryoPool for pooling Kryo instances and Output buffers

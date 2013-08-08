@@ -12,7 +12,7 @@ object ChillBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
 
-    version := "0.3.0",
+    version := "0.3.1",
     organization := "com.twitter",
     scalaVersion := "2.9.3",
     crossScalaVersions := Seq("2.9.3", "2.10.0"),
@@ -120,7 +120,7 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.9.2" % "0.2.2"),
+    previousArtifact := Some("com.twitter" % "chill_2.9.3" % "0.3.0"),
     libraryDependencies ++= Seq(
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
