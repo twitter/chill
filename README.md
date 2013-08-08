@@ -122,7 +122,7 @@ KryoInjection can be composed with Bijections and Injections from `com.twitter.b
 
 ## Maven
 
-Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.3.0`.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.3.1`.
 
 Current published artifacts are
 
