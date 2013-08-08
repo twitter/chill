@@ -23,10 +23,8 @@ import scala.collection.immutable.ListMap
 import scala.collection.immutable.HashMap
 
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
-
-import com.twitter.bijection.Bijection
-import java.io._
-
+import _root_.java.util.PriorityQueue
+import scala.collection.mutable
 /*
 * This is just a test case for Kryo to deal with. It should
 * be outside KryoSpec, otherwise the enclosing class, KryoSpec
@@ -47,6 +45,8 @@ class KryoSpec extends Specification with BaseProperties {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
 
+  def getKryo = KryoSerializer.registered.newKryo
+
   "KryoSerializers and KryoDeserializers" should {
     "round trip any non-array object" in {
       val test = List(1,2,"hey",(1,2),
@@ -55,6 +55,9 @@ class KryoSpec extends Specification with BaseProperties {
                       Map(1->2,4->5),
                       0 to 100,
                       (0 to 42).toList, Seq(1,100,1000),
+                      Right(Map("hello" -> 100)),
+                      Left(Map(1->"YO!")),
+                      Some(Left(10)),
                       Map("good" -> 0.5, "bad" -> -1.0),
                       MArrayBuffer(1,2,3,4,5),
                       List(Some(MHashMap(1->1, 2->2)), None, Some(MHashMap(3->4))),
@@ -94,7 +97,15 @@ class KryoSpec extends Specification with BaseProperties {
       arrayRT(Array(0.1))
       arrayRT(Array("hey"))
       arrayRT(Array((0,1)))
+      arrayRT(Array((0,1), (1,0)))
       arrayRT(Array(None, Nil, None, Nil))
+    }
+    "handle WrappedArray instances" in {
+      val tests = Seq(
+        Array((1,1), (2,2), (3,3)).toSeq,
+        Array((1.0, 1.0), (2.0, 2.0)).toSeq,
+        Array((1.0, "1.0"), (2.0, "2.0")).toSeq)
+      tests.foreach { test => rt(test) must be_==(test) }
     }
     "handle lists of lists" in {
       val lol = List(("us", List(1)), ("jp", List(3, 2)), ("gb", List(3, 1)))
@@ -106,66 +117,127 @@ class KryoSpec extends Specification with BaseProperties {
       rt(test) must be_==(test)
       (rt(None) eq None) must beTrue
     }
-    "Serialize a giant list" in {
+    "serialize a giant list" in {
       val bigList = (1 to 100000).toList
       val list2 = rt(bigList)
       list2.size must be_==(bigList.size)
       //Specs, it turns out, also doesn't deal with giant lists well:
       list2.zip(bigList).foreach { tup => tup._1 must be_==(tup._2) }
     }
-    "Handle scala enums" in {
+    "handle scala enums" in {
        WeekDay.values.foreach { v =>
          rt(v) must be_==(v)
        }
     }
-    "use bijections" in {
-      import KryoImplicits.toRich
-
-      implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
-        (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
-
-      val kryo = KryoBijection.getKryo
-            .forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
-      val inj = KryoInjection.instance(kryo)
-      rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
-    }
     "use java serialization" in {
-      import KryoImplicits.toRich
-
-      val kryo = KryoBijection.getKryo.javaForClass[TestCaseClassForSerialization]
-      val inj = KryoInjection.instance(kryo)
-      rt(inj, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
+      val kinst = { () => getKryo.javaForClass[TestCaseClassForSerialization] }
+      rt(kinst, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
-    "Handle PriorityQueue" in {
-      import scala.collection.JavaConverters._
-      val ord = Ordering.fromLessThan[(Int,Int)] { (l, r) => l._1 < r._1 }
-      val q = new java.util.PriorityQueue[(Int,Int)](3, ord)
-      q.add((2,3))
-      q.add((4,5))
-      def toList[A](q: java.util.PriorityQueue[A]): List[A] =
-        q.iterator.asScala.toList
-      val qlist = toList(q)
-      val newQ = rt(q)
-      toList(newQ) must be_==(qlist)
-      newQ.add((1,1))
-      newQ.add((2,1)) must beTrue
-      // Now without an ordering:
-      val qi = new java.util.PriorityQueue[Int](3)
-      qi.add(2)
-      qi.add(5)
-      val qilist = toList(qi)
-      toList(rt(qi)) must be_==(qilist)
-    }
-    "Work with Meatlocker" in {
+    "work with Meatlocker" in {
       val l = List(1,2,3)
       val ml = MeatLocker(l)
       jrt(ml).get must_==(l)
     }
-    "Handle Regex" in {
+    "handle Regex" in {
       val test = """\bhilarious""".r
       val roundtripped = rt(test)
       roundtripped.pattern.pattern must be_==(test.pattern.pattern)
       roundtripped.findFirstIn("hilarious").isDefined must beTrue
+    }
+    "handle small immutable maps when registration is required" in {
+      val inst = { () =>
+        val kryo = KryoSerializer.registered.newKryo
+        kryo.setRegistrationRequired(true)
+        kryo
+      }
+      val m1 = Map('a -> 'a)
+      val m2 = Map('a -> 'a, 'b -> 'b)
+      val m3 = Map('a -> 'a, 'b -> 'b, 'c -> 'c)
+      val m4 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd)
+      val m5 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e)
+      Seq(m1, m2, m3, m4, m5).foreach { m =>
+        rt(inst, m) must be_==(m)
+      }
+    }
+    "handle small immutable sets when registration is required" in {
+      val inst = { () =>
+        val kryo = getKryo
+        kryo.setRegistrationRequired(true)
+        kryo
+      }
+      val s1 = Set('a)
+      val s2 = Set('a, 'b)
+      val s3 = Set('a, 'b, 'c)
+      val s4 = Set('a, 'b, 'c, 'd)
+      val s5 = Set('a, 'b, 'c, 'd, 'e)
+      Seq(s1, s2, s3, s4, s5).foreach { s =>
+        rt(inst, s) must be_==(s)
+      }
+    }
+    "handle nested mutable maps" in {
+      val inst = { () =>
+        val kryo = getKryo
+        kryo.setRegistrationRequired(true)
+        kryo
+      }
+      val obj0 = mutable.Map(4 -> mutable.Set("house1", "house2"),
+                             1 -> mutable.Set("name3", "name4", "name1", "name2"),
+                             0 -> mutable.Set(1, 2, 3, 4))
+
+      // Make sure to make a totally separate map to check equality with
+      val obj1 = mutable.Map(4 -> mutable.Set("house1", "house2"),
+                             1 -> mutable.Set("name3", "name4", "name1", "name2"),
+                             0 -> mutable.Set(1, 2, 3, 4))
+
+      rt(inst, obj0) must be_==(obj1)
+    }
+    "deserialize InputStream" in {
+      val obj   = Seq(1, 2, 3)
+      val bytes = serialize(obj)
+
+      val inputStream = new _root_.java.io.ByteArrayInputStream(bytes)
+
+      val kryo = getKryo
+      val rich = new RichKryo(kryo)
+
+      val opt1 = rich.fromInputStream(inputStream)
+      opt1 must be_==(Option(obj))
+
+      // Test again to make sure it still works
+      inputStream.reset()
+      val opt2 = rich.fromInputStream(inputStream)
+      opt2 must be_==(Option(obj))
+    }
+    "deserialize ByteBuffer" in {
+      val obj   = Seq(1, 2, 3)
+      val bytes = serialize(obj)
+
+      val byteBuffer = _root_.java.nio.ByteBuffer.wrap(bytes)
+
+      val kryo = getKryo
+      val rich = new RichKryo(kryo)
+
+      val opt1 = rich.fromByteBuffer(byteBuffer)
+      opt1 must be_==(Option(obj))
+
+      // Test again to make sure it still works
+      byteBuffer.rewind()
+      val opt2 = rich.fromByteBuffer(byteBuffer)
+      opt2 must be_==(Option(obj))
+    }
+    "Handle Ordering.reverse" in {
+      // This is exercising the synthetic field serialization in 2.10
+      val ord = Ordering.fromLessThan[(Int,Int)] { (l, r) => l._1 < r._1 }
+      // Now with a reverse ordering:
+      val qr = new PriorityQueue[(Int,Int)](3, ord.reverse)
+      qr.add((2,3))
+      qr.add((4,5))
+      def toList[A](q: PriorityQueue[A]): List[A] = {
+        import scala.collection.JavaConverters._
+        q.iterator.asScala.toList
+      }
+      val qrlist = toList(qr)
+      toList(rt(qr)) must be_==(qrlist)
     }
   }
 }

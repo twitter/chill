@@ -16,17 +16,14 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.KryoException
-import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.reflectasm.ConstructorAccess
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 import org.objenesis.instantiator.ObjectInstantiator
 import org.objenesis.strategy.InstantiatorStrategy
 
-import java.lang.reflect.Constructor
-import java.lang.reflect.Modifier
+import _root_.java.lang.reflect.{Constructor, Modifier}
 
 /*
  * This is the base class of Kryo we use to fix specific scala
@@ -37,6 +34,12 @@ class KryoBase extends Kryo {
   lazy val objSer = new ObjectSerializer[AnyRef]
 
   protected var strategy: Option[InstantiatorStrategy] = None
+
+  val functions: Iterable[Class[_]] =
+    (0 to 22).map { idx => Class.forName("scala.Function" + idx.toString) }
+
+  def isFn(klass: Class[_]): Boolean =
+    functions.find { _.isAssignableFrom(klass) }.isDefined
 
   override def newDefaultSerializer(klass : Class[_]) : KSerializer[_] = {
     if(isSingleton(klass)) {
@@ -49,7 +52,14 @@ class KryoBase extends Kryo {
           if(classOf[scala.Serializable].isAssignableFrom(klass)) {
             fs.setIgnoreSyntheticFields(false)
           }
-          fs
+          /**
+           * This breaks scalding, but something like this should be used when
+           * working with the repl.
+           *
+          if(isFn(klass))
+            new CleaningSerializer(fs.asInstanceOf[FieldSerializer[AnyRef]])
+          else */
+            fs
         case x: KSerializer[_] => x
       }
     }

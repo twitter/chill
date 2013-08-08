@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.{ Serializer => KSerializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
-
 import scala.collection.mutable.{Map => MMap}
 
 class EnumerationSerializer extends KSerializer[Enumeration#Value] {

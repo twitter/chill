@@ -16,14 +16,18 @@ limitations under the License.
 
 package com.twitter.chill
 
+import _root_.java.io.Serializable
 object MeatLocker {
   def apply[T](t: T) = new MeatLocker(t)
 }
 
-// TODO: Use Injection and return an Option[T]. Or upgrade to scala
-// 2.10 fully and return a Try[T].
-class MeatLocker[T](@transient protected var t: T) extends java.io.Serializable {
-  protected val tBytes = KryoBijection(t.asInstanceOf[AnyRef])
+/** Use Kryo to provide a "box" which is efficiently Java serializable even
+ * if the underlying t is not, as long as it is serializable with Kryo.
+ */
+class MeatLocker[T](@transient protected var t: T) extends Serializable {
+  protected def pool: KryoPool = ScalaKryoInstantiator.defaultPool
+  protected val tBytes = pool.toBytesWithClass(t)
+
   def get: T = {
     if(null == t) {
       // we were serialized
@@ -32,5 +36,5 @@ class MeatLocker[T](@transient protected var t: T) extends java.io.Serializable 
     t
   }
 
-  def copy: T = KryoBijection.invert(tBytes).asInstanceOf[T]
+  def copy: T = pool.fromBytes(tBytes).asInstanceOf[T]
 }

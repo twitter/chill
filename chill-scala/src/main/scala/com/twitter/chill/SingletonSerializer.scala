@@ -16,10 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.{ Serializer => KSerializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
-
 // Singletons are easy, you just return the singleton and don't read:
 // It's important you actually do this, or Kryo will generate Nil != Nil, or None != None
 
