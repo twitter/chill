@@ -97,7 +97,15 @@ class KryoSpec extends Specification with BaseProperties {
       arrayRT(Array(0.1))
       arrayRT(Array("hey"))
       arrayRT(Array((0,1)))
+      arrayRT(Array((0,1), (1,0)))
       arrayRT(Array(None, Nil, None, Nil))
+    }
+    "handle WrappedArray instances" in {
+      val tests = Seq(
+        Array((1,1), (2,2), (3,3)).toSeq,
+        Array((1.0, 1.0), (2.0, 2.0)).toSeq,
+        Array((1.0, "1.0"), (2.0, "2.0")).toSeq)
+      tests.foreach { test => rt(test) must be_==(test) }
     }
     "handle lists of lists" in {
       val lol = List(("us", List(1)), ("jp", List(3, 2)), ("gb", List(3, 1)))
