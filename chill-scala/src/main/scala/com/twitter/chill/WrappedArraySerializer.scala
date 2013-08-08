@@ -18,25 +18,23 @@ package com.twitter.chill
 
 import scala.collection.mutable.{WrappedArray, WrappedArrayBuilder}
 
-class WrappedArraySerializer[T: ClassManifest] extends KSerializer[WrappedArray[T]] {
+class WrappedArraySerializer[T] extends KSerializer[WrappedArray[T]] {
 
   def write(kser: Kryo, out: Output, obj: WrappedArray[T]) {
-    out.writeInt(obj.size, true)
-    obj.foreach { t  =>
-      val tRef = t.asInstanceOf[AnyRef]
-      kser.writeClassAndObject(out, tRef)
-      // After each intermediate object, flush
-      out.flush()
-    }
+    // Write the class-manifest, we don't use writeClass because it
+    // uses the registration system, and this class might not be registered
+    kser.writeObject(out, obj.elemManifest.erasure)
+    kser.writeClassAndObject(out, obj.array)
   }
 
   def read(kser: Kryo, in: Input, cls: Class[WrappedArray[T]]) = {
-    val size = in.readInt(true)
-    val bldr = new WrappedArrayBuilder[T](classManifest[T])
-    bldr.sizeHint(size)
-    (0 until size).foreach { idx =>
-      bldr += kser.readClassAndObject(in).asInstanceOf[T]
-    }
+    // Write the class-manifest, we don't use writeClass because it
+    // uses the registration system, and this class might not be registered
+    val clazz = kser.readObject(in, classOf[Class[T]])
+    val array = kser.readClassAndObject(in).asInstanceOf[Array[T]]
+    val bldr = new WrappedArrayBuilder[T](ClassManifest.fromClass[T](clazz))
+    bldr.sizeHint(array.size)
+    bldr ++= array
     bldr.result()
   }
 }
