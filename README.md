@@ -120,6 +120,26 @@ val tryDecode: scala.util.Try[Any] = KryoInjection.invert(bytes)
 
 KryoInjection can be composed with Bijections and Injections from `com.twitter.bijection`.
 
+## Chill-Akka
+
+To use, add a key to your config like:
+```
+    akka.actor.serializers {
+      kryo = "com.twitter.chill.akka.AkkaSerializer"
+    }
+```
+
+Then for the super-classes of all your message types, for instance, scala.Product, write:
+```scala
+   akka.actor.serialization-bindings {
+     "scala.Product" = kryo
+   }
+```
+
+If you want to use the `chill.config.ConfiguredInstantiator` see `ConfiguredAkkaSerializer`
+otherwise, subclass `AkkaSerializer` and override `kryoInstantiator` to control how the `Kryo`
+object is created.
+
 ## Maven
 
 Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.3.1`.
