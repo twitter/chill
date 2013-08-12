@@ -20,19 +20,21 @@ import com.twitter.chill.config.{Config => ChillConfig}
 import com.typesafe.config.{Config => TypesafeConfig}
 import com.typesafe.config.ConfigFactory
 
+import scala.util.Try
+
 /** Wraps the immutable typesafe.config.Config in a wrapper that
  * keeps track of the state and follows the semantics of ChillConfig
  */
-class AkkaConfig(var typesafeConfig: TypesafeConfig = ConfigFactory.empty) extends ChillConfig {
-  def get(key: String) = try { typesafeConfig.getString(key) } catch { case _: Throwable => null }
+class AkkaConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
+  /* This is implementing a Java API so that has an assy format */
+  def get(key: String) =
+    Try(typesafeConfig.getString(key)).toOption.orNull
+
   def set(key: String, value: String) {
-    if (value != null) {
-      typesafeConfig =
-        ConfigFactory.parseString("%s = \"%s\"".format(key, value))
-          .withFallback(typesafeConfig)
+    typesafeConfig = Option(value).map { v =>
+      ConfigFactory.parseString("%s = \"%s\"".format(key, v))
+        .withFallback(typesafeConfig)
     }
-    else {
-      typesafeConfig = typesafeConfig.withoutPath(key)
-    }
+    .getOrElse(typesafeConfig.withoutPath(key))
   }
 }
