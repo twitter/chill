@@ -26,7 +26,7 @@ import com.typesafe.config.ConfigFactory
 class AkkaConfig(var typesafeConfig: TypesafeConfig = ConfigFactory.empty) extends ChillConfig {
   def get(key: String) = try { typesafeConfig.getString(key) } catch { case _: Throwable => null }
   def set(key: String, value: String) {
-    if(value != null) {
+    if (value != null) {
       typesafeConfig =
         ConfigFactory.parseString("%s = \"%s\"".format(key, value))
           .withFallback(typesafeConfig)

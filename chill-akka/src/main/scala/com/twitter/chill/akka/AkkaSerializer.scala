@@ -57,7 +57,7 @@ class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
    * core and then multiple by the nember of cores.
    */
   def poolSize: Int = {
-    val GUESS_THREADS_PER_CORE = 4;
+    val GUESS_THREADS_PER_CORE = 4
     GUESS_THREADS_PER_CORE * Runtime.getRuntime.availableProcessors
   }
 
