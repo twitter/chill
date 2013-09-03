@@ -138,6 +138,11 @@ class KryoSpec extends Specification with BaseProperties {
       val ml = MeatLocker(l)
       jrt(ml).get must_==(l)
     }
+    "work with Externalizer" in {
+      val l = List(1,2,3)
+      val ext = Externalizer(l)
+      jrt(ext).get must_==(l)
+    }
     "handle Regex" in {
       val test = """\bhilarious""".r
       val roundtripped = rt(test)
