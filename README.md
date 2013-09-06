@@ -1,7 +1,7 @@
 ## Chill [![Build Status](https://secure.travis-ci.org/twitter/chill.png)](http://travis-ci.org/twitter/chill)
 
 Extensions for the [Kryo serialization library](http://code.google.com/p/kryo/) including
-serializers and a set of classes to ease configuration of Kryo in systems like Hadoop, Storm, 
+serializers and a set of classes to ease configuration of Kryo in systems like Hadoop, Storm,
 Akka, etc.
 
 Chill has a set of subprojects: chill-java, chill-hadoop, chill-storm and chill-scala.  Other than
@@ -101,11 +101,8 @@ only scala serializers).  Chill provides support for singletons, scala Objects a
   * all 22 scala tuples
 
 ## Chill-bijection
-[Bijections and Injections](https://github.com/twitter/bijection)
-are useful when considering serialization. If you have an Injection from
-`T` to `Array[Byte]` you have a serialization.  Additionally, if you have a Bijection between `A`
-and `B`, and a serialization for `B`, then you have a serialization for `A`.  See
-`BijectionEnrichedKryo` for easy interop between bijection and chill.
+
+[Bijections and Injections](https://github.com/twitter/bijection) are useful when considering serialization. If you have an Injection from `T` to `Array[Byte]` you have a serialization.  Additionally, if you have a Bijection between `A` and `B`, and a serialization for `B`, then you have a serialization for `A`.  See `BijectionEnrichedKryo` for easy interop between bijection and chill.
 
 ### KryoInjection: easy serialization to byte Arrays
 
@@ -119,6 +116,14 @@ val tryDecode: scala.util.Try[Any] = KryoInjection.invert(bytes)
 ```
 
 KryoInjection can be composed with Bijections and Injections from `com.twitter.bijection`.
+
+## Community and Documentation
+
+To learn more and find links to tutorials and information around the web, check out the [Chill Wiki](https://github.com/twitter/chill/wiki).
+
+The latest ScalaDocs are hosted on Chill's [Github Project Page](http://twitter.github.io/chill).
+
+Discussion occurs primarily on the [Chill mailing list](http://librelist.com/browser/chill/). To join the mailing list, email [chill@librelist.com](mailto:chill@librelist.com). The same address is used for posting once you've joined. Issues should be reported on the [GitHub issue tracker](https://github.com/twitter/chill/issues).
 
 ## Maven
 
