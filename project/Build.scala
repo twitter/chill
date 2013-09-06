@@ -126,6 +126,14 @@ object ChillBuild extends Build {
     )
   ).dependsOn(chillJava)
 
+  lazy val chillAkka = module("akka").settings(
+    resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+    libraryDependencies ++= Seq(
+      "com.typesafe" % "config" % "0.3.1",
+      "com.typesafe.akka" % "akka-actor" % "2.0.5"
+    )
+  ).dependsOn(chill % "test->test;compile->compile")
+
   lazy val chillBijection = module("bijection").settings(
     libraryDependencies ++= Seq(
       "com.twitter" %% "bijection-core" % "0.5.2"
