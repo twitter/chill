@@ -143,7 +143,7 @@ To learn more and find links to tutorials and information around the web, check 
 
 The latest ScalaDocs are hosted on Chill's [Github Project Page](http://twitter.github.io/chill).
 
-Discussion occurs primarily on the [Chill mailing list](http://librelist.com/browser/chill/). To join the mailing list, email [chill@librelist.com](mailto:chill@librelist.com). The same address is used for posting once you've joined. Issues should be reported on the [GitHub issue tracker](https://github.com/twitter/chill/issues).
+Discussion occurs primarily on the [Chill mailing list](https://groups.google.com/forum/#!forum/chill-user). Issues should be reported on the [GitHub issue tracker](https://github.com/twitter/chill/issues).
 
 ## Maven
 
