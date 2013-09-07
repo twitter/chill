@@ -38,6 +38,8 @@ public class PackageRegistrar {
       TimestampSerializer.registrar(),
       URISerializer.registrar(),
       InetSocketAddressSerializer.registrar(),
-      UUIDSerializer.registrar());
+      UUIDSerializer.registrar(),
+      LocaleSerializer.registrar(),
+      SimpleDateFormatSerializer.registrar());
   }
 }
