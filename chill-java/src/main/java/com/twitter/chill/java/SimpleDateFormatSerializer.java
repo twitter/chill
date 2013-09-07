@@ -16,22 +16,18 @@ limitations under the License.
 
 package com.twitter.chill.java;
 
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.serializers.JavaSerializer;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 
 import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.SingleRegistrar;
 
-import java.util.Locale;
+import java.text.SimpleDateFormat;
 
-/** The java serializer uses an cache of allocated instances so
- * it is probably a bit hard to beat, so why bother
+/** This class fails with the Fields serializer.
+ * If it is a perf bottleneck, we could write a Kryo serializer
  */
-public class LocaleSerializer extends JavaSerializer {
+public class SimpleDateFormatSerializer extends JavaSerializer {
    static public IKryoRegistrar registrar() {
-      return new SingleRegistrar(Locale.class, new LocaleSerializer());
+      return new SingleRegistrar(SimpleDateFormat.class, new SimpleDateFormatSerializer());
     }
 }
