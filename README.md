@@ -147,7 +147,7 @@ Discussion occurs primarily on the [Chill mailing list](https://groups.google.co
 
 ## Maven
 
-Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.3.1`.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.3.2`.
 
 Current published artifacts are
 
@@ -158,6 +158,8 @@ Current published artifacts are
 * `chill_2.10`
 * `chill-bijection_2.9.3`
 * `chill-bijection_2.10`
+* `chill-akka_2.9.3`
+* `chill-akka_2.10`
 
 The suffix denotes the scala version.
 

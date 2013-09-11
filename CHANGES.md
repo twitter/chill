@@ -1,6 +1,16 @@
 # chill #
 
+### 0.3.2
+
+* Add a LocaleSerializer to chill-java: https://github.com/twitter/chill/pull/128
+* chill-akka module: https://github.com/twitter/chill/pull/116
+* Community section to README (with a mailing list!) https://github.com/twitter/chill/pull/127
+* SingletonSerializer for (): https://github.com/twitter/chill/pull/130
+* Add Externalizer (fault-tolerant meatlocker): https://github.com/twitter/chill/pull/126
+* Use References in Externalizer: https://github.com/twitter/chill/pull/131
+
 ### 0.3.1
+
 * Issue 115: fix for wrapped Arrays with non-primitives
 
 ### 0.3.0
