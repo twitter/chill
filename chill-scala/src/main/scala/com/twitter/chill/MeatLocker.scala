@@ -23,6 +23,8 @@ object MeatLocker {
 
 /** Use Kryo to provide a "box" which is efficiently Java serializable even
  * if the underlying t is not, as long as it is serializable with Kryo.
+ *
+ * Externalizer has replaced this class. Prefer that.
  */
 class MeatLocker[T](@transient protected var t: T) extends Serializable {
   protected def pool: KryoPool = ScalaKryoInstantiator.defaultPool
