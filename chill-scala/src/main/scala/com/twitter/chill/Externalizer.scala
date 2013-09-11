@@ -59,7 +59,7 @@ class Externalizer[T] extends Externalizable {
    * the KryoInstantiator at the same time, which would increase size.
    */
   protected def kryo: KryoInstantiator =
-    new ScalaKryoInstantiator
+    (new ScalaKryoInstantiator).setReferences(true)
 
   // 1 here is 1 thread, since we will likely only serialize once
   private val kpool = KryoPool.withByteArrayOutputStream(1, kryo)
