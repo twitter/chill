@@ -75,6 +75,7 @@ class KryoSpec extends Specification with BaseProperties {
                       Vector(1,2,3,4,5),
                       TestValMap(null),
                       Some("junk"),
+                      (),
                       'hai)
         .asInstanceOf[List[AnyRef]]
 
