@@ -75,6 +75,7 @@ class KryoSpec extends Specification with BaseProperties {
                       Vector(1,2,3,4,5),
                       TestValMap(null),
                       Some("junk"),
+                      (),
                       'hai)
         .asInstanceOf[List[AnyRef]]
 
@@ -137,6 +138,11 @@ class KryoSpec extends Specification with BaseProperties {
       val l = List(1,2,3)
       val ml = MeatLocker(l)
       jrt(ml).get must_==(l)
+    }
+    "work with Externalizer" in {
+      val l = List(1,2,3)
+      val ext = Externalizer(l)
+      jrt(ext).get must_==(l)
     }
     "handle Regex" in {
       val test = """\bhilarious""".r

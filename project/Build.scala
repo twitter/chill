@@ -12,7 +12,7 @@ object ChillBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
 
-    version := "0.3.1",
+    version := "0.3.2",
     organization := "com.twitter",
     scalaVersion := "2.9.3",
     crossScalaVersions := Seq("2.9.3", "2.10.0"),
@@ -95,14 +95,16 @@ object ChillBuild extends Build {
     * This returns the youngest jar we released that is compatible
     * with the current.
     */
-  val unreleasedModules = Set[String](
-    "bijection", "akka", "scala", "hadoop", "storm", "java"
-  )
+  val unreleasedModules = Set[String]("akka")
+  val javaOnly = Set[String]("storm", "java", "hadoop")
 
   def youngestForwardCompatible(subProj: String) =
     Some(subProj)
       .filterNot(unreleasedModules.contains(_))
-      .map { s => "com.twitter" % ("chill-" + s + "_2.9.3") % "0.3.0" }
+      .map { s =>
+      val suffix = if (javaOnly.contains(s)) "" else "_2.9.3"
+      "com.twitter" % ("chill-" + s + suffix) % "0.3.1"
+    }
 
   def module(name: String) = {
     val id = "chill-%s".format(name)
@@ -125,6 +127,14 @@ object ChillBuild extends Build {
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
   ).dependsOn(chillJava)
+
+  lazy val chillAkka = module("akka").settings(
+    resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+    libraryDependencies ++= Seq(
+      "com.typesafe" % "config" % "0.3.1",
+      "com.typesafe.akka" % "akka-actor" % "2.0.5"
+    )
+  ).dependsOn(chill % "test->test;compile->compile")
 
   lazy val chillBijection = module("bijection").settings(
     libraryDependencies ++= Seq(
