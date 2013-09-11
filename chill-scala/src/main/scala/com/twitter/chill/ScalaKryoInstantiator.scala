@@ -153,6 +153,10 @@ class AllScalaRegistrar extends IKryoRegistrar {
       .forClass[ClassManifest[Any]](new ClassManifestSerializer[Any])
       .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
       .forSubclass[scala.Enumeration#Value](new EnumerationSerializer)
+
+    // use the singleton serializer for boxed Unit
+    val boxedUnit = scala.Unit.box(())
+    k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
   }
 }
