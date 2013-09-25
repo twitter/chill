@@ -91,8 +91,8 @@ class KryoSpec extends Specification with BaseProperties {
     }
     "handle trait with reference of self" in {
       var a= new ExampleUsingSelf{}
-      var b=rt(a)
-      b.addOne.count must be_==(1)
+      var b=rt(a.addOne)
+      b.count must be_==(1)
     }
     "handle manifests" in {
       rt(manifest[Int]) must be_==(manifest[Int])
