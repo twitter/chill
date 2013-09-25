@@ -49,9 +49,9 @@ class KryoBase extends Kryo {
       super.newDefaultSerializer(klass) match {
         case fs: FieldSerializer[_] =>
         //Scala has a lot of synthetic fields that must be serialized:
-          if(classOf[scala.Serializable].isAssignableFrom(klass)) {
-            fs.setIgnoreSyntheticFields(false)
-          }
+        //We also enable it by default in java since not wanting these fields
+        //serialized looks like the exception rather than the rule.
+        fs.setIgnoreSyntheticFields(false)
           /**
            * This breaks scalding, but something like this should be used when
            * working with the repl.
