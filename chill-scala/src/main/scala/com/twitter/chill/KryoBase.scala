@@ -51,7 +51,8 @@ class KryoBase extends Kryo {
         //Scala has a lot of synthetic fields that must be serialized:
         //We also enable it by default in java since not wanting these fields
         //serialized looks like the exception rather than the rule.
-        fs.setIgnoreSyntheticFields(false)
+          fs.setIgnoreSyntheticFields(false)
+
           /**
            * This breaks scalding, but something like this should be used when
            * working with the repl.

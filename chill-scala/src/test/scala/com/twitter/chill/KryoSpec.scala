@@ -41,6 +41,11 @@ object WeekDay extends Enumeration {
  val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
 }
 
+trait ExampleUsingSelf { self =>
+  def count = 0
+  def addOne = new ExampleUsingSelf {override def count=self.count+1}
+}
+
 class KryoSpec extends Specification with BaseProperties {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
@@ -75,6 +80,7 @@ class KryoSpec extends Specification with BaseProperties {
                       Vector(1,2,3,4,5),
                       TestValMap(null),
                       Some("junk"),
+                      (),
                       'hai)
         .asInstanceOf[List[AnyRef]]
 
@@ -82,6 +88,11 @@ class KryoSpec extends Specification with BaseProperties {
       rtTest.zip(test).foreach { case (serdeser, orig) =>
         serdeser must be_==(orig)
       }
+    }
+    "handle trait with reference of self" in {
+      var a= new ExampleUsingSelf{}
+      var b=rt(a.addOne)
+      b.count must be_==(1)
     }
     "handle manifests" in {
       rt(manifest[Int]) must be_==(manifest[Int])
