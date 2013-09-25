@@ -15,7 +15,15 @@ limitations under the License.
 */
 package com.twitter.chill
 
-import _root_.java.io.{ByteArrayOutputStream, Externalizable, ObjectInput, ObjectOutput}
+import _root_.java.io.{
+  ByteArrayOutputStream,
+  ByteArrayInputStream,
+  Externalizable,
+  ObjectInput,
+  ObjectOutput,
+  ObjectInputStream,
+  ObjectOutputStream
+}
 
 object Externalizer {
   def apply[T](t: T): Externalizer[T] = {
@@ -59,10 +67,32 @@ class Externalizer[T] extends Externalizable {
    * the KryoInstantiator at the same time, which would increase size.
    */
   protected def kryo: KryoInstantiator =
-    new ScalaKryoInstantiator
+    (new ScalaKryoInstantiator).setReferences(true)
 
   // 1 here is 1 thread, since we will likely only serialize once
   private val kpool = KryoPool.withByteArrayOutputStream(1, kryo)
+
+  /** Try to round-trip and see if it works without error
+   */
+  lazy val javaWorks: Boolean = {
+    try {
+      val baos = new ByteArrayOutputStream()
+      val oos = new ObjectOutputStream(baos)
+      oos.writeObject(item)
+      val bytes = baos.toByteArray
+      val testInput = new ByteArrayInputStream(bytes)
+      val ois = new ObjectInputStream(testInput)
+      ois.readObject // this may throw
+      true
+    }
+    catch {
+      case t: Throwable =>
+        Option(System.getenv.get("CHILL_EXTERNALIZER_DEBUG"))
+          .filter(_.toBoolean)
+          .foreach { _ => t.printStackTrace }
+        false
+    }
+  }
 
   private def safeToBytes: Option[Array[Byte]] = {
     try {
@@ -84,24 +114,36 @@ class Externalizer[T] extends Externalizable {
 
   def readExternal(in: ObjectInput) {
     in.read match {
+      case JAVA =>
+        item = in.readObject.asInstanceOf[Option[T]]
       case KRYO =>
         val sz = in.readInt
         val buf = new Array[Byte](sz)
         in.readFully(buf)
         item = fromBytes(buf)
-      case JAVA =>
-        item = in.readObject.asInstanceOf[Option[T]]
     }
   }
+
+  protected def writeJava(out: ObjectOutput): Boolean =
+    javaWorks && {
+      out.write(JAVA)
+      out.writeObject(item)
+      true
+    }
+
+  protected def writeKryo(out: ObjectOutput): Boolean =
+    safeToBytes.map { bytes =>
+      out.write(KRYO)
+      out.writeInt(bytes.size)
+      out.write(bytes)
+      true
+    }.getOrElse(false)
+
   def writeExternal(out: ObjectOutput) {
-    safeToBytes match {
-      case Some(bytes) =>
-        out.write(KRYO)
-        out.writeInt(bytes.size)
-        out.write(bytes)
-      case None =>
-        out.write(JAVA)
-        out.writeObject(item)
+    writeJava(out) || writeKryo(out) || {
+      val inner = item.get
+      sys.error("Neither Java nor Kyro works for class: %s instance: %s\nexport CHILL_EXTERNALIZER_DEBUG=true to see both stack traces"
+        .format(inner.getClass, inner))
     }
   }
 }

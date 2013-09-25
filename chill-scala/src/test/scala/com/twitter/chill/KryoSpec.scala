@@ -36,6 +36,8 @@ case class TestValMap(map: Map[String,Double])
 case class TestValHashMap(map: HashMap[String,Double])
 case class TestVarArgs(vargs: String*)
 
+class SomeRandom(val x: Int)
+
 object WeekDay extends Enumeration {
  type WeekDay = Value
  val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
@@ -141,7 +143,14 @@ class KryoSpec extends Specification with BaseProperties {
     "work with Externalizer" in {
       val l = List(1,2,3)
       val ext = Externalizer(l)
+      ext.javaWorks must be_==(true)
       jrt(ext).get must_==(l)
+    }
+    "work with Externalizer with non-java-ser" in {
+      val l = new SomeRandom(3)
+      val ext = Externalizer(l)
+      ext.javaWorks must be_==(false)
+      jrt(ext).get.x must_==(l.x)
     }
     "handle Regex" in {
       val test = """\bhilarious""".r
