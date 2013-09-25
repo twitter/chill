@@ -131,7 +131,8 @@ public class ConfiguredInstantiator extends KryoInstantiator {
     KryoInstantiator refki = reflect(reflector, conf);
     String kistr = serialize(refki.newKryo(), ki);
     // Verify, that deserialization works:
-    deserialize(refki.newKryo(), kistr); // ignore the result, just see if it throws
+    KryoInstantiator deser = deserialize(refki.newKryo(), kistr); // ignore the result, just see if it throws
+    deser.newKryo(); // just see if we can still create it
     conf.set(KEY, reflector.getName() + ":" + kistr);
   }
 

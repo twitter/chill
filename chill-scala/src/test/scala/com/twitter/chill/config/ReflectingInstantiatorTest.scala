@@ -64,5 +64,23 @@ class ReflectingInstantiatorTest extends Specification {
       ri.equals(ri2) must be_==(true)
       ri2.equals(ri) must be_==(true)
     }
+
+  "be serialized when added onto a ConfiguredInstantiator" in {
+      val conf = new JavaMapConfig
+      ConfiguredInstantiator.setReflect(conf, classOf[ScalaKryoInstantiator])
+       val instantiator = new ConfiguredInstantiator(conf).getDelegate()
+         .withRegistrar {
+           new ReflectingDefaultRegistrar(classOf[List[_]], classOf[com.esotericsoftware.kryo.serializers.JavaSerializer])
+       }
+      try {
+        ConfiguredInstantiator.setSerialized(
+         conf,
+         classOf[ScalaKryoInstantiator],
+         instantiator
+        )
+       }catch{
+         case e => fail("Got exception serializing the instantiator\n" + e.printStackTrace)
+       }
+    }
   }
 }
