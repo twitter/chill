@@ -85,6 +85,7 @@ object ChillBuild extends Build {
     publishLocal := { }
   ).aggregate(
     chill,
+    chillAkka,
     chillBijection,
     chillStorm,
     chillJava,
