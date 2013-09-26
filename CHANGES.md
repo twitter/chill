@@ -1,5 +1,9 @@
 # chill #
 
+### 0.3.3
+* Serialize synthetic fields by default: https://github.com/twitter/chill/pull/135
+* Prefer Java to Kryo, but check both in Externalizer: https://github.com/twitter/chill/pull/138
+
 ### 0.3.2
 
 * Add a LocaleSerializer to chill-java: https://github.com/twitter/chill/pull/128
