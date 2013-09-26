@@ -25,6 +25,9 @@ import _root_.java.io.{
   ObjectOutputStream
 }
 
+import com.esotericsoftware.kryo.serializers.JavaSerializer
+import com.esotericsoftware.kryo.DefaultSerializer
+
 object Externalizer {
   def apply[T](t: T): Externalizer[T] = {
     val x = new Externalizer[T]
@@ -39,6 +42,7 @@ object Externalizer {
  * work. Of course, Java serialization may fail if the contained
  * item is not Java serializable
  */
+@DefaultSerializer(classOf[JavaSerializer])
 class Externalizer[T] extends Externalizable {
   private var item: Option[T] = None
 
@@ -70,7 +74,8 @@ class Externalizer[T] extends Externalizable {
     (new ScalaKryoInstantiator).setReferences(true)
 
   // 1 here is 1 thread, since we will likely only serialize once
-  private val kpool = KryoPool.withByteArrayOutputStream(1, kryo)
+  // this should not be a val because we don't want to capture a reference
+  private def kpool = KryoPool.withByteArrayOutputStream(1, kryo)
 
   /** Try to round-trip and see if it works without error
    */
