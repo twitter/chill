@@ -163,6 +163,11 @@ class KryoSpec extends Specification with BaseProperties {
       ext.javaWorks must be_==(false)
       jrt(ext).get.x must_==(l.x)
     }
+    "Externalizer can RT with Kryo" in {
+      val l = new SomeRandom(10)
+      val ext = Externalizer(l)
+      rt(ext).get.x must_==(l.x)
+    }
     "handle Regex" in {
       val test = """\bhilarious""".r
       val roundtripped = rt(test)
