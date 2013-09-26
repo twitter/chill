@@ -36,9 +36,16 @@ case class TestValMap(map: Map[String,Double])
 case class TestValHashMap(map: HashMap[String,Double])
 case class TestVarArgs(vargs: String*)
 
+class SomeRandom(val x: Int)
+
 object WeekDay extends Enumeration {
  type WeekDay = Value
  val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
+}
+
+trait ExampleUsingSelf { self =>
+  def count = 0
+  def addOne = new ExampleUsingSelf {override def count=self.count+1}
 }
 
 class KryoSpec extends Specification with BaseProperties {
@@ -83,6 +90,11 @@ class KryoSpec extends Specification with BaseProperties {
       rtTest.zip(test).foreach { case (serdeser, orig) =>
         serdeser must be_==(orig)
       }
+    }
+    "handle trait with reference of self" in {
+      var a= new ExampleUsingSelf{}
+      var b=rt(a.addOne)
+      b.count must be_==(1)
     }
     "handle manifests" in {
       rt(manifest[Int]) must be_==(manifest[Int])
@@ -142,7 +154,14 @@ class KryoSpec extends Specification with BaseProperties {
     "work with Externalizer" in {
       val l = List(1,2,3)
       val ext = Externalizer(l)
+      ext.javaWorks must be_==(true)
       jrt(ext).get must_==(l)
+    }
+    "work with Externalizer with non-java-ser" in {
+      val l = new SomeRandom(3)
+      val ext = Externalizer(l)
+      ext.javaWorks must be_==(false)
+      jrt(ext).get.x must_==(l.x)
     }
     "handle Regex" in {
       val test = """\bhilarious""".r

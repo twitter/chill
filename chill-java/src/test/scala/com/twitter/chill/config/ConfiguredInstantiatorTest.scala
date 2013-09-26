@@ -19,8 +19,9 @@ package com.twitter.chill.config
 import org.specs._
 
 import com.twitter.chill._
+import com.esotericsoftware.kryo.Kryo
 
-class TestInst extends KryoInstantiator { override def newKryo = sys.error("blow up") }
+class TestInst extends KryoInstantiator { override def newKryo = new Kryo }
 
 class ReflectingInstantiatorTest extends Specification {
   "A ConfiguredInstantiator" should {
