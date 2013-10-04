@@ -27,8 +27,13 @@ import _root_.java.io.{
 
 import com.esotericsoftware.kryo.serializers.JavaSerializer
 import com.esotericsoftware.kryo.DefaultSerializer
+import _root_.java.util.concurrent.atomic.{AtomicBoolean, AtomicReference}
 
 object Externalizer {
+  /* Tokens used to distinguish if we used Kryo or Java */
+  private val KRYO = 0
+  private val JAVA = 1
+
   def apply[T](t: T): Externalizer[T] = {
     val x = new Externalizer[T]
     x.set(t)
@@ -42,9 +47,14 @@ object Externalizer {
  * work. Of course, Java serialization may fail if the contained
  * item is not Java serializable
  */
-@DefaultSerializer(classOf[JavaSerializer])
 class Externalizer[T] extends Externalizable {
   private var item: Option[T] = None
+  import Externalizer._
+
+  @transient private val doesJavaWork = new AtomicReference[Option[Boolean]](None)
+  @transient private val testing = new AtomicBoolean(false)
+
+  // No vals or var's below this line!
 
   def getOption: Option[T] = item
   def get: T = item.get // This should never be None when get is called
@@ -58,9 +68,6 @@ class Externalizer[T] extends Externalizable {
     item = Some(it)
   }
 
-  /* Tokens used to distinguish if we used Kryo or Java */
-  private val KRYO = 0
-  private val JAVA = 1
 
   /** Override this to configure Kryo creation with a named subclass,
    * e.g.
@@ -77,9 +84,16 @@ class Externalizer[T] extends Externalizable {
   // this should not be a val because we don't want to capture a reference
   private def kpool = KryoPool.withByteArrayOutputStream(1, kryo)
 
+  def javaWorks: Boolean =
+    doesJavaWork.get match {
+      case Some(v) => v
+      case None => probeJavaWorks
+    }
+
   /** Try to round-trip and see if it works without error
    */
-  lazy val javaWorks: Boolean = {
+  private def probeJavaWorks: Boolean = {
+    if(!testing.compareAndSet(false, true)) return true
     try {
       val baos = new ByteArrayOutputStream()
       val oos = new ObjectOutputStream(baos)
@@ -88,6 +102,7 @@ class Externalizer[T] extends Externalizable {
       val testInput = new ByteArrayInputStream(bytes)
       val ois = new ObjectInputStream(testInput)
       ois.readObject // this may throw
+      doesJavaWork.set(Some(true))
       true
     }
     catch {
@@ -95,7 +110,11 @@ class Externalizer[T] extends Externalizable {
         Option(System.getenv.get("CHILL_EXTERNALIZER_DEBUG"))
           .filter(_.toBoolean)
           .foreach { _ => t.printStackTrace }
+        doesJavaWork.set(Some(false))
         false
+    }
+    finally {
+      testing.set(false)
     }
   }
 
