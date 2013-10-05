@@ -12,7 +12,7 @@ object ChillBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
 
-    version := "0.3.3",
+    version := "0.3.4",
     organization := "com.twitter",
     scalaVersion := "2.9.3",
     crossScalaVersions := Seq("2.9.3", "2.10.0"),
@@ -122,7 +122,7 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.9.3" % "0.3.0"),
+    previousArtifact := Some("com.twitter" % "chill_2.9.3" % "0.3.3"),
     libraryDependencies ++= Seq(
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
@@ -156,7 +156,7 @@ object ChillBuild extends Build {
       "Clojars Repository" at "http://clojars.org/repo",
       "Conjars Repository" at "http://conjars.org/repo"
     ),
-    libraryDependencies += "storm" % "storm" % "0.9.0-wip9"
+    libraryDependencies += "storm" % "storm" % "0.9.0-wip9" % "provided"
   ).dependsOn(chillJava)
 
   // This can only have java deps!
