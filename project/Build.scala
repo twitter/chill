@@ -122,7 +122,7 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.9.3" % "0.3.0"),
+    previousArtifact := Some("com.twitter" % "chill_2.9.3" % "0.3.3"),
     libraryDependencies ++= Seq(
       "org.ow2.asm" % "asm-commons" % "4.0"
     )
