@@ -55,6 +55,8 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
 
   @transient private val doesJavaWork = new AtomicReference[Option[Boolean]](None)
   @transient private val testing = new AtomicBoolean(false)
+  // For backwards compatibility
+  private def KRYO = Externalizer.KRYO
 
   // No vals or var's below this line!
 
@@ -92,7 +94,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
 
   // 1 here is 1 thread, since we will likely only serialize once
   // this should not be a val because we don't want to capture a reference
-  
+
 
   def javaWorks: Boolean =
     doesJavaWork.get match {
@@ -191,13 +193,13 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
   def write (kryo: Kryo, output: Output): Unit = {
     val resolver = kryo.getReferenceResolver
     resolver.getWrittenId(item) match {
-      case -1 => 
+      case -1 =>
         output.writeInt(-1)
         resolver.addWrittenObject(item)
         val oStream = new ObjectOutputStream(output)
         maybeWriteJavaKryo(oStream, () => kryo)
         oStream.flush
-      case n => 
+      case n =>
         output.writeInt(n)
     }
   }
