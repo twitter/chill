@@ -24,6 +24,7 @@ import scala.collection.immutable.HashMap
 
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 import _root_.java.util.PriorityQueue
+import _root_.java.util.Locale
 import scala.collection.mutable
 /*
 * This is just a test case for Kryo to deal with. It should
