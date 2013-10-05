@@ -1,5 +1,8 @@
 # chill #
 
+### 0.3.4
+* Bugfixes for Externalizer with looped object graphs https://github.com/twitter/chill/pull/143
+
 ### 0.3.3
 * Serialize synthetic fields by default: https://github.com/twitter/chill/pull/135
 * Prefer Java to Kryo, but check both in Externalizer: https://github.com/twitter/chill/pull/138
