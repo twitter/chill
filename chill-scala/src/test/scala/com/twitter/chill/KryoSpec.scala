@@ -18,10 +18,7 @@ package com.twitter.chill
 
 import org.specs._
 
-import scala.collection.immutable.BitSet
-import scala.collection.immutable.ListMap
-import scala.collection.immutable.HashMap
-
+import scala.collection.immutable.{SortedSet, BitSet, ListSet, ListMap, HashMap}
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
@@ -70,6 +67,8 @@ class KryoSpec extends Specification with BaseProperties {
                       MArrayBuffer(1,2,3,4,5),
                       List(Some(MHashMap(1->1, 2->2)), None, Some(MHashMap(3->4))),
                       Set(1,2,3,4,10),
+                      SortedSet[Long](),
+                      SortedSet(1L, 2L, 3L, 4L),
                       BitSet(),
                       BitSet((0 until 1000).map{ x : Int => x*x } : _*),
                       ListMap("good" -> 0.5, "bad" -> -1.0),
@@ -91,6 +90,22 @@ class KryoSpec extends Specification with BaseProperties {
       rtTest.zip(test).foreach { case (serdeser, orig) =>
         serdeser must be_==(orig)
       }
+    }
+    "round trip a SortedSet" in {
+      val a = SortedSet[Long]() // Test empty SortedSet
+      val b = SortedSet[Int](1,2) // Test small SortedSet
+      val c = SortedSet[Int](1,2,3,4,6,7,8,9,10)(Ordering.fromLessThan((x, y) => x > y)) // Test with different ordering
+      rt(a) must be_==(a)
+      rt(b) must be_==(b)
+      (rt(c) + 5) must be_==(c + 5)
+    }
+    "round trip a ListSet" in {
+      val a = ListSet[Long]() // Test empty SortedSet
+      val b = ListSet[Int](1,2) // Test small ListSet
+      val c = ListSet[Int](1,2,3,4,6,7,8,9,10)
+      rt(a) must be_==(a)
+      rt(b) must be_==(b)
+      (rt(c)) must be_==(c)
     }
     "handle trait with reference of self" in {
       var a= new ExampleUsingSelf{}
