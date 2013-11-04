@@ -18,6 +18,8 @@ package com.twitter.chill
 
 import scala.collection.immutable.{
   BitSet,
+  ListSet,
+  SortedSet,
   ListMap,
   HashMap,
   Queue
@@ -92,6 +94,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       // wrapper array is abstract
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
+      .forSubclass[SortedSet[Any]](new SortedSetSerializer)
       .forClass[Some[Any]](new SomeSerializer[Any])
       .forClass[Left[Any, Any]](new LeftSerializer[Any, Any])
       .forClass[Right[Any, Any]](new RightSerializer[Any, Any])
@@ -103,6 +106,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       // Vector is a final class
       .forTraversableClass(Vector.empty[Any])
       .forTraversableSubclass(IndexedSeq.empty[Any])
+      .forTraversableSubclass(ListSet.empty[Any])
       // specifically register small sets since Scala represents them differently
       .forConcreteTraversableClass(Set[Any]('a))
       .forConcreteTraversableClass(Set[Any]('a, 'b))
