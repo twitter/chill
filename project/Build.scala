@@ -8,7 +8,7 @@ import com.typesafe.tools.mima.plugin.MimaKeys._
 import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
-  val kryoVersion = "2.21"
+  val kryoVersion = "2.22"
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
 
@@ -42,6 +42,7 @@ object ChillBuild extends Build {
           Opts.resolver.sonatypeSnapshots
         else
           Opts.resolver.sonatypeStaging
+          //"twttr" at "http://artifactory.local.twitter.com/libs-releases-local"
       )
     },
     publishArtifact in Test := false,

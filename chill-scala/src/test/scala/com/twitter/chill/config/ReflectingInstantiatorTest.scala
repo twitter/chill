@@ -20,8 +20,8 @@ import org.specs._
 
 import com.twitter.chill.config._
 
-import org.objenesis.strategy.InstantiatorStrategy;
-import org.objenesis.strategy.StdInstantiatorStrategy;
+import com.esotericsoftware.shaded.org.objenesis.strategy.InstantiatorStrategy;
+import com.esotericsoftware.shaded.org.objenesis.strategy.StdInstantiatorStrategy;
 
 
 class ReflectingInstantiatorTest extends Specification {
