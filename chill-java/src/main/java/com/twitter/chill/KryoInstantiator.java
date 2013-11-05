@@ -47,7 +47,12 @@ public class KryoInstantiator implements Serializable {
     return new KryoInstantiator() {
       public Kryo newKryo() {
         Kryo k = KryoInstantiator.this.newKryo();
-        k.setReferences(ref);
+        /**
+         * Kryo 2.17, used in storm, has this method returning void,
+         * 2.21 has it returning boolean.
+         * Try not to call the method if you don't need to.
+         */
+        if(k.getReferences() != ref) { k.setReferences(ref); }
         return k;
       }
     };
@@ -59,7 +64,10 @@ public class KryoInstantiator implements Serializable {
     return new KryoInstantiator() {
       public Kryo newKryo() {
         Kryo k = KryoInstantiator.this.newKryo();
-        k.setRegistrationRequired(req);
+        /** Try to avoid calling this method if you don't need to.
+         * We've been burned by binary compatibility with Kryo
+         */
+        if(k.isRegistrationRequired() != req) { k.setRegistrationRequired(req); }
         return k;
       }
     };
