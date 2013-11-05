@@ -46,6 +46,8 @@ trait ExampleUsingSelf { self =>
   def addOne = new ExampleUsingSelf {override def count=self.count+1}
 }
 
+case class Foo(m1: Map[String, Int], m2: Map[String, Seq[String]])
+
 class KryoSpec extends Specification with BaseProperties {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
@@ -57,6 +59,7 @@ class KryoSpec extends Specification with BaseProperties {
       val test = List(1,2,"hey",(1,2),
                       ("hey","you"),
                       ("slightly", 1L, "longer", 42, "tuple"),
+                      Foo(Map("1" -> 1), Map("1" -> Seq("foo.com"))),
                       Map(1->2,4->5),
                       0 to 100,
                       (0 to 42).toList, Seq(1,100,1000),
