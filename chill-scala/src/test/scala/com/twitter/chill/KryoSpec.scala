@@ -23,6 +23,8 @@ import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMa
 import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
 import scala.collection.mutable
+import scala.collection.JavaConverters._
+
 /*
 * This is just a test case for Kryo to deal with. It should
 * be outside KryoSpec, otherwise the enclosing class, KryoSpec
@@ -82,6 +84,10 @@ class KryoSpec extends Specification with BaseProperties {
                       Vector(1,2,3,4,5),
                       TestValMap(null),
                       Some("junk"),
+                      List(1, 2, 3).asJava,
+                      Map("hey" -> 1, "you" -> 2).asJava,
+                      new _root_.java.util.ArrayList(Seq(1, 2, 3).asJava).asScala,
+                      new _root_.java.util.HashMap[Int,Int](Map(1 -> 2, 3 -> 4).asJava).asScala,
                       (),
                       'hai)
         .asInstanceOf[List[AnyRef]]

@@ -43,6 +43,8 @@ import scala.util.matching.Regex
 import com.twitter.chill.java.PackageRegistrar
 import _root_.java.io.Serializable
 
+import scala.collection.JavaConverters._
+
 /** This class has a no-arg constructor, suitable for use with reflection instantiation
  * It has no registered serializers, just the standard Kryo configured for Kryo.
  */
@@ -87,6 +89,17 @@ class ScalaKryoInstantiator extends EmptyScalaKryoInstantiator {
 
 class ScalaCollectionsRegistrar extends IKryoRegistrar {
   def apply(newK: Kryo) {
+    // for binary compat this is here, but could be moved to RichKryo
+    def useField[T](cls: Class[T]) {
+      newK.register(cls,
+        new com.esotericsoftware.kryo.serializers.FieldSerializer(newK, cls))
+    }
+    // The wrappers are private classes:
+    useField(List(1, 2, 3).asJava.getClass)
+    useField(Map(1 -> 2, 4 -> 3).asJava.getClass)
+    useField(new _root_.java.util.ArrayList().asScala.getClass)
+    useField(new _root_.java.util.HashMap().asScala.getClass)
+
     /*
      * Note that subclass-based use: addDefaultSerializers, else: register
      * You should go from MOST specific, to least to specific when using
