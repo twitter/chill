@@ -90,6 +90,7 @@ object ChillBuild extends Build {
     chillStorm,
     chillJava,
     chillHadoop,
+    chillThrift,
     chillAkka
   )
 
@@ -98,7 +99,7 @@ object ChillBuild extends Build {
     * with the current.
     */
   val unreleasedModules = Set[String]("akka")
-  val javaOnly = Set[String]("storm", "java", "hadoop")
+  val javaOnly = Set[String]("storm", "java", "hadoop", "thrift")
 
   def youngestForwardCompatible(subProj: String) =
     Some(subProj)
@@ -182,4 +183,13 @@ object ChillBuild extends Build {
       "org.slf4j" % "slf4j-log4j12" % "1.6.6" % "provided"
     )
   ).dependsOn(chillJava)
+
+  // This can only have java deps!
+  lazy val chillThrift = module("thrift").settings(
+    crossPaths := false,
+    autoScalaLibrary := false,
+    libraryDependencies ++= Seq(
+      "org.apache.thrift" % "libthrift" % "0.6.1" % "provided"
+    )
+  )
 }
