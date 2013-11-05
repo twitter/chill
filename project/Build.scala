@@ -12,7 +12,7 @@ object ChillBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
 
-    version := "0.3.4",
+    version := "0.3.5",
     organization := "com.twitter",
     scalaVersion := "2.9.3",
     crossScalaVersions := Seq("2.9.3", "2.10.3"),
