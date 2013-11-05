@@ -89,7 +89,8 @@ object ChillBuild extends Build {
     chillBijection,
     chillStorm,
     chillJava,
-    chillHadoop
+    chillHadoop,
+    chillAkka
   )
 
   /**
@@ -129,12 +130,23 @@ object ChillBuild extends Build {
     )
   ).dependsOn(chillJava)
 
-  lazy val chillAkka = module("akka").settings(
-    resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-    libraryDependencies ++= Seq(
+  def isScala210x(scalaVersion: String) = scalaVersion match {
+      case version if version startsWith "2.9" => false
+      case version if version startsWith "2.10" => true
+  }
+  def akkaBuildDeps(scalaVersion: String): Seq[sbt.ModuleID] = isScala210x(scalaVersion) match {
+      case false => Seq()
+      case true => Seq(
       "com.typesafe" % "config" % "0.3.1",
       "com.typesafe.akka" % "akka-actor" % "2.0.5"
     )
+  }
+  lazy val chillAkka = module("akka").settings(
+    resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+    skip in compile := !isScala210x(scalaVersion.value),
+    skip in test := !isScala210x(scalaVersion.value),
+    publishArtifact := isScala210x(scalaVersion.value),
+    libraryDependencies ++= akkaBuildDeps(scalaVersion.value)
   ).dependsOn(chill % "test->test;compile->compile")
 
   lazy val chillBijection = module("bijection").settings(
