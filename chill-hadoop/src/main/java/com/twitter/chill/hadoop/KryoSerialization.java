@@ -24,7 +24,7 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.serializer.Deserializer;
 import org.apache.hadoop.io.serializer.Serialization;
 import org.apache.hadoop.io.serializer.Serializer;
-import com.esotericsoftware.shaded.org.objenesis.strategy.StdInstantiatorStrategy;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import com.twitter.chill.KryoPool;
 import com.twitter.chill.KryoInstantiator;

@@ -20,8 +20,8 @@ import com.esotericsoftware.kryo.KryoException
 import com.esotericsoftware.reflectasm.ConstructorAccess
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 
-import com.esotericsoftware.shaded.org.objenesis.instantiator.ObjectInstantiator
-import com.esotericsoftware.shaded.org.objenesis.strategy.InstantiatorStrategy
+import org.objenesis.instantiator.ObjectInstantiator
+import org.objenesis.strategy.InstantiatorStrategy
 
 import _root_.java.lang.reflect.{Constructor, Modifier}
 

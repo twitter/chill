@@ -17,7 +17,7 @@ limitations under the License.
 package com.twitter.chill;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.shaded.org.objenesis.strategy.InstantiatorStrategy;
+import org.objenesis.strategy.InstantiatorStrategy;
 import java.io.Serializable;
 
 /** Class to create a new Kryo instance.
