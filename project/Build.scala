@@ -89,7 +89,8 @@ object ChillBuild extends Build {
     chillBijection,
     chillStorm,
     chillJava,
-    chillHadoop
+    chillHadoop,
+    chillThrift
   )
 
   /**
