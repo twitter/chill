@@ -22,7 +22,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
-import com.esotericsoftware.shaded.org.objenesis.strategy.StdInstantiatorStrategy
+import org.objenesis.strategy.StdInstantiatorStrategy
 
 import java.io.{ByteArrayOutputStream => BAOut, ByteArrayInputStream => BAIn}
 import org.apache.hadoop.conf.Configuration;

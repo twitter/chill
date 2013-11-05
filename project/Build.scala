@@ -8,7 +8,7 @@ import com.typesafe.tools.mima.plugin.MimaKeys._
 import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
-  val kryoVersion = "2.22"
+  val kryoVersion = "2.21"
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
 
@@ -106,7 +106,7 @@ object ChillBuild extends Build {
       .filterNot(unreleasedModules.contains(_))
       .map { s =>
       val suffix = if (javaOnly.contains(s)) "" else "_2.9.3"
-      "com.twitter" % ("chill-" + s + suffix) % "0.3.2"
+      "com.twitter" % ("chill-" + s + suffix) % "0.3.4"
     }
 
   def module(name: String) = {
