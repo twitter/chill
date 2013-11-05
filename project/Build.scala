@@ -15,7 +15,7 @@ object ChillBuild extends Build {
     version := "0.3.4",
     organization := "com.twitter",
     scalaVersion := "2.9.3",
-    crossScalaVersions := Seq("2.9.3", "2.10.0"),
+    crossScalaVersions := Seq("2.9.3", "2.10.3"),
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
 
     // Twitter Hadoop needs this, sorry 1.7 fans
@@ -138,7 +138,7 @@ object ChillBuild extends Build {
       case false => Seq()
       case true => Seq(
       "com.typesafe" % "config" % "0.3.1",
-      "com.typesafe.akka" % "akka-actor" % "2.0.5"
+      "com.typesafe.akka" %% "akka-actor" % "2.1.4"
     )
   }
   lazy val chillAkka = module("akka").settings(
