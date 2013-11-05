@@ -285,5 +285,20 @@ class KryoSpec extends Specification with BaseProperties {
       val qrlist = toList(qr)
       toList(rt(qr)) must be_==(qrlist)
     }
+    "Ranges should be fixed size" in {
+      val MAX_RANGE_SIZE = 188 // what seems to be needed.
+      serialize((1 to 10000)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1 to 10000 by 2)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1 until 10000)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1 until 10000 by 2)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1L to 10000L)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1L to 10000L by 2L)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1L until 10000L)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1L until 10000L by 2L)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1.0 to 10000.0)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1.0 to 10000.0 by 2.0)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1.0 until 10000.0)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1.0 until 10000.0 by 2.0)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+    }
   }
 }

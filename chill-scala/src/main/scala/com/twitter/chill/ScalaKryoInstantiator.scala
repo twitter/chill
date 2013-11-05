@@ -19,6 +19,8 @@ package com.twitter.chill
 import scala.collection.immutable.{
   BitSet,
   ListSet,
+  NumericRange,
+  Range,
   SortedSet,
   ListMap,
   HashMap,
@@ -105,7 +107,6 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(Buffer.empty[Any], isImmutable = false)
       // Vector is a final class
       .forTraversableClass(Vector.empty[Any])
-      .forTraversableSubclass(IndexedSeq.empty[Any])
       .forTraversableSubclass(ListSet.empty[Any])
       // specifically register small sets since Scala represents them differently
       .forConcreteTraversableClass(Set[Any]('a))
@@ -113,13 +114,16 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forConcreteTraversableClass(Set[Any]('a, 'b, 'c))
       .forConcreteTraversableClass(Set[Any]('a, 'b, 'c, 'd))
       .forConcreteTraversableClass(Set[Any]('a, 'b, 'c, 'd, 'e))
-      .forTraversableSubclass(Set.empty[Any])
       // specifically register small maps since Scala represents them differently
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
+      // The normal fields serializer works for ranges
+      .registerClasses(Seq(classOf[Range.Inclusive],
+                           classOf[NumericRange.Inclusive[_]],
+                           classOf[NumericRange.Exclusive[_]]))
       // Add some maps
       .forTraversableSubclass(ListMap.empty[Any,Any])
       .forTraversableSubclass(HashMap.empty[Any,Any])
@@ -132,12 +136,6 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(MMap.empty[Any,Any], isImmutable = false)
       .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
       .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
-      // This should be last, lots of things are seq/iterable/traversable
-      // These are questionable and might break things.
-      // rarely will you only expect an iterable/traversable on the reverse
-      .forTraversableSubclass(Seq.empty[Any])
-      .forTraversableSubclass(Iterable.empty[Any])
-      .forTraversableSubclass(Traversable.empty[Any])
     }
 }
 
