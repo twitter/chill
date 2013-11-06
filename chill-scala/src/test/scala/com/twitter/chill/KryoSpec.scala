@@ -18,14 +18,13 @@ package com.twitter.chill
 
 import org.specs._
 
-import scala.collection.immutable.BitSet
-import scala.collection.immutable.ListMap
-import scala.collection.immutable.HashMap
-
+import scala.collection.immutable.{SortedSet, BitSet, ListSet, ListMap, HashMap}
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
 import scala.collection.mutable
+import scala.collection.JavaConverters._
+
 /*
 * This is just a test case for Kryo to deal with. It should
 * be outside KryoSpec, otherwise the enclosing class, KryoSpec
@@ -49,6 +48,8 @@ trait ExampleUsingSelf { self =>
   def addOne = new ExampleUsingSelf {override def count=self.count+1}
 }
 
+case class Foo(m1: Map[String, Int], m2: Map[String, Seq[String]])
+
 class KryoSpec extends Specification with BaseProperties {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
@@ -60,6 +61,7 @@ class KryoSpec extends Specification with BaseProperties {
       val test = List(1,2,"hey",(1,2),
                       ("hey","you"),
                       ("slightly", 1L, "longer", 42, "tuple"),
+                      Foo(Map("1" -> 1), Map("1" -> Seq("foo.com"))),
                       Map(1->2,4->5),
                       0 to 100,
                       (0 to 42).toList, Seq(1,100,1000),
@@ -70,6 +72,8 @@ class KryoSpec extends Specification with BaseProperties {
                       MArrayBuffer(1,2,3,4,5),
                       List(Some(MHashMap(1->1, 2->2)), None, Some(MHashMap(3->4))),
                       Set(1,2,3,4,10),
+                      SortedSet[Long](),
+                      SortedSet(1L, 2L, 3L, 4L),
                       BitSet(),
                       BitSet((0 until 1000).map{ x : Int => x*x } : _*),
                       ListMap("good" -> 0.5, "bad" -> -1.0),
@@ -83,6 +87,10 @@ class KryoSpec extends Specification with BaseProperties {
                       Vector(1,2,3,4,5),
                       TestValMap(null),
                       Some("junk"),
+                      List(1, 2, 3).asJava,
+                      Map("hey" -> 1, "you" -> 2).asJava,
+                      new _root_.java.util.ArrayList(Seq(1, 2, 3).asJava).asScala,
+                      new _root_.java.util.HashMap[Int,Int](Map(1 -> 2, 3 -> 4).asJava).asScala,
                       (),
                       'hai)
         .asInstanceOf[List[AnyRef]]
@@ -91,6 +99,22 @@ class KryoSpec extends Specification with BaseProperties {
       rtTest.zip(test).foreach { case (serdeser, orig) =>
         serdeser must be_==(orig)
       }
+    }
+    "round trip a SortedSet" in {
+      val a = SortedSet[Long]() // Test empty SortedSet
+      val b = SortedSet[Int](1,2) // Test small SortedSet
+      val c = SortedSet[Int](1,2,3,4,6,7,8,9,10)(Ordering.fromLessThan((x, y) => x > y)) // Test with different ordering
+      rt(a) must be_==(a)
+      rt(b) must be_==(b)
+      (rt(c) + 5) must be_==(c + 5)
+    }
+    "round trip a ListSet" in {
+      val a = ListSet[Long]() // Test empty SortedSet
+      val b = ListSet[Int](1,2) // Test small ListSet
+      val c = ListSet[Int](1,2,3,4,6,7,8,9,10)
+      rt(a) must be_==(a)
+      rt(b) must be_==(b)
+      (rt(c)) must be_==(c)
     }
     "handle trait with reference of self" in {
       var a= new ExampleUsingSelf{}
@@ -269,6 +293,21 @@ class KryoSpec extends Specification with BaseProperties {
       }
       val qrlist = toList(qr)
       toList(rt(qr)) must be_==(qrlist)
+    }
+    "Ranges should be fixed size" in {
+      val MAX_RANGE_SIZE = 188 // what seems to be needed.
+      serialize((1 to 10000)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1 to 10000 by 2)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1 until 10000)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1 until 10000 by 2)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1L to 10000L)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1L to 10000L by 2L)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1L until 10000L)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1L until 10000L by 2L)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1.0 to 10000.0)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1.0 to 10000.0 by 2.0)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1.0 until 10000.0)).size must be_<(MAX_RANGE_SIZE) // some fixed size
+      serialize((1.0 until 10000.0 by 2.0)).size must be_<(MAX_RANGE_SIZE) // some fixed size
     }
   }
 }

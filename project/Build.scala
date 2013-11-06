@@ -12,10 +12,10 @@ object ChillBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
 
-    version := "0.3.4",
+    version := "0.3.5",
     organization := "com.twitter",
     scalaVersion := "2.9.3",
-    crossScalaVersions := Seq("2.9.3", "2.10.0"),
+    crossScalaVersions := Seq("2.9.3", "2.10.3"),
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
 
     // Twitter Hadoop needs this, sorry 1.7 fans
@@ -42,6 +42,7 @@ object ChillBuild extends Build {
           Opts.resolver.sonatypeSnapshots
         else
           Opts.resolver.sonatypeStaging
+          //"twttr" at "http://artifactory.local.twitter.com/libs-releases-local"
       )
     },
     publishArtifact in Test := false,
@@ -88,7 +89,9 @@ object ChillBuild extends Build {
     chillBijection,
     chillStorm,
     chillJava,
-    chillHadoop
+    chillHadoop,
+    chillThrift,
+    chillAkka
   )
 
   /**
@@ -96,14 +99,14 @@ object ChillBuild extends Build {
     * with the current.
     */
   val unreleasedModules = Set[String]("akka")
-  val javaOnly = Set[String]("storm", "java", "hadoop")
+  val javaOnly = Set[String]("storm", "java", "hadoop", "thrift")
 
   def youngestForwardCompatible(subProj: String) =
     Some(subProj)
       .filterNot(unreleasedModules.contains(_))
       .map { s =>
       val suffix = if (javaOnly.contains(s)) "" else "_2.9.3"
-      "com.twitter" % ("chill-" + s + suffix) % "0.3.2"
+      "com.twitter" % ("chill-" + s + suffix) % "0.3.4"
     }
 
   def module(name: String) = {
@@ -128,12 +131,23 @@ object ChillBuild extends Build {
     )
   ).dependsOn(chillJava)
 
+  def isScala210x(scalaVersion: String) = scalaVersion match {
+      case version if version startsWith "2.9" => false
+      case version if version startsWith "2.10" => true
+  }
+  def akkaBuildDeps(scalaVersion: String): Seq[sbt.ModuleID] = isScala210x(scalaVersion) match {
+      case false => Seq()
+      case true => Seq(
+      "com.typesafe" % "config" % "0.3.1",
+      "com.typesafe.akka" %% "akka-actor" % "2.1.4"
+    )
+  }
   lazy val chillAkka = module("akka").settings(
     resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-    libraryDependencies ++= Seq(
-      "com.typesafe" % "config" % "0.3.1",
-      "com.typesafe.akka" % "akka-actor" % "2.0.5"
-    )
+    skip in compile := !isScala210x(scalaVersion.value),
+    skip in test := !isScala210x(scalaVersion.value),
+    publishArtifact := isScala210x(scalaVersion.value),
+    libraryDependencies ++= akkaBuildDeps(scalaVersion.value)
   ).dependsOn(chill % "test->test;compile->compile")
 
   lazy val chillBijection = module("bijection").settings(
@@ -169,4 +183,13 @@ object ChillBuild extends Build {
       "org.slf4j" % "slf4j-log4j12" % "1.6.6" % "provided"
     )
   ).dependsOn(chillJava)
+
+  // This can only have java deps!
+  lazy val chillThrift = module("thrift").settings(
+    crossPaths := false,
+    autoScalaLibrary := false,
+    libraryDependencies ++= Seq(
+      "org.apache.thrift" % "libthrift" % "0.6.1" % "provided"
+    )
+  )
 }
