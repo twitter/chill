@@ -91,11 +91,13 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
   def apply(newK: Kryo) {
     // for binary compat this is here, but could be moved to RichKryo
     def useField[T](cls: Class[T]) {
-      newK.register(cls,
-        new com.esotericsoftware.kryo.serializers.FieldSerializer(newK, cls))
+      val fs = new com.esotericsoftware.kryo.serializers.FieldSerializer(newK, cls)
+      fs.setIgnoreSyntheticFields(false) // scala generates a lot of these attributes
+      newK.register(cls, fs)
     }
     // The wrappers are private classes:
     useField(List(1, 2, 3).asJava.getClass)
+    useField(List(1, 2, 3).iterator.asJava.getClass)
     useField(Map(1 -> 2, 4 -> 3).asJava.getClass)
     useField(new _root_.java.util.ArrayList().asScala.getClass)
     useField(new _root_.java.util.HashMap().asScala.getClass)
