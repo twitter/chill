@@ -1,5 +1,12 @@
 # chill #
 
+### 0.3.5
+* Add Serializers for scala SortedList and ListSet. https://github.com/twitter/chill/pull/152
+* Fix Range serialization (and remove broken subclass-serialization of Iterable, Seq, etc): https://github.com/twitter/chill/pull/154
+* Build and test chill-akka for 2.10: https://github.com/twitter/chill/pull/155
+* Add chill-thrift: https://github.com/twitter/chill/pull/156
+* Support JavaConverter-built classes: https://github.com/twitter/chill/pull/159
+
 ### 0.3.4
 * Bugfixes for Externalizer with looped object graphs https://github.com/twitter/chill/pull/143
 

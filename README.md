@@ -147,7 +147,7 @@ Discussion occurs primarily on the [Chill mailing list](https://groups.google.co
 
 ## Maven
 
-Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.3.4`.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.3.5`.
 
 Current published artifacts are
 
