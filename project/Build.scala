@@ -192,4 +192,13 @@ object ChillBuild extends Build {
       "org.apache.thrift" % "libthrift" % "0.6.1" % "provided"
     )
   )
+
+  // This can only have java deps!
+  lazy val chillProtobuf = module("protobuf").settings(
+    crossPaths := false,
+    autoScalaLibrary := false,
+    libraryDependencies ++= Seq(
+      "com.google.protobuf" % "protobuf-java" % "2.3.0" % "provided"
+    )
+  ).dependsOn(chillJava)
 }
