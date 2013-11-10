@@ -18,7 +18,7 @@ package com.twitter.chill
 
 import org.specs._
 
-import scala.collection.immutable.{SortedSet, BitSet, ListSet, ListMap, HashMap}
+import scala.collection.immutable.{SortedSet, BitSet, ListSet, SortedMap, ListMap, HashMap}
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
@@ -76,6 +76,8 @@ class KryoSpec extends Specification with BaseProperties {
                       SortedSet(1L, 2L, 3L, 4L),
                       BitSet(),
                       BitSet((0 until 1000).map{ x : Int => x*x } : _*),
+                      SortedMap[Long, String](),
+                      SortedMap("b" -> 2, "a" -> 1),
                       ListMap("good" -> 0.5, "bad" -> -1.0),
                       HashMap("good" -> 0.5, "bad" -> -1.0),
                       TestCaseClassForSerialization("case classes are: ", 10),
@@ -98,6 +100,8 @@ class KryoSpec extends Specification with BaseProperties {
       val rtTest = test map { serialize(_) } map { deserialize[AnyRef](_) }
       rtTest.zip(test).foreach { case (serdeser, orig) =>
         serdeser must be_==(orig)
+        //orig.getClass.asInstanceOf[Class[Any]] must be_==(serdeser.getClass.asInstanceOf[Class[Any]])
+        //println("orig " + orig.getClass.asInstanceOf[Class[Any]] + " => serde " + serdeser.getClass.asInstanceOf[Class[Any]])
       }
     }
     "round trip a SortedSet" in {
