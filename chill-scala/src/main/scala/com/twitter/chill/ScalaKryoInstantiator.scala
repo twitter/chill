@@ -22,6 +22,7 @@ import scala.collection.immutable.{
   NumericRange,
   Range,
   SortedSet,
+  SortedMap,
   ListMap,
   HashMap,
   Queue
@@ -140,6 +141,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
                            classOf[NumericRange.Inclusive[_]],
                            classOf[NumericRange.Exclusive[_]]))
       // Add some maps
+      .forSubclass[SortedMap[Any, Any]](new SortedMapSerializer)
       .forTraversableSubclass(ListMap.empty[Any,Any])
       .forTraversableSubclass(HashMap.empty[Any,Any])
       // The above ListMap/HashMap must appear before this:
