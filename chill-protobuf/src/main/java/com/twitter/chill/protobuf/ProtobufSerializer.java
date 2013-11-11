@@ -24,6 +24,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.google.protobuf.Message;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 /**
  * Kryo serializer for Protobuf instances.
@@ -38,8 +39,23 @@ import java.lang.reflect.Method;
  */
 public class ProtobufSerializer extends Serializer<Message> {
 
+  /* This cache never clears, but only scales like the number of
+   * classes in play, which should not be very large.
+   * We can replace with a LRU if we start to see any issues.
+   */
+  final protected HashMap<Class, Method> methodCache = new HashMap<Class, Method>();
+
+  /**
+   * This is slow, so we should cache to avoid killing perf:
+   * See: http://www.jguru.com/faq/view.jsp?EID=246569
+   */
   protected Method getParse(Class cls) throws Exception {
-    return cls.getMethod("parseFrom", new Class[]{ byte[].class });
+    Method meth = methodCache.get(cls);
+    if (null == meth) {
+      meth = cls.getMethod("parseFrom", new Class[]{ byte[].class });
+      methodCache.put(cls, meth);
+    }
+    return meth;
   }
 
   @Override
