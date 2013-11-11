@@ -100,8 +100,7 @@ class KryoSpec extends Specification with BaseProperties {
       val rtTest = test map { serialize(_) } map { deserialize[AnyRef](_) }
       rtTest.zip(test).foreach { case (serdeser, orig) =>
         serdeser must be_==(orig)
-        //orig.getClass.asInstanceOf[Class[Any]] must be_==(serdeser.getClass.asInstanceOf[Class[Any]])
-        //println("orig " + orig.getClass.asInstanceOf[Class[Any]] + " => serde " + serdeser.getClass.asInstanceOf[Class[Any]])
+        orig.getClass.asInstanceOf[Class[Any]] must be_==(serdeser.getClass.asInstanceOf[Class[Any]])
       }
     }
     "round trip a SortedSet" in {
@@ -213,8 +212,7 @@ class KryoSpec extends Specification with BaseProperties {
       val m2 = Map('a -> 'a, 'b -> 'b)
       val m3 = Map('a -> 'a, 'b -> 'b, 'c -> 'c)
       val m4 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd)
-      val m5 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e)
-      Seq(m1, m2, m3, m4, m5).foreach { m =>
+      Seq(m1, m2, m3, m4).foreach { m =>
         rt(inst, m) must be_==(m)
       }
     }
