@@ -18,6 +18,7 @@ package com.twitter.chill
 
 import scala.collection.immutable.{
   BitSet,
+  HashSet,
   ListSet,
   NumericRange,
   Range,
@@ -129,12 +130,15 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forConcreteTraversableClass(Set[Any]('a, 'b))
       .forConcreteTraversableClass(Set[Any]('a, 'b, 'c))
       .forConcreteTraversableClass(Set[Any]('a, 'b, 'c, 'd))
-      .forConcreteTraversableClass(Set[Any]('a, 'b, 'c, 'd, 'e))
+      // default set implementation
+      .forConcreteTraversableClass(HashSet[Any]('a, 'b, 'c, 'd, 'e))
       // specifically register small maps since Scala represents them differently
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd))
+      // default map implementation
+      .forConcreteTraversableClass(HashMap[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
       // The normal fields serializer works for ranges
       .registerClasses(Seq(classOf[Range.Inclusive],
                            classOf[NumericRange.Inclusive[_]],

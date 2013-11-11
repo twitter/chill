@@ -17,8 +17,9 @@ limitations under the License.
 package com.twitter.chill
 
 import org.specs._
+import org.specs.matcher.Matcher
 
-import scala.collection.immutable.{SortedSet, BitSet, ListSet, SortedMap, ListMap, HashMap}
+import scala.collection.immutable.{SortedSet, BitSet, ListSet, HashSet, SortedMap, ListMap, HashMap}
 import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
@@ -54,6 +55,10 @@ class KryoSpec extends Specification with BaseProperties {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
 
+  def roundtrip[T] = new Matcher[T]{
+    def apply(t: => T) = (rtEquiv(t), "successfull serialization roundtrip for " + t, "failed serialization roundtrip for " + t)
+  }
+
   def getKryo = KryoSerializer.registered.newKryo
 
   "KryoSerializers and KryoDeserializers" should {
@@ -73,6 +78,7 @@ class KryoSpec extends Specification with BaseProperties {
                       MArrayBuffer(1,2,3,4,5),
                       List(Some(MHashMap(1->1, 2->2)), None, Some(MHashMap(3->4))),
                       Set(1,2,3,4,10),
+                      HashSet(1,2),
                       SortedSet[Long](),
                       SortedSet(1L, 2L, 3L, 4L),
                       BitSet(),
@@ -98,27 +104,24 @@ class KryoSpec extends Specification with BaseProperties {
                       'hai)
         .asInstanceOf[List[AnyRef]]
 
-      val rtTest = test map { serialize(_) } map { deserialize[AnyRef](_) }
-      rtTest.zip(test).foreach { case (serdeser, orig) =>
-        serdeser must be_==(orig)
-        orig.getClass.asInstanceOf[Class[Any]] must be_==(serdeser.getClass.asInstanceOf[Class[Any]])
-      }
+      test.foreach { _ must roundtrip }
     }
     "round trip a SortedSet" in {
       val a = SortedSet[Long]() // Test empty SortedSet
       val b = SortedSet[Int](1,2) // Test small SortedSet
       val c = SortedSet[Int](1,2,3,4,6,7,8,9,10)(Ordering.fromLessThan((x, y) => x > y)) // Test with different ordering
-      rt(a) must be_==(a)
-      rt(b) must be_==(b)
+      a must roundtrip
+      b must roundtrip
+      c must roundtrip
       (rt(c) + 5) must be_==(c + 5)
     }
     "round trip a ListSet" in {
       val a = ListSet[Long]() // Test empty SortedSet
       val b = ListSet[Int](1,2) // Test small ListSet
       val c = ListSet[Int](1,2,3,4,6,7,8,9,10)
-      rt(a) must be_==(a)
-      rt(b) must be_==(b)
-      (rt(c)) must be_==(c)
+      a must roundtrip
+      b must roundtrip
+      c must roundtrip
     }
     "handle trait with reference of self" in {
       var a= new ExampleUsingSelf{}
@@ -126,9 +129,9 @@ class KryoSpec extends Specification with BaseProperties {
       b.count must be_==(1)
     }
     "handle manifests" in {
-      rt(manifest[Int]) must be_==(manifest[Int])
-      rt(manifest[(Int,Int)]) must be_==(manifest[(Int,Int)])
-      rt(manifest[Array[Int]]) must be_==(manifest[Array[Int]])
+      manifest[Int] must roundtrip
+      manifest[(Int,Int)] must roundtrip
+      manifest[Array[Int]] must roundtrip
     }
     "handle arrays" in {
       def arrayRT[T](arr : Array[T]) {
@@ -147,16 +150,14 @@ class KryoSpec extends Specification with BaseProperties {
         Array((1,1), (2,2), (3,3)).toSeq,
         Array((1.0, 1.0), (2.0, 2.0)).toSeq,
         Array((1.0, "1.0"), (2.0, "2.0")).toSeq)
-      tests.foreach { test => rt(test) must be_==(test) }
+      tests.foreach { _ must roundtrip }
     }
     "handle lists of lists" in {
-      val lol = List(("us", List(1)), ("jp", List(3, 2)), ("gb", List(3, 1)))
-      rt(lol) must be_==(lol)
+      List(("us", List(1)), ("jp", List(3, 2)), ("gb", List(3, 1))) must roundtrip
     }
     "handle scala singletons" in {
-      val test = List(Nil, None)
-      //Serialize each:
-      rt(test) must be_==(test)
+      List(Nil, None) must roundtrip
+      None must roundtrip
       (rt(None) eq None) must beTrue
     }
     "serialize a giant list" in {
@@ -167,13 +168,11 @@ class KryoSpec extends Specification with BaseProperties {
       list2.zip(bigList).foreach { tup => tup._1 must be_==(tup._2) }
     }
     "handle scala enums" in {
-       WeekDay.values.foreach { v =>
-         rt(v) must be_==(v)
-       }
+       WeekDay.values.foreach { _ must roundtrip }
     }
     "use java serialization" in {
       val kinst = { () => getKryo.javaForClass[TestCaseClassForSerialization] }
-      rt(kinst, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
+      rtEquiv(kinst, TestCaseClassForSerialization("hey", 42)) must beTrue
     }
     "work with Meatlocker" in {
       val l = List(1,2,3)
@@ -213,9 +212,8 @@ class KryoSpec extends Specification with BaseProperties {
       val m2 = Map('a -> 'a, 'b -> 'b)
       val m3 = Map('a -> 'a, 'b -> 'b, 'c -> 'c)
       val m4 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd)
-      Seq(m1, m2, m3, m4).foreach { m =>
-        rt(inst, m) must be_==(m)
-      }
+      val m5 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e)
+      Seq(m1, m2, m3, m4, m5).foreach { rtEquiv(inst, _) must beTrue }
     }
     "handle small immutable sets when registration is required" in {
       val inst = { () =>
@@ -228,9 +226,7 @@ class KryoSpec extends Specification with BaseProperties {
       val s3 = Set('a, 'b, 'c)
       val s4 = Set('a, 'b, 'c, 'd)
       val s5 = Set('a, 'b, 'c, 'd, 'e)
-      Seq(s1, s2, s3, s4, s5).foreach { s =>
-        rt(inst, s) must be_==(s)
-      }
+      Seq(s1, s2, s3, s4, s5).foreach { rtEquiv(inst, _) must beTrue }
     }
     "handle nested mutable maps" in {
       val inst = { () =>
@@ -247,7 +243,7 @@ class KryoSpec extends Specification with BaseProperties {
                              1 -> mutable.Set("name3", "name4", "name1", "name2"),
                              0 -> mutable.Set(1, 2, 3, 4))
 
-      rt(inst, obj0) must be_==(obj1)
+      rtEquiv(inst, obj0) must beTrue
     }
     "deserialize InputStream" in {
       val obj   = Seq(1, 2, 3)
