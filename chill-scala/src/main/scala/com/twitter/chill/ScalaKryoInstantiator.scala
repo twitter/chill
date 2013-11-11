@@ -135,7 +135,6 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd))
-      //.forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
       // The normal fields serializer works for ranges
       .registerClasses(Seq(classOf[Range.Inclusive],
                            classOf[NumericRange.Inclusive[_]],
