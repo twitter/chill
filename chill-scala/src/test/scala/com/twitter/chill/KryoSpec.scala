@@ -69,6 +69,7 @@ class KryoSpec extends Specification with BaseProperties {
                       Left(Map(1->"YO!")),
                       Some(Left(10)),
                       Map("good" -> 0.5, "bad" -> -1.0),
+                      Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e),
                       MArrayBuffer(1,2,3,4,5),
                       List(Some(MHashMap(1->1, 2->2)), None, Some(MHashMap(3->4))),
                       Set(1,2,3,4,10),
