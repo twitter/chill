@@ -43,10 +43,9 @@ object Externalizer {
 }
 
 /** This is a more fault-tolerant MeatLocker
- * that tries first to do Kryo serialization,
- * and then falls back to Java serialization if that does not
- * work. Of course, Java serialization may fail if the contained
- * item is not Java serializable
+ * that tries first to do Java serialization,
+ * and then falls back to Kryo serialization if that does not
+ * work.
  */
 class Externalizer[T] extends Externalizable with KryoSerializable {
   // Either points to a result or a delegate Externalizer to fufil that result.
