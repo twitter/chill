@@ -91,6 +91,7 @@ object ChillBuild extends Build {
     chillJava,
     chillHadoop,
     chillThrift,
+    chillProtobuf,
     chillAkka
   )
 
