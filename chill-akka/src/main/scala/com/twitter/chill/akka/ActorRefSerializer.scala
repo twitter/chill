@@ -22,6 +22,7 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.Serializer
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
+import akka.CurrentTransportInformationAccess
 
 /***
  * This module provides helper classes for serialization of Akka-specific classes.
@@ -47,9 +48,9 @@ class ActorRefSerializer(system: ExtendedActorSystem) extends Serializer[ActorRe
 	}
 
 	override def write(kryo: Kryo, output: Output, obj: ActorRef) = {
-		Serialization.currentTransportAddress.value match {
+    CurrentTransportInformationAccess.get.value match {
 			case null => output.writeString(obj.path.toString)
-			case addr => output.writeString(obj.path.toStringWithAddress(addr))
+			case info => output.writeString(obj.path.toStringWithAddress(info.address))
 		}
 	}
 }
