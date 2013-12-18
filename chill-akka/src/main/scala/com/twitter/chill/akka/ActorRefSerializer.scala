@@ -48,9 +48,6 @@ class ActorRefSerializer(system: ExtendedActorSystem) extends Serializer[ActorRe
 	}
 
 	override def write(kryo: Kryo, output: Output, obj: ActorRef) = {
-    CurrentTransportInformationAccess.get.value match {
-			case null => output.writeString(obj.path.toString)
-			case info => output.writeString(obj.path.toStringWithAddress(info.address))
-		}
+    Serialization.serializedActorPath(obj)
 	}
 }
