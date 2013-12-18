@@ -22,7 +22,6 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.Serializer
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
-import akka.CurrentTransportInformationAccess
 
 /***
  * This module provides helper classes for serialization of Akka-specific classes.
