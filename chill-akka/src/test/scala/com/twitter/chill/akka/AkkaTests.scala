@@ -46,5 +46,23 @@ class AkkaTests extends Specification {
       val serializer = serialization.findSerializerFor((1,2,3))
       serializer.getClass.equals(classOf[AkkaSerializer]) must beTrue
     }
+
+    "be selected for ActorRef" in {
+      val serializer = serialization.findSerializerFor(system.actorFor("akka://test-system/test-actor"))
+      serializer.getClass.equals(classOf[AkkaSerializer]) must beTrue
+    }
+
+    "serialize and deserialize ActorRef successfully" in {
+      val actorRef = system.actorFor("akka://test-system/test-actor")
+
+      val serialized = serialization.serialize(actorRef)
+      serialized.isSuccess must beTrue
+
+      val deserialized = serialization.deserialize(serialized.get, classOf[ActorRef])
+      deserialized.isSuccess must beTrue
+
+      deserialized.get.equals(actorRef) must beTrue
+    }
+
   }
 }

@@ -140,7 +140,7 @@ object ChillBuild extends Build {
       case false => Seq()
       case true => Seq(
       "com.typesafe" % "config" % "0.3.1",
-      "com.typesafe.akka" %% "akka-actor" % "2.1.4"
+      "com.typesafe.akka" %% "akka-actor" % "2.2.1"
     )
   }
   lazy val chillAkka = module("akka").settings(
