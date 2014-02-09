@@ -92,8 +92,9 @@ object ChillBuild extends Build {
     chillHadoop,
     chillThrift,
     chillProtobuf,
-    chillAkka
-  )
+    chillAkka,
+    chillAvro
+    )
 
   /**
     * This returns the youngest jar we released that is compatible
@@ -153,7 +154,7 @@ object ChillBuild extends Build {
 
   lazy val chillBijection = module("bijection").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-core" % "0.5.2"
+      "com.twitter" %% "bijection-core" % "0.6.2"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
@@ -202,4 +203,12 @@ object ChillBuild extends Build {
       "com.google.protobuf" % "protobuf-java" % "2.3.0" % "provided"
     )
   ).dependsOn(chillJava)
+
+  lazy val chillAvro = module("avro").settings(
+    crossPaths := false,
+    autoScalaLibrary := false,
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "bijection-avro" % "0.6.2"
+    )
+  ).dependsOn(chill,chillJava, chillBijection)
 }
