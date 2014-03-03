@@ -23,6 +23,8 @@ object ScalaMapConfig {
 
 /** A simple config backed by an immutable Map
  */
+//TODO do we put the version we deprecate it at? or the last version it was good on?
+@deprecated("Class potentially unsafe, use ScalaAnyRefMapConfig", "0.3.6")
 class ScalaMapConfig(in: Map[String, String]) extends Config {
   private var conf = in
 
