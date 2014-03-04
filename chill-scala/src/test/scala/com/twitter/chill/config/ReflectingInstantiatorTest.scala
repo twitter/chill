@@ -35,18 +35,18 @@ class ReflectingInstantiatorTest extends Specification {
         skipMissing = true,
         registrationRequired = true).build
 
-      val conf = ScalaMapConfig.empty
+      val conf = ScalaAnyRefMapConfig.empty
       ri.set(conf)
 
       conf.toMap(ReflectingInstantiator.KRYO_CLASS) must be_==(classOf[Kryo].getName)
       conf.toMap(ReflectingInstantiator.INSTANTIATOR_STRATEGY_CLASS) must be_==(classOf[InstantiatorStrategy].getName)
       conf.toMap(ReflectingInstantiator.REGISTRATION_REQUIRED) must be_==("true")
       conf.toMap(ReflectingInstantiator.SKIP_MISSING) must be_==("true")
-      conf.toMap(ReflectingInstantiator.REGISTRATIONS).split(":").toSet must be_== (
+      conf.toMap(ReflectingInstantiator.REGISTRATIONS).asInstanceOf[String].split(":").toSet must be_== (
         Set("scala.collection.immutable.List",
           "scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer")
       )
-      conf.toMap(ReflectingInstantiator.DEFAULT_REGISTRATIONS).split(":").toSet must be_== (
+      conf.toMap(ReflectingInstantiator.DEFAULT_REGISTRATIONS).asInstanceOf[String].split(":").toSet must be_== (
         Set("scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer")
       )
     }
@@ -58,7 +58,7 @@ class ReflectingInstantiatorTest extends Specification {
         skipMissing = true,
         registrationRequired = true).build
 
-      val conf = ScalaMapConfig.empty
+      val conf = ScalaAnyRefMapConfig.empty
       ri.set(conf)
       val ri2 = new ReflectingInstantiator(conf)
       ri.equals(ri2) must be_==(true)
