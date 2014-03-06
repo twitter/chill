@@ -1,11 +1,23 @@
 # chill #
 
+### 0.3.6
+* Add ScalaAnyRefMapConfig, deals with non-string keys in cascading: https://github.com/twitter/chill/pull/174
+* added AvroSerializer: https://github.com/twitter/chill/pull/172
+* Add sbt script for homogeneity with SB, Scalding, etc: https://github.com/twitter/chill/pull/170
+* Support for akka 2.2.1: https://github.com/twitter/chill/pull/169
+* Protobuf should be in the all target: https://github.com/twitter/chill/pull/168
+* Enable getClass equality checking in tests: https://github.com/twitter/chill/pull/165
+* Add chill-protobuf, with tests: https://github.com/twitter/chill/pull/163
+* support serialization of scala sortedmap: https://github.com/twitter/chill/pull/162
+
 ### 0.3.5
-* Add Serializers for scala SortedList and ListSet. https://github.com/twitter/chill/pull/152
+* Add Serializers for scala SortedList and ListSet: https://github.com/twitter/chill/pull/152
 * Fix Range serialization (and remove broken subclass-serialization of Iterable, Seq, etc): https://github.com/twitter/chill/pull/154
 * Build and test chill-akka for 2.10: https://github.com/twitter/chill/pull/155
 * Add chill-thrift: https://github.com/twitter/chill/pull/156
 * Support JavaConverter-built classes: https://github.com/twitter/chill/pull/159
+* Back to 2.21: https://github.com/twitter/chill/pull/157
+* Adds a test from issue #8: https://github.com/twitter/chill/pull/158
 
 ### 0.3.4
 * Bugfixes for Externalizer with looped object graphs https://github.com/twitter/chill/pull/143
