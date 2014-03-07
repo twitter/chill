@@ -37,8 +37,8 @@ import scala.collection.mutable.{Set => MSet, Map => MMap}
 
 import scala.annotation.tailrec
 
-import org.objectweb.asm.{ClassReader, MethodVisitor, Type, ClassVisitor}
-import org.objectweb.asm.Opcodes._
+import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.{ClassReader, MethodVisitor, Type, ClassVisitor}
+import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.Opcodes._
 
 /**
  * Copied from Spark, written by Matei Zaharia (matei@cs.berkeley.edu).
