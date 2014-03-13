@@ -93,7 +93,8 @@ object ChillBuild extends Build {
     chillThrift,
     chillProtobuf,
     chillAkka,
-    chillAvro
+    chillAvro,
+    chillAlgebird
     )
 
   /**
@@ -208,4 +209,10 @@ object ChillBuild extends Build {
       "com.twitter" %% "bijection-avro" % "0.6.2"
     )
   ).dependsOn(chill,chillJava, chillBijection)
+
+  lazy val chillAlgebird = module("algebird").settings(
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "algebird-core" % "0.5.0"
+    )
+  ).dependsOn(chill)
 }
