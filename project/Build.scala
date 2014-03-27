@@ -9,6 +9,12 @@ import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
   val kryoVersion = "2.21"
+  def withCross(dep: ModuleID) =
+    dep cross CrossVersion.binaryMapped {
+      case "2.9.3" => "2.9.2" // TODO: hack because twitter hasn't built things against 2.9.3
+      case version if version startsWith "2.10" => "2.10" // TODO: hack because sbt is broken
+      case x => x
+    }
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
 
@@ -87,6 +93,7 @@ object ChillBuild extends Build {
   ).aggregate(
     chill,
     chillBijection,
+    chillScrooge,
     chillStorm,
     chillJava,
     chillHadoop,
@@ -191,6 +198,13 @@ object ChillBuild extends Build {
       "org.apache.thrift" % "libthrift" % "0.6.1" % "provided"
     )
   )
+
+  lazy val chillScrooge = module("scrooge").settings(
+    libraryDependencies ++= Seq(
+      "org.apache.thrift" % "libthrift" % "0.6.1" % "provided",
+      withCross("com.twitter" %% "scrooge-serializer" % "3.13.0" % "provided")
+    )
+  ).dependsOn(chill % "test->test;compile->compile")
 
   // This can only have java deps!
   lazy val chillProtobuf = module("protobuf").settings(
