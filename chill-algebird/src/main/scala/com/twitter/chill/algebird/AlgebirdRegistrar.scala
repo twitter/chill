@@ -16,25 +16,32 @@ limitations under the License.
 package com.twitter.chill.algebird
 
 import com.esotericsoftware.kryo.Kryo
-import com.twitter.chill.{ RichKryo, IKryoRegistrar }
+import com.esotericsoftware.kryo.serializers.FieldSerializer
+
+import com.twitter.chill.IKryoRegistrar
 
 import com.twitter.algebird.{AveragedValue, DecayedValue, HLL, HyperLogLog,
-  HyperLogLogMonoid, Moments, SpaceSaver}
+  HyperLogLogMonoid, Moments, SpaceSaver, DenseVector, SparseVector, AdaptiveVector}
 
-object AlgebirdRegistrar {
-  implicit def toRich(k: Kryo): RichKryo = new RichKryo(k)
-}
 
 class AlgebirdRegistrar extends IKryoRegistrar {
-  import AlgebirdRegistrar._
 
   def apply(k: Kryo) {
-    k
-      .forClass[AveragedValue](new AveragedValueSerializer)
-      .forClass[Moments](new MomentsSerializer)
-      .forClass[DecayedValue](new DecayedValueSerializer)
-      .forSubclass[HLL](new HLLSerializer)
-      .forClass[HyperLogLogMonoid](new HLLMonoidSerializer())
-      //.forSubclass[SpaceSaver[Any]](new SpaceSaverSerializer[Any])
+    // Some of the monoids from Algebird that we use:
+    k.register(classOf[AveragedValue], new AveragedValueSerializer)
+    k.register(classOf[DecayedValue], new DecayedValueSerializer)
+    k.register(classOf[HyperLogLogMonoid], new HLLMonoidSerializer)
+    k.register(classOf[Moments], new MomentsSerializer)
+    k.addDefaultSerializer(classOf[HLL], new HLLSerializer)
+    //k.addDefaultSerializer(classOf[SpaceSaver[_]], new SpaceSaverSerializer[_])
+
+    /** AdaptiveVector is IndexedSeq, which picks up the chill IndexedSeq serializer
+     * (which is its own bug), force using the fields serializer here
+     */
+    k.register(classOf[DenseVector[_]], new FieldSerializer[DenseVector[_]](k, classOf[DenseVector[_]]))
+
+    k.register(classOf[SparseVector[_]], new FieldSerializer[SparseVector[_]](k, classOf[SparseVector[_]]))
+
+    k.addDefaultSerializer(classOf[AdaptiveVector[_]], classOf[FieldSerializer[_]])
   }
 }
