@@ -33,7 +33,6 @@ class AlgebirdRegistrar extends IKryoRegistrar {
     k.register(classOf[HyperLogLogMonoid], new HLLMonoidSerializer)
     k.register(classOf[Moments], new MomentsSerializer)
     k.addDefaultSerializer(classOf[HLL], new HLLSerializer)
-    //k.addDefaultSerializer(classOf[SpaceSaver[_]], new SpaceSaverSerializer[_])
 
     /** AdaptiveVector is IndexedSeq, which picks up the chill IndexedSeq serializer
      * (which is its own bug), force using the fields serializer here
