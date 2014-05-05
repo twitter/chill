@@ -86,7 +86,7 @@ object AvroSerializerSpec extends Specification {
 
   "GenericRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordSerializer[Record](schema))
+      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordSerializer[GenericRecord](schema))
       val bytes = kryo.toBytesWithClass(user)
       println(user.getClass.getName)
       val result = kryo.fromBytes(bytes).asInstanceOf[GenericRecord]
