@@ -86,35 +86,35 @@ object AvroSerializerSpec extends Specification {
 
   "GenericRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordSerializer[GenericRecord](schema))
+      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordSerializer[Record](schema))
       val bytes = kryo.toBytesWithClass(user)
       println(user.getClass.getName)
-      val result = kryo.fromBytes(bytes).asInstanceOf[GenericRecord]
-      result.get("name") must_== "Jeff"
+      val result = kryo.fromBytes(bytes).asInstanceOf[Record]
+      result.get("name").toString must_== "Jeff"
       result.get("ID") must_== 1
-      user must_== result
+      user.toString must_== result.toString
     }
   }
 
   "GenericRecordBinarySerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordBinarySerializer[GenericRecord](schema))
+      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordBinarySerializer[Record](schema))
       val bytes = kryo.toBytesWithClass(user)
-      val result = kryo.fromBytes(bytes).asInstanceOf[GenericRecord]
-      result.get("name") must_== "Jeff"
+      val result = kryo.fromBytes(bytes).asInstanceOf[Record]
+      result.get("name").toString must_== "Jeff"
       result.get("ID") must_== 1
-      user must_== result
+      user.toString must_== result.toString
     }
   }
 
   "GenericRecordJsonSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordJsonSerializer[GenericRecord](schema))
+      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordJsonSerializer[Record](schema))
       val bytes = kryo.toBytesWithClass(user)
-      val result = kryo.fromBytes(bytes).asInstanceOf[GenericRecord]
-      result.get("name") must_== "Jeff"
+      val result = kryo.fromBytes(bytes).asInstanceOf[Record]
+      result.get("name").toString must_== "Jeff"
       result.get("ID") must_== 1
-      user must_== result
+      user.toString must_== result.toString
     }
   }
 }
