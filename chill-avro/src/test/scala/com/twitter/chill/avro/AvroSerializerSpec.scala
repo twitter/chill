@@ -20,6 +20,7 @@ import org.apache.avro.specific.SpecificRecordBase
 import avro.FiscalRecord
 import org.apache.avro.generic.{GenericRecordBuilder, GenericRecord}
 import org.apache.avro.SchemaBuilder
+import org.apache.avro.generic.GenericData.Record
 
 /**
  * @author Mansur Ashraf
@@ -85,9 +86,12 @@ object AvroSerializerSpec extends Specification {
 
   "GenericRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordSerialize[GenericRecord](schema))
+      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordSerializer[Record](schema))
       val bytes = kryo.toBytesWithClass(user)
+      println(user.getClass.getName)
       val result = kryo.fromBytes(bytes).asInstanceOf[GenericRecord]
+      result.get("name") must_== "Jeff"
+      result.get("ID") must_== 1
       user must_== result
     }
   }
@@ -97,6 +101,8 @@ object AvroSerializerSpec extends Specification {
       val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordBinarySerializer[GenericRecord](schema))
       val bytes = kryo.toBytesWithClass(user)
       val result = kryo.fromBytes(bytes).asInstanceOf[GenericRecord]
+      result.get("name") must_== "Jeff"
+      result.get("ID") must_== 1
       user must_== result
     }
   }
@@ -106,6 +112,8 @@ object AvroSerializerSpec extends Specification {
       val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordJsonSerializer[GenericRecord](schema))
       val bytes = kryo.toBytesWithClass(user)
       val result = kryo.fromBytes(bytes).asInstanceOf[GenericRecord]
+      result.get("name") must_== "Jeff"
+      result.get("ID") must_== 1
       user must_== result
     }
   }

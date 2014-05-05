@@ -48,7 +48,7 @@ class RichKryo(k: Kryo) {
 
   def forClass[T](kser: KSerializer[T])(implicit cmf: ClassManifest[T]): Kryo = {
     k.register(cmf.erasure, kser)
-    k
+    k.setInstantiatorStrategy(new )
   }
 
   def forTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)

@@ -44,7 +44,7 @@ object AvroSerializer {
     InjectiveSerializer.asKryo
   }
 
-  def GenericRecordSerialize[T <: GenericRecord](schema: Schema): KSerializer[T] = {
+  def GenericRecordSerializer[T <: GenericRecord](schema: Schema): KSerializer[T] = {
     implicit val inj = GenericAvroCodecs[T](schema)
     InjectiveSerializer.asKryo
   }
