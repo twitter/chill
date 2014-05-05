@@ -19,7 +19,7 @@ import com.twitter.chill.{InjectiveSerializer, KSerializer}
 import com.twitter.bijection.avro.{GenericAvroCodecs, SpecificAvroCodecs}
 import org.apache.avro.Schema
 import com.twitter.bijection.Injection
-import org.apache.avro.generic.GenericRecord
+import org.apache.avro.generic.GenericData.Record
 
 /**
  * @author Mansur Ashraf
@@ -44,20 +44,11 @@ object AvroSerializer {
     InjectiveSerializer.asKryo
   }
 
-  def GenericRecordSerializer[T <: GenericRecord](schema: Schema): KSerializer[T] = {
-    implicit val inj = GenericAvroCodecs[T](schema)
-    InjectiveSerializer.asKryo
-  }
-
-  def GenericRecordBinarySerializer[T <: GenericRecord](schema: Schema): KSerializer[T] = {
-    implicit val inj = GenericAvroCodecs.toBinary[T](schema)
-    InjectiveSerializer.asKryo
-  }
-
-  def GenericRecordJsonSerializer[T <: GenericRecord](schema: Schema): KSerializer[T] = {
-    import com.twitter.bijection.StringCodec.utf8
-    implicit val inj = GenericAvroCodecs.toJson[T](schema)
-    implicit val avroToArray = Injection.connect[T, String, Array[Byte]]
+  def GenericRecordSerializer[T <: Record : Manifest](schema: Option[Schema] = None): KSerializer[T] = {
+    implicit val inj = schema match {
+      case Some(x) => GenericAvroCodecs[T](x)
+      case _ => GenericAvroCodecs[T](null)
+    }
     InjectiveSerializer.asKryo
   }
 }

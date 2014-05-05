@@ -86,35 +86,16 @@ object AvroSerializerSpec extends Specification {
 
   "GenericRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordSerializer[Record](schema))
-      val bytes = kryo.toBytesWithClass(user)
-      println(user.getClass.getName)
-      val result = kryo.fromBytes(bytes).asInstanceOf[Record]
-      result.get("name").toString must_== "Jeff"
-      result.get("ID") must_== 1
-      user.toString must_== result.toString
-    }
-  }
+      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordSerializer[Record]())
+      val userBytes = kryo.toBytesWithClass(user)
+      val userResult = kryo.fromBytes(userBytes).asInstanceOf[Record]
+      userResult.get("name").toString must_== "Jeff"
+      userResult.get("ID") must_== 1
+      user.toString must_== userResult.toString
 
-  "GenericRecordBinarySerializer" should {
-    "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordBinarySerializer[Record](schema))
-      val bytes = kryo.toBytesWithClass(user)
-      val result = kryo.fromBytes(bytes).asInstanceOf[Record]
-      result.get("name").toString must_== "Jeff"
-      result.get("ID") must_== 1
-      user.toString must_== result.toString
-    }
-  }
-
-  "GenericRecordJsonSerializer" should {
-    "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordJsonSerializer[Record](schema))
-      val bytes = kryo.toBytesWithClass(user)
-      val result = kryo.fromBytes(bytes).asInstanceOf[Record]
-      result.get("name").toString must_== "Jeff"
-      result.get("ID") must_== 1
-      user.toString must_== result.toString
+      val testRecord = kryo.toBytesWithClass(testRrecord)
+      val testRecordResult = kryo.fromBytes(testRecord).asInstanceOf[FiscalRecord]
+      testRrecord.toString must_== testRecordResult.toString
     }
   }
 }
