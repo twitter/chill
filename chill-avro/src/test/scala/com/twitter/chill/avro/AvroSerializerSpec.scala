@@ -85,8 +85,8 @@ object AvroSerializerSpec extends Specification {
       userResult.get("ID") must_== 1
       user.toString must_== userResult.toString
 
-      val testRecord = kryo.toBytesWithClass(testRrecord)
-      val testRecordResult = kryo.fromBytes(testRecord).asInstanceOf[FiscalRecord]
+      val testRecordBytes = kryo.toBytesWithClass(testRrecord)
+      val testRecordResult = kryo.fromBytes(testRecordBytes).asInstanceOf[FiscalRecord]
       testRrecord.toString must_== testRecordResult.toString
     }
   }
