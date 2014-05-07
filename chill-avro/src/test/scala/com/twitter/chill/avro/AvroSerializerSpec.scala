@@ -16,9 +16,8 @@ package com.twitter.chill.avro
 
 import org.specs.Specification
 import com.twitter.chill.{KSerializer, ScalaKryoInstantiator, KryoPool}
-import org.apache.avro.specific.SpecificRecordBase
 import avro.FiscalRecord
-import org.apache.avro.generic.{GenericRecordBuilder, GenericRecord}
+import org.apache.avro.generic.GenericRecordBuilder
 import org.apache.avro.SchemaBuilder
 import org.apache.avro.generic.GenericData.Record
 
@@ -28,14 +27,7 @@ import org.apache.avro.generic.GenericData.Record
  */
 object AvroSerializerSpec extends Specification {
 
-  def getKryoForSpecificRecord[T <: SpecificRecordBase : Manifest](k: KSerializer[T]) = {
-    val inst = {
-      () => (new ScalaKryoInstantiator).newKryo.forClass(k)
-    }
-    KryoPool.withByteArrayOutputStream(1, inst)
-  }
-
-  def getKryoForGenericRecord[T <: GenericRecord : Manifest](k: KSerializer[T]) = {
+  def getKyro[T: Manifest](k: KSerializer[T]) = {
     val inst = {
       () => (new ScalaKryoInstantiator).newKryo.forClass(k)
     }
@@ -59,7 +51,7 @@ object AvroSerializerSpec extends Specification {
 
   "SpecificRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForSpecificRecord(AvroSerializer.SpecificRecordSerializer[FiscalRecord])
+      val kryo = getKyro(AvroSerializer.SpecificRecordSerializer[FiscalRecord])
       val bytes = kryo.toBytesWithClass(testRrecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
       testRrecord must_== result
@@ -68,7 +60,7 @@ object AvroSerializerSpec extends Specification {
 
   "SpecificRecordBinarySerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForSpecificRecord(AvroSerializer.SpecificRecordBinarySerializer[FiscalRecord])
+      val kryo = getKyro(AvroSerializer.SpecificRecordBinarySerializer[FiscalRecord])
       val bytes = kryo.toBytesWithClass(testRrecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
       testRrecord must_== result
@@ -77,7 +69,7 @@ object AvroSerializerSpec extends Specification {
 
   "SpecificRecordJsonSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForSpecificRecord(AvroSerializer.SpecificRecordJsonSerializer[FiscalRecord](FiscalRecord.SCHEMA$))
+      val kryo = getKyro(AvroSerializer.SpecificRecordJsonSerializer[FiscalRecord](FiscalRecord.SCHEMA$))
       val bytes = kryo.toBytesWithClass(testRrecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
       testRrecord must_== result
@@ -86,7 +78,7 @@ object AvroSerializerSpec extends Specification {
 
   "GenericRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKryoForGenericRecord(AvroSerializer.GenericRecordSerializer[Record]())
+      val kryo = getKyro(AvroSerializer.GenericRecordSerializer[Record]())
       val userBytes = kryo.toBytesWithClass(user)
       val userResult = kryo.fromBytes(userBytes).asInstanceOf[Record]
       userResult.get("name").toString must_== "Jeff"

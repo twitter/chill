@@ -20,6 +20,7 @@ import com.twitter.bijection.avro.{GenericAvroCodecs, SpecificAvroCodecs}
 import org.apache.avro.Schema
 import com.twitter.bijection.Injection
 import org.apache.avro.generic.GenericData.Record
+import org.apache.avro.generic.GenericRecord
 
 /**
  * @author Mansur Ashraf
@@ -44,7 +45,7 @@ object AvroSerializer {
     InjectiveSerializer.asKryo
   }
 
-  def GenericRecordSerializer[T <: Record : Manifest](schema: Option[Schema] = None): KSerializer[T] = {
+  def GenericRecordSerializer[T <: GenericRecord : Manifest](schema: Option[Schema] = None): KSerializer[T] = {
     implicit val inj = schema match {
       case Some(x) => GenericAvroCodecs[T](x)
       case _ => GenericAvroCodecs[T](null)
