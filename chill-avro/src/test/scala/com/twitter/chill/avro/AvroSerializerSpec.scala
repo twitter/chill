@@ -47,32 +47,32 @@ object AvroSerializerSpec extends Specification {
     .set("ID", 1)
     .build
 
-  val testRrecord = FiscalRecord.newBuilder().setCalendarDate("2012-01-01").setFiscalWeek(1).setFiscalYear(2012).build()
+  val testRecord = FiscalRecord.newBuilder().setCalendarDate("2012-01-01").setFiscalWeek(1).setFiscalYear(2012).build()
 
   "SpecificRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
       val kryo = getKryo(AvroSerializer.SpecificRecordSerializer[FiscalRecord])
-      val bytes = kryo.toBytesWithClass(testRrecord)
+      val bytes = kryo.toBytesWithClass(testRecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
-      testRrecord must_== result
+      testRecord must_== result
     }
   }
 
   "SpecificRecordBinarySerializer" should {
     "Serialize and Deserialize Avro Record" in {
       val kryo = getKryo(AvroSerializer.SpecificRecordBinarySerializer[FiscalRecord])
-      val bytes = kryo.toBytesWithClass(testRrecord)
+      val bytes = kryo.toBytesWithClass(testRecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
-      testRrecord must_== result
+      testRecord must_== result
     }
   }
 
   "SpecificRecordJsonSerializer" should {
     "Serialize and Deserialize Avro Record" in {
       val kryo = getKryo(AvroSerializer.SpecificRecordJsonSerializer[FiscalRecord](FiscalRecord.SCHEMA$))
-      val bytes = kryo.toBytesWithClass(testRrecord)
+      val bytes = kryo.toBytesWithClass(testRecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
-      testRrecord must_== result
+      testRecord must_== result
     }
   }
 
@@ -85,9 +85,9 @@ object AvroSerializerSpec extends Specification {
       userResult.get("ID") must_== 1
       user.toString must_== userResult.toString
 
-      val testRecordBytes = kryo.toBytesWithClass(testRrecord)
+      val testRecordBytes = kryo.toBytesWithClass(testRecord)
       val testRecordResult = kryo.fromBytes(testRecordBytes).asInstanceOf[FiscalRecord]
-      testRrecord.toString must_== testRecordResult.toString
+      testRecord.toString must_== testRecordResult.toString
     }
   }
 }
