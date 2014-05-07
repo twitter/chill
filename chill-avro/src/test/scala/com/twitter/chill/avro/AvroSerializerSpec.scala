@@ -27,7 +27,7 @@ import org.apache.avro.generic.GenericData.Record
  */
 object AvroSerializerSpec extends Specification {
 
-  def getKyro[T: Manifest](k: KSerializer[T]) = {
+  def getKryo[T: Manifest](k: KSerializer[T]) = {
     val inst = {
       () => (new ScalaKryoInstantiator).newKryo.forClass(k)
     }
@@ -51,7 +51,7 @@ object AvroSerializerSpec extends Specification {
 
   "SpecificRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKyro(AvroSerializer.SpecificRecordSerializer[FiscalRecord])
+      val kryo = getKryo(AvroSerializer.SpecificRecordSerializer[FiscalRecord])
       val bytes = kryo.toBytesWithClass(testRrecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
       testRrecord must_== result
@@ -60,7 +60,7 @@ object AvroSerializerSpec extends Specification {
 
   "SpecificRecordBinarySerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKyro(AvroSerializer.SpecificRecordBinarySerializer[FiscalRecord])
+      val kryo = getKryo(AvroSerializer.SpecificRecordBinarySerializer[FiscalRecord])
       val bytes = kryo.toBytesWithClass(testRrecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
       testRrecord must_== result
@@ -69,7 +69,7 @@ object AvroSerializerSpec extends Specification {
 
   "SpecificRecordJsonSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKyro(AvroSerializer.SpecificRecordJsonSerializer[FiscalRecord](FiscalRecord.SCHEMA$))
+      val kryo = getKryo(AvroSerializer.SpecificRecordJsonSerializer[FiscalRecord](FiscalRecord.SCHEMA$))
       val bytes = kryo.toBytesWithClass(testRrecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
       testRrecord must_== result
@@ -78,7 +78,7 @@ object AvroSerializerSpec extends Specification {
 
   "GenericRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
-      val kryo = getKyro(AvroSerializer.GenericRecordSerializer[Record]())
+      val kryo = getKryo(AvroSerializer.GenericRecordSerializer[Record]())
       val userBytes = kryo.toBytesWithClass(user)
       val userResult = kryo.fromBytes(userBytes).asInstanceOf[Record]
       userResult.get("name").toString must_== "Jeff"

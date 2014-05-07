@@ -45,11 +45,8 @@ object AvroSerializer {
     InjectiveSerializer.asKryo
   }
 
-  def GenericRecordSerializer[T <: GenericRecord : Manifest](schema: Option[Schema] = None): KSerializer[T] = {
-    implicit val inj = schema match {
-      case Some(x) => GenericAvroCodecs[T](x)
-      case _ => GenericAvroCodecs[T](null)
-    }
+  def GenericRecordSerializer[T <: GenericRecord : Manifest](schema: Schema = null): KSerializer[T] = {
+    implicit val inj =  GenericAvroCodecs[T](schema)
     InjectiveSerializer.asKryo
   }
 }
