@@ -16,9 +16,11 @@ package com.twitter.chill.avro
 
 import org.apache.avro.specific.SpecificRecordBase
 import com.twitter.chill.{InjectiveSerializer, KSerializer}
-import com.twitter.bijection.avro.SpecificAvroCodecs
+import com.twitter.bijection.avro.{GenericAvroCodecs, SpecificAvroCodecs}
 import org.apache.avro.Schema
 import com.twitter.bijection.Injection
+import org.apache.avro.generic.GenericData.Record
+import org.apache.avro.generic.GenericRecord
 
 /**
  * @author Mansur Ashraf
@@ -40,6 +42,11 @@ object AvroSerializer {
     import com.twitter.bijection.StringCodec.utf8
     implicit val inj = SpecificAvroCodecs.toJson[T](schema)
     implicit val avroToArray = Injection.connect[T, String, Array[Byte]]
+    InjectiveSerializer.asKryo
+  }
+
+  def GenericRecordSerializer[T <: GenericRecord : Manifest](schema: Schema = null): KSerializer[T] = {
+    implicit val inj =  GenericAvroCodecs[T](schema)
     InjectiveSerializer.asKryo
   }
 }

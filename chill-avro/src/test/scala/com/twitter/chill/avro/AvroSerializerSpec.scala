@@ -16,8 +16,10 @@ package com.twitter.chill.avro
 
 import org.specs.Specification
 import com.twitter.chill.{KSerializer, ScalaKryoInstantiator, KryoPool}
-import org.apache.avro.specific.SpecificRecordBase
 import avro.FiscalRecord
+import org.apache.avro.generic.GenericRecordBuilder
+import org.apache.avro.SchemaBuilder
+import org.apache.avro.generic.GenericData.Record
 
 /**
  * @author Mansur Ashraf
@@ -25,39 +27,67 @@ import avro.FiscalRecord
  */
 object AvroSerializerSpec extends Specification {
 
-  def getKryo[T <: SpecificRecordBase : Manifest](k: KSerializer[T]) = {
+  def getKryo[T: Manifest](k: KSerializer[T]) = {
     val inst = {
       () => (new ScalaKryoInstantiator).newKryo.forClass(k)
     }
     KryoPool.withByteArrayOutputStream(1, inst)
   }
 
-  val testRrecord = FiscalRecord.newBuilder().setCalendarDate("2012-01-01").setFiscalWeek(1).setFiscalYear(2012).build()
+  val schema = SchemaBuilder
+    .record("person")
+    .fields
+    .name("name").`type`().stringType().noDefault()
+    .name("ID").`type`().intType().noDefault()
+    .endRecord
+
+  // Build an object conforming to the schema
+  val user = new GenericRecordBuilder(schema)
+    .set("name", "Jeff")
+    .set("ID", 1)
+    .build
+
+  val testRecord = FiscalRecord.newBuilder().setCalendarDate("2012-01-01").setFiscalWeek(1).setFiscalYear(2012).build()
 
   "SpecificRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {
       val kryo = getKryo(AvroSerializer.SpecificRecordSerializer[FiscalRecord])
-      val bytes = kryo.toBytesWithClass(testRrecord)
+      val bytes = kryo.toBytesWithClass(testRecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
-      testRrecord must_== result
+      testRecord must_== result
     }
   }
 
   "SpecificRecordBinarySerializer" should {
     "Serialize and Deserialize Avro Record" in {
       val kryo = getKryo(AvroSerializer.SpecificRecordBinarySerializer[FiscalRecord])
-      val bytes = kryo.toBytesWithClass(testRrecord)
+      val bytes = kryo.toBytesWithClass(testRecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
-      testRrecord must_== result
+      testRecord must_== result
     }
   }
 
   "SpecificRecordJsonSerializer" should {
     "Serialize and Deserialize Avro Record" in {
       val kryo = getKryo(AvroSerializer.SpecificRecordJsonSerializer[FiscalRecord](FiscalRecord.SCHEMA$))
-      val bytes = kryo.toBytesWithClass(testRrecord)
+      val bytes = kryo.toBytesWithClass(testRecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
-      testRrecord must_== result
+      testRecord must_== result
+    }
+  }
+
+  "GenericRecordSerializer" should {
+    "Serialize and Deserialize Avro Record" in {
+      val kryo = getKryo(AvroSerializer.GenericRecordSerializer[Record]())
+      val userBytes = kryo.toBytesWithClass(user)
+      val userResult = kryo.fromBytes(userBytes).asInstanceOf[Record]
+      userResult.get("name").toString must_== "Jeff"
+      userResult.get("ID") must_== 1
+      user.toString must_== userResult.toString
+
+      val testRecordBytes = kryo.toBytesWithClass(testRecord)
+      val testRecordResult = kryo.fromBytes(testRecordBytes).asInstanceOf[FiscalRecord]
+      testRecord.toString must_== testRecordResult.toString
     }
   }
 }
