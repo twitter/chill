@@ -20,7 +20,7 @@ import org.specs._
 import org.specs.matcher.Matcher
 
 import scala.collection.immutable.{SortedSet, BitSet, ListSet, HashSet, SortedMap, ListMap, HashMap}
-import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
+import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, BitSet => MBitSet, HashMap => MHashMap}
 import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
 import scala.collection.mutable
@@ -83,6 +83,8 @@ class KryoSpec extends Specification with BaseProperties {
                       SortedSet(1L, 2L, 3L, 4L),
                       BitSet(),
                       BitSet((0 until 1000).map{ x : Int => x*x } : _*),
+                      MBitSet(),
+                      MBitSet((0 until 1000).map{ x : Int => x*x } : _*),
                       SortedMap[Long, String](),
                       SortedMap("b" -> 2, "a" -> 1),
                       ListMap("good" -> 0.5, "bad" -> -1.0),
