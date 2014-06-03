@@ -34,6 +34,15 @@ import net.jpountz.lz4.LZ4Factory
  *    }
  * }}}
  *
+ * Optionally, enable transparent lz4 compression of
+ * kryo serialized messages:
+ *
+ * {{{
+ *    akka.chill {
+ *      compression = on
+ *    }
+ * {{{
+ *
  * Then for the super-classes of all your message types,
  *   for instance, scala.Product, write:
  * {{{
