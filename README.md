@@ -1,6 +1,6 @@
 ## Chill [![Build Status](https://secure.travis-ci.org/twitter/chill.png)](http://travis-ci.org/twitter/chill)
 
-Extensions for the [Kryo serialization library](http://code.google.com/p/kryo/) including
+Extensions for the [Kryo serialization library](https://github.com/EsotericSoftware/kryo) including
 serializers and a set of classes to ease configuration of Kryo in systems like Hadoop, Storm,
 Akka, etc.
 
