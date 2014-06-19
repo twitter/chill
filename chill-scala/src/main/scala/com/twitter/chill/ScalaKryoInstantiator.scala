@@ -48,7 +48,8 @@ import _root_.java.io.Serializable
 
 import scala.collection.JavaConverters._
 
-/** This class has a no-arg constructor, suitable for use with reflection instantiation
+/**
+ * This class has a no-arg constructor, suitable for use with reflection instantiation
  * It has no registered serializers, just the standard Kryo configured for Kryo.
  */
 class EmptyScalaKryoInstantiator extends KryoInstantiator {
@@ -64,10 +65,11 @@ object ScalaKryoInstantiator extends Serializable {
   private val mutex = new AnyRef with Serializable // some serializable object
   @transient private var kpool: KryoPool = null
 
-  /** Return a KryoPool that uses the ScalaKryoInstantiator
+  /**
+   * Return a KryoPool that uses the ScalaKryoInstantiator
    */
   def defaultPool: KryoPool = mutex.synchronized {
-    if(null == kpool) {
+    if (null == kpool) {
       kpool = KryoPool.withByteArrayOutputStream(guessThreads, new ScalaKryoInstantiator)
     }
     kpool
@@ -142,23 +144,23 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forConcreteTraversableClass(HashMap[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
       // The normal fields serializer works for ranges
       .registerClasses(Seq(classOf[Range.Inclusive],
-                           classOf[NumericRange.Inclusive[_]],
-                           classOf[NumericRange.Exclusive[_]]))
+        classOf[NumericRange.Inclusive[_]],
+        classOf[NumericRange.Exclusive[_]]))
       // Add some maps
       .forSubclass[SortedMap[Any, Any]](new SortedMapSerializer)
-      .forTraversableSubclass(ListMap.empty[Any,Any])
-      .forTraversableSubclass(HashMap.empty[Any,Any])
+      .forTraversableSubclass(ListMap.empty[Any, Any])
+      .forTraversableSubclass(HashMap.empty[Any, Any])
       // The above ListMap/HashMap must appear before this:
-      .forTraversableSubclass(Map.empty[Any,Any])
+      .forTraversableSubclass(Map.empty[Any, Any])
       // here are the mutable ones:
       .forTraversableClass(MBitSet.empty, isImmutable = false)
-      .forTraversableClass(MHashMap.empty[Any,Any], isImmutable = false)
+      .forTraversableClass(MHashMap.empty[Any, Any], isImmutable = false)
       .forTraversableClass(MHashSet.empty[Any], isImmutable = false)
       .forTraversableSubclass(MQueue.empty[Any], isImmutable = false)
-      .forTraversableSubclass(MMap.empty[Any,Any], isImmutable = false)
+      .forTraversableSubclass(MMap.empty[Any, Any], isImmutable = false)
       .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
       .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
-    }
+  }
 }
 
 /** Registers all the scala (and java) serializers we have */
@@ -169,10 +171,10 @@ class AllScalaRegistrar extends IKryoRegistrar {
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
     k.forClass[Symbol](new KSerializer[Symbol] {
-        override def isImmutable = true
-        def write(k: Kryo, out: Output, obj: Symbol) { out.writeString(obj.name) }
-        def read(k: Kryo, in: Input, cls: Class[Symbol]) = Symbol(in.readString)
-      })
+      override def isImmutable = true
+      def write(k: Kryo, out: Output, obj: Symbol) { out.writeString(obj.name) }
+      def read(k: Kryo, in: Input, cls: Class[Symbol]) = Symbol(in.readString)
+    })
       .forSubclass[Regex](new RegexSerializer)
       .forClass[ClassManifest[Any]](new ClassManifestSerializer[Any])
       .forSubclass[Manifest[Any]](new ManifestSerializer[Any])

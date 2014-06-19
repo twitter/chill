@@ -15,7 +15,7 @@ limitations under the License.
 package com.twitter.chill.avro
 
 import org.specs.Specification
-import com.twitter.chill.{KSerializer, ScalaKryoInstantiator, KryoPool}
+import com.twitter.chill.{ KSerializer, ScalaKryoInstantiator, KryoPool }
 import avro.FiscalRecord
 import org.apache.avro.generic.GenericRecordBuilder
 import org.apache.avro.SchemaBuilder

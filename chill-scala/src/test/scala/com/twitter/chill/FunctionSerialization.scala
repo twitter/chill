@@ -21,11 +21,11 @@ import org.specs._
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 trait AwesomeFns {
-  val myfun = { x: Int => 2*x }
+  val myfun = { x: Int => 2 * x }
 }
 
 object BaseFns extends AwesomeFns {
-  val myfun2 = { x: Int => 4*x }
+  val myfun2 = { x: Int => 4 * x }
   def apply(x: Int) = myfun.apply(x)
 }
 

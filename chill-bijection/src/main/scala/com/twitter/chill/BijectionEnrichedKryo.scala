@@ -22,9 +22,10 @@ import com.twitter.bijection.{ Bufferable, Bijection, ImplicitBijection, Injecti
 object BijectionEnrichedKryo {
   implicit def enrich(k: Kryo): BijectionEnrichedKryo = new BijectionEnrichedKryo(k)
 
-  /** Use a bijection[A,B] then the KSerializer on B
+  /**
+   * Use a bijection[A,B] then the KSerializer on B
    */
-  def viaBijection[A,B](kser: KSerializer[B])(implicit bij: ImplicitBijection[A,B], cmf: ClassManifest[B]): KSerializer[A] =
+  def viaBijection[A, B](kser: KSerializer[B])(implicit bij: ImplicitBijection[A, B], cmf: ClassManifest[B]): KSerializer[A] =
     new KSerializer[A] {
       def write(k: Kryo, out: Output, obj: A) { kser.write(k, out, bij(obj)) }
       def read(k: Kryo, in: Input, cls: Class[A]) =
@@ -52,16 +53,17 @@ class BijectionEnrichedKryo(k: Kryo) {
     k
   }
 
-  /** B has to already be registered, then use the KSerializer[B] to create KSerialzer[A]
+  /**
+   * B has to already be registered, then use the KSerializer[B] to create KSerialzer[A]
    */
-  def forClassViaBijection[A,B](implicit bij: ImplicitBijection[A,B], acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
+  def forClassViaBijection[A, B](implicit bij: ImplicitBijection[A, B], acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
     val kserb = k.getSerializer(bcmf.erasure).asInstanceOf[KSerializer[B]]
-    k.register(acmf.erasure, BijectionEnrichedKryo.viaBijection[A,B](kserb))
+    k.register(acmf.erasure, BijectionEnrichedKryo.viaBijection[A, B](kserb))
     k
   }
 
   /** Helpful override to alleviate rewriting types. */
-  def forClassViaBijection[A,B](bij: Bijection[A,B])(implicit acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
+  def forClassViaBijection[A, B](bij: Bijection[A, B])(implicit acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
     implicit def implicitBij = bij
     this.forClassViaBijection[A, B]
   }

@@ -25,7 +25,7 @@ class SortedSetSerializer[T] extends KSerializer[SortedSet[T]] {
 
     // Write the ordering
     kser.writeClassAndObject(out, set.ordering.asInstanceOf[AnyRef])
-    set.foreach { t  =>
+    set.foreach { t =>
       val tRef = t.asInstanceOf[AnyRef]
       kser.writeClassAndObject(out, tRef)
       // After each intermediate object, flush

@@ -18,14 +18,15 @@ package com.twitter.chill
 
 import com.esotericsoftware.kryo.io.ByteBufferInputStream
 
-import _root_.java.io.{InputStream, Serializable}
+import _root_.java.io.{ InputStream, Serializable }
 import _root_.java.nio.ByteBuffer
 import _root_.java.util.{ Map => JMap }
 
 import scala.collection.generic.CanBuildFrom
 import scala.util.control.Exception.allCatch
 
-/** Enrichment pattern to add methods to Kryo objects
+/**
+ * Enrichment pattern to add methods to Kryo objects
  * TODO: make this a value-class in scala 2.10
  * This also follows the builder pattern to allow easily chaining this calls
  */
@@ -40,8 +41,7 @@ class RichKryo(k: Kryo) {
     k
   }
 
-  def forTraversableSubclass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)
-    (implicit mf: ClassManifest[C], cbf: CanBuildFrom[C, T, C]): Kryo = {
+  def forTraversableSubclass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit mf: ClassManifest[C], cbf: CanBuildFrom[C, T, C]): Kryo = {
     k.addDefaultSerializer(mf.erasure, new TraversableSerializer(isImmutable)(cbf))
     k
   }
@@ -51,29 +51,29 @@ class RichKryo(k: Kryo) {
     k
   }
 
-  def forTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)
-    (implicit mf: ClassManifest[C], cbf: CanBuildFrom[C, T, C]): Kryo =
+  def forTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit mf: ClassManifest[C], cbf: CanBuildFrom[C, T, C]): Kryo =
     forClass(new TraversableSerializer(isImmutable)(cbf))
 
-  def forConcreteTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)
-    (implicit cbf: CanBuildFrom[C, T, C]): Kryo = {
+  def forConcreteTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit cbf: CanBuildFrom[C, T, C]): Kryo = {
     // a ClassManifest is not used here since its erasure method does not return the concrete internal type
     // that Scala uses for small immutable maps (i.e., scala.collection.immutable.Map$Map1)
     k.register(c.getClass, new TraversableSerializer(isImmutable)(cbf))
     k
   }
 
-  /** Use Java serialization, which is very slow.
+  /**
+   * Use Java serialization, which is very slow.
    * avoid this if possible, but for very rare classes it is probably fine
    */
-  def javaForClass[T<:Serializable](implicit cmf: ClassManifest[T]): Kryo = {
+  def javaForClass[T <: Serializable](implicit cmf: ClassManifest[T]): Kryo = {
     k.register(cmf.erasure, new com.esotericsoftware.kryo.serializers.JavaSerializer)
     k
   }
-  /** Use Java serialization, which is very slow.
+  /**
+   * Use Java serialization, which is very slow.
    * avoid this if possible, but for very rare classes it is probably fine
    */
-  def javaForSubclass[T<:Serializable](implicit cmf: ClassManifest[T]): Kryo = {
+  def javaForSubclass[T <: Serializable](implicit cmf: ClassManifest[T]): Kryo = {
     k.addDefaultSerializer(cmf.erasure, new com.esotericsoftware.kryo.serializers.JavaSerializer)
     k
   }
@@ -87,8 +87,8 @@ class RichKryo(k: Kryo) {
   }
 
   /**
-    * Populate the wrapped Kryo instance with this registrar
-    */
+   * Populate the wrapped Kryo instance with this registrar
+   */
   def populateFrom(reg: IKryoRegistrar): Kryo = {
     reg(k)
     k

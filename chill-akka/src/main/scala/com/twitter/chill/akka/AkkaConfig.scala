@@ -16,13 +16,14 @@ limitations under the License.
 
 package com.twitter.chill.akka
 
-import com.twitter.chill.config.{Config => ChillConfig}
-import com.typesafe.config.{Config => TypesafeConfig}
+import com.twitter.chill.config.{ Config => ChillConfig }
+import com.typesafe.config.{ Config => TypesafeConfig }
 import com.typesafe.config.ConfigFactory
 
 import scala.util.Try
 
-/** Wraps the immutable typesafe.config.Config in a wrapper that
+/**
+ * Wraps the immutable typesafe.config.Config in a wrapper that
  * keeps track of the state and follows the semantics of ChillConfig
  */
 class AkkaConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
@@ -35,6 +36,6 @@ class AkkaConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
       ConfigFactory.parseString("%s = \"%s\"".format(key, v))
         .withFallback(typesafeConfig)
     }
-    .getOrElse(typesafeConfig.withoutPath(key))
+      .getOrElse(typesafeConfig.withoutPath(key))
   }
 }

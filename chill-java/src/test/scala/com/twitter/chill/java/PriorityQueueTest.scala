@@ -41,17 +41,17 @@ class PriorityQueueSpec extends Specification {
       val kryo = new Kryo()
       kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
       PriorityQueueSerializer.registrar()(kryo)
-      val ord = Ordering.fromLessThan[(Int,Int)] { (l, r) => l._1 < r._1 }
-      val q = new java.util.PriorityQueue[(Int,Int)](3, ord)
-      q.add((2,3))
-      q.add((4,5))
+      val ord = Ordering.fromLessThan[(Int, Int)] { (l, r) => l._1 < r._1 }
+      val q = new java.util.PriorityQueue[(Int, Int)](3, ord)
+      q.add((2, 3))
+      q.add((4, 5))
       def toList[A](q: java.util.PriorityQueue[A]): List[A] =
         q.iterator.asScala.toList
       val qlist = toList(q)
       val newQ = rt(kryo, q)
       toList(newQ) must be_==(qlist)
-      newQ.add((1,1))
-      newQ.add((2,1)) must beTrue
+      newQ.add((1, 1))
+      newQ.add((2, 1)) must beTrue
       // Now without an ordering:
       val qi = new java.util.PriorityQueue[Int](3)
       qi.add(2)
@@ -64,9 +64,9 @@ class PriorityQueueSpec extends Specification {
       val synthF = new com.esotericsoftware.kryo.serializers.FieldSerializer(kryo, ord.reverse.getClass)
       synthF.setIgnoreSyntheticFields(false)
       kryo.register(ord.reverse.getClass, synthF)
-      val qr = new java.util.PriorityQueue[(Int,Int)](3, ord.reverse)
-      qr.add((2,3))
-      qr.add((4,5))
+      val qr = new java.util.PriorityQueue[(Int, Int)](3, ord.reverse)
+      qr.add((2, 3))
+      qr.add((4, 5))
       val qrlist = toList(qr)
       toList(rt(kryo, qr)) must be_==(qrlist)
     }

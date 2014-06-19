@@ -17,8 +17,8 @@ limitations under the License.
 package com.twitter
 
 /**
-  * Scala extensions to the Kryo serialization library.
-  */
+ * Scala extensions to the Kryo serialization library.
+ */
 package object chill {
   type Kryo = com.esotericsoftware.kryo.Kryo
   type KSerializer[T] = com.esotericsoftware.kryo.Serializer[T]
@@ -29,7 +29,7 @@ package object chill {
   implicit def toInstantiator(fn: Function0[Kryo]): KryoInstantiator = new KryoInstantiator {
     override def newKryo = fn.apply
   }
-  implicit def toRegistrar(fn: Function1[Kryo,Unit]): IKryoRegistrar = new IKryoRegistrar {
+  implicit def toRegistrar(fn: Function1[Kryo, Unit]): IKryoRegistrar = new IKryoRegistrar {
     def apply(k: Kryo) = fn(k)
   }
   implicit def toRegistrar(items: Iterable[IKryoRegistrar]): IKryoRegistrar = new IKryoRegistrar {

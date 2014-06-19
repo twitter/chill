@@ -24,48 +24,48 @@ class ClosureCleanerSpec extends Specification {
     println(x.getClass.getDeclaredFields.map { _.toString }.mkString("  "))
   }
   "ClosureCleaner" should {
-  "clean normal objects" in {
-    val myList = List(1,2,3)
-    ClosureCleaner(myList)
-    myList must be_==(List(1,2,3))
-  }
-  "clean actual closures" in {
-    val myFun = { x: Int => x*2 }
+    "clean normal objects" in {
+      val myList = List(1, 2, 3)
+      ClosureCleaner(myList)
+      myList must be_==(List(1, 2, 3))
+    }
+    "clean actual closures" in {
+      val myFun = { x: Int => x * 2 }
 
-    ClosureCleaner(myFun)
-    myFun(1) must be_==(2)
-    myFun(2) must be_==(4)
+      ClosureCleaner(myFun)
+      myFun(1) must be_==(2)
+      myFun(2) must be_==(4)
 
-    case class Test(x : Int)
-    val t = Test(3)
-    ClosureCleaner(t)
-    t must be_==(Test(3))
-  }
-
-  "handle outers with constructors" in {
-
-    class Test(x: String) {
-      val l = x.size
-      def rev(y: String) = (x + y).size
+      case class Test(x: Int)
+      val t = Test(3)
+      ClosureCleaner(t)
+      t must be_==(Test(3))
     }
 
-    val t = new Test("you all everybody")
-    val fn = t.rev _
-    //debug(fn)
-    //println(ClosureCleaner.getOutersOf(fn))
-    ClosureCleaner(fn)
-    fn("hey") must be_==(20)
-  }
-  "Handle functions in traits" in {
-    val fn = BaseFns2.timesByMult
-    ClosureCleaner(fn)
-    fn(10) must be_==(50)
-  }
-  "Handle captured vals" in {
-    val answer = 42
-    val fn = { x: Int => answer * x }
-    ClosureCleaner(fn)
-    fn(10) must be_==(420)
-  }
+    "handle outers with constructors" in {
+
+      class Test(x: String) {
+        val l = x.size
+        def rev(y: String) = (x + y).size
+      }
+
+      val t = new Test("you all everybody")
+      val fn = t.rev _
+      //debug(fn)
+      //println(ClosureCleaner.getOutersOf(fn))
+      ClosureCleaner(fn)
+      fn("hey") must be_==(20)
+    }
+    "Handle functions in traits" in {
+      val fn = BaseFns2.timesByMult
+      ClosureCleaner(fn)
+      fn(10) must be_==(50)
+    }
+    "Handle captured vals" in {
+      val answer = 42
+      val fn = { x: Int => answer * x }
+      ClosureCleaner(fn)
+      fn(10) must be_==(420)
+    }
   }
 }

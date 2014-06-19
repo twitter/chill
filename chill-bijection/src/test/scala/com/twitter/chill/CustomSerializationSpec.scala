@@ -42,21 +42,21 @@ class CustomSerializationSpec extends Specification with BaseProperties {
       }
 
       // write bijections
-      implicit val pointBijection = Bijection.build[Point, (Int,Int)](
+      implicit val pointBijection = Bijection.build[Point, (Int, Int)](
         Point.unapply(_).get)(
-        (Point.apply _).tupled)
+          (Point.apply _).tupled)
       implicit val colorBijection = Bijection.build[Color, String](
         Color.unapply(_).get)(
-        Color.apply)
+          Color.apply)
       implicit val coloredPointBijection = Bijection.build[ColoredPoint, (Color, Point)](
         ColoredPoint.unapply(_).get)(
-        (ColoredPoint.apply _).tupled)
+          (ColoredPoint.apply _).tupled)
 
       val myInst = { () =>
         (new ScalaKryoInstantiator).newKryo
-        // use the implicit bijection by specifying the type
-          .forClassViaBijection[Point, (Int,Int)]
-        // use an explicit bijection, avoiding specifying the type
+          // use the implicit bijection by specifying the type
+          .forClassViaBijection[Point, (Int, Int)]
+          // use an explicit bijection, avoiding specifying the type
           .forClassViaBijection(pointBijection)
           .forClassViaBijection(colorBijection)
           .forClassViaBijection(coloredPointBijection)
@@ -69,13 +69,14 @@ class CustomSerializationSpec extends Specification with BaseProperties {
       rt(myInst, coloredPoint) must_== coloredPoint
     }
     "use bijections" in {
-      implicit val bij = Bijection.build[TestCaseClassForSerialization, (String,Int)] { s =>
-        (s.x, s.y) } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
+      implicit val bij = Bijection.build[TestCaseClassForSerialization, (String, Int)] { s =>
+        (s.x, s.y)
+      } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
 
       val inst = { () =>
         (new ScalaKryoInstantiator)
           .newKryo
-          .forClassViaBijection[TestCaseClassForSerialization, (String,Int)]
+          .forClassViaBijection[TestCaseClassForSerialization, (String, Int)]
       }
       rt(inst, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
     }
