@@ -24,9 +24,10 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import scala.collection.JavaConverters._
 
-import _root_.java.lang.{Iterable => JIterable}
+import _root_.java.lang.{ Iterable => JIterable }
 
-/** a builder for the ReflectingInstantiator
+/**
+ * a builder for the ReflectingInstantiator
  * use the copy(arg = value) to change values:
  * ReflectingInstantiatorBuilder()
  *   .copy(classes = List(classOf[Int]))
@@ -34,22 +35,23 @@ import _root_.java.lang.{Iterable => JIterable}
  *   .build
  */
 case class ReflectingInstantiatorBuilder(kryoClass: Class[_ <: Kryo] = classOf[Kryo],
-    instantiatorStrategyClass: Class[_ <: InstantiatorStrategy] = classOf[StdInstantiatorStrategy],
-    classes: Iterable[ClassRegistrar[_]] = Nil,
-    serializers: Iterable[ReflectingRegistrar[_]] = Nil,
-    defaults: Iterable[ReflectingDefaultRegistrar[_]] = Nil,
-    registrationRequired: Boolean = false,
-    skipMissing: Boolean = false) {
+  instantiatorStrategyClass: Class[_ <: InstantiatorStrategy] = classOf[StdInstantiatorStrategy],
+  classes: Iterable[ClassRegistrar[_]] = Nil,
+  serializers: Iterable[ReflectingRegistrar[_]] = Nil,
+  defaults: Iterable[ReflectingDefaultRegistrar[_]] = Nil,
+  registrationRequired: Boolean = false,
+  skipMissing: Boolean = false) {
 
-  /** These casts appear to be needed because scala's type system is able
+  /**
+   * These casts appear to be needed because scala's type system is able
    * to express more carefully than java, but these variance-free Iterables
    * were defined in the Java code
    */
   def build: ReflectingInstantiator = new ReflectingInstantiator(kryoClass,
-        instantiatorStrategyClass,
-        classes.asJava.asInstanceOf[JIterable[ClassRegistrar[_]]],
-        serializers.asJava.asInstanceOf[JIterable[ReflectingRegistrar[_]]],
-        defaults.asJava.asInstanceOf[JIterable[ReflectingDefaultRegistrar[_]]],
-        registrationRequired,
-        skipMissing)
+    instantiatorStrategyClass,
+    classes.asJava.asInstanceOf[JIterable[ClassRegistrar[_]]],
+    serializers.asJava.asInstanceOf[JIterable[ReflectingRegistrar[_]]],
+    defaults.asJava.asInstanceOf[JIterable[ReflectingDefaultRegistrar[_]]],
+    registrationRequired,
+    skipMissing)
 }

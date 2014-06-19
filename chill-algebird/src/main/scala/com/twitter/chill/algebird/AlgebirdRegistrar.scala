@@ -20,9 +20,18 @@ import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 import com.twitter.chill.IKryoRegistrar
 
-import com.twitter.algebird.{AveragedValue, DecayedValue, HLL, HyperLogLog,
-  HyperLogLogMonoid, Moments, SpaceSaver, DenseVector, SparseVector, AdaptiveVector}
-
+import com.twitter.algebird.{
+  AveragedValue,
+  DecayedValue,
+  HLL,
+  HyperLogLog,
+  HyperLogLogMonoid,
+  Moments,
+  SpaceSaver,
+  DenseVector,
+  SparseVector,
+  AdaptiveVector
+}
 
 class AlgebirdRegistrar extends IKryoRegistrar {
 
@@ -34,7 +43,8 @@ class AlgebirdRegistrar extends IKryoRegistrar {
     k.register(classOf[Moments], new MomentsSerializer)
     k.addDefaultSerializer(classOf[HLL], new HLLSerializer)
 
-    /** AdaptiveVector is IndexedSeq, which picks up the chill IndexedSeq serializer
+    /**
+     * AdaptiveVector is IndexedSeq, which picks up the chill IndexedSeq serializer
      * (which is its own bug), force using the fields serializer here
      */
     k.register(classOf[DenseVector[_]], new FieldSerializer[DenseVector[_]](k, classOf[DenseVector[_]]))

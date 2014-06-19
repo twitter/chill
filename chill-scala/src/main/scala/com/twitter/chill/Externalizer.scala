@@ -27,7 +27,7 @@ import _root_.java.io.{
 
 import com.esotericsoftware.kryo.serializers.JavaSerializer
 import com.esotericsoftware.kryo.DefaultSerializer
-import _root_.java.util.concurrent.atomic.{AtomicBoolean, AtomicReference}
+import _root_.java.util.concurrent.atomic.{ AtomicBoolean, AtomicReference }
 import com.esotericsoftware.kryo.KryoSerializable
 
 object Externalizer {
@@ -42,7 +42,8 @@ object Externalizer {
   }
 }
 
-/** This is a more fault-tolerant MeatLocker
+/**
+ * This is a more fault-tolerant MeatLocker
  * that tries first to do Java serialization,
  * and then falls back to Kryo serialization if that does not
  * work.
@@ -66,7 +67,8 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
 
   def get: T = getOption.get // This should never be None when get is called
 
-  /** Unfortunately, Java serialization requires mutable objects if
+  /**
+   * Unfortunately, Java serialization requires mutable objects if
    * you are going to control how the serialization is done.
    * Use the companion object to creat new instances of this
    */
@@ -79,8 +81,8 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
     }
   }
 
-
-  /** Override this to configure Kryo creation with a named subclass,
+  /**
+   * Override this to configure Kryo creation with a named subclass,
    * e.g.
    * class MyExtern[T] extends Externalizer[T] {
    *   override def kryo = myInstantiator
@@ -94,17 +96,17 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
   // 1 here is 1 thread, since we will likely only serialize once
   // this should not be a val because we don't want to capture a reference
 
-
   def javaWorks: Boolean =
     doesJavaWork.get match {
       case Some(v) => v
       case None => probeJavaWorks
     }
 
-  /** Try to round-trip and see if it works without error
+  /**
+   * Try to round-trip and see if it works without error
    */
   private def probeJavaWorks: Boolean = {
-    if(!testing.compareAndSet(false, true)) return true
+    if (!testing.compareAndSet(false, true)) return true
     try {
       val baos = new ByteArrayOutputStream()
       val oos = new ObjectOutputStream(baos)
@@ -115,16 +117,14 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
       ois.readObject // this may throw
       doesJavaWork.set(Some(true))
       true
-    }
-    catch {
+    } catch {
       case t: Throwable =>
         Option(System.getenv.get("CHILL_EXTERNALIZER_DEBUG"))
           .filter(_.toBoolean)
           .foreach { _ => t.printStackTrace }
         doesJavaWork.set(Some(false))
         false
-    }
-    finally {
+    } finally {
       testing.set(false)
     }
   }
@@ -134,8 +134,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
       val kpool = KryoPool.withByteArrayOutputStream(1, kryo)
       val bytes = kpool.toBytesWithClass(getOption)
       Some(bytes)
-    }
-    catch {
+    } catch {
       case t: Throwable =>
         Option(System.getenv.get("CHILL_EXTERNALIZER_DEBUG"))
           .filter(_.toBoolean)
@@ -189,7 +188,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
 
   override def writeExternal(out: ObjectOutput) = maybeWriteJavaKryo(out, kryo)
 
-  def write (kryo: Kryo, output: Output): Unit = {
+  def write(kryo: Kryo, output: Output): Unit = {
     val resolver = kryo.getReferenceResolver
     resolver.getWrittenId(item) match {
       case -1 =>
@@ -203,19 +202,19 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
     }
   }
 
-  def read (kryo: Kryo, input: Input): Unit = {
+  def read(kryo: Kryo, input: Input): Unit = {
     doesJavaWork.set(None)
     testing.set(false)
     val state = input.readInt()
     val resolver = kryo.getReferenceResolver
     state match {
       case -1 =>
-      val objId = resolver.nextReadId(this.getClass)
+        val objId = resolver.nextReadId(this.getClass)
         resolver.setReadObject(objId, this)
         maybeReadJavaKryo(new ObjectInputStream(input), () => kryo)
       case n =>
         val z = resolver.getReadObject(this.getClass, n).asInstanceOf[Externalizer[T]]
-        if(!(z eq this)) item = Left(z)
+        if (!(z eq this)) item = Left(z)
     }
   }
 

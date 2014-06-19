@@ -45,7 +45,6 @@ class AlgebirdSerializersSpec extends Specification {
     f(result) must_== f(x)
   }
 
-
   "kryo with AlgebirdRegistrar" should {
     "serialize and deserialize AveragedValue" in {
       roundtrip(AveragedValue(10L, 123.45))
@@ -71,8 +70,8 @@ class AlgebirdSerializersSpec extends Specification {
     }
 
     "serialize and deserialize SparseVector and DenseVector" in {
-      val sparse = AdaptiveVector.fromVector(Vector(1,1,1,1,1,3), 1)
-      val dense = AdaptiveVector.fromVector(Vector(1,2,3,1,2,3), 1)
+      val sparse = AdaptiveVector.fromVector(Vector(1, 1, 1, 1, 1, 3), 1)
+      val dense = AdaptiveVector.fromVector(Vector(1, 2, 3, 1, 2, 3), 1)
       roundtrip(sparse)
       roundtrip(dense)
     }

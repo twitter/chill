@@ -25,27 +25,25 @@ class BitSetSerializer extends KSerializer[BitSet] {
     // Duplicates some data, but helps size on the other end:
     if (size > 0) { o.writeInt(v.max, true) }
     var previous: Int = -1
-     v.foreach { vi =>
-       if(previous >= 0) {
-         o.writeInt(vi - previous, true)
-       }
-       else {
-         o.writeInt(vi, true) // first item
-       }
-       previous = vi
-     }
+    v.foreach { vi =>
+      if (previous >= 0) {
+        o.writeInt(vi - previous, true)
+      } else {
+        o.writeInt(vi, true) // first item
+      }
+      previous = vi
+    }
   }
   def read(k: Kryo, i: Input, c: Class[BitSet]): BitSet = {
     val size = i.readInt(true)
     if (size == 0) {
       BitSet.empty
-    }
-    else {
+    } else {
       var sum = 0
       val bits = new Array[Long](i.readInt(true) / 64 + 1)
       (0 until size).foreach { step =>
         sum += i.readInt(true)
-        bits(sum/64) |= 1L << (sum % 64)
+        bits(sum / 64) |= 1L << (sum % 64)
       }
       BitSet.fromArray(bits)
     }

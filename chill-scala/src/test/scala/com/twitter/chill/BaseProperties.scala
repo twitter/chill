@@ -46,8 +46,7 @@ trait BaseProperties {
     try {
       out.writeObject(t)
       bos.toByteArray
-    }
-    finally {
+    } finally {
       out.close
       bos.close
     }
@@ -58,11 +57,10 @@ trait BaseProperties {
     val in = new ObjectInputStream(bis);
     try {
       cls.cast(in.readObject)
-    }
-    finally {
+    } finally {
       bis.close
       in.close
-   }
+    }
   }
   def jrt[T <: Serializable](t: T)(implicit cmf: ClassManifest[T]): T =
     jdeserialize(jserialize(t))

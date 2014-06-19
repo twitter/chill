@@ -4,6 +4,8 @@ import sbt._
 import Keys._
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import com.typesafe.tools.mima.plugin.MimaKeys._
+import scalariform.formatter.preferences._
+import com.typesafe.sbt.SbtScalariform._
 
 import scala.collection.JavaConverters._
 
@@ -16,13 +18,14 @@ object ChillBuild extends Build {
       case x => x
     }
 
-  val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
+  val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
 
     version := "0.3.6",
     organization := "com.twitter",
     scalaVersion := "2.9.3",
     crossScalaVersions := Seq("2.9.3", "2.10.3"),
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
+    ScalariformKeys.preferences := formattingPreferences,
 
     // Twitter Hadoop needs this, sorry 1.7 fans
     javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
@@ -103,6 +106,13 @@ object ChillBuild extends Build {
     chillAvro,
     chillAlgebird
     )
+
+  lazy val formattingPreferences = {
+   import scalariform.formatter.preferences._
+   FormattingPreferences().
+     setPreference(AlignParameters, false).
+     setPreference(PreserveSpaceBeforeArguments, true)
+  }
 
   /**
     * This returns the youngest jar we released that is compatible

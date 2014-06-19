@@ -27,7 +27,7 @@ class SortedMapSerializer[A, B] extends KSerializer[SortedMap[A, B]] {
 
     // Write the ordering
     kser.writeClassAndObject(out, map.ordering.asInstanceOf[AnyRef])
-    map.foreach { t  =>
+    map.foreach { t =>
       val tRef = t.asInstanceOf[AnyRef]
       kser.writeClassAndObject(out, tRef)
       // After each intermediate object, flush

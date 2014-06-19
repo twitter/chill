@@ -22,7 +22,8 @@ object ScalaAnyRefMapConfig {
   def empty: ScalaAnyRefMapConfig = new ScalaAnyRefMapConfig(Map.empty)
 }
 
-/** A simple config backed by an immutable Map. Note that this replaces ScalaMapConfig because
+/**
+ * A simple config backed by an immutable Map. Note that this replaces ScalaMapConfig because
  *  in cascading non-string values are perfectly legal.
  */
 class ScalaAnyRefMapConfig(in: Map[AnyRef, AnyRef]) extends Config {

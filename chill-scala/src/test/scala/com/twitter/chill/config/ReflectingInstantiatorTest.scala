@@ -23,7 +23,6 @@ import com.twitter.chill.config._
 import org.objenesis.strategy.InstantiatorStrategy;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-
 class ReflectingInstantiatorTest extends Specification {
   "A ReflectingInstantiator" should {
     "set keys into a config as expected" in {
@@ -44,11 +43,9 @@ class ReflectingInstantiatorTest extends Specification {
       conf.toMap(ReflectingInstantiator.SKIP_MISSING) must be_==("true")
       conf.toMap(ReflectingInstantiator.REGISTRATIONS).asInstanceOf[String].split(":").toSet must be_== (
         Set("scala.collection.immutable.List",
-          "scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer")
-      )
+          "scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer"))
       conf.toMap(ReflectingInstantiator.DEFAULT_REGISTRATIONS).asInstanceOf[String].split(":").toSet must be_== (
-        Set("scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer")
-      )
+        Set("scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer"))
     }
     "roundtrip through a config" in {
       val ri = ReflectingInstantiatorBuilder(instantiatorStrategyClass = classOf[StdInstantiatorStrategy],
@@ -65,22 +62,21 @@ class ReflectingInstantiatorTest extends Specification {
       ri2.equals(ri) must be_==(true)
     }
 
-  "be serialized when added onto a ConfiguredInstantiator" in {
+    "be serialized when added onto a ConfiguredInstantiator" in {
       val conf = new JavaMapConfig
       ConfiguredInstantiator.setReflect(conf, classOf[ScalaKryoInstantiator])
-       val instantiator = new ConfiguredInstantiator(conf).getDelegate()
-         .withRegistrar {
-           new ReflectingDefaultRegistrar(classOf[List[_]], classOf[com.esotericsoftware.kryo.serializers.JavaSerializer])
-       }
+      val instantiator = new ConfiguredInstantiator(conf).getDelegate()
+        .withRegistrar {
+          new ReflectingDefaultRegistrar(classOf[List[_]], classOf[com.esotericsoftware.kryo.serializers.JavaSerializer])
+        }
       try {
         ConfiguredInstantiator.setSerialized(
-         conf,
-         classOf[ScalaKryoInstantiator],
-         instantiator
-        )
-       }catch{
-         case e => fail("Got exception serializing the instantiator\n" + e.printStackTrace)
-       }
+          conf,
+          classOf[ScalaKryoInstantiator],
+          instantiator)
+      } catch {
+        case e => fail("Got exception serializing the instantiator\n" + e.printStackTrace)
+      }
     }
   }
 }

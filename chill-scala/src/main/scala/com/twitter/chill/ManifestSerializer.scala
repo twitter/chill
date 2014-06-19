@@ -18,7 +18,7 @@ package com.twitter.chill
 
 class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
 
-  val singletons : IndexedSeq[Manifest[_]] = IndexedSeq(Manifest.Any, Manifest.AnyVal,
+  val singletons: IndexedSeq[Manifest[_]] = IndexedSeq(Manifest.Any, Manifest.AnyVal,
     Manifest.Boolean, Manifest.Byte, Manifest.Char, Manifest.Double, Manifest.Float,
     Manifest.Int, Manifest.Long, Manifest.Nothing, Manifest.Null, Manifest.Object,
     Manifest.Short, Manifest.Unit)
@@ -30,9 +30,8 @@ class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
     if (idxOpt.isDefined) {
       // We offset by 1 to keep positive and save space
       out.writeInt(idxOpt.get + 1, true)
-    }
-    else {
-      out.writeInt(0,true)
+    } else {
+      out.writeInt(0, true)
       kser.writeObject(out, obj.erasure)
       //write the type arguments:
       val targs = obj.typeArguments
@@ -44,22 +43,20 @@ class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
 
   def write(kser: Kryo, out: Output, obj: Manifest[T]) { writeInternal(kser, out, obj) }
 
-  def read(kser: Kryo, in: Input, cls: Class[Manifest[T]]) : Manifest[T] = {
+  def read(kser: Kryo, in: Input, cls: Class[Manifest[T]]): Manifest[T] = {
     val sidx = in.readInt(true)
-    if(sidx == 0) {
+    if (sidx == 0) {
       val clazz = kser.readObject(in, classOf[Class[T]]).asInstanceOf[Class[T]]
       val targsCnt = in.readInt(true)
       if (targsCnt == 0) {
         Manifest.classType(clazz)
-      }
-      else {
+      } else {
         // We don't need to know the cls:
         val typeArgs = (0 until targsCnt).map { _ => read(kser, in, null) }
-        Manifest.classType(clazz, typeArgs.head, typeArgs.tail : _*)
+        Manifest.classType(clazz, typeArgs.head, typeArgs.tail: _*)
       }
-    }
-    else {
-      singletons(sidx-1).asInstanceOf[Manifest[T]]
+    } else {
+      singletons(sidx - 1).asInstanceOf[Manifest[T]]
     }
   }
 }

@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill.akka
 
-import akka.actor.{ExtendedActorSystem, ActorRef}
+import akka.actor.{ ExtendedActorSystem, ActorRef }
 import akka.serialization.Serializer
 
 import com.twitter.chill._
@@ -44,7 +44,8 @@ import com.twitter.chill.config.ConfiguredInstantiator
  */
 class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
 
-  /** You can override this to easily change your serializers.
+  /**
+   * You can override this to easily change your serializers.
    * If you do so, make sure to change the config to use the name of
    * your new class
    */
@@ -71,7 +72,8 @@ class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
     kryoPool.fromBytes(bytes)
 }
 
-/** Uses the Config system of chill.config to Configure at runtime which KryoInstantiator to use
+/**
+ * Uses the Config system of chill.config to Configure at runtime which KryoInstantiator to use
  * Overriding kryoInstantiator and using your own class name is probably easier for most cases.
  * See ConfiguredInstantiator static methods for how to build up a correct Config with
  * your reflected or serialized instantiators.

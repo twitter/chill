@@ -20,8 +20,8 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.Serializer
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
-import com.twitter.scrooge.{ThriftStructSerializer, ThriftStructCodec, ThriftStruct}
-import org.apache.thrift.protocol.{TBinaryProtocol, TProtocolFactory}
+import com.twitter.scrooge.{ ThriftStructSerializer, ThriftStructCodec, ThriftStruct }
+import org.apache.thrift.protocol.{ TBinaryProtocol, TProtocolFactory }
 import scala.collection.mutable
 import scala.util.Try
 
@@ -92,8 +92,6 @@ class ScroogeThriftStructSerializer[T <: ThriftStruct] extends Serializer[T] {
     }
   }
 
-
-
   /* nb: thriftStructClass doesn't actually have type Class[T] it has type Class[_ <: T]
    * this lie is courtesy of the Kryo API
    * */
@@ -109,7 +107,5 @@ class ScroogeThriftStructSerializer[T <: ThriftStruct] extends Serializer[T] {
       case e: Exception => throw new RuntimeException("Could not create ThriftStruct " + thriftStructClass, e)
     }
   }
-
-
 
 }
