@@ -24,7 +24,6 @@ object ScalaMapConfig {
 /**
  * A simple config backed by an immutable Map
  */
-@deprecated("Class potentially unsafe, use ScalaAnyRefMapConfig", "0.3.6")
 class ScalaMapConfig(in: Map[String, String]) extends Config {
   private var conf = in
 
