@@ -160,6 +160,8 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(MMap.empty[Any, Any], isImmutable = false)
       .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
       .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
+
+    newK.register(JavaIterableWrapperSerializer.wrapperClass, new JavaIterableWrapperSerializer)
   }
 }
 
