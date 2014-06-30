@@ -160,7 +160,11 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(MMap.empty[Any, Any], isImmutable = false)
       .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
       .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
+  }
+}
 
+class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
+  def apply(newK: Kryo) {
     newK.register(JavaIterableWrapperSerializer.wrapperClass, new JavaIterableWrapperSerializer)
   }
 }
@@ -170,6 +174,10 @@ class AllScalaRegistrar extends IKryoRegistrar {
   def apply(k: Kryo) {
     val col = new ScalaCollectionsRegistrar
     col(k)
+
+    val jcol = new JavaWrapperCollectionRegistrar
+    jcol(k)
+
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
     k.forClass[Symbol](new KSerializer[Symbol] {
