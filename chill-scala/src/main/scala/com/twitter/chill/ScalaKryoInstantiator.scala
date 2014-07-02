@@ -163,11 +163,21 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
   }
 }
 
+class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
+  def apply(newK: Kryo) {
+    newK.register(JavaIterableWrapperSerializer.wrapperClass, new JavaIterableWrapperSerializer)
+  }
+}
+
 /** Registers all the scala (and java) serializers we have */
 class AllScalaRegistrar extends IKryoRegistrar {
   def apply(k: Kryo) {
     val col = new ScalaCollectionsRegistrar
     col(k)
+
+    val jcol = new JavaWrapperCollectionRegistrar
+    jcol(k)
+
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
     k.forClass[Symbol](new KSerializer[Symbol] {

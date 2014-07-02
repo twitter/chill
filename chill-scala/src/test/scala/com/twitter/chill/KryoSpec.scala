@@ -172,6 +172,10 @@ class KryoSpec extends Specification with BaseProperties {
     "handle scala enums" in {
       WeekDay.values.foreach { _ must roundtrip }
     }
+    "handle asJavaIterable" in {
+      val col = scala.collection.JavaConversions.asJavaIterable(Seq(12345))
+      col must roundtrip
+    }
     "use java serialization" in {
       val kinst = { () => getKryo.javaForClass[TestCaseClassForSerialization] }
       rtEquiv(kinst, TestCaseClassForSerialization("hey", 42)) must beTrue
