@@ -18,14 +18,13 @@ package com.twitter.chill
 
 import scala.collection.generic.CanBuildFrom
 
-class TraversableSerializer[T, C <: Traversable[T]]
-  (override val isImmutable: Boolean = true)(implicit cbf: CanBuildFrom[C, T, C])
+class TraversableSerializer[T, C <: Traversable[T]](override val isImmutable: Boolean = true)(implicit cbf: CanBuildFrom[C, T, C])
   extends KSerializer[C] {
 
   def write(kser: Kryo, out: Output, obj: C) {
     //Write the size:
     out.writeInt(obj.size, true)
-    obj.foreach { t  =>
+    obj.foreach { t =>
       val tRef = t.asInstanceOf[AnyRef]
       kser.writeClassAndObject(out, tRef)
       // After each intermediate object, flush

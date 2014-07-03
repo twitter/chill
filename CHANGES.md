@@ -1,5 +1,17 @@
 # chill #
 
+### 0.4.0
+* Support serializing asJavaIterable.: https://github.com/twitter/chill/pull/192
+* Remove a deprecation, that really should never have been there: https://github.com/twitter/chill/pull/189
+* Use scalariform: https://github.com/twitter/chill/pull/188
+* README: Update Kryo project URL.: https://github.com/twitter/chill/pull/187
+* support mutable BitSet: https://github.com/twitter/chill/pull/185
+* Make chill-avro work with generic records: https://github.com/twitter/chill/pull/184
+* updating akka dependency to 2.3.2: https://github.com/twitter/chill/pull/182
+* add chill-algebird project by copying AlgebirdSerializers from of scaldi...: https://github.com/twitter/chill/pull/177
+* Scrooge serializer: https://github.com/twitter/chill/pull/178
+* Use shaded asm classes provided by Kryo.: https://github.com/twitter/chill/pull/175
+
 ### 0.3.6
 * Add ScalaAnyRefMapConfig, deals with non-string keys in cascading: https://github.com/twitter/chill/pull/174
 * added AvroSerializer: https://github.com/twitter/chill/pull/172

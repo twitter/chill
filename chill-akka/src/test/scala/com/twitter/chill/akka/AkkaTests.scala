@@ -43,7 +43,7 @@ class AkkaTests extends Specification {
   "AkkaSerializer" should {
     "be selected for tuples" in {
       // Find the Serializer for it
-      val serializer = serialization.findSerializerFor((1,2,3))
+      val serializer = serialization.findSerializerFor((1, 2, 3))
       serializer.getClass.equals(classOf[AkkaSerializer]) must beTrue
     }
 

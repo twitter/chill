@@ -19,8 +19,8 @@ package com.twitter.chill
 import org.specs._
 import org.specs.matcher.Matcher
 
-import scala.collection.immutable.{SortedSet, BitSet, ListSet, HashSet, SortedMap, ListMap, HashMap}
-import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
+import scala.collection.immutable.{ SortedSet, BitSet, ListSet, HashSet, SortedMap, ListMap, HashMap }
+import scala.collection.mutable.{ ArrayBuffer => MArrayBuffer, BitSet => MBitSet, HashMap => MHashMap }
 import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
 import scala.collection.mutable
@@ -31,22 +31,22 @@ import scala.collection.JavaConverters._
 * be outside KryoSpec, otherwise the enclosing class, KryoSpec
 * will also need to be serialized
 */
-case class TestCaseClassForSerialization(x : String, y : Int)
+case class TestCaseClassForSerialization(x: String, y: Int)
 
-case class TestValMap(map: Map[String,Double])
-case class TestValHashMap(map: HashMap[String,Double])
+case class TestValMap(map: Map[String, Double])
+case class TestValHashMap(map: HashMap[String, Double])
 case class TestVarArgs(vargs: String*)
 
 class SomeRandom(val x: Int)
 
 object WeekDay extends Enumeration {
- type WeekDay = Value
- val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
+  type WeekDay = Value
+  val Mon, Tue, Wed, Thu, Fri, Sat, Sun = Value
 }
 
 trait ExampleUsingSelf { self =>
   def count = 0
-  def addOne = new ExampleUsingSelf {override def count=self.count+1}
+  def addOne = new ExampleUsingSelf { override def count = self.count + 1 }
 }
 
 case class Foo(m1: Map[String, Int], m2: Map[String, Seq[String]])
@@ -55,7 +55,7 @@ class KryoSpec extends Specification with BaseProperties {
 
   noDetailedDiffs() //Fixes issue for scala 2.9
 
-  def roundtrip[T] = new Matcher[T]{
+  def roundtrip[T] = new Matcher[T] {
     def apply(t: => T) = (rtEquiv(t), "successfull serialization roundtrip for " + t, "failed serialization roundtrip for " + t)
   }
 
@@ -63,53 +63,55 @@ class KryoSpec extends Specification with BaseProperties {
 
   "KryoSerializers and KryoDeserializers" should {
     "round trip any non-array object" in {
-      val test = List(1,2,"hey",(1,2),
-                      ("hey","you"),
-                      ("slightly", 1L, "longer", 42, "tuple"),
-                      Foo(Map("1" -> 1), Map("1" -> Seq("foo.com"))),
-                      Map(1->2,4->5),
-                      0 to 100,
-                      (0 to 42).toList, Seq(1,100,1000),
-                      Right(Map("hello" -> 100)),
-                      Left(Map(1->"YO!")),
-                      Some(Left(10)),
-                      Map("good" -> 0.5, "bad" -> -1.0),
-                      Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e),
-                      MArrayBuffer(1,2,3,4,5),
-                      List(Some(MHashMap(1->1, 2->2)), None, Some(MHashMap(3->4))),
-                      Set(1,2,3,4,10),
-                      HashSet(1,2),
-                      SortedSet[Long](),
-                      SortedSet(1L, 2L, 3L, 4L),
-                      BitSet(),
-                      BitSet((0 until 1000).map{ x : Int => x*x } : _*),
-                      SortedMap[Long, String](),
-                      SortedMap("b" -> 2, "a" -> 1),
-                      ListMap("good" -> 0.5, "bad" -> -1.0),
-                      HashMap("good" -> 0.5, "bad" -> -1.0),
-                      TestCaseClassForSerialization("case classes are: ", 10),
-                      TestValMap(Map("you" -> 1.0, "every" -> 2.0, "body" -> 3.0, "a" -> 1.0,
-                        "b" -> 2.0, "c" -> 3.0, "d" -> 4.0)),
-                      TestValHashMap(HashMap("you" -> 1.0)),
-                      TestVarArgs("hey", "you", "guys"),
-                      implicitly[ClassManifest[(Int,Int)]],
-                      Vector(1,2,3,4,5),
-                      TestValMap(null),
-                      Some("junk"),
-                      List(1, 2, 3).asJava,
-                      Map("hey" -> 1, "you" -> 2).asJava,
-                      new _root_.java.util.ArrayList(Seq(1, 2, 3).asJava).asScala,
-                      new _root_.java.util.HashMap[Int,Int](Map(1 -> 2, 3 -> 4).asJava).asScala,
-                      (),
-                      'hai)
+      val test = List(1, 2, "hey", (1, 2),
+        ("hey", "you"),
+        ("slightly", 1L, "longer", 42, "tuple"),
+        Foo(Map("1" -> 1), Map("1" -> Seq("foo.com"))),
+        Map(1 -> 2, 4 -> 5),
+        0 to 100,
+        (0 to 42).toList, Seq(1, 100, 1000),
+        Right(Map("hello" -> 100)),
+        Left(Map(1 -> "YO!")),
+        Some(Left(10)),
+        Map("good" -> 0.5, "bad" -> -1.0),
+        Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e),
+        MArrayBuffer(1, 2, 3, 4, 5),
+        List(Some(MHashMap(1 -> 1, 2 -> 2)), None, Some(MHashMap(3 -> 4))),
+        Set(1, 2, 3, 4, 10),
+        HashSet(1, 2),
+        SortedSet[Long](),
+        SortedSet(1L, 2L, 3L, 4L),
+        BitSet(),
+        BitSet((0 until 1000).map{ x: Int => x * x }: _*),
+        MBitSet(),
+        MBitSet((0 until 1000).map{ x: Int => x * x }: _*),
+        SortedMap[Long, String](),
+        SortedMap("b" -> 2, "a" -> 1),
+        ListMap("good" -> 0.5, "bad" -> -1.0),
+        HashMap("good" -> 0.5, "bad" -> -1.0),
+        TestCaseClassForSerialization("case classes are: ", 10),
+        TestValMap(Map("you" -> 1.0, "every" -> 2.0, "body" -> 3.0, "a" -> 1.0,
+          "b" -> 2.0, "c" -> 3.0, "d" -> 4.0)),
+        TestValHashMap(HashMap("you" -> 1.0)),
+        TestVarArgs("hey", "you", "guys"),
+        implicitly[ClassManifest[(Int, Int)]],
+        Vector(1, 2, 3, 4, 5),
+        TestValMap(null),
+        Some("junk"),
+        List(1, 2, 3).asJava,
+        Map("hey" -> 1, "you" -> 2).asJava,
+        new _root_.java.util.ArrayList(Seq(1, 2, 3).asJava).asScala,
+        new _root_.java.util.HashMap[Int, Int](Map(1 -> 2, 3 -> 4).asJava).asScala,
+        (),
+        'hai)
         .asInstanceOf[List[AnyRef]]
 
       test.foreach { _ must roundtrip }
     }
     "round trip a SortedSet" in {
       val a = SortedSet[Long]() // Test empty SortedSet
-      val b = SortedSet[Int](1,2) // Test small SortedSet
-      val c = SortedSet[Int](1,2,3,4,6,7,8,9,10)(Ordering.fromLessThan((x, y) => x > y)) // Test with different ordering
+      val b = SortedSet[Int](1, 2) // Test small SortedSet
+      val c = SortedSet[Int](1, 2, 3, 4, 6, 7, 8, 9, 10)(Ordering.fromLessThan((x, y) => x > y)) // Test with different ordering
       a must roundtrip
       b must roundtrip
       c must roundtrip
@@ -117,37 +119,37 @@ class KryoSpec extends Specification with BaseProperties {
     }
     "round trip a ListSet" in {
       val a = ListSet[Long]() // Test empty SortedSet
-      val b = ListSet[Int](1,2) // Test small ListSet
-      val c = ListSet[Int](1,2,3,4,6,7,8,9,10)
+      val b = ListSet[Int](1, 2) // Test small ListSet
+      val c = ListSet[Int](1, 2, 3, 4, 6, 7, 8, 9, 10)
       a must roundtrip
       b must roundtrip
       c must roundtrip
     }
     "handle trait with reference of self" in {
-      var a= new ExampleUsingSelf{}
-      var b=rt(a.addOne)
+      var a = new ExampleUsingSelf {}
+      var b = rt(a.addOne)
       b.count must be_==(1)
     }
     "handle manifests" in {
       manifest[Int] must roundtrip
-      manifest[(Int,Int)] must roundtrip
+      manifest[(Int, Int)] must roundtrip
       manifest[Array[Int]] must roundtrip
     }
     "handle arrays" in {
-      def arrayRT[T](arr : Array[T]) {
+      def arrayRT[T](arr: Array[T]) {
         // Array doesn't have a good equals
         rt(arr).toList must be_==(arr.toList)
       }
       arrayRT(Array(0))
       arrayRT(Array(0.1))
       arrayRT(Array("hey"))
-      arrayRT(Array((0,1)))
-      arrayRT(Array((0,1), (1,0)))
+      arrayRT(Array((0, 1)))
+      arrayRT(Array((0, 1), (1, 0)))
       arrayRT(Array(None, Nil, None, Nil))
     }
     "handle WrappedArray instances" in {
       val tests = Seq(
-        Array((1,1), (2,2), (3,3)).toSeq,
+        Array((1, 1), (2, 2), (3, 3)).toSeq,
         Array((1.0, 1.0), (2.0, 2.0)).toSeq,
         Array((1.0, "1.0"), (2.0, "2.0")).toSeq)
       tests.foreach { _ must roundtrip }
@@ -168,33 +170,37 @@ class KryoSpec extends Specification with BaseProperties {
       list2.zip(bigList).foreach { tup => tup._1 must be_==(tup._2) }
     }
     "handle scala enums" in {
-       WeekDay.values.foreach { _ must roundtrip }
+      WeekDay.values.foreach { _ must roundtrip }
+    }
+    "handle asJavaIterable" in {
+      val col = scala.collection.JavaConversions.asJavaIterable(Seq(12345))
+      col must roundtrip
     }
     "use java serialization" in {
       val kinst = { () => getKryo.javaForClass[TestCaseClassForSerialization] }
       rtEquiv(kinst, TestCaseClassForSerialization("hey", 42)) must beTrue
     }
     "work with Meatlocker" in {
-      val l = List(1,2,3)
+      val l = List(1, 2, 3)
       val ml = MeatLocker(l)
-      jrt(ml).get must_==(l)
+      jrt(ml).get must_== (l)
     }
     "work with Externalizer" in {
-      val l = List(1,2,3)
+      val l = List(1, 2, 3)
       val ext = Externalizer(l)
       ext.javaWorks must be_==(true)
-      jrt(ext).get must_==(l)
+      jrt(ext).get must_== (l)
     }
     "work with Externalizer with non-java-ser" in {
       val l = new SomeRandom(3)
       val ext = Externalizer(l)
       ext.javaWorks must be_==(false)
-      jrt(ext).get.x must_==(l.x)
+      jrt(ext).get.x must_== (l.x)
     }
     "Externalizer can RT with Kryo" in {
       val l = new SomeRandom(10)
       val ext = Externalizer(l)
-      rt(ext).get.x must_==(l.x)
+      rt(ext).get.x must_== (l.x)
     }
     "handle Regex" in {
       val test = """\bhilarious""".r
@@ -235,18 +241,18 @@ class KryoSpec extends Specification with BaseProperties {
         kryo
       }
       val obj0 = mutable.Map(4 -> mutable.Set("house1", "house2"),
-                             1 -> mutable.Set("name3", "name4", "name1", "name2"),
-                             0 -> mutable.Set(1, 2, 3, 4))
+        1 -> mutable.Set("name3", "name4", "name1", "name2"),
+        0 -> mutable.Set(1, 2, 3, 4))
 
       // Make sure to make a totally separate map to check equality with
       val obj1 = mutable.Map(4 -> mutable.Set("house1", "house2"),
-                             1 -> mutable.Set("name3", "name4", "name1", "name2"),
-                             0 -> mutable.Set(1, 2, 3, 4))
+        1 -> mutable.Set("name3", "name4", "name1", "name2"),
+        0 -> mutable.Set(1, 2, 3, 4))
 
       rtEquiv(inst, obj0) must beTrue
     }
     "deserialize InputStream" in {
-      val obj   = Seq(1, 2, 3)
+      val obj = Seq(1, 2, 3)
       val bytes = serialize(obj)
 
       val inputStream = new _root_.java.io.ByteArrayInputStream(bytes)
@@ -263,7 +269,7 @@ class KryoSpec extends Specification with BaseProperties {
       opt2 must be_==(Option(obj))
     }
     "deserialize ByteBuffer" in {
-      val obj   = Seq(1, 2, 3)
+      val obj = Seq(1, 2, 3)
       val bytes = serialize(obj)
 
       val byteBuffer = _root_.java.nio.ByteBuffer.wrap(bytes)
@@ -281,11 +287,11 @@ class KryoSpec extends Specification with BaseProperties {
     }
     "Handle Ordering.reverse" in {
       // This is exercising the synthetic field serialization in 2.10
-      val ord = Ordering.fromLessThan[(Int,Int)] { (l, r) => l._1 < r._1 }
+      val ord = Ordering.fromLessThan[(Int, Int)] { (l, r) => l._1 < r._1 }
       // Now with a reverse ordering:
-      val qr = new PriorityQueue[(Int,Int)](3, ord.reverse)
-      qr.add((2,3))
-      qr.add((4,5))
+      val qr = new PriorityQueue[(Int, Int)](3, ord.reverse)
+      qr.add((2, 3))
+      qr.add((4, 5))
       def toList[A](q: PriorityQueue[A]): List[A] = {
         import scala.collection.JavaConverters._
         q.iterator.asScala.toList

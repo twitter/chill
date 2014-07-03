@@ -24,7 +24,7 @@ import com.esotericsoftware.kryo.io.Output;
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
-import java.io.{ByteArrayOutputStream => BAOut, ByteArrayInputStream => BAIn}
+import java.io.{ ByteArrayOutputStream => BAOut, ByteArrayInputStream => BAIn }
 import org.apache.hadoop.conf.Configuration;
 
 import com.twitter.chill.config.ConfiguredInstantiator;

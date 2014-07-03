@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import scala.collection.mutable.{WrappedArray, WrappedArrayBuilder}
+import scala.collection.mutable.{ WrappedArray, WrappedArrayBuilder }
 
 class WrappedArraySerializer[T] extends KSerializer[WrappedArray[T]] {
 

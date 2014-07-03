@@ -38,7 +38,8 @@ object KryoInjection extends Injection[Any, Array[Byte]] {
   def instance(kryoPool: => KryoPool): Injection[Any, Array[Byte]] =
     new KryoInjectionInstance(kryoPool)
 
-  /** Creates a small pool (size 2) and uses it as an Injection
+  /**
+   * Creates a small pool (size 2) and uses it as an Injection
    *  Note the implicit in the package from () => Kryo to KryoInstatiator.
    *  It is ESSENTIAL that this function is allocating new Kryos, or we will
    *  not be thread-safe
@@ -56,7 +57,7 @@ class KryoInjectionInstance(lazyKryoP: => KryoPool) extends Injection[Any, Array
   @transient private var kpool: KryoPool = null
 
   private def kryoP: KryoPool = mutex.synchronized {
-    if(null == kpool) { kpool = lazyKryoP }
+    if (null == kpool) { kpool = lazyKryoP }
     kpool
   }
 

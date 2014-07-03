@@ -21,9 +21,9 @@ object ScalaMapConfig {
   def empty: ScalaMapConfig = new ScalaMapConfig(Map.empty)
 }
 
-/** A simple config backed by an immutable Map
+/**
+ * A simple config backed by an immutable Map
  */
-@deprecated("Class potentially unsafe, use ScalaAnyRefMapConfig", "0.3.6")
 class ScalaMapConfig(in: Map[String, String]) extends Config {
   private var conf = in
 
@@ -31,10 +31,9 @@ class ScalaMapConfig(in: Map[String, String]) extends Config {
 
   def get(k: String) = conf.getOrElse(k, null)
   def set(k: String, v: String): Unit = {
-    if(null == v) {
+    if (null == v) {
       conf -= k
-    }
-    else {
+    } else {
       conf += k -> v
     }
   }

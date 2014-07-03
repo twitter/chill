@@ -23,7 +23,7 @@ import com.esotericsoftware.kryo.serializers.FieldSerializer
 import org.objenesis.instantiator.ObjectInstantiator
 import org.objenesis.strategy.InstantiatorStrategy
 
-import _root_.java.lang.reflect.{Constructor, Modifier}
+import _root_.java.lang.reflect.{ Constructor, Modifier }
 
 /*
  * This is the base class of Kryo we use to fix specific scala
@@ -41,34 +41,35 @@ class KryoBase extends Kryo {
   def isFn(klass: Class[_]): Boolean =
     functions.find { _.isAssignableFrom(klass) }.isDefined
 
-  override def newDefaultSerializer(klass : Class[_]) : KSerializer[_] = {
-    if(isSingleton(klass)) {
+  override def newDefaultSerializer(klass: Class[_]): KSerializer[_] = {
+    if (isSingleton(klass)) {
       objSer
-    }
-    else {
+    } else {
       super.newDefaultSerializer(klass) match {
         case fs: FieldSerializer[_] =>
-        //Scala has a lot of synthetic fields that must be serialized:
-        //We also enable it by default in java since not wanting these fields
-        //serialized looks like the exception rather than the rule.
+          //Scala has a lot of synthetic fields that must be serialized:
+          //We also enable it by default in java since not wanting these fields
+          //serialized looks like the exception rather than the rule.
           fs.setIgnoreSyntheticFields(false)
 
           /**
            * This breaks scalding, but something like this should be used when
            * working with the repl.
            *
-          if(isFn(klass))
-            new CleaningSerializer(fs.asInstanceOf[FieldSerializer[AnyRef]])
-          else */
-            fs
+           * if(isFn(klass))
+           * new CleaningSerializer(fs.asInstanceOf[FieldSerializer[AnyRef]])
+           * else
+           */
+          fs
         case x: KSerializer[_] => x
       }
     }
   }
 
-  /** return true if this class is a scala "object"
+  /**
+   * return true if this class is a scala "object"
    */
-  def isSingleton(klass : Class[_]) : Boolean =
+  def isSingleton(klass: Class[_]): Boolean =
     klass.getName.last == '$' && objSer.accepts(klass)
 
   // Get the strategy if it is not null
@@ -103,20 +104,20 @@ object Instantiators {
   def newOrElse(cls: Class[_],
     it: TraversableOnce[Class[_] => Either[Throwable, ObjectInstantiator]],
     elsefn: => ObjectInstantiator): ObjectInstantiator = {
-      // Just go through and try each one,
-      it.map { fn =>
-        fn(cls) match {
-          case Left(x) => None // ignore the exception
-          case Right(obji) => Some(obji)
-        }
+    // Just go through and try each one,
+    it.map { fn =>
+      fn(cls) match {
+        case Left(x) => None // ignore the exception
+        case Right(obji) => Some(obji)
       }
+    }
       .find { _.isDefined } // Find the first Some(x), returns Some(Some(x))
       .flatMap { x => x } // flatten
       .getOrElse(elsefn)
-    }
+  }
 
   // Use call by name:
-  def forClass(t: Class[_])(fn:() => Any): ObjectInstantiator =
+  def forClass(t: Class[_])(fn: () => Any): ObjectInstantiator =
     new ObjectInstantiator {
       override def newInstance() = {
         try { fn().asInstanceOf[AnyRef] }
@@ -136,8 +137,7 @@ object Instantiators {
       access.newInstance
       // Okay, looks good:
       Right(forClass(t) { () => access.newInstance() })
-    }
-    catch {
+    } catch {
       case x: Throwable => Left(x)
     }
   }
@@ -145,8 +145,7 @@ object Instantiators {
   def getConstructor(c: Class[_]): Constructor[_] = {
     try {
       c.getConstructor()
-    }
-    catch {
+    } catch {
       case _: Throwable => {
         val cons = c.getDeclaredConstructor()
         cons.setAccessible(true)
@@ -158,9 +157,8 @@ object Instantiators {
   def normalJava(t: Class[_]): Either[Throwable, ObjectInstantiator] = {
     try {
       val cons = getConstructor(t)
-      Right(forClass(t) { () => cons.newInstance() } )
-    }
-    catch {
+      Right(forClass(t) { () => cons.newInstance() })
+    } catch {
       case x: Throwable => Left(x)
     }
   }

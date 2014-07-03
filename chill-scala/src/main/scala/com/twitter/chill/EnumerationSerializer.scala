@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import scala.collection.mutable.{Map => MMap}
+import scala.collection.mutable.{ Map => MMap }
 
 class EnumerationSerializer extends KSerializer[Enumeration#Value] {
 

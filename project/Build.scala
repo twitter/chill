@@ -4,19 +4,28 @@ import sbt._
 import Keys._
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import com.typesafe.tools.mima.plugin.MimaKeys._
+import scalariform.formatter.preferences._
+import com.typesafe.sbt.SbtScalariform._
 
 import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
   val kryoVersion = "2.21"
+  def withCross(dep: ModuleID) =
+    dep cross CrossVersion.binaryMapped {
+      case "2.9.3" => "2.9.2" // TODO: hack because twitter hasn't built things against 2.9.3
+      case version if version startsWith "2.10" => "2.10" // TODO: hack because sbt is broken
+      case x => x
+    }
 
-  val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ Seq(
+  val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
 
-    version := "0.3.6",
+    version := "0.4.0",
     organization := "com.twitter",
     scalaVersion := "2.9.3",
     crossScalaVersions := Seq("2.9.3", "2.10.3"),
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
+    ScalariformKeys.preferences := formattingPreferences,
 
     // Twitter Hadoop needs this, sorry 1.7 fans
     javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
@@ -87,14 +96,23 @@ object ChillBuild extends Build {
   ).aggregate(
     chill,
     chillBijection,
+    chillScrooge,
     chillStorm,
     chillJava,
     chillHadoop,
     chillThrift,
     chillProtobuf,
     chillAkka,
-    chillAvro
+    chillAvro,
+    chillAlgebird
     )
+
+  lazy val formattingPreferences = {
+   import scalariform.formatter.preferences._
+   FormattingPreferences().
+     setPreference(AlignParameters, false).
+     setPreference(PreserveSpaceBeforeArguments, true)
+  }
 
   /**
     * This returns the youngest jar we released that is compatible
@@ -127,10 +145,7 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.9.3" % "0.3.3"),
-    libraryDependencies ++= Seq(
-      "org.ow2.asm" % "asm-commons" % "4.0"
-    )
+    previousArtifact := Some("com.twitter" % "chill_2.9.3" % "0.3.3")
   ).dependsOn(chillJava)
 
   def isScala210x(scalaVersion: String) = scalaVersion match {
@@ -141,7 +156,7 @@ object ChillBuild extends Build {
       case false => Seq()
       case true => Seq(
       "com.typesafe" % "config" % "0.3.1",
-      "com.typesafe.akka" %% "akka-actor" % "2.2.1"
+      "com.typesafe.akka" %% "akka-actor" % "2.2.1" % "provided"
     )
   }
   lazy val chillAkka = module("akka").settings(
@@ -154,7 +169,7 @@ object ChillBuild extends Build {
 
   lazy val chillBijection = module("bijection").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-core" % "0.6.2"
+      "com.twitter" %% "bijection-core" % "0.6.3"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
@@ -195,6 +210,13 @@ object ChillBuild extends Build {
     )
   )
 
+  lazy val chillScrooge = module("scrooge").settings(
+    libraryDependencies ++= Seq(
+      "org.apache.thrift" % "libthrift" % "0.6.1" % "provided",
+      withCross("com.twitter" %% "scrooge-serializer" % "3.13.0" % "provided")
+    )
+  ).dependsOn(chill % "test->test;compile->compile")
+
   // This can only have java deps!
   lazy val chillProtobuf = module("protobuf").settings(
     crossPaths := false,
@@ -208,7 +230,13 @@ object ChillBuild extends Build {
     crossPaths := false,
     autoScalaLibrary := false,
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-avro" % "0.6.2"
+      "com.twitter" %% "bijection-avro" % "0.6.3"
     )
   ).dependsOn(chill,chillJava, chillBijection)
+
+  lazy val chillAlgebird = module("algebird").settings(
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "algebird-core" % "0.7.0"
+    )
+  ).dependsOn(chill)
 }
