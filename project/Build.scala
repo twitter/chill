@@ -20,7 +20,7 @@ object ChillBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
 
-    version := "0.3.6",
+    version := "0.4.0",
     organization := "com.twitter",
     scalaVersion := "2.9.3",
     crossScalaVersions := Seq("2.9.3", "2.10.3"),
@@ -169,7 +169,7 @@ object ChillBuild extends Build {
 
   lazy val chillBijection = module("bijection").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-core" % "0.6.2"
+      "com.twitter" %% "bijection-core" % "0.6.3"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
@@ -230,13 +230,13 @@ object ChillBuild extends Build {
     crossPaths := false,
     autoScalaLibrary := false,
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-avro" % "0.6.2"
+      "com.twitter" %% "bijection-avro" % "0.6.3"
     )
   ).dependsOn(chill,chillJava, chillBijection)
 
   lazy val chillAlgebird = module("algebird").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "algebird-core" % "0.5.0"
+      "com.twitter" %% "algebird-core" % "0.7.0"
     )
   ).dependsOn(chill)
 }
