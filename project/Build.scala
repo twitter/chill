@@ -38,7 +38,8 @@ object ChillBuild extends Build {
     libraryDependencies ++= Seq(
       "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
       "org.scala-tools.testing" %% "specs" % "1.6.9" % "test",
-      "com.esotericsoftware.kryo" % "kryo" % kryoVersion
+      "com.esotericsoftware.kryo" % "kryo" % kryoVersion,
+      "net.jpountz.lz4" % "lz4" % "1.2.0"
     ),
 
     parallelExecution in Test := true,

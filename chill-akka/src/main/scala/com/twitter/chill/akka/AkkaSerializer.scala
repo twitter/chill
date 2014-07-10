@@ -22,6 +22,8 @@ import akka.serialization.Serializer
 import com.twitter.chill._
 import com.twitter.chill.config.ConfiguredInstantiator
 
+import net.jpountz.lz4.LZ4Factory
+
 /**
  * To use, add a key to your config like:
  *
@@ -31,6 +33,15 @@ import com.twitter.chill.config.ConfiguredInstantiator
  *      kryo = "com.twitter.chill.akka.AkkaSerializer"
  *    }
  * }}}
+ *
+ * Optionally, enable transparent lz4 compression of
+ * kryo serialized messages:
+ *
+ * {{{
+ *    akka.chill {
+ *      compression = on
+ *    }
+ * {{{
  *
  * Then for the super-classes of all your message types,
  *   for instance, scala.Product, write:
@@ -67,9 +78,53 @@ class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
 
   def includeManifest: Boolean = false
   def identifier = 8675309
-  def toBinary(obj: AnyRef): Array[Byte] = kryoPool.toBytesWithClass(obj)
+
+  /**
+   * Optional commpression of serialized values
+   */
+  val compression = if (system.settings.config.hasPath("akka.chill.compression"))
+    system.settings.config.getBoolean("akka.chill.compression") else false
+
+  /**
+   * Use lazy val so that we do not depend on the lz4 jar it compression is not enabled
+   */
+  lazy val lz4factory = LZ4Factory.fastestInstance
+
+  def compress(inputBuff: Array[Byte]): Array[Byte] = {
+    val inputSize = inputBuff.length
+    val lz4 = lz4factory.fastCompressor
+    val maxOutputSize = lz4.maxCompressedLength(inputSize);
+    val outputBuff = new Array[Byte](maxOutputSize + 4)
+    val outputSize = lz4.compress(inputBuff, 0, inputSize, outputBuff, 4, maxOutputSize)
+
+    // encode an Int lenght in the first 4 bytes
+    outputBuff(0) = (inputSize       & 0xff).toByte
+    outputBuff(1) = (inputSize >> 8  & 0xff).toByte
+    outputBuff(2) = (inputSize >> 16 & 0xff).toByte
+    outputBuff(3) = (inputSize >> 24 & 0xff).toByte
+    outputBuff.take(outputSize+4)
+  }
+
+  def decompress(inputBuff: Array[Byte]): Array[Byte] = {
+    // the first 4 bytes are the original size
+    val size: Int = (inputBuff(0).asInstanceOf[Int] & 0xff)       |
+                    (inputBuff(1).asInstanceOf[Int] & 0xff) << 8  |
+                    (inputBuff(2).asInstanceOf[Int] & 0xff) << 16 |
+                    (inputBuff(3).asInstanceOf[Int] & 0xff) << 24
+    val lz4 = lz4factory.fastDecompressor()
+    val outputBuff = new Array[Byte](size)
+    lz4.decompress(inputBuff, 4, outputBuff, 0, size)
+    outputBuff
+  }
+
+  def toBinary(obj: AnyRef): Array[Byte] =
+    if (compression)
+      compress(kryoPool.toBytesWithClass(obj))
+    else
+      kryoPool.toBytesWithClass(obj)
+
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef =
-    kryoPool.fromBytes(bytes)
+    kryoPool.fromBytes(if (compression) decompress(bytes) else bytes)
 }
 
 /**
