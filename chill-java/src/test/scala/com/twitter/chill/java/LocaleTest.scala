@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill.java
 
-import org.specs._
+import org.scalatest._
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -26,8 +26,7 @@ import org.objenesis.strategy.StdInstantiatorStrategy
 
 import _root_.java.util.Locale
 
-class LocaleSpec extends Specification {
-  noDetailedDiffs() //Fixes issue for scala 2.9
+class LocaleSpec extends WordSpec with Matchers {
 
   def rt[A](k: Kryo, a: A): A = {
     val out = new Output(1000, -1)
@@ -45,7 +44,7 @@ class LocaleSpec extends Specification {
       LocaleSerializer.registrar()(kryo)
 
       Locale.getAvailableLocales.foreach { l =>
-        rt(kryo, l) must be_==(l)
+        rt(kryo, l) should equal(l)
       }
     }
   }

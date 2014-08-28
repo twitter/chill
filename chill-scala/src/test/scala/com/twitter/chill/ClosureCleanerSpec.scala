@@ -16,9 +16,9 @@ limitations under the License.
 
 package com.twitter.chill
 
-import org.specs._
+import org.scalatest._
 
-class ClosureCleanerSpec extends Specification {
+class ClosureCleanerSpec extends WordSpec with Matchers {
   def debug(x: AnyRef) {
     println(x.getClass)
     println(x.getClass.getDeclaredFields.map { _.toString }.mkString("  "))
@@ -27,19 +27,19 @@ class ClosureCleanerSpec extends Specification {
     "clean normal objects" in {
       val myList = List(1, 2, 3)
       ClosureCleaner(myList)
-      myList must be_==(List(1, 2, 3))
+      myList should equal(List(1, 2, 3))
     }
     "clean actual closures" in {
       val myFun = { x: Int => x * 2 }
 
       ClosureCleaner(myFun)
-      myFun(1) must be_==(2)
-      myFun(2) must be_==(4)
+      myFun(1) should equal(2)
+      myFun(2) should equal(4)
 
       case class Test(x: Int)
       val t = Test(3)
       ClosureCleaner(t)
-      t must be_==(Test(3))
+      t should equal(Test(3))
     }
 
     "handle outers with constructors" in {
@@ -54,18 +54,18 @@ class ClosureCleanerSpec extends Specification {
       //debug(fn)
       //println(ClosureCleaner.getOutersOf(fn))
       ClosureCleaner(fn)
-      fn("hey") must be_==(20)
+      fn("hey") should equal(20)
     }
     "Handle functions in traits" in {
       val fn = BaseFns2.timesByMult
       ClosureCleaner(fn)
-      fn(10) must be_==(50)
+      fn(10) should equal(50)
     }
     "Handle captured vals" in {
       val answer = 42
       val fn = { x: Int => answer * x }
       ClosureCleaner(fn)
-      fn(10) must be_==(420)
+      fn(10) should equal(420)
     }
   }
 }

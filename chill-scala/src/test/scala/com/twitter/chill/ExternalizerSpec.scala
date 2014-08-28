@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import org.specs._
+import org.scalatest._
 
 import scala.collection.immutable.BitSet
 import scala.collection.immutable.ListMap
@@ -29,10 +29,7 @@ import scala.collection.mutable
 
 class ExtSomeRandom(val x: Int)
 
-class ExternalizerSpec extends Specification with BaseProperties {
-
-  noDetailedDiffs() //Fixes issue for scala 2.9
-
+class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
   def getKryo = KryoSerializer.registered.newKryo
 
   "KryoSerializers and KryoDeserializers" should {
@@ -41,23 +38,20 @@ class ExternalizerSpec extends Specification with BaseProperties {
       val ext = Externalizer(l)
       l(1) = ext
 
-      ext.javaWorks must be_==(true)
+      ext.javaWorks should equal(true)
     }
     "Externalizer handle circular references with Java2" in {
       val l = Array[AnyRef](null)
       val ext = Externalizer(l)
       l.update(0, ext) // make a loop
-      (l(0) eq ext) must beTrue
-      ext.javaWorks must be_==(true)
-      //jrt(ext).get.toList must_==(l.toList)
-      // Try Kryo also
-      //rt(ext).get.toList must_==(l.toList)
+      (l(0) eq ext) should equal(true)
+      ext.javaWorks should equal(true)
 
       val nonJavaSer = Array(new ExtSomeRandom(2))
-      jrt(nonJavaSer) must throwA[Exception]
+      an[Exception] should be thrownBy jrt(nonJavaSer)
       val ext2 = Externalizer(nonJavaSer)
-      jrt(ext2).get(0).x must be_==(2)
-      ext2.javaWorks must beFalse
+      jrt(ext2).get(0).x should equal(2)
+      ext2.javaWorks should equal(false)
 
     }
 
@@ -67,9 +61,9 @@ class ExternalizerSpec extends Specification with BaseProperties {
       val ext3 = Externalizer(l3)
       l3.update(0, ext3) // make a loop
       l3.update(1, new ExtSomeRandom(3)) // make a loop
-      (l3(0) eq ext3) must beTrue
-      ext3.javaWorks must be_==(false)
-      (jrt(ext3).get)(1).asInstanceOf[ExtSomeRandom].x must_== (l3(1).asInstanceOf[ExtSomeRandom].x)
+      (l3(0) eq ext3) should equal(true)
+      ext3.javaWorks should equal(false)
+      (jrt(ext3).get)(1).asInstanceOf[ExtSomeRandom].x should equal (l3(1).asInstanceOf[ExtSomeRandom].x)
     }
 
     "Externalizer circular reference with scala tuples(java and kryo Serializable" in {
@@ -77,10 +71,10 @@ class ExternalizerSpec extends Specification with BaseProperties {
       val ext4 = Externalizer(l4)
       l4.update(0, ext4) // make a loop
       l4.update(1, (3, 7)) // make a loop
-      (l4(0) eq ext4) must beTrue
-      ext4.javaWorks must be_==(true)
-      (rt(ext4).get)(1) must_== (l4(1))
-      (jrt(ext4).get)(1) must_== (l4(1))
+      (l4(0) eq ext4) should equal(true)
+      ext4.javaWorks should equal(true)
+      (rt(ext4).get)(1) should equal (l4(1))
+      (jrt(ext4).get)(1) should equal (l4(1))
     }
 
     "Externalizer handle circular references with non Kryo Serializable members" in {
@@ -88,10 +82,10 @@ class ExternalizerSpec extends Specification with BaseProperties {
       val ext4 = Externalizer(l4)
       l4.update(0, ext4) // make a loop
       l4.update(1, new Locale("en")) // make a loop
-      (l4(0) eq ext4) must beTrue
-      ext4.javaWorks must be_==(true)
+      (l4(0) eq ext4) should equal(true)
+      ext4.javaWorks should equal(true)
       (rt(new EmptyScalaKryoInstantiator(), ext4).get)(1)
-      (jrt(ext4).get)(1) must_== (l4(1))
+      (jrt(ext4).get)(1) should equal (l4(1))
     }
   }
 }

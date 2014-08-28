@@ -14,7 +14,7 @@ limitations under the License.
 */
 package com.twitter.chill.avro
 
-import org.specs.Specification
+import org.scalatest._
 import com.twitter.chill.{ KSerializer, ScalaKryoInstantiator, KryoPool }
 import avro.FiscalRecord
 import org.apache.avro.generic.GenericRecordBuilder
@@ -25,7 +25,7 @@ import org.apache.avro.generic.GenericData.Record
  * @author Mansur Ashraf
  * @since 2/9/14.
  */
-object AvroSerializerSpec extends Specification {
+object AvroSerializerSpec extends WordSpec with Matchers {
 
   def getKryo[T: Manifest](k: KSerializer[T]) = {
     val inst = {
@@ -54,7 +54,7 @@ object AvroSerializerSpec extends Specification {
       val kryo = getKryo(AvroSerializer.SpecificRecordSerializer[FiscalRecord])
       val bytes = kryo.toBytesWithClass(testRecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
-      testRecord must_== result
+      testRecord should equal(result)
     }
   }
 
@@ -63,7 +63,7 @@ object AvroSerializerSpec extends Specification {
       val kryo = getKryo(AvroSerializer.SpecificRecordBinarySerializer[FiscalRecord])
       val bytes = kryo.toBytesWithClass(testRecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
-      testRecord must_== result
+      testRecord should equal(result)
     }
   }
 
@@ -72,7 +72,7 @@ object AvroSerializerSpec extends Specification {
       val kryo = getKryo(AvroSerializer.SpecificRecordJsonSerializer[FiscalRecord](FiscalRecord.SCHEMA$))
       val bytes = kryo.toBytesWithClass(testRecord)
       val result = kryo.fromBytes(bytes).asInstanceOf[FiscalRecord]
-      testRecord must_== result
+      testRecord should equal(result)
     }
   }
 
@@ -81,13 +81,13 @@ object AvroSerializerSpec extends Specification {
       val kryo = getKryo(AvroSerializer.GenericRecordSerializer[Record]())
       val userBytes = kryo.toBytesWithClass(user)
       val userResult = kryo.fromBytes(userBytes).asInstanceOf[Record]
-      userResult.get("name").toString must_== "Jeff"
-      userResult.get("ID") must_== 1
-      user.toString must_== userResult.toString
+      userResult.get("name").toString should equal("Jeff")
+      userResult.get("ID") should equal(1)
+      user.toString should equal(userResult.toString)
 
       val testRecordBytes = kryo.toBytesWithClass(testRecord)
       val testRecordResult = kryo.fromBytes(testRecordBytes).asInstanceOf[FiscalRecord]
-      testRecord.toString must_== testRecordResult.toString
+      testRecord.toString should equal(testRecordResult.toString)
     }
   }
 }
