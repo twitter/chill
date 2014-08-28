@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import org.specs._
+import org.scalatest._
 
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 
@@ -38,28 +38,26 @@ object BaseFns2 extends AwesomeFn2 {
   def mult = 5
 }
 
-class FunctionSerialization extends Specification with BaseProperties {
-  noDetailedDiffs() //Fixes issue for scala 2.9
-
+class FunctionSerialization extends WordSpec with Matchers with BaseProperties {
   "Serialize objects with Fns" should {
     "fn calling" in {
-      //rt(fn).apply(4) must be_==(8)
+      //rt(fn).apply(4) should equal(8)
       // In the object:
-      rt(BaseFns.myfun2).apply(4) must be_==(16)
+      rt(BaseFns.myfun2).apply(4) should equal(16)
 
       // Inherited from the trait:
-      rt(BaseFns.myfun).apply(4) must be_==(8)
+      rt(BaseFns.myfun).apply(4) should equal(8)
     }
     "roundtrip the object" in {
-      rt(BaseFns) must be_==(BaseFns)
+      rt(BaseFns) should equal(BaseFns)
     }
     "Handle traits with abstract vals/def" in {
       val bf2 = rt(BaseFns2)
-      (bf2 eq BaseFns2) must beTrue
-      bf2 must be_==(BaseFns2)
-      bf2.timesByMult(10) must be_==(50)
+      (bf2 eq BaseFns2) should equal(true)
+      bf2 should equal(BaseFns2)
+      bf2.timesByMult(10) should equal(50)
       val rtTBM = rt(BaseFns2.timesByMult)
-      rtTBM.apply(10) must be_==(50)
+      rtTBM.apply(10) should equal(50)
     }
   }
 }

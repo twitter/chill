@@ -16,14 +16,14 @@ limitations under the License.
 
 package com.twitter.chill
 
-import org.specs._
+import org.scalatest._
 
 import com.twitter.chill.config._
 
 import org.objenesis.strategy.InstantiatorStrategy;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-class ReflectingInstantiatorTest extends Specification {
+class ReflectingInstantiatorTest extends WordSpec with Matchers {
   "A ReflectingInstantiator" should {
     "set keys into a config as expected" in {
 
@@ -37,14 +37,14 @@ class ReflectingInstantiatorTest extends Specification {
       val conf = ScalaAnyRefMapConfig.empty
       ri.set(conf)
 
-      conf.toMap(ReflectingInstantiator.KRYO_CLASS) must be_==(classOf[Kryo].getName)
-      conf.toMap(ReflectingInstantiator.INSTANTIATOR_STRATEGY_CLASS) must be_==(classOf[InstantiatorStrategy].getName)
-      conf.toMap(ReflectingInstantiator.REGISTRATION_REQUIRED) must be_==("true")
-      conf.toMap(ReflectingInstantiator.SKIP_MISSING) must be_==("true")
-      conf.toMap(ReflectingInstantiator.REGISTRATIONS).asInstanceOf[String].split(":").toSet must be_== (
+      conf.toMap(ReflectingInstantiator.KRYO_CLASS) should equal(classOf[Kryo].getName)
+      conf.toMap(ReflectingInstantiator.INSTANTIATOR_STRATEGY_CLASS) should equal(classOf[InstantiatorStrategy].getName)
+      conf.toMap(ReflectingInstantiator.REGISTRATION_REQUIRED) should equal("true")
+      conf.toMap(ReflectingInstantiator.SKIP_MISSING) should equal("true")
+      conf.toMap(ReflectingInstantiator.REGISTRATIONS).asInstanceOf[String].split(":").toSet should equal (
         Set("scala.collection.immutable.List",
           "scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer"))
-      conf.toMap(ReflectingInstantiator.DEFAULT_REGISTRATIONS).asInstanceOf[String].split(":").toSet must be_== (
+      conf.toMap(ReflectingInstantiator.DEFAULT_REGISTRATIONS).asInstanceOf[String].split(":").toSet should equal (
         Set("scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer"))
     }
     "roundtrip through a config" in {
@@ -58,8 +58,8 @@ class ReflectingInstantiatorTest extends Specification {
       val conf = ScalaAnyRefMapConfig.empty
       ri.set(conf)
       val ri2 = new ReflectingInstantiator(conf)
-      ri.equals(ri2) must be_==(true)
-      ri2.equals(ri) must be_==(true)
+      ri.equals(ri2) should equal(true)
+      ri2.equals(ri) should equal(true)
     }
 
     "be serialized when added onto a ConfiguredInstantiator" in {
@@ -75,7 +75,7 @@ class ReflectingInstantiatorTest extends Specification {
           classOf[ScalaKryoInstantiator],
           instantiator)
       } catch {
-        case e => fail("Got exception serializing the instantiator\n" + e.printStackTrace)
+        case e: Throwable => fail("Got exception serializing the instantiator\n" + e.printStackTrace)
       }
     }
   }

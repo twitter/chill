@@ -16,7 +16,7 @@
 
 package com.twitter.chill
 
-import org.specs._
+import org.scalatest._
 
 import com.twitter.bijection.Bijection
 
@@ -29,7 +29,7 @@ object Globals {
   var temp = false
 }
 
-class CustomSerializationSpec extends Specification with BaseProperties {
+class CustomSerializationSpec extends WordSpec with Matchers with BaseProperties {
   "Custom KryoSerializers and KryoDeserializers" should {
     "serialize objects that have registered serialization" in {
 
@@ -66,7 +66,7 @@ class CustomSerializationSpec extends Specification with BaseProperties {
       val point = Point(5, 6)
       val coloredPoint = ColoredPoint(color, point)
 
-      rt(myInst, coloredPoint) must_== coloredPoint
+      rt(myInst, coloredPoint) should equal(coloredPoint)
     }
     "use bijections" in {
       implicit val bij = Bijection.build[TestCaseClassForSerialization, (String, Int)] { s =>
@@ -78,18 +78,18 @@ class CustomSerializationSpec extends Specification with BaseProperties {
           .newKryo
           .forClassViaBijection[TestCaseClassForSerialization, (String, Int)]
       }
-      rt(inst, TestCaseClassForSerialization("hey", 42)) must be_==(TestCaseClassForSerialization("hey", 42))
+      rt(inst, TestCaseClassForSerialization("hey", 42)) should equal(TestCaseClassForSerialization("hey", 42))
     }
     "Make sure KryoInjection and instances are Java Serializable" in {
       val ki = jrt(KryoInjection)
-      ki.invert(ki(1)).get must be_==(1)
+      ki.invert(ki(1)).get should equal(1)
       val kii = jrt(KryoInjection.instance(new ScalaKryoInstantiator))
-      kii.invert(kii(1)).get must be_==(1)
+      kii.invert(kii(1)).get should equal(1)
     }
   }
   "KryoInjection handle an example with closure to function" in {
     val x = rt(() => Foo.Bar)
-    x() must be_==(Foo.Bar)
+    x() should equal(Foo.Bar)
   }
   "handle a closure to println" in {
     Globals.temp = false
@@ -101,6 +101,6 @@ class CustomSerializationSpec extends Specification with BaseProperties {
     })
     val inv = KryoInjection.invert(bytes)
     inv.get.asInstanceOf[() => Unit].apply()
-    Globals.temp must be_==(true)
+    Globals.temp should equal(true)
   }
 }

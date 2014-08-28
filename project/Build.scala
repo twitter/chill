@@ -11,19 +11,13 @@ import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
   val kryoVersion = "2.21"
-  def withCross(dep: ModuleID) =
-    dep cross CrossVersion.binaryMapped {
-      case "2.9.3" => "2.9.2" // TODO: hack because twitter hasn't built things against 2.9.3
-      case version if version startsWith "2.10" => "2.10" // TODO: hack because sbt is broken
-      case x => x
-    }
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
 
     version := "0.4.0",
     organization := "com.twitter",
-    scalaVersion := "2.9.3",
-    crossScalaVersions := Seq("2.9.3", "2.10.3"),
+    scalaVersion := "2.10.4",
+    crossScalaVersions := Seq("2.10.4", "2.11.2"),
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     ScalariformKeys.preferences := formattingPreferences,
 
@@ -37,7 +31,7 @@ object ChillBuild extends Build {
     ),
     libraryDependencies ++= Seq(
       "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "org.scala-tools.testing" %% "specs" % "1.6.9" % "test",
+      "org.scalatest" %% "scalatest" % "2.2.1" % "test",
       "com.esotericsoftware.kryo" % "kryo" % kryoVersion
     ),
 
@@ -148,23 +142,12 @@ object ChillBuild extends Build {
     previousArtifact := Some("com.twitter" % "chill_2.9.3" % "0.3.3")
   ).dependsOn(chillJava)
 
-  def isScala210x(scalaVersion: String) = scalaVersion match {
-      case version if version startsWith "2.9" => false
-      case version if version startsWith "2.10" => true
-  }
-  def akkaBuildDeps(scalaVersion: String): Seq[sbt.ModuleID] = isScala210x(scalaVersion) match {
-      case false => Seq()
-      case true => Seq(
+  lazy val chillAkka = module("akka").settings(
+    resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+    libraryDependencies ++= Seq(
       "com.typesafe" % "config" % "0.3.1",
       "com.typesafe.akka" %% "akka-actor" % "2.2.1" % "provided"
     )
-  }
-  lazy val chillAkka = module("akka").settings(
-    resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-    skip in compile := !isScala210x(scalaVersion.value),
-    skip in test := !isScala210x(scalaVersion.value),
-    publishArtifact := isScala210x(scalaVersion.value),
-    libraryDependencies ++= akkaBuildDeps(scalaVersion.value)
   ).dependsOn(chill % "test->test;compile->compile")
 
   lazy val chillBijection = module("bijection").settings(
@@ -213,7 +196,7 @@ object ChillBuild extends Build {
   lazy val chillScrooge = module("scrooge").settings(
     libraryDependencies ++= Seq(
       "org.apache.thrift" % "libthrift" % "0.6.1" % "provided",
-      withCross("com.twitter" %% "scrooge-serializer" % "3.13.0" % "provided")
+      "com.twitter" %% "scrooge-serializer" % "3.13.0" % "provided"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 

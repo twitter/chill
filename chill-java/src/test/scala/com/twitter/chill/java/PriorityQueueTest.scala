@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill.java
 
-import org.specs._
+import org.scalatest._
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -24,8 +24,7 @@ import com.esotericsoftware.kryo.io.Output;
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
-class PriorityQueueSpec extends Specification {
-  noDetailedDiffs() //Fixes issue for scala 2.9
+class PriorityQueueSpec extends WordSpec with Matchers {
 
   def rt[A](k: Kryo, a: A): A = {
     val out = new Output(1000, -1)
@@ -49,15 +48,15 @@ class PriorityQueueSpec extends Specification {
         q.iterator.asScala.toList
       val qlist = toList(q)
       val newQ = rt(kryo, q)
-      toList(newQ) must be_==(qlist)
+      toList(newQ) should equal(qlist)
       newQ.add((1, 1))
-      newQ.add((2, 1)) must beTrue
+      newQ.add((2, 1)) should equal(true)
       // Now without an ordering:
       val qi = new java.util.PriorityQueue[Int](3)
       qi.add(2)
       qi.add(5)
       val qilist = toList(qi)
-      toList(rt(kryo, qi)) must be_==(qilist)
+      toList(rt(kryo, qi)) should equal(qilist)
       // Now with a reverse ordering
       // Note that in chill-scala, synthetic fields are not ignored by default
       // using the ScalaKryoInstantiator
@@ -68,7 +67,7 @@ class PriorityQueueSpec extends Specification {
       qr.add((2, 3))
       qr.add((4, 5))
       val qrlist = toList(qr)
-      toList(rt(kryo, qr)) must be_==(qrlist)
+      toList(rt(kryo, qr)) should equal(qrlist)
     }
   }
 }
