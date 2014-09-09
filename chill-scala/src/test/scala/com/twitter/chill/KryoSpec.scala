@@ -25,6 +25,7 @@ import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
 import scala.collection.mutable
 import scala.collection.JavaConverters._
+import scala.reflect._
 
 /*
 * This is just a test case for Kryo to deal with. It should
@@ -92,7 +93,7 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
           "b" -> 2.0, "c" -> 3.0, "d" -> 4.0)),
         TestValHashMap(HashMap("you" -> 1.0)),
         TestVarArgs("hey", "you", "guys"),
-        implicitly[ClassManifest[(Int, Int)]],
+        implicitly[ClassTag[(Int, Int)]],
         Vector(1, 2, 3, 4, 5),
         TestValMap(null),
         Some("junk"),

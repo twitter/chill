@@ -17,6 +17,7 @@ limitations under the License.
 package com.twitter.chill
 
 import _root_.java.io._
+import scala.reflect.ClassTag
 
 trait BaseProperties {
   def serialize[T](t: T): Array[Byte] = ScalaKryoInstantiator.defaultPool.toBytesWithClass(t)
@@ -51,8 +52,8 @@ trait BaseProperties {
       bos.close
     }
   }
-  def jdeserialize[T](bytes: Array[Byte])(implicit cmf: ClassManifest[T]): T = {
-    val cls = cmf.erasure.asInstanceOf[Class[T]]
+  def jdeserialize[T](bytes: Array[Byte])(implicit cmf: ClassTag[T]): T = {
+    val cls = cmf.runtimeClass.asInstanceOf[Class[T]]
     val bis = new ByteArrayInputStream(bytes)
     val in = new ObjectInputStream(bis);
     try {
@@ -62,6 +63,6 @@ trait BaseProperties {
       in.close
     }
   }
-  def jrt[T <: Serializable](t: T)(implicit cmf: ClassManifest[T]): T =
+  def jrt[T <: Serializable](t: T)(implicit cmf: ClassTag[T]): T =
     jdeserialize(jserialize(t))
 }

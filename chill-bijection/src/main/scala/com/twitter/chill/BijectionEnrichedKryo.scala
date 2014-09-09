@@ -19,17 +19,19 @@ package com.twitter.chill
 import com.twitter.bijection.Injection
 import com.twitter.bijection.{ Bufferable, Bijection, ImplicitBijection, Injection }
 
+import scala.reflect.ClassTag
+
 object BijectionEnrichedKryo {
   implicit def enrich(k: Kryo): BijectionEnrichedKryo = new BijectionEnrichedKryo(k)
 
   /**
    * Use a bijection[A,B] then the KSerializer on B
    */
-  def viaBijection[A, B](kser: KSerializer[B])(implicit bij: ImplicitBijection[A, B], cmf: ClassManifest[B]): KSerializer[A] =
+  def viaBijection[A, B](kser: KSerializer[B])(implicit bij: ImplicitBijection[A, B], cmf: ClassTag[B]): KSerializer[A] =
     new KSerializer[A] {
       def write(k: Kryo, out: Output, obj: A) { kser.write(k, out, bij(obj)) }
       def read(k: Kryo, in: Input, cls: Class[A]) =
-        bij.invert(kser.read(k, in, cmf.erasure.asInstanceOf[Class[B]]))
+        bij.invert(kser.read(k, in, cmf.runtimeClass.asInstanceOf[Class[B]]))
     }
 
   def viaBufferable[T](implicit b: Bufferable[T]): KSerializer[T] =
@@ -38,32 +40,32 @@ object BijectionEnrichedKryo {
 
 class BijectionEnrichedKryo(k: Kryo) {
 
-  def injectionForClass[T](implicit inj: Injection[T, Array[Byte]], cmf: ClassManifest[T]): Kryo = {
-    k.register(cmf.erasure, InjectiveSerializer.asKryo[T])
+  def injectionForClass[T](implicit inj: Injection[T, Array[Byte]], cmf: ClassTag[T]): Kryo = {
+    k.register(cmf.runtimeClass, InjectiveSerializer.asKryo[T])
     k
   }
 
-  def injectionForSubclass[T](implicit inj: Injection[T, Array[Byte]], cmf: ClassManifest[T]): Kryo = {
-    k.addDefaultSerializer(cmf.erasure, InjectiveSerializer.asKryo[T])
+  def injectionForSubclass[T](implicit inj: Injection[T, Array[Byte]], cmf: ClassTag[T]): Kryo = {
+    k.addDefaultSerializer(cmf.runtimeClass, InjectiveSerializer.asKryo[T])
     k
   }
 
-  def bufferableForClass[T](implicit b: Bufferable[T], cmf: ClassManifest[T]): Kryo = {
-    k.register(cmf.erasure, BijectionEnrichedKryo.viaBufferable[T])
+  def bufferableForClass[T](implicit b: Bufferable[T], cmf: ClassTag[T]): Kryo = {
+    k.register(cmf.runtimeClass, BijectionEnrichedKryo.viaBufferable[T])
     k
   }
 
   /**
    * B has to already be registered, then use the KSerializer[B] to create KSerialzer[A]
    */
-  def forClassViaBijection[A, B](implicit bij: ImplicitBijection[A, B], acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
-    val kserb = k.getSerializer(bcmf.erasure).asInstanceOf[KSerializer[B]]
-    k.register(acmf.erasure, BijectionEnrichedKryo.viaBijection[A, B](kserb))
+  def forClassViaBijection[A, B](implicit bij: ImplicitBijection[A, B], acmf: ClassTag[A], bcmf: ClassTag[B]): Kryo = {
+    val kserb = k.getSerializer(bcmf.runtimeClass).asInstanceOf[KSerializer[B]]
+    k.register(acmf.runtimeClass, BijectionEnrichedKryo.viaBijection[A, B](kserb))
     k
   }
 
   /** Helpful override to alleviate rewriting types. */
-  def forClassViaBijection[A, B](bij: Bijection[A, B])(implicit acmf: ClassManifest[A], bcmf: ClassManifest[B]): Kryo = {
+  def forClassViaBijection[A, B](bij: Bijection[A, B])(implicit acmf: ClassTag[A], bcmf: ClassTag[B]): Kryo = {
     implicit def implicitBij = bij
     this.forClassViaBijection[A, B]
   }

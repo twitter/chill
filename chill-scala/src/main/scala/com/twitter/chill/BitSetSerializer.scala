@@ -45,7 +45,7 @@ class BitSetSerializer extends KSerializer[BitSet] {
         sum += i.readInt(true)
         bits(sum / 64) |= 1L << (sum % 64)
       }
-      BitSet.fromArray(bits)
+      BitSet.fromBitMask(bits)
     }
   }
 }
