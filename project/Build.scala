@@ -12,6 +12,12 @@ import scala.collection.JavaConverters._
 object ChillBuild extends Build {
   val kryoVersion = "2.21"
 
+
+  def isScala210x(scalaVersion: String) = scalaVersion match {
+      case version if version startsWith "2.10" => true
+      case _ => false
+  }
+
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
 
     version := "0.4.0",
@@ -30,8 +36,8 @@ object ChillBuild extends Build {
       Opts.resolver.sonatypeReleases
     ),
     libraryDependencies ++= Seq(
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "org.scalatest" %% "scalatest" % "2.2.1" % "test",
+      "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
+      "org.scalatest" %% "scalatest" % "2.2.2" % "test",
       "com.esotericsoftware.kryo" % "kryo" % kryoVersion
     ),
 
@@ -145,14 +151,14 @@ object ChillBuild extends Build {
   lazy val chillAkka = module("akka").settings(
     resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= Seq(
-      "com.typesafe" % "config" % "0.3.1",
-      "com.typesafe.akka" %% "akka-actor" % "2.2.1" % "provided"
+      "com.typesafe" % "config" % "1.2.1",
+      "com.typesafe.akka" %% "akka-actor" % "2.3.6" % "provided"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
   lazy val chillBijection = module("bijection").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-core" % "0.6.3"
+      "com.twitter" %% "bijection-core" % "0.7.0"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
@@ -193,11 +199,20 @@ object ChillBuild extends Build {
     )
   )
 
+   def scroogeBuildDeps(scalaVersion: String): Seq[sbt.ModuleID] = isScala210x(scalaVersion) match {
+      case false => Seq()
+      case true => Seq(
+        "com.twitter" %% "scrooge-serializer" % "3.13.0"
+     )
+  }
+
   lazy val chillScrooge = module("scrooge").settings(
+    skip in compile := !isScala210x(scalaVersion.value),
+    skip in test := !isScala210x(scalaVersion.value),
+    publishArtifact := isScala210x(scalaVersion.value),
     libraryDependencies ++= Seq(
-      "org.apache.thrift" % "libthrift" % "0.6.1" % "provided",
-      "com.twitter" %% "scrooge-serializer" % "3.13.0" % "provided"
-    )
+      "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit")
+    ) ++ scroogeBuildDeps(scalaVersion.value)
   ).dependsOn(chill % "test->test;compile->compile")
 
   // This can only have java deps!
@@ -213,13 +228,13 @@ object ChillBuild extends Build {
     crossPaths := false,
     autoScalaLibrary := false,
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-avro" % "0.6.3"
+      "com.twitter" %% "bijection-avro" % "0.7.0"
     )
   ).dependsOn(chill,chillJava, chillBijection)
 
   lazy val chillAlgebird = module("algebird").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "algebird-core" % "0.7.0"
+      "com.twitter" %% "algebird-core" % "0.8.0"
     )
   ).dependsOn(chill)
 }
