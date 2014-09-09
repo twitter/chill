@@ -25,6 +25,8 @@ import _root_.java.util.{ Map => JMap }
 import scala.collection.generic.CanBuildFrom
 import scala.util.control.Exception.allCatch
 
+import scala.reflect._
+
 /**
  * Enrichment pattern to add methods to Kryo objects
  * TODO: make this a value-class in scala 2.10
@@ -34,28 +36,28 @@ class RichKryo(k: Kryo) {
   def alreadyRegistered(klass: Class[_]): Boolean =
     k.getClassResolver.getRegistration(klass) != null
 
-  def alreadyRegistered[T](implicit cmf: ClassManifest[T]): Boolean = alreadyRegistered(cmf.erasure)
+  def alreadyRegistered[T](implicit cmf: ClassTag[T]): Boolean = alreadyRegistered(cmf.runtimeClass)
 
-  def forSubclass[T](kser: KSerializer[T])(implicit cmf: ClassManifest[T]): Kryo = {
-    k.addDefaultSerializer(cmf.erasure, kser)
+  def forSubclass[T](kser: KSerializer[T])(implicit cmf: ClassTag[T]): Kryo = {
+    k.addDefaultSerializer(cmf.runtimeClass, kser)
     k
   }
 
-  def forTraversableSubclass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit mf: ClassManifest[C], cbf: CanBuildFrom[C, T, C]): Kryo = {
-    k.addDefaultSerializer(mf.erasure, new TraversableSerializer(isImmutable)(cbf))
+  def forTraversableSubclass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit mf: ClassTag[C], cbf: CanBuildFrom[C, T, C]): Kryo = {
+    k.addDefaultSerializer(mf.runtimeClass, new TraversableSerializer(isImmutable)(cbf))
     k
   }
 
-  def forClass[T](kser: KSerializer[T])(implicit cmf: ClassManifest[T]): Kryo = {
-    k.register(cmf.erasure, kser)
+  def forClass[T](kser: KSerializer[T])(implicit cmf: ClassTag[T]): Kryo = {
+    k.register(cmf.runtimeClass, kser)
     k
   }
 
-  def forTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit mf: ClassManifest[C], cbf: CanBuildFrom[C, T, C]): Kryo =
+  def forTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit mf: ClassTag[C], cbf: CanBuildFrom[C, T, C]): Kryo =
     forClass(new TraversableSerializer(isImmutable)(cbf))
 
   def forConcreteTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit cbf: CanBuildFrom[C, T, C]): Kryo = {
-    // a ClassManifest is not used here since its erasure method does not return the concrete internal type
+    // a ClassTag is not used here since its runtimeClass method does not return the concrete internal type
     // that Scala uses for small immutable maps (i.e., scala.collection.immutable.Map$Map1)
     k.register(c.getClass, new TraversableSerializer(isImmutable)(cbf))
     k
@@ -65,22 +67,22 @@ class RichKryo(k: Kryo) {
    * Use Java serialization, which is very slow.
    * avoid this if possible, but for very rare classes it is probably fine
    */
-  def javaForClass[T <: Serializable](implicit cmf: ClassManifest[T]): Kryo = {
-    k.register(cmf.erasure, new com.esotericsoftware.kryo.serializers.JavaSerializer)
+  def javaForClass[T <: Serializable](implicit cmf: ClassTag[T]): Kryo = {
+    k.register(cmf.runtimeClass, new com.esotericsoftware.kryo.serializers.JavaSerializer)
     k
   }
   /**
    * Use Java serialization, which is very slow.
    * avoid this if possible, but for very rare classes it is probably fine
    */
-  def javaForSubclass[T <: Serializable](implicit cmf: ClassManifest[T]): Kryo = {
-    k.addDefaultSerializer(cmf.erasure, new com.esotericsoftware.kryo.serializers.JavaSerializer)
+  def javaForSubclass[T <: Serializable](implicit cmf: ClassTag[T]): Kryo = {
+    k.addDefaultSerializer(cmf.runtimeClass, new com.esotericsoftware.kryo.serializers.JavaSerializer)
     k
   }
 
   def registerClasses(klasses: TraversableOnce[Class[_]]): Kryo = {
     klasses.foreach { klass: Class[_] =>
-      if (!alreadyRegistered(ClassManifest.fromClass(klass)))
+      if (!alreadyRegistered(ClassTag(klass)))
         k.register(klass)
     }
     k
