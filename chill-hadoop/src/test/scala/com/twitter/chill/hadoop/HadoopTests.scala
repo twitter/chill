@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill.hadoop
 
-import org.specs._
+import org.scalatest._
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -37,9 +37,7 @@ class StdKryoInstantiator extends KryoInstantiator {
     k
   }
 }
-class HadoopTests extends Specification {
-  noDetailedDiffs() //Fixes issue for scala 2.9
-
+class HadoopTests extends WordSpec with Matchers {
   def rt[A <: AnyRef](k: KryoSerialization, a: A): A = {
     val out = new BAOut
     val cls = a.getClass.asInstanceOf[Class[AnyRef]]
@@ -65,7 +63,7 @@ class HadoopTests extends Specification {
       val ks = new KryoSerialization(conf)
       Seq(classOf[List[_]], classOf[Int], this.getClass).forall { cls =>
         ks.accept(cls)
-      } must beTrue
+      } should equal(true)
     }
     "Serialize a list of random things" in {
       val conf = new Configuration
@@ -76,7 +74,7 @@ class HadoopTests extends Specification {
       val ks = new KryoSerialization(conf)
       val things = List(1.asInstanceOf[AnyRef], "hey", (1, 2))
 
-      things.map { rt(ks, _) } must be_==(things)
+      things.map { rt(ks, _) } should equal(things)
     }
   }
 }

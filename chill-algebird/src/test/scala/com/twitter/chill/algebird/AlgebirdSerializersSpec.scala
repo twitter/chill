@@ -18,9 +18,9 @@ package com.twitter.chill.algebird
 
 import com.twitter.chill.{ KSerializer, ScalaKryoInstantiator, KryoPool }
 import com.twitter.algebird.{ AveragedValue, DecayedValue, HyperLogLogMonoid, MomentsGroup, AdaptiveVector }
-import org.specs.Specification
+import org.scalatest._
 
-class AlgebirdSerializersSpec extends Specification {
+class AlgebirdSerializersSpec extends WordSpec with Matchers {
   val kryo = {
     val inst = () => {
       val newK = (new ScalaKryoInstantiator).newKryo
@@ -36,13 +36,14 @@ class AlgebirdSerializersSpec extends Specification {
     //println("bytes size : " + bytes.size)
     //println("bytes: " + new String(bytes, "UTF-8"))
     val result = kryo.fromBytes(bytes).asInstanceOf[X]
-    result must_== x
+    result should equal(x)
+
   }
 
   def roundtripNoEq[X](x: X)(f: X => Any) {
     val bytes = kryo.toBytesWithClass(x)
     val result = kryo.fromBytes(bytes).asInstanceOf[X]
-    f(result) must_== f(x)
+    f(result) should equal(f(x))
   }
 
   "kryo with AlgebirdRegistrar" should {

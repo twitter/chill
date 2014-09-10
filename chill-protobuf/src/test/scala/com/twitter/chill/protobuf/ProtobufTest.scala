@@ -23,9 +23,9 @@ import com.esotericsoftware.kryo.Kryo
 
 import com.google.protobuf.Message
 
-import org.specs._
+import org.scalatest._
 
-class ProtobufTest extends Specification {
+class ProtobufTest extends WordSpec with Matchers {
   def buildFatigueCount(target: Long, id: Long, count: Int, recentClicks: List[Long]) = {
     val bldr = FatigueCount.newBuilder()
       .setTargetId(target)
@@ -45,11 +45,11 @@ class ProtobufTest extends Specification {
       }
     })
 
-    kpool.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))) must be_==(
+    kpool.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))) should equal(
       buildFatigueCount(12L, -1L, 42, List(1L, 2L)))
 
     // Without the protobuf serializer, this fails:
     val kpoolBusted = KryoPool.withByteArrayOutputStream(1, new KryoInstantiator)
-    kpoolBusted.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))) must throwA[Exception]
+    an[Exception] should be thrownBy (kpoolBusted.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))))
   }
 }

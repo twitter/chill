@@ -55,8 +55,6 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
 
   @transient private val doesJavaWork = new AtomicReference[Option[Boolean]](None)
   @transient private val testing = new AtomicBoolean(false)
-  // For backwards compatibility
-  private def KRYO = Externalizer.KRYO
 
   // No vals or var's below this line!
 

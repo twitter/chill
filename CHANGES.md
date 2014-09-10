@@ -1,5 +1,9 @@
 # chill #
 
+### 0.5.0
+* Move to211: https://github.com/twitter/chill/pull/197
+* Make 2.10.4 the default, move to scalatest: https://github.com/twitter/chill/pull/196
+
 ### 0.4.0
 * Support serializing asJavaIterable.: https://github.com/twitter/chill/pull/192
 * Remove a deprecation, that really should never have been there: https://github.com/twitter/chill/pull/189

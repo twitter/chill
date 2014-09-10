@@ -16,15 +16,13 @@ limitations under the License.
 
 package com.twitter.chill.akka
 
-import org.specs._
+import org.scalatest._
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.serialization._
 import com.typesafe.config.ConfigFactory
 
-class AkkaTests extends Specification {
-
-  noDetailedDiffs() //Fixes issue for scala 2.9
+class AkkaTests extends WordSpec with Matchers {
 
   val system = ActorSystem("example", ConfigFactory.parseString("""
     akka.actor.serializers {
@@ -44,24 +42,24 @@ class AkkaTests extends Specification {
     "be selected for tuples" in {
       // Find the Serializer for it
       val serializer = serialization.findSerializerFor((1, 2, 3))
-      serializer.getClass.equals(classOf[AkkaSerializer]) must beTrue
+      serializer.getClass.equals(classOf[AkkaSerializer]) should equal(true)
     }
 
     "be selected for ActorRef" in {
       val serializer = serialization.findSerializerFor(system.actorFor("akka://test-system/test-actor"))
-      serializer.getClass.equals(classOf[AkkaSerializer]) must beTrue
+      serializer.getClass.equals(classOf[AkkaSerializer]) should equal(true)
     }
 
     "serialize and deserialize ActorRef successfully" in {
       val actorRef = system.actorFor("akka://test-system/test-actor")
 
       val serialized = serialization.serialize(actorRef)
-      serialized.isSuccess must beTrue
+      serialized.isSuccess should equal(true)
 
       val deserialized = serialization.deserialize(serialized.get, classOf[ActorRef])
-      deserialized.isSuccess must beTrue
+      deserialized.isSuccess should equal(true)
 
-      deserialized.get.equals(actorRef) must beTrue
+      deserialized.get.equals(actorRef) should equal(true)
     }
 
   }

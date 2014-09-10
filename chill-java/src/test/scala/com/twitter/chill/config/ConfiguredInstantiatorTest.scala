@@ -16,28 +16,28 @@ limitations under the License.
 
 package com.twitter.chill.config
 
-import org.specs._
+import org.scalatest._
 
 import com.twitter.chill._
 import com.esotericsoftware.kryo.Kryo
 
 class TestInst extends KryoInstantiator { override def newKryo = new Kryo }
 
-class ReflectingInstantiatorTest extends Specification {
+class ReflectingInstantiatorTest extends WordSpec with Matchers {
   "A ConfiguredInstantiator" should {
     "work with a reflected instantiator" in {
       val conf = new JavaMapConfig
       ConfiguredInstantiator.setReflect(conf, classOf[TestInst])
-      conf.get(ConfiguredInstantiator.KEY) must be_==(classOf[TestInst].getName)
+      conf.get(ConfiguredInstantiator.KEY) should equal(classOf[TestInst].getName)
       val cci = new ConfiguredInstantiator(conf)
-      cci.getDelegate.getClass == classOf[TestInst] must beTrue
+      cci.getDelegate.getClass should equal(classOf[TestInst])
     }
     "work with a serialized instantiator" in {
       val conf = new JavaMapConfig
       ConfiguredInstantiator.setSerialized(conf, new TestInst)
       val cci = new ConfiguredInstantiator(conf)
       // Here is the only assert:
-      cci.getDelegate.getClass == classOf[TestInst] must beTrue
+      cci.getDelegate.getClass should equal(classOf[TestInst])
     }
   }
 }
