@@ -20,7 +20,7 @@ object ChillBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
 
-    version := "0.4.0",
+    version := "0.5.0",
     organization := "com.twitter",
     scalaVersion := "2.10.4",
     crossScalaVersions := Seq("2.10.4", "2.11.2"),
@@ -145,7 +145,7 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.9.3" % "0.3.3")
+    previousArtifact := Some("com.twitter" % "chill_2.10" % "0.5.0")
   ).dependsOn(chillJava)
 
   lazy val chillAkka = module("akka").settings(
