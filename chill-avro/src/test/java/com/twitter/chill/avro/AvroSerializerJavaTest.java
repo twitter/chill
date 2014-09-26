@@ -82,7 +82,7 @@ public class AvroSerializerJavaTest {
         GenericData.Record userResult = (GenericData.Record) kryo.fromBytes(userBytes);
         assertEquals(userResult.get("name").toString(),"Jeff");
         assertEquals(userResult.get("ID"),1);
-        assertEquals(user.toString(),userResult.toString());
+        assertEquals(user.toString(), userResult.toString());
 
     }
 
