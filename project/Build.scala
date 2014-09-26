@@ -228,7 +228,8 @@ object ChillBuild extends Build {
     crossPaths := false,
     autoScalaLibrary := false,
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-avro" % "0.7.0"
+      "com.twitter" %% "bijection-avro" % "0.7.0",
+      "junit" % "junit" % "4.5" % "test"
     )
   ).dependsOn(chill,chillJava, chillBijection)
 
