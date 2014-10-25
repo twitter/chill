@@ -225,8 +225,6 @@ object ChillBuild extends Build {
   ).dependsOn(chillJava)
 
   lazy val chillAvro = module("avro").settings(
-    crossPaths := false,
-    autoScalaLibrary := false,
     libraryDependencies ++= Seq(
       "com.twitter" %% "bijection-avro" % "0.7.0"
     )
