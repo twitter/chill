@@ -50,7 +50,7 @@ public class KryoSerialization extends Configured implements Serialization<Objec
      * It will first call this, then setConf.
      */
     public KryoSerialization() {
-        this(new Configuration());
+	super();
     }
 
     /**
