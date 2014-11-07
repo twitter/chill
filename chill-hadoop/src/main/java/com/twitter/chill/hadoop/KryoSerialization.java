@@ -65,15 +65,18 @@ public class KryoSerialization extends Configured implements Serialization<Objec
 
     @Override
     public void setConf(Configuration conf) {
-      try {
-        KryoInstantiator kryoInst = new ConfiguredInstantiator(new HadoopConfig(conf));
-        testKryo = kryoInst.newKryo();
-        kryoPool = KryoPool.withByteArrayOutputStream(MAX_CACHED_KRYO, kryoInst);
-      }
-      catch(ConfigurationException cx) {
-        // This interface can't throw
-        throw new RuntimeException(cx);
-      }
+	// null check is to handle when calling the defaul constructor, in Configured, it calls super which calls setConf with a null Configuration
+	if (conf != null) {
+	    try {
+		KryoInstantiator kryoInst = new ConfiguredInstantiator(new HadoopConfig(conf));
+		testKryo = kryoInst.newKryo();
+		kryoPool = KryoPool.withByteArrayOutputStream(MAX_CACHED_KRYO, kryoInst);
+	    }
+	    catch(ConfigurationException cx) {
+		// This interface can't throw
+		throw new RuntimeException(cx);
+	    }
+	}
     }
 
     /**

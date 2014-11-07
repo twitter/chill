@@ -15,8 +15,8 @@ limitations under the License.
 package com.twitter.chill.avro
 
 import com.twitter.bijection.Injection
-import com.twitter.bijection.avro.{GenericAvroCodecs, SpecificAvroCodecs}
-import com.twitter.chill.{InjectiveSerializer, KSerializer}
+import com.twitter.bijection.avro.{ GenericAvroCodecs, SpecificAvroCodecs }
+import com.twitter.chill.{ InjectiveSerializer, KSerializer }
 import org.apache.avro.Schema
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.specific.SpecificRecordBase
