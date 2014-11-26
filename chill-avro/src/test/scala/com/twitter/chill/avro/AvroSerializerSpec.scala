@@ -21,13 +21,15 @@ import org.apache.avro.generic.GenericRecordBuilder
 import org.apache.avro.SchemaBuilder
 import org.apache.avro.generic.GenericData.Record
 
+import scala.reflect.ClassTag
+
 /**
  * @author Mansur Ashraf
  * @since 2/9/14.
  */
-object AvroSerializerSpec extends WordSpec with Matchers {
+class AvroSerializerSpec extends WordSpec with Matchers {
 
-  def getKryo[T: Manifest](k: KSerializer[T]) = {
+  def getKryo[T: ClassTag](k: KSerializer[T]) = {
     val inst = {
       () => (new ScalaKryoInstantiator).newKryo.forClass(k)
     }

@@ -14,13 +14,14 @@ limitations under the License.
 */
 package com.twitter.chill.avro
 
-import org.apache.avro.specific.SpecificRecordBase
-import com.twitter.chill.{ InjectiveSerializer, KSerializer }
-import com.twitter.bijection.avro.{ GenericAvroCodecs, SpecificAvroCodecs }
-import org.apache.avro.Schema
 import com.twitter.bijection.Injection
-import org.apache.avro.generic.GenericData.Record
+import com.twitter.bijection.avro.{ GenericAvroCodecs, SpecificAvroCodecs }
+import com.twitter.chill.{ InjectiveSerializer, KSerializer }
+import org.apache.avro.Schema
 import org.apache.avro.generic.GenericRecord
+import org.apache.avro.specific.SpecificRecordBase
+
+import scala.reflect.ClassTag
 
 /**
  * @author Mansur Ashraf
@@ -28,24 +29,24 @@ import org.apache.avro.generic.GenericRecord
  */
 object AvroSerializer {
 
-  def SpecificRecordSerializer[T <: SpecificRecordBase: Manifest]: KSerializer[T] = {
+  def SpecificRecordSerializer[T <: SpecificRecordBase: ClassTag]: KSerializer[T] = {
     implicit val inj = SpecificAvroCodecs[T]
     InjectiveSerializer.asKryo
   }
 
-  def SpecificRecordBinarySerializer[T <: SpecificRecordBase: Manifest]: KSerializer[T] = {
+  def SpecificRecordBinarySerializer[T <: SpecificRecordBase: ClassTag]: KSerializer[T] = {
     implicit val inj = SpecificAvroCodecs.toBinary[T]
     InjectiveSerializer.asKryo
   }
 
-  def SpecificRecordJsonSerializer[T <: SpecificRecordBase: Manifest](schema: Schema): KSerializer[T] = {
+  def SpecificRecordJsonSerializer[T <: SpecificRecordBase: ClassTag](schema: Schema): KSerializer[T] = {
     import com.twitter.bijection.StringCodec.utf8
     implicit val inj = SpecificAvroCodecs.toJson[T](schema)
     implicit val avroToArray = Injection.connect[T, String, Array[Byte]]
     InjectiveSerializer.asKryo
   }
 
-  def GenericRecordSerializer[T <: GenericRecord: Manifest](schema: Schema = null): KSerializer[T] = {
+  def GenericRecordSerializer[T <: GenericRecord: ClassTag](schema: Schema = null): KSerializer[T] = {
     implicit val inj = GenericAvroCodecs[T](schema)
     InjectiveSerializer.asKryo
   }
