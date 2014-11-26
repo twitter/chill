@@ -1,5 +1,12 @@
 # chill #
 
+### 0.5.1
+* reverse Config contains logic: https://github.com/twitter/chill/pull/205
+* fix setConf: https://github.com/twitter/chill/pull/204
+* fix default constructor for kryo serialization: https://github.com/twitter/chill/pull/203
+* Switched Chill Avro to use ClassTags, added Java unit tests: https://github.com/twitter/chill/pull/200
+* Enable cross compilation for chill-avro: https://github.com/twitter/chill/pull/202
+
 ### 0.5.0
 * Move to211: https://github.com/twitter/chill/pull/197
 * Make 2.10.4 the default, move to scalatest: https://github.com/twitter/chill/pull/196
