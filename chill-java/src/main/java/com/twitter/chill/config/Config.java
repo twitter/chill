@@ -31,7 +31,7 @@ abstract public class Config {
   }
 
   public boolean contains(String key) {
-    return get(key) == null;
+    return get(key) != null;
   }
   public Boolean getBoolean(String key) {
     String bval = get(key);
