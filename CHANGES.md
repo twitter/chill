@@ -1,5 +1,10 @@
 # chill #
 
+### 0.4.1
+* reverse Config contains logic: https://github.com/twitter/chill/pull/205
+* fix setConf: https://github.com/twitter/chill/pull/204
+* fix default constructor for kryo serialization: https://github.com/twitter/chill/pull/203
+
 ### 0.4.0
 * Support serializing asJavaIterable.: https://github.com/twitter/chill/pull/192
 * Remove a deprecation, that really should never have been there: https://github.com/twitter/chill/pull/189
