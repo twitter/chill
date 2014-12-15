@@ -139,6 +139,8 @@ object is created.
 
 ## Community and Documentation
 
+This, and all [github.com/twitter](https://github.com/twitter) projects, are under the [Twitter Open Source Code of Conduct](https://engineering.twitter.com/opensource/code-of-conduct). Additionally, see the [Typelevel Code of Conduct](http://typelevel.org/conduct) for specific examples of harassing behavior that are not tolerated.
+
 To learn more and find links to tutorials and information around the web, check out the [Chill Wiki](https://github.com/twitter/chill/wiki).
 
 The latest ScalaDocs are hosted on Chill's [Github Project Page](http://twitter.github.io/chill).
