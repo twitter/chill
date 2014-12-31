@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.twitter.chill.config
 
+import org.scalacheck.Prop.forAll
+import org.scalacheck.Properties
 import org.scalatest._
 
 import com.twitter.chill._
@@ -47,6 +49,15 @@ class ReflectingInstantiatorTest extends WordSpec with Matchers {
       val cci3 = new ConfiguredInstantiator(conf)
       cci3.getDelegate.getClass should equal(classOf[TestInstTwo])
       cci3.getDelegate should not equal (cci2.getDelegate)
+    }
+  }
+}
+
+object ConfiguredInstantiatorProperties extends Properties("ConfiguredInstantiator") {
+  property("properly split keys") = forAll { (str: String) =>
+    ConfiguredInstantiator.fastSplitKey(str) match {
+      case null => str.split(":").length > 2
+      case success => success.mkString(":") == str
     }
   }
 }

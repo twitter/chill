@@ -174,7 +174,7 @@ public class ConfiguredInstantiator extends KryoInstantiator {
   /** Java's string split is very expensive due to regexes.
    * Implement our own simple version instead.
    */
-  private String[] fastSplitKey(String key) {
+  public static String[] fastSplitKey(String key) {
     int i = key.indexOf(':');
     if(-1 == i) {
       return new String[]{key};
