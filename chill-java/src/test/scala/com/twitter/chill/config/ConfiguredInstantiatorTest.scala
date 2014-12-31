@@ -22,6 +22,7 @@ import com.twitter.chill._
 import com.esotericsoftware.kryo.Kryo
 
 class TestInst extends KryoInstantiator { override def newKryo = new Kryo }
+class TestInstTwo extends KryoInstantiator { override def newKryo = new Kryo }
 
 class ReflectingInstantiatorTest extends WordSpec with Matchers {
   "A ConfiguredInstantiator" should {
@@ -38,6 +39,14 @@ class ReflectingInstantiatorTest extends WordSpec with Matchers {
       val cci = new ConfiguredInstantiator(conf)
       // Here is the only assert:
       cci.getDelegate.getClass should equal(classOf[TestInst])
+      // Verify that caching is working:
+      val cci2 = new ConfiguredInstantiator(conf)
+      cci.getDelegate should equal(cci2.getDelegate)
+      // Set a new serialized and verify caching is still correct:
+      ConfiguredInstantiator.setSerialized(conf, new TestInstTwo)
+      val cci3 = new ConfiguredInstantiator(conf)
+      cci3.getDelegate.getClass should equal(classOf[TestInstTwo])
+      cci3.getDelegate should not equal (cci2.getDelegate)
     }
   }
 }

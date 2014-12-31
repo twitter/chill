@@ -150,25 +150,25 @@ public class ConfiguredInstantiator extends KryoInstantiator {
     return Base64.encodeBytes(out.toBytes());
   }
 
-  /** Simple class to hold the cached copy of the latest kyro instantiator.
+  /** Simple class to hold the cached copy of the latest kryo instantiator.
    * As well as its corresponding base64 encoded data.
    */
-  private static class CachedKyroInstantiator {
-    public final KryoInstantiator kyroInstantiator;
+  private static class CachedKryoInstantiator {
+    public final KryoInstantiator kryoInstantiator;
     public final String base64Value;
-    public CachedKyroInstantiator(KryoInstantiator ki, String bv) {
-      kyroInstantiator = ki;
+    public CachedKryoInstantiator(KryoInstantiator ki, String bv) {
+      kryoInstantiator = ki;
       base64Value = bv;
     }
   }
 
-  private static CachedKyroInstantiator cachedKryoInstantiator = null;
+  private static CachedKryoInstantiator cachedKryoInstantiator = null;
 
-  private static KryoInstantiator fastDeserialize(Kryo k, String base64Value) throws ConfigurationException {
+  private static synchronized KryoInstantiator fastDeserialize(Kryo k, String base64Value) throws ConfigurationException {
     if(cachedKryoInstantiator == null || !cachedKryoInstantiator.base64Value.equals(base64Value)) {
-      cachedKryoInstantiator = new CachedKyroInstantiator(deserialize(k, base64Value), base64Value);
+      cachedKryoInstantiator = new CachedKryoInstantiator(deserialize(k, base64Value), base64Value);
     }
-    return cachedKryoInstantiator.kyroInstantiator;
+    return cachedKryoInstantiator.kryoInstantiator;
   }
 
   /** Java's string split is very expensive due to regexes.
