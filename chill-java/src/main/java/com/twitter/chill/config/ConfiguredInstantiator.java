@@ -52,8 +52,8 @@ public class ConfiguredInstantiator extends KryoInstantiator {
       delegate = new KryoInstantiator();
     }
     else {
-      String[] parts = key.split(":");
-      if(parts.length != 1 && parts.length != 2) {
+      String[] parts = fastSplitKey(key);
+      if(parts == null) {
         throw new ConfigurationException("Invalid Config Key: " + conf.get(KEY));
       }
       KryoInstantiator reflected = null;
@@ -63,7 +63,7 @@ public class ConfiguredInstantiator extends KryoInstantiator {
       }
 
       if(parts.length == 2) {
-        delegate = deserialize(reflected.newKryo(), parts[1]);
+        delegate = fastDeserialize(reflected.newKryo(), parts[1]);
         if(null == delegate) {
           throw new ConfigurationException("Null delegate from: " + parts[1]);
         }
@@ -148,5 +148,45 @@ public class ConfiguredInstantiator extends KryoInstantiator {
     Output out = new Output(1 << 10, 1 << 19); // 1 MB in config is too much
     k.writeClassAndObject(out, ki);
     return Base64.encodeBytes(out.toBytes());
+  }
+
+  /** Simple class to hold the cached copy of the latest kryo instantiator.
+   * As well as its corresponding base64 encoded data.
+   */
+  private static class CachedKryoInstantiator {
+    public final KryoInstantiator kryoInstantiator;
+    public final String base64Value;
+    public CachedKryoInstantiator(KryoInstantiator ki, String bv) {
+      kryoInstantiator = ki;
+      base64Value = bv;
+    }
+  }
+
+  private static CachedKryoInstantiator cachedKryoInstantiator = null;
+
+  private static synchronized KryoInstantiator fastDeserialize(Kryo k, String base64Value) throws ConfigurationException {
+    if(cachedKryoInstantiator == null || !cachedKryoInstantiator.base64Value.equals(base64Value)) {
+      cachedKryoInstantiator = new CachedKryoInstantiator(deserialize(k, base64Value), base64Value);
+    }
+    return cachedKryoInstantiator.kryoInstantiator;
+  }
+
+  /** Java's string split is very expensive due to regexes.
+   * Implement our own simple version instead.
+   */
+  public static String[] fastSplitKey(String key) {
+    int i = key.indexOf(':');
+    if(-1 == i) {
+      return new String[]{key};
+    }
+    else {
+      int j = key.indexOf(':', i+1);
+      if (-1 != j) {
+        return null;
+      }
+      else {
+        return new String[]{key.substring(0, i), key.substring(i+1)};
+      }
+    }
   }
 }
