@@ -1,5 +1,8 @@
 # chill #
 
+### 0.4.2
+* Backport PR 213
+
 ### 0.4.1
 * reverse Config contains logic: https://github.com/twitter/chill/pull/205
 * fix setConf: https://github.com/twitter/chill/pull/204
