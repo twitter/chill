@@ -1,5 +1,10 @@
 # chill #
 
+### 0.5.2 ###
+* Use new Travis CI infrastructure #210
+* Optimizations for ConfiguredInstantiator. #213
+* Upgrade to algebird 0.9.0, bijection 0.7.2, scala 2.11.5 #214
+
 ### 0.5.1
 * reverse Config contains logic: https://github.com/twitter/chill/pull/205
 * fix setConf: https://github.com/twitter/chill/pull/204
