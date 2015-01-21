@@ -139,6 +139,8 @@ object is created.
 
 ## Community and Documentation
 
+This, and all [github.com/twitter](https://github.com/twitter) projects, are under the [Twitter Open Source Code of Conduct](https://engineering.twitter.com/opensource/code-of-conduct). Additionally, see the [Typelevel Code of Conduct](http://typelevel.org/conduct) for specific examples of harassing behavior that are not tolerated.
+
 To learn more and find links to tutorials and information around the web, check out the [Chill Wiki](https://github.com/twitter/chill/wiki).
 
 The latest ScalaDocs are hosted on Chill's [Github Project Page](http://twitter.github.io/chill).
@@ -147,7 +149,7 @@ Discussion occurs primarily on the [Chill mailing list](https://groups.google.co
 
 ## Maven
 
-Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.5.1` and each scala project is published for `2.10` and `2.11`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.5.2` and each scala project is published for `2.10` and `2.11`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
 
 ## Authors
 

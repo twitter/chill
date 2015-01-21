@@ -20,10 +20,10 @@ object ChillBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
 
-    version := "0.5.1",
+    version := "0.5.2",
     organization := "com.twitter",
     scalaVersion := "2.10.4",
-    crossScalaVersions := Seq("2.10.4", "2.11.2"),
+    crossScalaVersions := Seq("2.10.4", "2.11.5"),
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     ScalariformKeys.preferences := formattingPreferences,
 
@@ -126,7 +126,7 @@ object ChillBuild extends Build {
       .filterNot(unreleasedModules.contains(_))
       .map { s =>
       val suffix = if (javaOnly.contains(s)) "" else "_2.10"
-      "com.twitter" % ("chill-" + s + suffix) % "0.5.1"
+      "com.twitter" % ("chill-" + s + suffix) % "0.5.2"
     }
 
   def module(name: String) = {
@@ -158,7 +158,7 @@ object ChillBuild extends Build {
 
   lazy val chillBijection = module("bijection").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-core" % "0.7.0"
+      "com.twitter" %% "bijection-core" % "0.7.2"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
@@ -226,14 +226,14 @@ object ChillBuild extends Build {
 
   lazy val chillAvro = module("avro").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-avro" % "0.7.0",
+      "com.twitter" %% "bijection-avro" % "0.7.2",
       "junit" % "junit" % "4.5" % "test"
     )
   ).dependsOn(chill,chillJava, chillBijection)
 
   lazy val chillAlgebird = module("algebird").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "algebird-core" % "0.8.0"
+      "com.twitter" %% "algebird-core" % "0.9.0"
     )
   ).dependsOn(chill)
 }
