@@ -1,5 +1,7 @@
 package com.twitter.chill
 
+import _root_.java.io.Serializable
+
 import com.twitter.bijection.Injection
 
 /**
@@ -17,7 +19,7 @@ object InjectiveSerializer {
     new InjectiveSerializer(injection)
 }
 
-class InjectiveSerializer[T] private (injection: Injection[T, Array[Byte]]) extends KSerializer[T] {
+class InjectiveSerializer[T] private (injection: Injection[T, Array[Byte]]) extends KSerializer[T] with Serializable {
   def write(kser: Kryo, out: Output, obj: T) {
     val bytes = injection(obj)
     out.writeInt(bytes.length, true)
