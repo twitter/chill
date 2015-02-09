@@ -1,5 +1,12 @@
 language: scala
 sudo: false
-scala:
-  - 2.10.4
-  - 2.11.2
+matrix:
+  include:
+    - scala: 2.10.4
+      script: ./sbt ++$TRAVIS_SCALA_VERSION clean test
+    
+    - scala: 2.11.5
+      script: ./sbt ++$TRAVIS_SCALA_VERSION clean coverage test
+      #it looks like the chill-all target aggregates the data
+      #automatically, so we can just use sbt coveralls
+      after_success: "./sbt coveralls"
