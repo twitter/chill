@@ -9,4 +9,4 @@ matrix:
       script: ./sbt ++$TRAVIS_SCALA_VERSION clean coverage test
       #it looks like the chill-all target aggregates the data
       #automatically, so we can just use sbt coveralls
-      after_success: "./sbt coveralls"
+      after_success: "./sbt coverageReport coveralls"
