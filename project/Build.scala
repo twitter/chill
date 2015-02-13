@@ -199,20 +199,11 @@ object ChillBuild extends Build {
     )
   )
 
-   def scroogeBuildDeps(scalaVersion: String): Seq[sbt.ModuleID] = isScala210x(scalaVersion) match {
-      case false => Seq()
-      case true => Seq(
-        "com.twitter" %% "scrooge-serializer" % "3.13.0"
-     )
-  }
-
   lazy val chillScrooge = module("scrooge").settings(
-    skip in compile := !isScala210x(scalaVersion.value),
-    skip in test := !isScala210x(scalaVersion.value),
-    publishArtifact := isScala210x(scalaVersion.value),
     libraryDependencies ++= Seq(
-      "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit")
-    ) ++ scroogeBuildDeps(scalaVersion.value)
+      "org.apache.thrift" % "libthrift" % "0.9.1" exclude("junit", "junit"),
+      "com.twitter" %% "scrooge-serializer" % "3.17.0"
+    )
   ).dependsOn(chill % "test->test;compile->compile")
 
   // This can only have java deps!
