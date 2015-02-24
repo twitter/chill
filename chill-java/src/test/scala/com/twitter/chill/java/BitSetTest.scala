@@ -63,14 +63,30 @@ class BitSetSpec extends WordSpec with MustMatchers {
       }
 
       // warmup In case anybody wants to see hotspot
+      var lastBitSetFromOld : util.BitSet = null
       for(i <- 0 to 50000) {
-        rt(element)(oldKryo)
+        lastBitSetFromOld = rt(element)(oldKryo)
       }
       var start = System.currentTimeMillis()
       for(i <- 0 to 100000) {
         rt(element)(oldKryo)
       }
       println("The old serializer took "+(System.currentTimeMillis() - start)+"ms")
+
+      var lastBitSetFromNew : util.BitSet = null
+      // warmup for the new kryo
+      for(i <- 0 to 50000) {
+        lastBitSetFromNew = rt(element)(newKryo)
+      }
+      // check for the three bitsets to be equal
+      for (i <- 0 to 2048) {
+        // original bitset against old serializer output
+        element.get(i) must be(lastBitSetFromOld.get(i))
+
+        // original bitset against new serializer output
+        element.get(i) must be(lastBitSetFromNew.get(i))
+      }
+
 
       start = System.currentTimeMillis()
       for(i <- 0 to 100000) {
@@ -81,11 +97,15 @@ class BitSetSpec extends WordSpec with MustMatchers {
       var out = new Output(1, -1)
       oldKryo.writeObject(out, element)
       out.flush()
-      println("The old serializer needs "+out.total()+" bytes")
+      var oldBytes = out.total()
+      println("The old serializer needs "+oldBytes+" bytes")
       out = new Output(1, -1)
       newKryo.writeObject(out, element)
       out.flush()
-      println("The new serializer needs "+out.total()+" bytes")
+      var newBytes = out.total()
+      println("The new serializer needs "+newBytes+" bytes")
+
+      oldBytes >= newBytes must be(true)
     }
   }
 }
