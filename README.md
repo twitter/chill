@@ -1,4 +1,4 @@
-## Chill [![Build Status](https://secure.travis-ci.org/twitter/chill.png)](http://travis-ci.org/twitter/chill)
+## Chill [![Build Status](https://secure.travis-ci.org/twitter/chill.png)](http://travis-ci.org/twitter/chill)[![Coverage Status](https://coveralls.io/repos/twitter/chill/badge.png?branch=develop)](https://coveralls.io/r/twitter/chill?branch=develop)
 
 Extensions for the [Kryo serialization library](https://github.com/EsotericSoftware/kryo) including
 serializers and a set of classes to ease configuration of Kryo in systems like Hadoop, Storm,
