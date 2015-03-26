@@ -16,15 +16,16 @@ limitations under the License.
 
 package com.twitter.chill.akka
 
-import org.scalatest._
-
-import akka.actor.{ ActorRef, ActorSystem }
+import akka.actor.{ Props, Actor, ActorRef, ActorSystem }
 import akka.serialization._
 import com.typesafe.config.ConfigFactory
+import org.scalatest._
+
+import scala.concurrent.Await
 
 class AkkaTests extends WordSpec with Matchers {
 
-  val system = ActorSystem("example", ConfigFactory.parseString("""
+  val system = ActorSystem("test-system", ConfigFactory.parseString("""
     akka.actor.serializers {
       kryo = "com.twitter.chill.akka.AkkaSerializer"
     }
@@ -46,12 +47,15 @@ class AkkaTests extends WordSpec with Matchers {
     }
 
     "be selected for ActorRef" in {
-      val serializer = serialization.findSerializerFor(system.actorFor("akka://test-system/test-actor"))
+      val actorRef = system.actorOf(Props.create(classOf[DummyActor], this), "test-actor")
+      val serializer = serialization.findSerializerFor(actorRef)
       serializer.getClass.equals(classOf[AkkaSerializer]) should equal(true)
     }
 
     "serialize and deserialize ActorRef successfully" in {
-      val actorRef = system.actorFor("akka://test-system/test-actor")
+      import scala.concurrent.duration._
+      implicit val timeout = 5.seconds
+      val actorRef = Await.result(system.actorSelection("akka://test-system/user/test-actor").resolveOne()(timeout), 6.seconds)
 
       val serialized = serialization.serialize(actorRef)
       serialized.isSuccess should equal(true)
@@ -62,5 +66,9 @@ class AkkaTests extends WordSpec with Matchers {
       deserialized.get.equals(actorRef) should equal(true)
     }
 
+  }
+
+  class DummyActor extends Actor {
+    override def receive: Receive = { case msg => println(msg) }
   }
 }

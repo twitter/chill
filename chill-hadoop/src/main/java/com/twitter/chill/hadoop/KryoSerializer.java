@@ -16,15 +16,13 @@ limitations under the License.
 
 package com.twitter.chill.hadoop;
 
+import com.twitter.chill.KryoPool;
+import com.twitter.chill.SerDeState;
 import org.apache.hadoop.io.serializer.Serializer;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import com.twitter.chill.KryoPool;
-import com.twitter.chill.SerDeState;
 
 public class KryoSerializer implements Serializer<Object> {
     private final KryoPool kryoPool;
@@ -47,7 +45,7 @@ public class KryoSerializer implements Serializer<Object> {
         try {
           st.writeObject(o);
           // Copy from buffer to output stream.
-          outputStream.writeInt(st.numOfWrittenBytes());
+          outputStream.writeInt((int)st.numOfWrittenBytes());
           st.writeOutputTo(outputStream);
         }
         finally {

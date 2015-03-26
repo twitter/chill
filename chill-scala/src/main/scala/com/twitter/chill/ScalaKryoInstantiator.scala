@@ -16,6 +16,9 @@ limitations under the License.
 
 package com.twitter.chill
 
+import com.esotericsoftware.kryo.Kryo.DefaultInstantiatorStrategy
+import org.objenesis.strategy.StdInstantiatorStrategy
+
 import scala.collection.immutable.{
   BitSet,
   HashSet,
@@ -56,7 +59,7 @@ class EmptyScalaKryoInstantiator extends KryoInstantiator {
   override def newKryo = {
     val k = new KryoBase
     k.setRegistrationRequired(false)
-    k.setInstantiatorStrategy(new org.objenesis.strategy.StdInstantiatorStrategy)
+    k.setInstantiatorStrategy(new DefaultInstantiatorStrategy(new StdInstantiatorStrategy))
     k
   }
 }
