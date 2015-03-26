@@ -19,37 +19,70 @@ package com.twitter.chill;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 
-/** Use reflection to instantiate a serializer.
+import static com.esotericsoftware.kryo.util.Util.className;
+
+/**
+ * Use reflection to instantiate a serializer.
  * Used when serializer classes are written to config files
  */
 public class ReflectingRegistrar<T> implements IKryoRegistrar {
-  final Class<T> klass;
-  // Some serializers handle any class (FieldsSerializer, for instance)
-  final Class<? extends Serializer<?>> serializerKlass;
+    final Class<T> klass;
+    // Some serializers handle any class (FieldsSerializer, for instance)
+    final Class<? extends Serializer<?>> serializerKlass;
 
-  public Class<T> getRegisteredClass() { return klass; }
-  public Class<? extends Serializer<?>> getSerializerClass() { return serializerKlass; }
+    public Class<T> getRegisteredClass() {
+        return klass;
+    }
 
-  public ReflectingRegistrar(Class<T> cls, Class<? extends Serializer<?>> ser) {
-    klass = cls;
-    serializerKlass = ser;
-  }
-  @Override
-  public void apply(Kryo k) { k.register(klass, k.newSerializer(serializerKlass, klass)); }
-  @Override
-  public int hashCode() { return klass.hashCode() ^ serializerKlass.hashCode(); }
+    public Class<? extends Serializer<?>> getSerializerClass() {
+        return serializerKlass;
+    }
 
-  @Override
-  public boolean equals(Object that) {
-    if(null == that) {
-      return false;
+    public ReflectingRegistrar(Class<T> cls, Class<? extends Serializer<?>> ser) {
+        klass = cls;
+        serializerKlass = ser;
     }
-    else if(that instanceof ReflectingRegistrar) {
-      return klass.equals(((ReflectingRegistrar)that).klass) &&
-        serializerKlass.equals(((ReflectingRegistrar)that).serializerKlass);
+
+    @Override
+    public void apply(Kryo k) {
+        k.register(klass, newSerializer(serializerKlass, klass));
     }
-    else {
-      return false;
+
+    protected Serializer newSerializer(Class<? extends Serializer> serializerClass, Class type) {
+        try {
+            try {
+                return serializerClass.getConstructor(Kryo.class, Class.class).newInstance(this, type);
+            } catch (NoSuchMethodException ex1) {
+                try {
+                    return serializerClass.getConstructor(Kryo.class).newInstance(this);
+                } catch (NoSuchMethodException ex2) {
+                    try {
+                        return serializerClass.getConstructor(Class.class).newInstance(type);
+                    } catch (NoSuchMethodException ex3) {
+                        return serializerClass.newInstance();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Unable to create serializer \"" + serializerClass.getName() + "\" for class: "
+                    + className(type), ex);
+        }
     }
-  }
+
+    @Override
+    public int hashCode() {
+        return klass.hashCode() ^ serializerKlass.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+        if (null == that) {
+            return false;
+        } else if (that instanceof ReflectingRegistrar) {
+            return klass.equals(((ReflectingRegistrar) that).klass) &&
+                    serializerKlass.equals(((ReflectingRegistrar) that).serializerKlass);
+        } else {
+            return false;
+        }
+    }
 }

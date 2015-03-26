@@ -23,49 +23,75 @@ import com.esotericsoftware.kryo.io.Output;
 import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+
 /**
  * This holds a Kryo Instance, Input and Output so that these
  * objects can be pooled and no reallocated on each serialization.
  */
 public class SerDeState {
-  protected final Kryo kryo;
-  protected final Input input;
-  protected final Output output;
-  // To reset the Input
-  static final byte[] EMPTY_BUFFER = new byte[0];
+    protected final Kryo kryo;
+    protected final Input input;
+    protected final Output output;
+    // To reset the Input
+    static final byte[] EMPTY_BUFFER = new byte[0];
 
-  protected SerDeState(Kryo k, Input in, Output out) {
-    kryo = k;
-    input = in;
-    output = out;
-  }
+    protected SerDeState(Kryo k, Input in, Output out) {
+        kryo = k;
+        input = in;
+        output = out;
+    }
 
-  /** Call this when to reset the state to the initial state */
-  public void clear() {
-    input.setBuffer(EMPTY_BUFFER);
-    output.clear();
-  }
+    /**
+     * Call this when to reset the state to the initial state
+     */
+    public void clear() {
+        input.setBuffer(EMPTY_BUFFER);
+        output.clear();
+    }
 
-  public void setInput(byte[] in) { input.setBuffer(in); }
-  public void setInput(byte[] in, int offset, int count) { input.setBuffer(in, offset, count); }
-  public void setInput(InputStream in) { input.setInputStream(in); }
+    public void setInput(byte[] in) {
+        input.setBuffer(in);
+    }
 
-  public int numOfWrittenBytes() { return output.total(); }
-  public int numOfReadBytes() { return input.total(); }
+    public void setInput(byte[] in, int offset, int count) {
+        input.setBuffer(in, offset, count);
+    }
 
-  // Common operations:
-  public <T> T readObject(Class<T> cls) {
-    return kryo.readObject(input, cls);
-  }
-  public Object readClassAndObject() {
-    return kryo.readClassAndObject(input);
-  }
-  public void writeObject(Object o) { kryo.writeObject(output, o); }
-  public void writeClassAndObject(Object o) { kryo.writeClassAndObject(output, o); }
+    public void setInput(InputStream in) {
+        input.setInputStream(in);
+    }
 
-  public byte[] outputToBytes() { return output.toBytes(); }
-  // There for ByteArrayOutputStream cases this can be optimized
-  public void writeOutputTo(OutputStream os) throws IOException {
-    os.write(outputToBytes());
-  }
+    public long numOfWrittenBytes() {
+        return output.total();
+    }
+
+    public long numOfReadBytes() {
+        return input.total();
+    }
+
+    // Common operations:
+    public <T> T readObject(Class<T> cls) {
+        return kryo.readObject(input, cls);
+    }
+
+    public Object readClassAndObject() {
+        return kryo.readClassAndObject(input);
+    }
+
+    public void writeObject(Object o) {
+        kryo.writeObject(output, o);
+    }
+
+    public void writeClassAndObject(Object o) {
+        kryo.writeClassAndObject(output, o);
+    }
+
+    public byte[] outputToBytes() {
+        return output.toBytes();
+    }
+
+    // There for ByteArrayOutputStream cases this can be optimized
+    public void writeOutputTo(OutputStream os) throws IOException {
+        os.write(outputToBytes());
+    }
 }

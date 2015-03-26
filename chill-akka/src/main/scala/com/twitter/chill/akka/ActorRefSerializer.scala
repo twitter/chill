@@ -46,7 +46,7 @@ class ActorRefSerializer(system: ExtendedActorSystem) extends Serializer[ActorRe
 
   override def read(kryo: Kryo, input: Input, typ: Class[ActorRef]): ActorRef = {
     val path = input.readString()
-    system.actorFor(path)
+    system.provider.resolveActorRef(path)
   }
 
   override def write(kryo: Kryo, output: Output, obj: ActorRef) = {

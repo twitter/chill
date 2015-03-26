@@ -19,35 +19,33 @@ package com.twitter.chill;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 
-/** Set the default serializers for subclasses of the given class
+/**
+ * Set the default serializers for subclasses of the given class
  */
-public class ReflectingDefaultRegistrar<T> implements IKryoRegistrar {
-  final Class<T> klass;
-  // Some serializers handle any class (FieldsSerializer, for instance)
-  final Class<? extends Serializer<?>> serializerKlass;
-  public ReflectingDefaultRegistrar(Class<T> cls, Class<? extends Serializer<?>> ser) {
-    klass = cls;
-    serializerKlass = ser;
-  }
-  public Class<T> getRegisteredClass() { return klass; }
-  public Class<? extends Serializer<?>> getSerializerClass() { return serializerKlass; }
-  @Override
-  public void apply(Kryo k) { k.addDefaultSerializer(klass, k.newSerializer(serializerKlass, klass)); }
+public class ReflectingDefaultRegistrar<T> extends ReflectingRegistrar<T> {
+    public ReflectingDefaultRegistrar(Class<T> cls, Class<? extends Serializer<?>> ser) {
+        super(cls, ser);
+    }
 
-  @Override
-  public int hashCode() { return klass.hashCode() ^ serializerKlass.hashCode(); }
+    @Override
+    public void apply(Kryo k) {
+        k.addDefaultSerializer(klass, newSerializer(serializerKlass, klass));
+    }
 
-  @Override
-  public boolean equals(Object that) {
-    if(null == that) {
-      return false;
+    @Override
+    public int hashCode() {
+        return klass.hashCode() ^ serializerKlass.hashCode();
     }
-    else if(that instanceof ReflectingDefaultRegistrar) {
-      return klass.equals(((ReflectingDefaultRegistrar)that).klass) &&
-        serializerKlass.equals(((ReflectingDefaultRegistrar)that).serializerKlass);
+
+    @Override
+    public boolean equals(Object that) {
+        if (null == that) {
+            return false;
+        } else if (that instanceof ReflectingDefaultRegistrar) {
+            return klass.equals(((ReflectingDefaultRegistrar) that).klass) &&
+                    serializerKlass.equals(((ReflectingDefaultRegistrar) that).serializerKlass);
+        } else {
+            return false;
+        }
     }
-    else {
-      return false;
-    }
-  }
 }

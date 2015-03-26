@@ -1,16 +1,13 @@
 package chill
 
-import sbt._
-import Keys._
-import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
-import com.typesafe.tools.mima.plugin.MimaKeys._
-import scalariform.formatter.preferences._
 import com.typesafe.sbt.SbtScalariform._
-
-import scala.collection.JavaConverters._
+import com.typesafe.tools.mima.plugin.MimaKeys._
+import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import sbt.Keys._
+import sbt._
 
 object ChillBuild extends Build {
-  val kryoVersion = "2.21"
+  val kryoVersion = "3.0.1"
 
 
   def isScala210x(scalaVersion: String) = scalaVersion match {
@@ -22,8 +19,8 @@ object ChillBuild extends Build {
 
     version := "0.5.2",
     organization := "com.twitter",
-    scalaVersion := "2.10.4",
-    crossScalaVersions := Seq("2.10.4", "2.11.5"),
+    scalaVersion := "2.10.5",
+    crossScalaVersions := Seq("2.10.5", "2.11.6"),
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     ScalariformKeys.preferences := formattingPreferences,
 
@@ -36,9 +33,10 @@ object ChillBuild extends Build {
       Opts.resolver.sonatypeReleases
     ),
     libraryDependencies ++= Seq(
-      "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
-      "org.scalatest" %% "scalatest" % "2.2.2" % "test",
-      "com.esotericsoftware.kryo" % "kryo" % kryoVersion
+      "org.scalacheck" %% "scalacheck" % "1.12.2" % "test",
+      "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+      "com.esotericsoftware" % "kryo" % kryoVersion,
+      "com.esotericsoftware" % "kryo-shaded" % kryoVersion
     ),
 
     parallelExecution in Test := true,
@@ -123,7 +121,7 @@ object ChillBuild extends Build {
 
   def youngestForwardCompatible(subProj: String) =
     Some(subProj)
-      .filterNot(unreleasedModules.contains(_))
+      .filterNot(unreleasedModules.contains)
       .map { s =>
       val suffix = if (javaOnly.contains(s)) "" else "_2.10"
       "com.twitter" % ("chill-" + s + suffix) % "0.5.2"
@@ -152,7 +150,7 @@ object ChillBuild extends Build {
     resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= Seq(
       "com.typesafe" % "config" % "1.2.1",
-      "com.typesafe.akka" %% "akka-actor" % "2.3.6" % "provided"
+      "com.typesafe.akka" %% "akka-actor" % "2.3.9" % "provided"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
