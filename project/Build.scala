@@ -36,8 +36,8 @@ object ChillBuild extends Build {
       Opts.resolver.sonatypeReleases
     ),
     libraryDependencies ++= Seq(
-      "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
-      "org.scalatest" %% "scalatest" % "2.2.2" % "test",
+      "org.scalacheck" %% "scalacheck" % "1.12.2" % "test",
+      "org.scalatest" %% "scalatest" % "2.2.4" % "test",
       "com.esotericsoftware.kryo" % "kryo" % kryoVersion
     ),
 
