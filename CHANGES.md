@@ -1,5 +1,11 @@
 # chill #
 
+### 0.6.0 ###
+* Add build instructions to readme and make InjectiveSerializer serializable #216
+* Build chill-scrooge for scala 2.11, too #219
+* Rewrite Java BitSet serializer to make it more efficient #220
+* Bijection 0.8.0, algebird 0.10.0, scala 2.10.5 #228
+
 ### 0.5.2 ###
 * Use new Travis CI infrastructure #210
 * Optimizations for ConfiguredInstantiator. #213

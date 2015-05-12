@@ -4,6 +4,16 @@ Extensions for the [Kryo serialization library](https://github.com/EsotericSoftw
 serializers and a set of classes to ease configuration of Kryo in systems like Hadoop, Storm,
 Akka, etc.
 
+
+### Buidling Chill
+
+```bash
+./sbt
+> compile # to build chill
+> publishM2 # to publish chill to your local .m2 repo
+> publish-local # publish to local ivy repo.
+```
+
 Chill has a set of subprojects: chill-java, chill-hadoop, chill-storm and chill-scala.  Other than
 chill-scala, all these projects are written in Java so they are easy to use on any JVM platform.
 
@@ -149,7 +159,7 @@ Discussion occurs primarily on the [Chill mailing list](https://groups.google.co
 
 ## Maven
 
-Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.5.2` and each scala project is published for `2.10` and `2.11`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.6.0` and each scala project is published for `2.10` and `2.11`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
 
 ## Authors
 
