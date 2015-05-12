@@ -20,7 +20,7 @@ object ChillBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
 
-    version := "0.5.2",
+    version := "0.6.0",
     organization := "com.twitter",
     scalaVersion := "2.10.5",
     crossScalaVersions := Seq("2.10.5", "2.11.5"),
@@ -126,7 +126,7 @@ object ChillBuild extends Build {
       .filterNot(unreleasedModules.contains(_))
       .map { s =>
       val suffix = if (javaOnly.contains(s)) "" else "_2.10"
-      "com.twitter" % ("chill-" + s + suffix) % "0.5.2"
+      "com.twitter" % ("chill-" + s + suffix) % "0.6.0"
     }
 
   def module(name: String) = {
