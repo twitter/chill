@@ -123,6 +123,8 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(Queue.empty[Any])
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.empty[Any])
+      // Add ListBuffer subclass before Buffer to prevent the more general case taking precedence
+      .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
       // add mutable Buffer before Vector, otherwise Vector is used
       .forTraversableSubclass(Buffer.empty[Any], isImmutable = false)
       // Vector is a final class
@@ -159,7 +161,6 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(MQueue.empty[Any], isImmutable = false)
       .forTraversableSubclass(MMap.empty[Any, Any], isImmutable = false)
       .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
-      .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
   }
 }
 
