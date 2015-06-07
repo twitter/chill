@@ -10,7 +10,7 @@ import com.typesafe.sbt.SbtScalariform._
 import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
-  val kryoVersion = "2.21"
+  val kryoVersion = "3.0.1"
 
 
   def isScala210x(scalaVersion: String) = scalaVersion match {
@@ -38,7 +38,7 @@ object ChillBuild extends Build {
     libraryDependencies ++= Seq(
       "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
       "org.scalatest" %% "scalatest" % "2.2.2" % "test",
-      "com.esotericsoftware.kryo" % "kryo" % kryoVersion
+      "com.esotericsoftware" % "kryo-shaded" % kryoVersion
     ),
 
     parallelExecution in Test := true,
