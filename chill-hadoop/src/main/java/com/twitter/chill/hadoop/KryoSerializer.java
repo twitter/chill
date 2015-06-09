@@ -47,7 +47,7 @@ public class KryoSerializer implements Serializer<Object> {
         try {
           st.writeObject(o);
           // Copy from buffer to output stream.
-          outputStream.writeLong(st.numOfWrittenBytes());
+          Varint.writeUnsignedVarLong(st.numOfWrittenBytes(), outputStream);
           st.writeOutputTo(outputStream);
         }
         finally {
