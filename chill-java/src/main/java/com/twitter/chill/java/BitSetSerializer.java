@@ -97,7 +97,7 @@ public class BitSetSerializer extends Serializer<BitSet> implements Serializable
         }
         try {
             recalculateWordsInUseMethod.invoke(ret);
-        } catch (ReflectiveOperationException e) {
+        } catch (Exception e) {
             throw new KryoException("Unable to call BitSet.recalculateWordsInUse() method", e);
         }
 
