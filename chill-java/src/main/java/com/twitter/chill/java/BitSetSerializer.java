@@ -28,6 +28,7 @@ import com.twitter.chill.SingleRegistrar;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.BitSet;
 
@@ -92,15 +93,14 @@ public class BitSetSerializer extends Serializer<BitSet> implements Serializable
         // call a private constructor: (the BitSet.valueOf() cTor is only available from Java 1.7)
         try {
             ret = bitSetConstructor.newInstance(target);
-        } catch (ReflectiveOperationException e) {
+            recalculateWordsInUseMethod.invoke(ret);
+        } catch (InvocationTargetException e) {
+            throw new KryoException("Unable to call BitSet(long[]) constructor", e);
+        } catch (IllegalAccessException e) {
+            throw new KryoException("Unable to call BitSet(long[]) constructor", e);
+        } catch (InstantiationException e) {
             throw new KryoException("Unable to call BitSet(long[]) constructor", e);
         }
-        try {
-            recalculateWordsInUseMethod.invoke(ret);
-        } catch (Exception e) {
-            throw new KryoException("Unable to call BitSet.recalculateWordsInUse() method", e);
-        }
-
         return ret;
     }
 }
