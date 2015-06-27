@@ -90,16 +90,26 @@ public class BitSetSerializer extends Serializer<BitSet> implements Serializable
         }
 
         BitSet ret = null;
-        // call a private constructor: (the BitSet.valueOf() cTor is only available from Java 1.7)
+
         try {
             ret = bitSetConstructor.newInstance(target);
+        } catch (InstantiationException e) {
+            throw new KryoException("Exception thrown while creating new instance BitSetConstructor", e);
+        } catch (IllegalAccessException e) {
+            throw new KryoException("Exception thrown while creating new instance of BitSetConstructor", e);
+        } catch (InvocationTargetException e) {
+            throw new KryoException("Exception thrown while creating new instance of BitSetConstructor", e);
+        } catch (IllegalArgumentException e) {
+            throw new KryoException("Exception thrown while creating new instance of BitSetConstructor", e);
+        }
+        try {
             recalculateWordsInUseMethod.invoke(ret);
         } catch (InvocationTargetException e) {
-            throw new KryoException("Unable to call BitSet(long[]) constructor", e);
+            throw new KryoException("Exception thrown while invoking recalculateWordsInUseMethod", e);
         } catch (IllegalAccessException e) {
-            throw new KryoException("Unable to call BitSet(long[]) constructor", e);
-        } catch (InstantiationException e) {
-            throw new KryoException("Unable to call BitSet(long[]) constructor", e);
+            throw new KryoException("Exception thrown while invoking recalculateWordsInUseMethod", e);
+        } catch (IllegalArgumentException e) {
+            throw new KryoException("Exception thrown while invoking recalculateWordsInUseMethod", e);
         }
         return ret;
     }
