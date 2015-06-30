@@ -28,6 +28,7 @@ import com.twitter.chill.SingleRegistrar;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.BitSet;
 
@@ -89,18 +90,27 @@ public class BitSetSerializer extends Serializer<BitSet> implements Serializable
         }
 
         BitSet ret = null;
-        // call a private constructor: (the BitSet.valueOf() cTor is only available from Java 1.7)
+
         try {
             ret = bitSetConstructor.newInstance(target);
-        } catch (ReflectiveOperationException e) {
-            throw new KryoException("Unable to call BitSet(long[]) constructor", e);
+        } catch (InstantiationException e) {
+            throw new KryoException("Exception thrown while creating new instance BitSetConstructor", e);
+        } catch (IllegalAccessException e) {
+            throw new KryoException("Exception thrown while creating new instance of BitSetConstructor", e);
+        } catch (InvocationTargetException e) {
+            throw new KryoException("Exception thrown while creating new instance of BitSetConstructor", e);
+        } catch (IllegalArgumentException e) {
+            throw new KryoException("Exception thrown while creating new instance of BitSetConstructor", e);
         }
         try {
             recalculateWordsInUseMethod.invoke(ret);
-        } catch (ReflectiveOperationException e) {
-            throw new KryoException("Unable to call BitSet.recalculateWordsInUse() method", e);
+        } catch (InvocationTargetException e) {
+            throw new KryoException("Exception thrown while invoking recalculateWordsInUseMethod", e);
+        } catch (IllegalAccessException e) {
+            throw new KryoException("Exception thrown while invoking recalculateWordsInUseMethod", e);
+        } catch (IllegalArgumentException e) {
+            throw new KryoException("Exception thrown while invoking recalculateWordsInUseMethod", e);
         }
-
         return ret;
     }
 }
