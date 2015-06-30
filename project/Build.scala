@@ -10,7 +10,7 @@ import com.typesafe.sbt.SbtScalariform._
 import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
-  val kryoVersion = "2.21"
+  val kryoVersion = "3.0.1"
 
 
   def isScala210x(scalaVersion: String) = scalaVersion match {
@@ -27,9 +27,12 @@ object ChillBuild extends Build {
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     ScalariformKeys.preferences := formattingPreferences,
 
-    // Twitter Hadoop needs this, sorry 1.7 fans
-    javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
-    javacOptions in doc := Seq("-source", "1.6"),
+    javacOptions ++= (
+      if (scalaVersion.value.startsWith("2.11")) Seq("-target", "1.8", "-source", "1.8", "-Xlint:-options")
+      else Seq("-target", "1.7", "-source", "1.7", "-Xlint:-options")),
+    javacOptions in doc := (
+      if (scalaVersion.value.startsWith("2.11")) Seq("-source", "1.8")
+      else Seq("-source", "1.7")),
 
     resolvers ++= Seq(
       Opts.resolver.sonatypeSnapshots,
@@ -38,7 +41,7 @@ object ChillBuild extends Build {
     libraryDependencies ++= Seq(
       "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
       "org.scalatest" %% "scalatest" % "2.2.2" % "test",
-      "com.esotericsoftware.kryo" % "kryo" % kryoVersion
+      "com.esotericsoftware" % "kryo-shaded" % kryoVersion
     ),
 
     parallelExecution in Test := true,

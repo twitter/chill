@@ -3,3 +3,5 @@ sudo: false
 scala:
   - 2.10.4
   - 2.11.2
+jdk:
+  - oraclejdk8
