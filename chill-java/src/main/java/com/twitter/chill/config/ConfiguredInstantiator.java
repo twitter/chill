@@ -40,7 +40,7 @@ public class ConfiguredInstantiator extends KryoInstantiator {
   protected final KryoInstantiator delegate;
 
   /** Key we use to configure this class.
-   * Format: <class of KryoInstantiator>(:<base64 serialized instantiator>)
+   * Format: {@code <class of KryoInstantiator>(:< base64 serialized instantiator\>) }
    * if there is no serialized instantiator, we use the reflected instance
    * as the delegate
    */
@@ -77,7 +77,10 @@ public class ConfiguredInstantiator extends KryoInstantiator {
   /** Calls through to the delegate */
   public Kryo newKryo() { return delegate.newKryo(); }
 
-  /** Return the delegated KryoInstantiator */
+  /** Return the delegated KryoInstantiator
+   *
+   * @return The delegated KryoInstantiator
+   */
   public KryoInstantiator getDelegate() {
     return delegate;
   }
@@ -85,6 +88,8 @@ public class ConfiguredInstantiator extends KryoInstantiator {
   /** In this mode, we are just refecting to another delegated class. This is preferred
    * if you don't have any configuration to do at runtime (i.e. you can make a named class
    * that has all the logic for your KryoInstantiator).
+   * @param conf The configuration
+   * @param instClass The class of the KryoInstantiator to use
    */
   public static void setReflect(Config conf, Class<? extends KryoInstantiator> instClass) {
     conf.set(KEY, instClass.getName());
@@ -116,6 +121,9 @@ public class ConfiguredInstantiator extends KryoInstantiator {
 
   /** Use the default KryoInstantiator to serialize the KryoInstantiator ki
    * same as: setSerialized(conf, KryoInstantiator.class, ki)
+   * @param conf The Config to use
+   * @param ki The KryoInstantiator
+   * @throws ConfigurationException
    */
   public static void setSerialized(Config conf, KryoInstantiator ki)
     throws ConfigurationException {
@@ -125,6 +133,10 @@ public class ConfiguredInstantiator extends KryoInstantiator {
   /** If this reflector needs config to be set, that should be done PRIOR to making this call.
    * This mode serializes an instance (ki) to be used as the delegate.
    * Only use this mode if reflection alone will not work.
+   * @param conf The Config to use
+   * @param reflector The class of the KryoInstantiator
+   * @param ki The KryoInstantiator
+   * @throws ConfigurationException
    */
   public static void setSerialized(Config conf, Class<? extends KryoInstantiator> reflector, KryoInstantiator ki)
     throws ConfigurationException {

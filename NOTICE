@@ -3,9 +3,9 @@ Copyright 2012 Twitter, Inc.
 
 Third Party Dependencies:
 
-Kryo 2.17
+Kryo 3.0.2
 BSD 3-Clause License
-http://code.google.com/p/kryo
+https://github.com/EsotericSoftware/kryo
 
 Commons-Codec 1.7
 Apache Public License 2.0

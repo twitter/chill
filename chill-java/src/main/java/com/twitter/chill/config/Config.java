@@ -20,7 +20,11 @@ package com.twitter.chill.config;
  *
  */
 abstract public class Config {
-  /** Return null if this key is undefined */
+  /** Return null if this key is undefined
+   *
+   * @param key The key of the value to extract from the configuration
+   * @return The configured value
+   */
   abstract public String get(String key);
   abstract public void set(String key, String value);
 
