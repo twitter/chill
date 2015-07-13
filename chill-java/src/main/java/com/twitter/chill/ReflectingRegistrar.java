@@ -35,7 +35,10 @@ public class ReflectingRegistrar<T> implements IKryoRegistrar {
     serializerKlass = ser;
   }
   @Override
-  public void apply(Kryo k) { k.register(klass, k.newSerializer(serializerKlass, klass)); }
+  public void apply(Kryo k) {
+    k.register(klass, k.getDefaultSerializer(serializerKlass));
+  }
+
   @Override
   public int hashCode() { return klass.hashCode() ^ serializerKlass.hashCode(); }
 

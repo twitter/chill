@@ -17,8 +17,7 @@ package com.twitter.chill.akka
  * ****************************************************************************
  */
 
-import akka.actor.ExtendedActorSystem
-import akka.actor.ActorRef
+import akka.actor.{ ActorSelection, ExtendedActorSystem, ActorRef }
 import akka.serialization.Serialization
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.Serializer

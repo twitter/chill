@@ -36,7 +36,14 @@ abstract public class KryoPool extends ResourcePool<SerDeState> {
     st.clear();
     super.release(st);
   }
-  /** Output is created with new Output(outBufferMin, outBufferMax);
+
+  /** Output is created with new Output(outBufferMin, outBufferMax)
+   *
+   * @param poolSize The maximum size of the pool
+   * @param ki The KryoInstantiator to use for new instances of Kryo
+   * @param outBufferMin The minimum size of the output buffer
+   * @param outBufferMax The maximum size of the output buffer
+   * @return A KryoPool with the requested parameters
    */
   public static KryoPool withBuffer(int poolSize,
       final KryoInstantiator ki,
@@ -49,8 +56,11 @@ abstract public class KryoPool extends ResourcePool<SerDeState> {
     };
   }
 
-  /** Output is created with new Output(new ByteArrayOutputStream())
+  /** Output is created with new Output(new ByteArrayOutputStream()
    * This will automatically resize internally
+   * @param poolSize The size of the pool to create
+   * @param ki The KryoInstantiator to use for new Kryo Instances
+   * @return A KryoPool that automatically resizes internally
    */
   public static KryoPool withByteArrayOutputStream(int poolSize,
       final KryoInstantiator ki) {
@@ -84,7 +94,7 @@ abstract public class KryoPool extends ResourcePool<SerDeState> {
   }
 
   public <T> T deepCopy(T obj) {
-    return (T)fromBytes(toBytesWithoutClass(obj), obj.getClass());
+    return (T)fromBytes(toBytesWithoutClass(obj), obj.getClass()) ;
   }
 
   public Object fromBytes(byte[] ary) {

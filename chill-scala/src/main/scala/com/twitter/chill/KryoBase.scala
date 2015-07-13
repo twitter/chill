@@ -76,10 +76,10 @@ class KryoBase extends Kryo {
   def tryStrategy(cls: Class[_]): InstantiatorStrategy =
     strategy.getOrElse {
       val name = cls.getName
-      if (cls.isMemberClass() && !Modifier.isStatic(cls.getModifiers()))
-        throw new KryoException("Class cannot be created (non-static member class): " + name);
+      if (cls.isMemberClass && !Modifier.isStatic(cls.getModifiers))
+        throw new KryoException("Class cannot be created (non-static member class): " + name)
       else
-        throw new KryoException("Class cannot be created (missing no-arg constructor): " + name);
+        throw new KryoException("Class cannot be created (missing no-arg constructor): " + name)
     }
 
   override def setInstantiatorStrategy(st: InstantiatorStrategy) {
@@ -102,8 +102,8 @@ class KryoBase extends Kryo {
 object Instantiators {
   // Go through the list and use the first that works
   def newOrElse(cls: Class[_],
-    it: TraversableOnce[Class[_] => Either[Throwable, ObjectInstantiator]],
-    elsefn: => ObjectInstantiator): ObjectInstantiator = {
+    it: TraversableOnce[Class[_] => Either[Throwable, ObjectInstantiator[_]]],
+    elsefn: => ObjectInstantiator[_]): ObjectInstantiator[_] = {
     // Just go through and try each one,
     it.map { fn =>
       fn(cls) match {
@@ -112,15 +112,15 @@ object Instantiators {
       }
     }
       .find { _.isDefined } // Find the first Some(x), returns Some(Some(x))
-      .flatMap { x => x } // flatten
+      .flatMap { x: Option[ObjectInstantiator[_]] => x } // flatten
       .getOrElse(elsefn)
   }
 
   // Use call by name:
-  def forClass(t: Class[_])(fn: () => Any): ObjectInstantiator =
-    new ObjectInstantiator {
+  def forClass(t: Class[_])(fn: () => Any): ObjectInstantiator[_] =
+    new ObjectInstantiator[Any] {
       override def newInstance() = {
-        try { fn().asInstanceOf[AnyRef] }
+        try { fn() }
         catch {
           case x: Exception => {
             throw new KryoException("Error constructing instance of class: " + t.getName, x)
@@ -130,7 +130,7 @@ object Instantiators {
     }
 
   // This one tries reflectasm, which is a fast way of constructing an object
-  def reflectAsm(t: Class[_]): Either[Throwable, ObjectInstantiator] = {
+  def reflectAsm(t: Class[_]): Either[Throwable, ObjectInstantiator[_]] = {
     try {
       val access = ConstructorAccess.get(t)
       // Try it once, because this isn't always successful:
@@ -154,7 +154,7 @@ object Instantiators {
     }
   }
 
-  def normalJava(t: Class[_]): Either[Throwable, ObjectInstantiator] = {
+  def normalJava(t: Class[_]): Either[Throwable, ObjectInstantiator[_]] = {
     try {
       val cons = getConstructor(t)
       Right(forClass(t) { () => cons.newInstance() })

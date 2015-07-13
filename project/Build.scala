@@ -4,13 +4,11 @@ import sbt._
 import Keys._
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import com.typesafe.tools.mima.plugin.MimaKeys._
-import scalariform.formatter.preferences._
 import com.typesafe.sbt.SbtScalariform._
 
-import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
-  val kryoVersion = "2.21"
+  val kryoVersion = "3.0.2"
 
 
   def isScala210x(scalaVersion: String) = scalaVersion match {
@@ -18,27 +16,25 @@ object ChillBuild extends Build {
       case _ => false
   }
 
-  val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
+  val sharedSettings = Defaults.coreDefaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
 
-    version := "0.6.0",
+    version := "0.7.0-SNAPSHOT",
     organization := "com.twitter",
-    scalaVersion := "2.10.5",
-    crossScalaVersions := Seq("2.10.5", "2.11.5"),
+    scalaVersion := "2.11.7",
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     ScalariformKeys.preferences := formattingPreferences,
 
-    // Twitter Hadoop needs this, sorry 1.7 fans
-    javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
-    javacOptions in doc := Seq("-source", "1.6"),
+    javacOptions ++= Seq("-Xlint:-options", "-Xlint:unchecked"),
+    javacOptions in doc := Seq(),
 
     resolvers ++= Seq(
       Opts.resolver.sonatypeSnapshots,
       Opts.resolver.sonatypeReleases
     ),
     libraryDependencies ++= Seq(
-      "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
-      "org.scalatest" %% "scalatest" % "2.2.2" % "test",
-      "com.esotericsoftware.kryo" % "kryo" % kryoVersion
+      "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
+      "org.scalatest" %% "scalatest" % "2.2.5" % "test",
+      "com.esotericsoftware" % "kryo-shaded" % kryoVersion
     ),
 
     parallelExecution in Test := true,
@@ -123,7 +119,7 @@ object ChillBuild extends Build {
 
   def youngestForwardCompatible(subProj: String) =
     Some(subProj)
-      .filterNot(unreleasedModules.contains(_))
+      .filterNot(unreleasedModules.contains)
       .map { s =>
       val suffix = if (javaOnly.contains(s)) "" else "_2.10"
       "com.twitter" % ("chill-" + s + suffix) % "0.6.0"
@@ -145,20 +141,20 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.10" % "0.5.0")
+    previousArtifact := Some("com.twitter" % "chill_2.10" % "0.6.0")
   ).dependsOn(chillJava)
 
   lazy val chillAkka = module("akka").settings(
     resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
     libraryDependencies ++= Seq(
-      "com.typesafe" % "config" % "1.2.1",
-      "com.typesafe.akka" %% "akka-actor" % "2.3.6" % "provided"
+      "com.typesafe" % "config" % "1.3.0",
+      "com.typesafe.akka" %% "akka-actor" % "2.3.11" % "provided"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
   lazy val chillBijection = module("bijection").settings(
     libraryDependencies ++= Seq(
-      "com.twitter" %% "bijection-core" % "0.8.0"
+      "com.twitter" %% "bijection-core" % "0.8.1"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
@@ -185,8 +181,8 @@ object ChillBuild extends Build {
     autoScalaLibrary := false,
     libraryDependencies ++= Seq(
       "org.apache.hadoop" % "hadoop-core" % "0.20.2" % "provided",
-      "org.slf4j" % "slf4j-api" % "1.6.6",
-      "org.slf4j" % "slf4j-log4j12" % "1.6.6" % "provided"
+      "org.slf4j" % "slf4j-api" % "1.7.12",
+      "org.slf4j" % "slf4j-log4j12" % "1.7.12" % "provided"
     )
   ).dependsOn(chillJava)
 
