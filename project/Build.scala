@@ -20,12 +20,10 @@ object ChillBuild extends Build {
 
     version := "0.7.0-SNAPSHOT",
     organization := "com.twitter",
-    scalaVersion := "2.10.5",
-    crossScalaVersions := Seq("2.10.5", "2.11.7"),
+    scalaVersion := "2.11.7",
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     ScalariformKeys.preferences := formattingPreferences,
 
-    // Twitter Hadoop needs this, sorry 1.7 fans
     javacOptions ++= Seq("-Xlint:-options", "-Xlint:unchecked"),
     javacOptions in doc := Seq(),
 
@@ -34,8 +32,8 @@ object ChillBuild extends Build {
       Opts.resolver.sonatypeReleases
     ),
     libraryDependencies ++= Seq(
-      "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
-      "org.scalatest" %% "scalatest" % "2.2.2" % "test",
+      "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
+      "org.scalatest" %% "scalatest" % "2.2.5" % "test",
       "com.esotericsoftware" % "kryo-shaded" % kryoVersion
     ),
 
@@ -183,8 +181,8 @@ object ChillBuild extends Build {
     autoScalaLibrary := false,
     libraryDependencies ++= Seq(
       "org.apache.hadoop" % "hadoop-core" % "0.20.2" % "provided",
-      "org.slf4j" % "slf4j-api" % "1.6.6",
-      "org.slf4j" % "slf4j-log4j12" % "1.6.6" % "provided"
+      "org.slf4j" % "slf4j-api" % "1.7.12",
+      "org.slf4j" % "slf4j-log4j12" % "1.7.12" % "provided"
     )
   ).dependsOn(chillJava)
 

@@ -18,17 +18,15 @@ package com.twitter.chill.hadoop
 
 import org.scalatest._
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.Kryo
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
 import java.io.{ ByteArrayOutputStream => BAOut, ByteArrayInputStream => BAIn }
-import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configuration
 
-import com.twitter.chill.config.ConfiguredInstantiator;
-import com.twitter.chill.KryoInstantiator;
+import com.twitter.chill.config.ConfiguredInstantiator
+import com.twitter.chill.KryoInstantiator
 
 class StdKryoInstantiator extends KryoInstantiator {
   override def newKryo = {
@@ -44,13 +42,13 @@ class HadoopTests extends WordSpec with Matchers {
     val ks = k.getSerializer(cls)
     ks.open(out)
     ks.serialize(a)
-    ks.close
+    ks.close()
 
     val in = new BAIn(out.toByteArray)
     val kd = k.getDeserializer(cls)
     kd.open(in)
     val res = kd.deserialize(null)
-    kd.close
+    kd.close()
     res.asInstanceOf[A]
   }
 
