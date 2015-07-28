@@ -94,14 +94,14 @@ class SketchMapSerializer[K, V](implicit skmMonoid: SketchMapMonoid[K, V], value
     val rows = skm.valuesTable.rows
     val cols = skm.valuesTable.cols
 
-    val values: IndexedSeq[(Int, Int, V)] =
+    val values: Seq[((Int, Int), V)] =
       for (
-        r: Int <- 0 to rows - 1; c: Int <- 0 to cols - 1 if skm.valuesTable.getValue((r, c)) != valueMonoid.zero
-      ) yield (r, c, skm.valuesTable.getValue((r, c)))
+        r: Int <- 0 until rows; c: Int <- 0 until cols if valueMonoid.isNonZero(skm.valuesTable.getValue((r, c)))
+      ) yield ((r, c), skm.valuesTable.getValue((r, c)))
 
     output.writeInt(rows, true)
     output.writeInt(cols, true)
-    kryo.writeClassAndObject(output, values.toList)
+    kryo.writeClassAndObject(output, values)
     kryo.writeClassAndObject(output, skm.totalValue)
     kryo.writeClassAndObject(output, skm.heavyHitterKeys)
 
@@ -111,7 +111,7 @@ class SketchMapSerializer[K, V](implicit skmMonoid: SketchMapMonoid[K, V], value
   def read(kryo: Kryo, in: Input, cls: Class[SketchMap[K, V]]): SketchMap[K, V] = {
     val rowsOrig = in.readInt(true)
     val colsOrig = in.readInt(true)
-    val values = kryo.readClassAndObject(in).asInstanceOf[List[(Int, Int, V)]]
+    val values = kryo.readClassAndObject(in).asInstanceOf[Seq[((Int, Int), V)]]
     val totalValue = kryo.readClassAndObject(in).asInstanceOf[V]
     val heavyHitterKeys = kryo.readClassAndObject(in).asInstanceOf[List[K]]
 
@@ -119,7 +119,7 @@ class SketchMapSerializer[K, V](implicit skmMonoid: SketchMapMonoid[K, V], value
     val cols = if (colsOrig == 0) skmMonoid.params.width else colsOrig
 
     val zero = AdaptiveMatrix.fill[V](rows, cols)(valueMonoid.zero)
-    val valuesTable = values.foldLeft(zero){ case (acc, (r, c, v)) ⇒ acc.updated((r, c), v) }
+    val valuesTable = values.foldLeft(zero){ case (acc, ((r, c), v)) => acc.updated((r, c), v) }
 
     SketchMap(valuesTable, heavyHitterKeys, totalValue)
   }
