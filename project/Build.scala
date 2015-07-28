@@ -208,7 +208,7 @@ object ChillBuild extends Build {
     libraryDependencies ++= Seq(
       "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit"),
       "com.twitter" %% "scrooge-serializer" % "3.13.0"
-    ) ++ scroogeBuildDeps(scalaVersion.value)
+    )
   ).dependsOn(chill % "test->test;compile->compile")
 
   // This can only have java deps!
