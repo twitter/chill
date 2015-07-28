@@ -207,7 +207,7 @@ object ChillBuild extends Build {
   lazy val chillScrooge = module("scrooge").settings(
     libraryDependencies ++= Seq(
       "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit"),
-      "com.twitter" %% "scrooge-serializer" % "3.13.0"
+      "com.twitter" %% "scrooge-serializer" % "3.20.0"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 
