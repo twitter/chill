@@ -3,7 +3,7 @@ package com.twitter.chill.java
 import java.util
 
 import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.{Input, Output}
+import com.esotericsoftware.kryo.io.{ Input, Output }
 import org.objenesis.strategy.StdInstantiatorStrategy
 import org.scalatest._
 
@@ -63,19 +63,19 @@ class BitSetSpec extends WordSpec with MustMatchers {
       }
 
       // warmup In case anybody wants to see hotspot
-      var lastBitSetFromOld : util.BitSet = null
-      for(i <- 0 to 50000) {
+      var lastBitSetFromOld: util.BitSet = null
+      for (i <- 0 to 50000) {
         lastBitSetFromOld = rt(element)(oldKryo)
       }
       var start = System.currentTimeMillis()
-      for(i <- 0 to 100000) {
+      for (i <- 0 to 100000) {
         rt(element)(oldKryo)
       }
-      println("The old serializer took "+(System.currentTimeMillis() - start)+"ms")
+      println("The old serializer took " + (System.currentTimeMillis() - start) + "ms")
 
-      var lastBitSetFromNew : util.BitSet = null
+      var lastBitSetFromNew: util.BitSet = null
       // warmup for the new kryo
-      for(i <- 0 to 50000) {
+      for (i <- 0 to 50000) {
         lastBitSetFromNew = rt(element)(newKryo)
       }
       // check for the three bitsets to be equal
@@ -87,23 +87,22 @@ class BitSetSpec extends WordSpec with MustMatchers {
         element.get(i) must be(lastBitSetFromNew.get(i))
       }
 
-
       start = System.currentTimeMillis()
-      for(i <- 0 to 100000) {
+      for (i <- 0 to 100000) {
         rt(element)(newKryo)
       }
-      println("The new serializer took "+(System.currentTimeMillis() - start)+"ms")
+      println("The new serializer took " + (System.currentTimeMillis() - start) + "ms")
 
       var out = new Output(1, -1)
       oldKryo.writeObject(out, element)
       out.flush()
       var oldBytes = out.total()
-      println("The old serializer needs "+oldBytes+" bytes")
+      println("The old serializer needs " + oldBytes + " bytes")
       out = new Output(1, -1)
       newKryo.writeObject(out, element)
       out.flush()
       var newBytes = out.total()
-      println("The new serializer needs "+newBytes+" bytes")
+      println("The new serializer needs " + newBytes + " bytes")
 
       oldBytes >= newBytes must be(true)
     }

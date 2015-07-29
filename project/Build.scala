@@ -12,6 +12,8 @@ import scala.collection.JavaConverters._
 object ChillBuild extends Build {
   val kryoVersion = "2.21"
 
+  val bijectionVersion = "0.8.1"
+  val algebirdVersion = "0.11.0"
 
   def isScala210x(scalaVersion: String) = scalaVersion match {
       case version if version startsWith "2.10" => true
@@ -19,8 +21,6 @@ object ChillBuild extends Build {
   }
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
-
-    version := "0.6.0",
     organization := "com.twitter",
     scalaVersion := "2.10.5",
     crossScalaVersions := Seq("2.10.5", "2.11.7"),
@@ -150,7 +150,7 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.10" % "0.5.0")
+    previousArtifact := Some("com.twitter" % "chill_2.10" % "0.7.0")
   ).dependsOn(chillJava)
 
   lazy val chillAkka = module("akka").settings(
