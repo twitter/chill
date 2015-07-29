@@ -12,6 +12,8 @@ import scala.collection.JavaConverters._
 object ChillBuild extends Build {
   val kryoVersion = "2.21"
 
+  val bijectionVersion = "0.8.1"
+  val algebirdVersion = "0.11.0"
 
   def isScala210x(scalaVersion: String) = scalaVersion match {
       case version if version startsWith "2.10" => true
@@ -19,11 +21,9 @@ object ChillBuild extends Build {
   }
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
-
-    version := "0.6.0",
     organization := "com.twitter",
     scalaVersion := "2.10.5",
-    crossScalaVersions := Seq("2.10.5", "2.11.5"),
+    crossScalaVersions := Seq("2.10.5", "2.11.7"),
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     ScalariformKeys.preferences := formattingPreferences,
 
@@ -133,7 +133,12 @@ object ChillBuild extends Build {
     val id = "chill-%s".format(name)
     Project(id = id, base = file(id), settings = sharedSettings ++ Seq(
       Keys.name := id,
-      previousArtifact := youngestForwardCompatible(name))
+      previousArtifact := youngestForwardCompatible(name),
+      // Disable cross publishing for java artifacts
+      publishArtifact <<= (scalaVersion) { scalaVersion =>
+        if(javaOnly.contains(name) && scalaVersion.startsWith("2.10")) false else true
+      }
+      )
     )
   }
 
@@ -145,7 +150,7 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.10" % "0.5.0")
+    previousArtifact := Some("com.twitter" % "chill_2.10" % "0.7.0")
   ).dependsOn(chillJava)
 
   lazy val chillAkka = module("akka").settings(
@@ -201,8 +206,8 @@ object ChillBuild extends Build {
 
   lazy val chillScrooge = module("scrooge").settings(
     libraryDependencies ++= Seq(
-      "org.apache.thrift" % "libthrift" % "0.9.1" exclude("junit", "junit"),
-      "com.twitter" %% "scrooge-serializer" % "3.17.0"
+      "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit"),
+      "com.twitter" %% "scrooge-serializer" % "3.20.0"
     )
   ).dependsOn(chill % "test->test;compile->compile")
 

@@ -5,7 +5,7 @@ serializers and a set of classes to ease configuration of Kryo in systems like H
 Akka, etc.
 
 
-### Buidling Chill
+### Building Chill
 
 ```bash
 ./sbt

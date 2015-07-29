@@ -1,5 +1,12 @@
 # chill #
 
+### 0.7.0 ###
+* Adds Scrooge 2.11 support now that the artifact is out, sets up for c…: https://github.com/twitter/chill/pull/236
+* make chill 1.6 compatible: https://github.com/twitter/chill/pull/231
+* Update README.md: https://github.com/twitter/chill/pull/232
+* Alter scala collection default serializer registration order: https://github.com/twitter/chill/pull/229
+* Build chill-scrooge for scala 2.11, too: https://github.com/twitter/chill/pull/219
+
 ### 0.6.0 ###
 * Add build instructions to readme and make InjectiveSerializer serializable #216
 * Build chill-scrooge for scala 2.11, too #219
