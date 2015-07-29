@@ -119,7 +119,7 @@ object ChillBuild extends Build {
     * with the current.
     */
   val unreleasedModules = Set[String]("akka")
-  val javaOnly = Set[String]("storm", "java", "hadoop", "thrift")
+  val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
 
   def youngestForwardCompatible(subProj: String) =
     Some(subProj)
