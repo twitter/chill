@@ -30,7 +30,9 @@ import scala.util.Try
  * An Injection to lift a type T into an Externalizer
  */
 object ExternalizerInjection {
-  implicit def apply[T]: ExternalizerInjection[T] = new ExternalizerInjection[T]
+  implicit def builder[T]: ExternalizerInjection[T] = apply[T]
+
+  def apply[T]: ExternalizerInjection[T] = new ExternalizerInjection[T]
 }
 
 class ExternalizerInjection[T] extends Injection[T, Externalizer[T]] {

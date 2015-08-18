@@ -28,6 +28,9 @@ import scala.util.Try
 
 /**
  * A Injection to serialize an externalizer to bytes
+ *
+ * This method isn't safe since calling get on an Externalizer[T] could still throw despite the inversion
+ * here having worked as advertized. Since it is at the point of the get we unpack the inner box.
  */
 object ExternalizerCodec {
   implicit def apply[T]: ExternalizerCodec[T] = new ExternalizerCodec[T]
