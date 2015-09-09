@@ -136,7 +136,7 @@ object ChillBuild extends Build {
       previousArtifact := youngestForwardCompatible(name),
       // Disable cross publishing for java artifacts
       publishArtifact <<= (scalaVersion) { scalaVersion =>
-        if(javaOnly.contains(name) && scalaVersion.startsWith("2.10")) false else true
+        if(javaOnly.contains(name) && scalaVersion.startsWith("2.11")) false else true
       }
       )
     )
