@@ -35,6 +35,7 @@ object ChillBuild extends Build {
       Opts.resolver.sonatypeSnapshots,
       Opts.resolver.sonatypeReleases
     ),
+
     libraryDependencies ++= Seq(
       "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
       "org.scalatest" %% "scalatest" % "2.2.2" % "test",

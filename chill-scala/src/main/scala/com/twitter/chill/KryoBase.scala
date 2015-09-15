@@ -24,6 +24,7 @@ import org.objenesis.instantiator.ObjectInstantiator
 import org.objenesis.strategy.InstantiatorStrategy
 
 import _root_.java.lang.reflect.{ Constructor, Modifier }
+import scala.util.{ Try, Success, Failure }
 
 /*
  * This is the base class of Kryo we use to fix specific scala
@@ -102,13 +103,13 @@ class KryoBase extends Kryo {
 object Instantiators {
   // Go through the list and use the first that works
   def newOrElse(cls: Class[_],
-    it: TraversableOnce[Class[_] => Either[Throwable, ObjectInstantiator]],
+    it: TraversableOnce[Class[_] => Try[ObjectInstantiator]],
     elsefn: => ObjectInstantiator): ObjectInstantiator = {
     // Just go through and try each one,
     it.map { fn =>
       fn(cls) match {
-        case Left(x) => None // ignore the exception
-        case Right(obji) => Some(obji)
+        case Failure(_) => None // ignore the exception
+        case Success(obji) => Some(obji)
       }
     }
       .find { _.isDefined } // Find the first Some(x), returns Some(Some(x))
@@ -130,15 +131,15 @@ object Instantiators {
     }
 
   // This one tries reflectasm, which is a fast way of constructing an object
-  def reflectAsm(t: Class[_]): Either[Throwable, ObjectInstantiator] = {
+  def reflectAsm(t: Class[_]): Try[ObjectInstantiator] = {
     try {
       val access = ConstructorAccess.get(t)
       // Try it once, because this isn't always successful:
       access.newInstance
       // Okay, looks good:
-      Right(forClass(t) { () => access.newInstance() })
+      Success(forClass(t) { () => access.newInstance() })
     } catch {
-      case x: Throwable => Left(x)
+      case x: Throwable => Failure(x)
     }
   }
 
@@ -154,12 +155,12 @@ object Instantiators {
     }
   }
 
-  def normalJava(t: Class[_]): Either[Throwable, ObjectInstantiator] = {
+  def normalJava(t: Class[_]): Try[ObjectInstantiator] = {
     try {
       val cons = getConstructor(t)
-      Right(forClass(t) { () => cons.newInstance() })
+      Success(forClass(t) { () => cons.newInstance() })
     } catch {
-      case x: Throwable => Left(x)
+      case x: Throwable => Failure(x)
     }
   }
 }
