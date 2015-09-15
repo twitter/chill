@@ -11,7 +11,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecordBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.objenesis.strategy.StdInstantiatorStrategy;
+import com.esotericsoftware.shaded.org.objenesis.strategy.StdInstantiatorStrategy;
 import scala.reflect.ClassTag;
 
 import static org.junit.Assert.assertEquals;

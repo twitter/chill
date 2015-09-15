@@ -56,7 +56,7 @@ class EmptyScalaKryoInstantiator extends KryoInstantiator {
   override def newKryo = {
     val k = new KryoBase
     k.setRegistrationRequired(false)
-    k.setInstantiatorStrategy(new org.objenesis.strategy.StdInstantiatorStrategy)
+    k.setInstantiatorStrategy(new com.esotericsoftware.shaded.org.objenesis.strategy.StdInstantiatorStrategy)
 
     // Handle cases where we may have an odd classloader setup like with libjars
     // for hadoop

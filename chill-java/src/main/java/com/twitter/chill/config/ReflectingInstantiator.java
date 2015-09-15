@@ -24,8 +24,8 @@ import com.twitter.chill.ReflectingDefaultRegistrar;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
-import org.objenesis.strategy.InstantiatorStrategy;
-import org.objenesis.strategy.StdInstantiatorStrategy;
+import com.esotericsoftware.shaded.org.objenesis.strategy.InstantiatorStrategy;
+import com.esotericsoftware.shaded.org.objenesis.strategy.StdInstantiatorStrategy;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.reflect.InvocationTargetException;
@@ -138,9 +138,13 @@ public class ReflectingInstantiator extends KryoInstantiator {
   public static final String KRYO_CLASS_DEFAULT = Kryo.class.getName();
   /**
    * Name of the InstatiatorStrategy to use.
-   * If this is empty, we use org.objenesis.strategy.StdInstantiatorStrategy
+   * If this is empty, we use the value in {@link @INSTANTIATOR_STRATEGY_CLASS_DEFAULT}
    */
   public static final String INSTANTIATOR_STRATEGY_CLASS = prefix + ".instantiatorstrategyclass";
+
+  /**
+   * Default strategy: {@value}
+   */
   public static final String INSTANTIATOR_STRATEGY_CLASS_DEFAULT = StdInstantiatorStrategy.class.getName();
   /**
    * KRYO_REGISTRATIONS holds a colon-separated list of classes to register with Kryo.
