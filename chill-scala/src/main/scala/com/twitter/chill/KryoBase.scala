@@ -103,8 +103,8 @@ class KryoBase extends Kryo {
 object Instantiators {
   // Go through the list and use the first that works
   def newOrElse(cls: Class[_],
-    it: TraversableOnce[Class[_] => Try[ObjectInstantiator]],
-    elsefn: => ObjectInstantiator): ObjectInstantiator = {
+    it: TraversableOnce[Class[_] => Try[ObjectInstantiator[AnyRef]]],
+    elsefn: => ObjectInstantiator[_]): ObjectInstantiator[_] = {
     // Just go through and try each one,
     it.map { fn =>
       fn(cls) match {
@@ -118,8 +118,8 @@ object Instantiators {
   }
 
   // Use call by name:
-  def forClass(t: Class[_])(fn: () => Any): ObjectInstantiator =
-    new ObjectInstantiator {
+  def forClass(t: Class[_])(fn: () => Any): ObjectInstantiator[AnyRef] =
+    new ObjectInstantiator[AnyRef] {
       override def newInstance() = {
         try { fn().asInstanceOf[AnyRef] }
         catch {
@@ -131,7 +131,7 @@ object Instantiators {
     }
 
   // This one tries reflectasm, which is a fast way of constructing an object
-  def reflectAsm(t: Class[_]): Try[ObjectInstantiator] = {
+  def reflectAsm(t: Class[_]): Try[ObjectInstantiator[AnyRef]] = {
     try {
       val access = ConstructorAccess.get(t)
       // Try it once, because this isn't always successful:
@@ -155,7 +155,7 @@ object Instantiators {
     }
   }
 
-  def normalJava(t: Class[_]): Try[ObjectInstantiator] = {
+  def normalJava(t: Class[_]): Try[ObjectInstantiator[AnyRef]] = {
     try {
       val cons = getConstructor(t)
       Success(forClass(t) { () => cons.newInstance() })
