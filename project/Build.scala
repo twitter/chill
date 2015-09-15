@@ -27,12 +27,9 @@ object ChillBuild extends Build {
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     ScalariformKeys.preferences := formattingPreferences,
 
-    javacOptions ++= (
-      if (scalaVersion.value.startsWith("2.11")) Seq("-target", "1.8", "-source", "1.8", "-Xlint:-options")
-      else Seq("-target", "1.7", "-source", "1.7", "-Xlint:-options")),
-    javacOptions in doc := (
-      if (scalaVersion.value.startsWith("2.11")) Seq("-source", "1.8")
-      else Seq("-source", "1.7")),
+    javacOptions ++= Seq("-target", "1.7", "-source", "1.7", "-Xlint:-options"),
+
+    javacOptions in doc := Seq("-source", "1.7"),
 
     resolvers ++= Seq(
       Opts.resolver.sonatypeSnapshots,
