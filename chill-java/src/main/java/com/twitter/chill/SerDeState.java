@@ -50,8 +50,8 @@ public class SerDeState {
   public void setInput(byte[] in, int offset, int count) { input.setBuffer(in, offset, count); }
   public void setInput(InputStream in) { input.setInputStream(in); }
 
-  public int numOfWrittenBytes() { return output.total(); }
-  public int numOfReadBytes() { return input.total(); }
+  public long numOfWrittenBytes() { return output.total(); }
+  public long numOfReadBytes() { return input.total(); }
 
   // Common operations:
   public <T> T readObject(Class<T> cls) {
