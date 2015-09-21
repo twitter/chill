@@ -50,7 +50,7 @@ object ChillBuild extends Build {
         if (v.trim.toUpperCase.endsWith("SNAPSHOT"))
           Opts.resolver.sonatypeSnapshots
         else
-          Opts.resolver.sonatypeStaging
+          "twttr" at "https://artifactory.twitter.biz/libs-releases-local"
           //"twttr" at "http://artifactory.local.twitter.com/libs-releases-local"
       )
     },
