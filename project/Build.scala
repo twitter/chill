@@ -50,7 +50,7 @@ object ChillBuild extends Build {
         if (v.trim.toUpperCase.endsWith("SNAPSHOT"))
           Opts.resolver.sonatypeSnapshots
         else
-          "twttr" at "https://artifactory.twitter.biz/libs-releases-local"
+          Opts.resolver.mavenLocalFile
           //"twttr" at "http://artifactory.local.twitter.com/libs-releases-local"
       )
     },
