@@ -57,6 +57,12 @@ class EmptyScalaKryoInstantiator extends KryoInstantiator {
     val k = new KryoBase
     k.setRegistrationRequired(false)
     k.setInstantiatorStrategy(new org.objenesis.strategy.StdInstantiatorStrategy)
+
+    // Handle cases where we may have an odd classloader setup like with libjars
+    // for hadoop
+    val classLoader = Thread.currentThread.getContextClassLoader
+    k.setClassLoader(classLoader)
+
     k
   }
 }
