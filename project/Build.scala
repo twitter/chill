@@ -119,14 +119,14 @@ object ChillBuild extends Build {
     * with the current.
     */
   val unreleasedModules = Set[String]("akka")
-  val javaOnly = Set[String]("storm", "java", "hadoop", "thrift")
+  val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
 
   def youngestForwardCompatible(subProj: String) =
     Some(subProj)
       .filterNot(unreleasedModules.contains(_))
       .map { s =>
       val suffix = if (javaOnly.contains(s)) "" else "_2.10"
-      "com.twitter" % ("chill-" + s + suffix) % "0.6.0"
+      "com.twitter" % ("chill-" + s + suffix) % "0.7.1"
     }
 
   def module(name: String) = {
@@ -136,7 +136,7 @@ object ChillBuild extends Build {
       previousArtifact := youngestForwardCompatible(name),
       // Disable cross publishing for java artifacts
       publishArtifact <<= (scalaVersion) { scalaVersion =>
-        if(javaOnly.contains(name) && scalaVersion.startsWith("2.10")) false else true
+        if(javaOnly.contains(name) && scalaVersion.startsWith("2.11")) false else true
       }
       )
     )
