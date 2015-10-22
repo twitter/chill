@@ -126,7 +126,7 @@ object ChillBuild extends Build {
       .filterNot(unreleasedModules.contains(_))
       .map { s =>
       val suffix = if (javaOnly.contains(s)) "" else "_2.10"
-      "com.twitter" % ("chill-" + s + suffix) % "0.6.0"
+      "com.twitter" % ("chill-" + s + suffix) % "0.7.1"
     }
 
   def module(name: String) = {
