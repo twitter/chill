@@ -12,6 +12,8 @@ import scala.collection.JavaConverters._
 object ChillBuild extends Build {
   val kryoVersion = "3.0.1"
 
+  val bijectionVersion = "0.8.1"
+  val algebirdVersion = "0.11.0"
 
   def isScala210x(scalaVersion: String) = scalaVersion match {
       case version if version startsWith "2.10" => true
@@ -19,11 +21,9 @@ object ChillBuild extends Build {
   }
 
   val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
-
-    version := "0.6.0",
     organization := "com.twitter",
     scalaVersion := "2.10.5",
-    crossScalaVersions := Seq("2.10.5", "2.11.5"),
+    crossScalaVersions := Seq("2.10.5", "2.11.7"),
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
     ScalariformKeys.preferences := formattingPreferences,
 
@@ -122,21 +122,26 @@ object ChillBuild extends Build {
     * with the current.
     */
   val unreleasedModules = Set[String]("akka")
-  val javaOnly = Set[String]("storm", "java", "hadoop", "thrift")
+  val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
 
   def youngestForwardCompatible(subProj: String) =
     Some(subProj)
       .filterNot(unreleasedModules.contains(_))
       .map { s =>
       val suffix = if (javaOnly.contains(s)) "" else "_2.10"
-      "com.twitter" % ("chill-" + s + suffix) % "0.6.0"
+      "com.twitter" % ("chill-" + s + suffix) % "0.7.1"
     }
 
   def module(name: String) = {
     val id = "chill-%s".format(name)
     Project(id = id, base = file(id), settings = sharedSettings ++ Seq(
       Keys.name := id,
-      previousArtifact := youngestForwardCompatible(name))
+      previousArtifact := youngestForwardCompatible(name),
+      // Disable cross publishing for java artifacts
+      publishArtifact <<= (scalaVersion) { scalaVersion =>
+        if(javaOnly.contains(name) && scalaVersion.startsWith("2.11")) false else true
+      }
+      )
     )
   }
 
@@ -148,7 +153,7 @@ object ChillBuild extends Build {
     settings = sharedSettings
   ).settings(
     name := "chill",
-    previousArtifact := Some("com.twitter" % "chill_2.10" % "0.5.0")
+    previousArtifact := Some("com.twitter" % "chill_2.10" % "0.7.0")
   ).dependsOn(chillJava)
 
   lazy val chillAkka = module("akka").settings(
@@ -202,20 +207,11 @@ object ChillBuild extends Build {
     )
   )
 
-   def scroogeBuildDeps(scalaVersion: String): Seq[sbt.ModuleID] = isScala210x(scalaVersion) match {
-      case false => Seq()
-      case true => Seq(
-        "com.twitter" %% "scrooge-serializer" % "3.13.0"
-     )
-  }
-
   lazy val chillScrooge = module("scrooge").settings(
-    skip in compile := !isScala210x(scalaVersion.value),
-    skip in test := !isScala210x(scalaVersion.value),
-    publishArtifact := isScala210x(scalaVersion.value),
     libraryDependencies ++= Seq(
-      "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit")
-    ) ++ scroogeBuildDeps(scalaVersion.value)
+      "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit"),
+      "com.twitter" %% "scrooge-serializer" % "3.20.0"
+    )
   ).dependsOn(chill % "test->test;compile->compile")
 
   // This can only have java deps!
