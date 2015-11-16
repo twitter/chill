@@ -10,8 +10,8 @@ import com.typesafe.sbt.SbtScalariform._
 import scala.collection.JavaConverters._
 
 object ChillBuild extends Build {
-  val kryoVersion = "3.0.1"
 
+  val kryoVersion = "3.0.3"
   val bijectionVersion = "0.8.1"
   val algebirdVersion = "0.11.0"
 
