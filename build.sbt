@@ -7,7 +7,7 @@ import scalariform.formatter.preferences._
 
 val kryoVersion = "2.21"
 val bijectionVersion = "0.9.0"
-val algebirdVersion = "0.11.0"
+val algebirdVersion = "0.12.0"
 
 def isScala210x(scalaVersion: String) = scalaVersion match {
     case version if version startsWith "2.10" => true
