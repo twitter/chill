@@ -19,7 +19,7 @@ package com.twitter.chill
 import com.esotericsoftware.kryo.KryoException
 import com.esotericsoftware.reflectasm.ConstructorAccess
 import com.esotericsoftware.kryo.serializers.FieldSerializer
-
+import _root_.java.lang.Thread
 import org.objenesis.instantiator.ObjectInstantiator
 import org.objenesis.strategy.InstantiatorStrategy
 
@@ -36,7 +36,7 @@ class KryoBase extends Kryo {
   protected var strategy: Option[InstantiatorStrategy] = None
 
   val functions: Iterable[Class[_]] =
-    (0 to 22).map { idx => Class.forName("scala.Function" + idx.toString) }
+    (0 to 22).map { idx => Class.forName("scala.Function" + idx.toString, true, Thread.currentThread().getContextClassLoader()) }
 
   def isFn(klass: Class[_]): Boolean =
     functions.find { _.isAssignableFrom(klass) }.isDefined

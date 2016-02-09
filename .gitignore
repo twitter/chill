@@ -1,3 +1,4 @@
+sonatype.sbt
 # see also test/files/.gitignore
 /test/files/.gitignore
 

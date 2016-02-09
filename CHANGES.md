@@ -1,5 +1,9 @@
 # chill #
 
+### 0.7.3 ###
+* Update the build: https://github.com/twitter/chill/pull/248
+* Use currentThread classloader: https://github.com/twitter/chill/pull/247
+
 ### 0.7.2 ###
 * Setting the class loader by default: https://github.com/twitter/chill/pull/242
 

@@ -27,6 +27,17 @@ import java.io.Serializable;
 public class KryoInstantiator implements Serializable {
   public Kryo newKryo() { return new Kryo(); }
 
+  /** Use this to set a specific classloader
+   */
+  public KryoInstantiator setClassLoader(final ClassLoader cl) {
+    return new KryoInstantiator() {
+      public Kryo newKryo() {
+        Kryo k = KryoInstantiator.this.newKryo();
+        k.setClassLoader(cl);
+        return k;
+      }
+    };
+  }
   /** If true, Kryo will error if it sees a class that has not been registered
    */
   public KryoInstantiator setInstantiatorStrategy(final InstantiatorStrategy inst) {
@@ -68,6 +79,17 @@ public class KryoInstantiator implements Serializable {
          * We've been burned by binary compatibility with Kryo
          */
         if(k.isRegistrationRequired() != req) { k.setRegistrationRequired(req); }
+        return k;
+      }
+    };
+  }
+  /** Use Thread.currentThread().getContextClassLoader() as the ClassLoader where ther newKryo is called
+   */
+  public KryoInstantiator setThreadContextClassLoader() {
+    return new KryoInstantiator() {
+      public Kryo newKryo() {
+        Kryo k = KryoInstantiator.this.newKryo();
+        k.setClassLoader(Thread.currentThread().getContextClassLoader());
         return k;
       }
     };
