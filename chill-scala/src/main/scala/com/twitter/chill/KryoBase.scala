@@ -90,10 +90,12 @@ class KryoBase extends Kryo {
   /* Fixes the case where Kryo's reflectasm doesn't work, even though it claims to
    * TODO this should be fixed in Kryo. When it is, remove this
    */
-  override def newInstantiator(cls: Class[_]) = {
+  override def newInstantiator(cls: Class[_]) = newTypedInstantiator[AnyRef](cls.asInstanceOf[Class[AnyRef]])
+
+  private[this] def newTypedInstantiator[T](cls: Class[T]) = {
     import Instantiators._
     newOrElse(cls,
-      List(reflectAsm(_), normalJava(_)),
+      List(reflectAsm[T](_), normalJava[T](_)),
       // Or fall back on the strategy:
       tryStrategy(cls).newInstantiatorOf(cls))
   }
@@ -102,8 +104,8 @@ class KryoBase extends Kryo {
 object Instantiators {
   // Go through the list and use the first that works
   def newOrElse[T](cls: Class[T],
-    it: TraversableOnce[Class[_] => Either[Throwable, ObjectInstantiator[AnyRef]]],
-    elsefn: => ObjectInstantiator[_]): ObjectInstantiator[_] = {
+    it: TraversableOnce[Class[T] => Either[Throwable, ObjectInstantiator[T]]],
+    elsefn: => ObjectInstantiator[T]): ObjectInstantiator[T] = {
     // Just go through and try each one,
     it.map { fn =>
       fn(cls) match {
@@ -117,10 +119,10 @@ object Instantiators {
   }
 
   // Use call by name:
-  def forClass[T](t: Class[T])(fn: () => T): ObjectInstantiator[AnyRef] =
-    new ObjectInstantiator[AnyRef] {
+  def forClass[T](t: Class[T])(fn: () => T): ObjectInstantiator[T] =
+    new ObjectInstantiator[T] {
       override def newInstance() = {
-        try { fn().asInstanceOf[AnyRef] }
+        try { fn() }
         catch {
           case x: Exception => {
             throw new KryoException("Error constructing instance of class: " + t.getName, x)
@@ -130,7 +132,7 @@ object Instantiators {
     }
 
   // This one tries reflectasm, which is a fast way of constructing an object
-  def reflectAsm[T](t: Class[T]): Either[Throwable, ObjectInstantiator[AnyRef]] = {
+  def reflectAsm[T](t: Class[T]): Either[Throwable, ObjectInstantiator[T]] = {
     try {
       val access = ConstructorAccess.get(t)
       // Try it once, because this isn't always successful:
@@ -154,7 +156,7 @@ object Instantiators {
     }
   }
 
-  def normalJava[T](t: Class[T]): Either[Throwable, ObjectInstantiator[AnyRef]] = {
+  def normalJava[T](t: Class[T]): Either[Throwable, ObjectInstantiator[T]] = {
     try {
       val cons = getConstructor(t)
       Right(forClass(t) { () => cons.newInstance() })
