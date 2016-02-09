@@ -44,10 +44,15 @@ public class ReflectingInstantiator extends KryoInstantiator {
     skipMissing = conf.getBoolean(SKIP_MISSING, SKIP_MISSING_DEFAULT);
 
     try {
-      kryoClass = (Class<? extends Kryo>)Class.forName(conf.getOrElse(KRYO_CLASS, KRYO_CLASS_DEFAULT));
+      kryoClass = (Class<? extends Kryo>)Class.forName(
+          conf.getOrElse(KRYO_CLASS, KRYO_CLASS_DEFAULT),
+          true,
+          Thread.currentThread().getContextClassLoader());
       instStratClass =
         (Class<? extends InstantiatorStrategy>)Class.forName(
-            conf.getOrElse(INSTANTIATOR_STRATEGY_CLASS, INSTANTIATOR_STRATEGY_CLASS_DEFAULT));
+            conf.getOrElse(INSTANTIATOR_STRATEGY_CLASS, INSTANTIATOR_STRATEGY_CLASS_DEFAULT),
+          true,
+          Thread.currentThread().getContextClassLoader());
 
       registrations = (List<IKryoRegistrar>)buildRegistrars(conf.get(REGISTRATIONS), false);
       defaultRegistrations = (List<ReflectingDefaultRegistrar>)buildRegistrars(conf.get(DEFAULT_REGISTRATIONS), true);
@@ -193,12 +198,13 @@ public class ReflectingInstantiator extends KryoInstantiator {
               switch (pair.length) {
                   case 1:
                       if(isAddDefault) { throw new ConfigurationException("default serializers require class and serializer: " + base); }
-                      builder.add(new ClassRegistrar(Class.forName(pair[0])));
+                      builder.add(new ClassRegistrar(Class.forName(pair[0], true, Thread.currentThread().getContextClassLoader())));
                       break;
                   case 2:
                       @SuppressWarnings("unchecked")
-                      Class kls = Class.forName(pair[0]);
-                      Class<? extends Serializer> serializerClass = (Class<? extends Serializer>) Class.forName(pair[1]);
+                      Class kls = Class.forName(pair[0], true, Thread.currentThread().getContextClassLoader());
+                      Class<? extends Serializer> serializerClass = (Class<? extends Serializer>) Class.forName(pair[1],
+                            true, Thread.currentThread().getContextClassLoader());
                       if(isAddDefault) {
                         builder.add(new ReflectingDefaultRegistrar(kls, serializerClass));
                       }

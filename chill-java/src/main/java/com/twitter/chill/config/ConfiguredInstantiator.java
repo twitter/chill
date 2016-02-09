@@ -57,7 +57,7 @@ public class ConfiguredInstantiator extends KryoInstantiator {
         throw new ConfigurationException("Invalid Config Key: " + conf.get(KEY));
       }
       KryoInstantiator reflected = null;
-      try { reflected = reflect((Class<? extends KryoInstantiator>)Class.forName(parts[0]), conf); }
+      try { reflected = reflect((Class<? extends KryoInstantiator>)Class.forName(parts[0], true, Thread.currentThread().getContextClassLoader()), conf); }
       catch(ClassNotFoundException x) {
         throw new ConfigurationException("Could not find class for: " + parts[0], x);
       }
