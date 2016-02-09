@@ -37,10 +37,8 @@ import java.io.ByteArrayOutputStream;
 public class KryoSerialization extends Configured implements Serialization<Object> {
     // can't be final because we need to set them in setConf (for Configured)
     KryoPool kryoPool;
-    Kryo testKryo;
 
     private static KryoPool cachedPool = null;
-    private static Kryo cachedTestKryo = null;
     private static KryoInstantiator cachedKryoInst = null;
 
     /**
@@ -51,12 +49,10 @@ public class KryoSerialization extends Configured implements Serialization<Objec
      */
     public static synchronized void resetOrUpdateFromCache(KryoSerialization instance, KryoInstantiator kryoInst){
       if(kryoInst != cachedKryoInst) {
-        cachedTestKryo = kryoInst.newKryo();
         cachedPool = KryoPool.withByteArrayOutputStream(MAX_CACHED_KRYO, kryoInst);
         cachedKryoInst = kryoInst;
       }
       instance.kryoPool = cachedPool;
-      instance.testKryo = cachedTestKryo;
     }
 
     /**
@@ -106,7 +102,7 @@ public class KryoSerialization extends Configured implements Serialization<Objec
      */
     public boolean accept(Class<?> aClass) {
         try {
-            return (testKryo.getRegistration(aClass) != null);
+            return kryoPool.hasRegistration(aClass);
         } catch (IllegalArgumentException e) {
             return false;
         }

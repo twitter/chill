@@ -68,4 +68,8 @@ public class SerDeState {
   public void writeOutputTo(OutputStream os) throws IOException {
     os.write(outputToBytes());
   }
+
+  public boolean hasRegistration(Class obj) {
+    return kryo.getRegistration(obj) != null;
+  }
 }
