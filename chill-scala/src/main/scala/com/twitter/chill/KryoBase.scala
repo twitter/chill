@@ -25,6 +25,8 @@ import org.objenesis.strategy.InstantiatorStrategy
 
 import _root_.java.lang.reflect.{ Constructor, Modifier }
 
+import scala.util.{ Try, Success, Failure }
+
 /*
  * This is the base class of Kryo we use to fix specific scala
  * related issues discovered (ideally, this should be fixed in Kryo)
@@ -104,17 +106,15 @@ class KryoBase extends Kryo {
 object Instantiators {
   // Go through the list and use the first that works
   def newOrElse[T](cls: Class[T],
-    it: TraversableOnce[Class[T] => Either[Throwable, ObjectInstantiator[T]]],
+    it: TraversableOnce[Class[T] => Try[ObjectInstantiator[T]]],
     elsefn: => ObjectInstantiator[T]): ObjectInstantiator[T] = {
     // Just go through and try each one,
-    it.map { fn =>
-      fn(cls) match {
-        case Left(x) => None // ignore the exception
-        case Right(obji) => Some(obji)
+
+    it
+      .flatMap { fn =>
+        fn(cls).toOption
       }
-    }
-      .find { _.isDefined } // Find the first Some(x), returns Some(Some(x))
-      .flatMap { x => x } // flatten
+      .find (_ => true) // first element in traversable once (no headOption defined.)
       .getOrElse(elsefn)
   }
 
@@ -132,15 +132,15 @@ object Instantiators {
     }
 
   // This one tries reflectasm, which is a fast way of constructing an object
-  def reflectAsm[T](t: Class[T]): Either[Throwable, ObjectInstantiator[T]] = {
+  def reflectAsm[T](t: Class[T]): Try[ObjectInstantiator[T]] = {
     try {
       val access = ConstructorAccess.get(t)
       // Try it once, because this isn't always successful:
       access.newInstance
       // Okay, looks good:
-      Right(forClass(t) { () => access.newInstance() })
+      Success(forClass(t) { () => access.newInstance() })
     } catch {
-      case x: Throwable => Left(x)
+      case x: Throwable => Failure(x)
     }
   }
 
@@ -156,12 +156,12 @@ object Instantiators {
     }
   }
 
-  def normalJava[T](t: Class[T]): Either[Throwable, ObjectInstantiator[T]] = {
+  def normalJava[T](t: Class[T]): Try[ObjectInstantiator[T]] = {
     try {
       val cons = getConstructor(t)
-      Right(forClass(t) { () => cons.newInstance() })
+      Success(forClass(t) { () => cons.newInstance() })
     } catch {
-      case x: Throwable => Left(x)
+      case x: Throwable => Failure(x)
     }
   }
 }
