@@ -158,9 +158,12 @@ final class Varint {
         int value = 0;
         int i = 0;
         int b;
-        while (((b = in.readByte()) & 0x80) != 0) {
+        while (((b = in.readByte()) & 0x80) != 0 && i < 42) {
             value |= (b & 0x7F) << i;
             i += 7;
+        }
+        if(i == 42) { // Over read!
+            throw new IllegalArgumentException("Read more than 5 bytes of data, must be invalid Var int");
         }
         return value | (b << i);
     }
