@@ -46,7 +46,7 @@ public class KryoDeserializer implements Deserializer<Object> {
 
     public Object deserialize(Object o) throws IOException {
         // TODO, we could share these buffers if we see that alloc is bottlenecking
-        byte[] bytes = new byte[(int) Varint.readUnsignedVarLong(inputStream)];
+        byte[] bytes = new byte[Varint.readUnsignedVarInt(inputStream)];
         inputStream.readFully( bytes );
         return kryoPool.fromBytes(bytes, klass);
     }
