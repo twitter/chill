@@ -5,7 +5,7 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import scala.collection.JavaConverters._
 import scalariform.formatter.preferences._
 
-val kryoVersion = "2.21"
+val kryoVersion = "3.0.3"
 val bijectionVersion = "0.9.0"
 val algebirdVersion = "0.12.0"
 
@@ -32,7 +32,7 @@ val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalarifo
   libraryDependencies ++= Seq(
     "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
     "org.scalatest" %% "scalatest" % "2.2.2" % "test",
-    "com.esotericsoftware.kryo" % "kryo" % kryoVersion
+    "com.esotericsoftware" % "kryo-shaded" % kryoVersion
   ),
 
   parallelExecution in Test := true,
