@@ -25,6 +25,8 @@ import org.objenesis.strategy.InstantiatorStrategy
 
 import _root_.java.lang.reflect.{ Constructor, Modifier }
 
+import scala.util.{ Try, Success, Failure }
+
 /*
  * This is the base class of Kryo we use to fix specific scala
  * related issues discovered (ideally, this should be fixed in Kryo)
@@ -90,10 +92,12 @@ class KryoBase extends Kryo {
   /* Fixes the case where Kryo's reflectasm doesn't work, even though it claims to
    * TODO this should be fixed in Kryo. When it is, remove this
    */
-  override def newInstantiator(cls: Class[_]) = {
+  override def newInstantiator(cls: Class[_]) = newTypedInstantiator[AnyRef](cls.asInstanceOf[Class[AnyRef]])
+
+  private[this] def newTypedInstantiator[T](cls: Class[T]) = {
     import Instantiators._
     newOrElse(cls,
-      List(reflectAsm _, normalJava _),
+      List(reflectAsm[T](_), normalJava[T](_)),
       // Or fall back on the strategy:
       tryStrategy(cls).newInstantiatorOf(cls))
   }
@@ -101,26 +105,24 @@ class KryoBase extends Kryo {
 
 object Instantiators {
   // Go through the list and use the first that works
-  def newOrElse(cls: Class[_],
-    it: TraversableOnce[Class[_] => Either[Throwable, ObjectInstantiator]],
-    elsefn: => ObjectInstantiator): ObjectInstantiator = {
+  def newOrElse[T](cls: Class[T],
+    it: TraversableOnce[Class[T] => Try[ObjectInstantiator[T]]],
+    elsefn: => ObjectInstantiator[T]): ObjectInstantiator[T] = {
     // Just go through and try each one,
-    it.map { fn =>
-      fn(cls) match {
-        case Left(x) => None // ignore the exception
-        case Right(obji) => Some(obji)
+
+    it
+      .flatMap { fn =>
+        fn(cls).toOption
       }
-    }
-      .find { _.isDefined } // Find the first Some(x), returns Some(Some(x))
-      .flatMap { x => x } // flatten
+      .find (_ => true) // first element in traversable once (no headOption defined.)
       .getOrElse(elsefn)
   }
 
   // Use call by name:
-  def forClass(t: Class[_])(fn: () => Any): ObjectInstantiator =
-    new ObjectInstantiator {
+  def forClass[T](t: Class[T])(fn: () => T): ObjectInstantiator[T] =
+    new ObjectInstantiator[T] {
       override def newInstance() = {
-        try { fn().asInstanceOf[AnyRef] }
+        try { fn() }
         catch {
           case x: Exception => {
             throw new KryoException("Error constructing instance of class: " + t.getName, x)
@@ -130,19 +132,19 @@ object Instantiators {
     }
 
   // This one tries reflectasm, which is a fast way of constructing an object
-  def reflectAsm(t: Class[_]): Either[Throwable, ObjectInstantiator] = {
+  def reflectAsm[T](t: Class[T]): Try[ObjectInstantiator[T]] = {
     try {
       val access = ConstructorAccess.get(t)
       // Try it once, because this isn't always successful:
       access.newInstance
       // Okay, looks good:
-      Right(forClass(t) { () => access.newInstance() })
+      Success(forClass(t) { () => access.newInstance() })
     } catch {
-      case x: Throwable => Left(x)
+      case x: Throwable => Failure(x)
     }
   }
 
-  def getConstructor(c: Class[_]): Constructor[_] = {
+  def getConstructor[T](c: Class[T]): Constructor[T] = {
     try {
       c.getConstructor()
     } catch {
@@ -154,12 +156,12 @@ object Instantiators {
     }
   }
 
-  def normalJava(t: Class[_]): Either[Throwable, ObjectInstantiator] = {
+  def normalJava[T](t: Class[T]): Try[ObjectInstantiator[T]] = {
     try {
       val cons = getConstructor(t)
-      Right(forClass(t) { () => cons.newInstance() })
+      Success(forClass(t) { () => cons.newInstance() })
     } catch {
-      case x: Throwable => Left(x)
+      case x: Throwable => Failure(x)
     }
   }
 }

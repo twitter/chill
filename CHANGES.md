@@ -1,5 +1,8 @@
 # chill #
 
+### 0.8.0 ###
+* Kryo 3.0.3 upgrade: https://github.com/twitter/chill/pull/245
+
 ### 0.7.4 ###
 * If the inner Instantiator is cached we should just cache the kayo and…: https://github.com/twitter/chill/pull/243
 

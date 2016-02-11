@@ -32,7 +32,7 @@ public class ReflectingDefaultRegistrar<T> implements IKryoRegistrar {
   public Class<T> getRegisteredClass() { return klass; }
   public Class<? extends Serializer<?>> getSerializerClass() { return serializerKlass; }
   @Override
-  public void apply(Kryo k) { k.addDefaultSerializer(klass, k.newSerializer(serializerKlass, klass)); }
+  public void apply(Kryo k) { k.addDefaultSerializer(klass, serializerKlass); }
 
   @Override
   public int hashCode() { return klass.hashCode() ^ serializerKlass.hashCode(); }

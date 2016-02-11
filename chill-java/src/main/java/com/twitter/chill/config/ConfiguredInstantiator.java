@@ -40,7 +40,7 @@ public class ConfiguredInstantiator extends KryoInstantiator {
   protected final KryoInstantiator delegate;
 
   /** Key we use to configure this class.
-   * Format: <class of KryoInstantiator>(:<base64 serialized instantiator>)
+   * Format: {@literal<class of KryoInstantiator>(:<base64 serialized instantiator>)}
    * if there is no serialized instantiator, we use the reflected instance
    * as the delegate
    */
