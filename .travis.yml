@@ -7,3 +7,5 @@ jdk:
   - openjdk6
   - oraclejdk7
   - oraclejdk8
+script: ./sbt ++$TRAVIS_SCALA_VERSION clean test doc
+
