@@ -159,7 +159,7 @@ Discussion occurs primarily on the [Chill mailing list](https://groups.google.co
 
 ## Maven
 
-Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.7.2` and each scala project is published for `2.10` and `2.11`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.7.4` and each scala project is published for `2.10` and `2.11`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
 
 ## Authors
 
