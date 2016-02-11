@@ -131,4 +131,14 @@ abstract public class KryoPool extends ResourcePool<SerDeState> {
       release(serde);
     }
   }
+
+  public boolean hasRegistration(Class obj) {
+    SerDeState serde = borrow();
+    try {
+      return serde.hasRegistration(obj);
+    }
+    finally {
+      release(serde);
+    }
+  }
 }

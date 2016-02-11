@@ -37,7 +37,24 @@ import java.io.ByteArrayOutputStream;
 public class KryoSerialization extends Configured implements Serialization<Object> {
     // can't be final because we need to set them in setConf (for Configured)
     KryoPool kryoPool;
-    Kryo testKryo;
+
+    private static KryoPool cachedPool = null;
+    private static KryoInstantiator cachedKryoInst = null;
+
+    /**
+     * Hadoop will re-initialize the KryoSerialization on every spill
+     * This gets very expensive if you output a lot from a mapper to initialize the chill/kryo stack
+     * The KryoInstantiator's already do some caching, and figuring out if its safe to cache,
+     * so here we piggy back on that to avoid generating new kryo's or kryo pools
+     */
+    public static synchronized void resetOrUpdateFromCache(KryoSerialization instance, KryoInstantiator kryoInst){
+      if(kryoInst != cachedKryoInst) {
+        cachedPool = KryoPool.withByteArrayOutputStream(MAX_CACHED_KRYO, kryoInst);
+        cachedKryoInst = kryoInst;
+      }
+      instance.kryoPool = cachedPool;
+    }
+
     /**
      * Since each thread only needs 1 Kryo, the pool doesn't need more
      * space than the number of threads. We guess that there are 4 hyperthreads /
@@ -69,8 +86,7 @@ public class KryoSerialization extends Configured implements Serialization<Objec
 	if (conf != null) {
 	    try {
 		KryoInstantiator kryoInst = new ConfiguredInstantiator(new HadoopConfig(conf));
-		testKryo = kryoInst.newKryo();
-		kryoPool = KryoPool.withByteArrayOutputStream(MAX_CACHED_KRYO, kryoInst);
+        resetOrUpdateFromCache(this, kryoInst);
 	    }
 	    catch(ConfigurationException cx) {
 		// This interface can't throw
@@ -86,7 +102,7 @@ public class KryoSerialization extends Configured implements Serialization<Objec
      */
     public boolean accept(Class<?> aClass) {
         try {
-            return (testKryo.getRegistration(aClass) != null);
+            return kryoPool.hasRegistration(aClass);
         } catch (IllegalArgumentException e) {
             return false;
         }
