@@ -203,7 +203,12 @@ class AllScalaRegistrar extends IKryoRegistrar {
     k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
 
-    // Enable Java 8 lambda serialization
-    k.register(classOf[ClosureSerializer.Closure], new ClosureSerializer())
+    // Enable Java 8 lambda serialization only if we are running on a Java 8 JRE:
+    try {
+      Class.forName("java.lang.invoke.SerializedLambda")
+      k.register(classOf[ClosureSerializer.Closure], new ClosureSerializer())
+    } catch {
+      case e: ClassNotFoundException => // not running on Java 8
+    }
   }
 }
