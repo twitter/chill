@@ -25,8 +25,6 @@ val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalarifo
   javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
   javacOptions in doc := Seq("-source", "1.6"),
 
-  testOptions in Test += Tests.Argument("-oF"),
-
   resolvers ++= Seq(
     Opts.resolver.sonatypeSnapshots,
     Opts.resolver.sonatypeReleases
