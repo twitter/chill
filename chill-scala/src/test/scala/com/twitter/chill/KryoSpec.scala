@@ -299,7 +299,7 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       toList(rt(qr)) should equal(qrlist)
     }
     "Ranges should be fixed size" in {
-      val MAX_RANGE_SIZE = 188 // what seems to be needed.
+      val MAX_RANGE_SIZE = 447 // what seems to be needed.
       serialize((1 to 10000)).size should be < (MAX_RANGE_SIZE) // some fixed size
       serialize((1 to 10000 by 2)).size should be < (MAX_RANGE_SIZE) // some fixed size
       serialize((1 until 10000)).size should be < (MAX_RANGE_SIZE) // some fixed size

@@ -5,7 +5,7 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import scala.collection.JavaConverters._
 import scalariform.formatter.preferences._
 
-val kryoVersion = "3.0.3"
+val kryoVersion = "3.1.0-SNAPSHOT"
 val bijectionVersion = "0.9.0"
 val algebirdVersion = "0.12.0"
 
@@ -17,7 +17,7 @@ def isScala210x(scalaVersion: String) = scalaVersion match {
 val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
   scalaVersion := "2.10.5",
-  crossScalaVersions := Seq("2.10.5", "2.11.7", "2.12.0-M3"),
+  crossScalaVersions := Seq("2.10.5", "2.11.7", "2.12.0-M4"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   ScalariformKeys.preferences := formattingPreferences,
 
@@ -33,7 +33,7 @@ val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalarifo
   ),
   libraryDependencies ++= Seq(
     "org.scalacheck" %% "scalacheck" % "1.11.6" % "test",
-    "org.scalatest" %% "scalatest" % "2.2.5-M3" % "test",
+    "org.scalatest" %% "scalatest" % "2.2.6" % "test",
     "com.esotericsoftware" % "kryo-shaded" % kryoVersion
   ),
 

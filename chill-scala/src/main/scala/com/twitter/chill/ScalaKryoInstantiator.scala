@@ -43,6 +43,7 @@ import scala.collection.mutable.{
 
 import scala.util.matching.Regex
 
+import com.esotericsoftware.kryo.serializers.ClosureSerializer
 import com.twitter.chill.java.PackageRegistrar
 import _root_.java.io.Serializable
 
@@ -201,5 +202,8 @@ class AllScalaRegistrar extends IKryoRegistrar {
     val boxedUnit = scala.Unit.box(())
     k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
+
+    // Enable Java 8 lambda serialization
+    k.register(classOf[ClosureSerializer.Closure], new ClosureSerializer())
   }
 }
