@@ -88,7 +88,7 @@ lazy val chillAll = Project(
   id = "chill-all",
   base = file("."),
   settings = sharedSettings
-).settings(
+).enablePlugins(CrossPerProjectPlugin).settings(
   test := { },
   publish := { },
   publishLocal := { }
@@ -154,6 +154,7 @@ lazy val chill = Project(
 
 lazy val chillAkka = module("akka").settings(
   resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.typesafe" % "config" % "1.2.1",
     "com.typesafe.akka" %% "akka-actor" % "2.3.6" % "provided"
@@ -161,6 +162,7 @@ lazy val chillAkka = module("akka").settings(
 ).dependsOn(chill % "test->test;compile->compile")
 
 lazy val chillBijection = module("bijection").settings(
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.twitter" %% "bijection-core" % bijectionVersion
   )
@@ -204,6 +206,7 @@ lazy val chillThrift = module("thrift").settings(
 )
 
 lazy val chillScrooge = module("scrooge").settings(
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit"),
     "com.twitter" %% "scrooge-serializer" % "3.20.0"
@@ -220,6 +223,7 @@ lazy val chillProtobuf = module("protobuf").settings(
 ).dependsOn(chillJava)
 
 lazy val chillAvro = module("avro").settings(
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.twitter" %% "bijection-avro" % bijectionVersion,
     "junit" % "junit" % "4.5" % "test"
@@ -227,6 +231,7 @@ lazy val chillAvro = module("avro").settings(
 ).dependsOn(chill,chillJava, chillBijection)
 
 lazy val chillAlgebird = module("algebird").settings(
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.twitter" %% "algebird-core" % algebirdVersion
   )
