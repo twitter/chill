@@ -21,6 +21,7 @@ import org.scalatest._
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
+import com.esotericsoftware.kryo.serializers.ClosureSerializer
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
@@ -40,6 +41,13 @@ class PriorityQueueSpec extends WordSpec with Matchers {
       val kryo = new Kryo()
       kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
       PriorityQueueSerializer.registrar()(kryo)
+      // Enable Java 8 lambda serialization only if we are running on a Java 8 JRE:
+      try {
+        Class.forName("java.lang.invoke.SerializedLambda")
+        kryo.register(classOf[ClosureSerializer.Closure], new ClosureSerializer())
+      } catch {
+        case e: ClassNotFoundException => // not running on Java 8
+      }
       val ord = Ordering.fromLessThan[(Int, Int)] { (l, r) => l._1 < r._1 }
       val q = new java.util.PriorityQueue[(Int, Int)](3, ord)
       q.add((2, 3))
