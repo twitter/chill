@@ -42,7 +42,7 @@ import com.esotericsoftware.kryo.io.Output;
  */
 public class ArraysAsListSerializer extends Serializer<List<?>> {
 
-    private static final Map<Class<?>, Class<?>> primitives = new HashMap<>(8, 1.0F);
+    private static final Map<Class<?>, Class<?>> primitives = new HashMap<Class<?>, Class<?>>(8, 1.0F);
 
     static {
         primitives.put(byte.class, Byte.class);
