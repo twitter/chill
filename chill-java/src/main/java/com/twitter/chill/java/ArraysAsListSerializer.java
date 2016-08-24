@@ -60,11 +60,11 @@ public class ArraysAsListSerializer extends Serializer<List<?>> {
         final int length = input.readInt(true);
         final Class<?> componentType = kryo.readClass( input ).getType();
         try {
-            final Object[] items = (Object[]) Array.newInstance( componentType, length );
-            for( int i = 0; i < length; i++ ) {
-                items[i] = kryo.readClassAndObject( input );
+            final Object items = Array.newInstance(componentType, length);
+            for (int i = 0; i < length; i++) {
+                Array.set(items, i, kryo.readClassAndObject(input));
             }
-            return Arrays.asList( items );
+            return Arrays.asList(items);
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         }
