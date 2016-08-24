@@ -40,6 +40,19 @@ import com.esotericsoftware.kryo.io.Output;
  */
 public class ArraysAsListSerializer extends Serializer<List<?>> {
 
+    private static final Map<Class<?>, Class<?>> primitives = new HashMap<>(8, 1.0F);
+
+    static {
+        primitives.put(byte.class, Byte.class);
+        primitives.put(short.class, Short.class);
+        primitives.put(int.class, Integer.class);
+        primitives.put(long.class, Long.class);
+        primitives.put(char.class, Character.class);
+        primitives.put(float.class, Float.class);
+        primitives.put(double.class, Double.class);
+        primitives.put(boolean.class, Boolean.class);
+    }
+
     static public IKryoRegistrar registrar() {
       return new SingleRegistrar(Arrays.asList("").getClass(), new ArraysAsListSerializer());
     }
@@ -91,23 +104,8 @@ public class ArraysAsListSerializer extends Serializer<List<?>> {
     
     private static Class<?> getBoxedClass(final Class<?> c) {
         if (c.isPrimitive()) {
-            if (c.equals(Long.TYPE)) {
-                return Long.class;
-            } else if (c.equals(Integer.TYPE)) {
-                return Integer.class;
-            } else if (c.equals(Short.TYPE)) {
-                return Short.class;
-            } else if (c.equals(Byte.TYPE)) {
-                return Byte.class;
-            } else if (c.equals(Character.TYPE)) {
-                return Character.class;
-            } else if (c.equals(Double.TYPE)) {
-                return Double.class;
-            } else if (c.equals(Float.TYPE)) {
-                return Float.class;
-            } else if (c.equals(Boolean.TYPE)) {
-                return Boolean.class;
-            }
+            Class<?> x;
+            return (x = primitives.get(c)) != null ? x : c;
         }
         return c;
     }
