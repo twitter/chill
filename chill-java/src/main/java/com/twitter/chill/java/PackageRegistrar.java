@@ -27,19 +27,29 @@ import java.util.ArrayList;
  */
 public class PackageRegistrar {
 
-  static public IKryoRegistrar all() {
-    return new IterableRegistrar(
-      ArraysAsListSerializer.registrar(),
-      BitSetSerializer.registrar(),
-      PriorityQueueSerializer.registrar(),
-      RegexSerializer.registrar(),
-      SqlDateSerializer.registrar(),
-      SqlTimeSerializer.registrar(),
-      TimestampSerializer.registrar(),
-      URISerializer.registrar(),
-      InetSocketAddressSerializer.registrar(),
-      UUIDSerializer.registrar(),
-      LocaleSerializer.registrar(),
-      SimpleDateFormatSerializer.registrar());
-  }
+    static public IKryoRegistrar all() {
+        return new IterableRegistrar(
+                ArraysAsListSerializer.registrar(),
+                BitSetSerializer.registrar(),
+                PriorityQueueSerializer.registrar(),
+                RegexSerializer.registrar(),
+                SqlDateSerializer.registrar(),
+                SqlTimeSerializer.registrar(),
+                TimestampSerializer.registrar(),
+                URISerializer.registrar(),
+                InetSocketAddressSerializer.registrar(),
+                UUIDSerializer.registrar(),
+                LocaleSerializer.registrar(),
+                SimpleDateFormatSerializer.registrar(),
+                UnmodifiableCollectionSerializer.registrar(),
+                UnmodifiableListSerializer.registrar(),
+                UnmodifiableMapSerializer.registrar(),
+                UnmodifiableSetSerializer.registrar(),
+                UnmodifiableSortedMapSerializer.registrar(),
+                UnmodifiableSortedSetSerializer.registrar(),
+                EmptyListSerializer.registrar(),
+                EmptyMapSerializer.registrar(),
+                EmptySetSerializer.registrar()
+        );
+    }
 }
