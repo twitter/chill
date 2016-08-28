@@ -36,50 +36,25 @@ import java.util.*;
  *
  * @author <a href="mailto:alex@chermenin.ru">Alex Chermenin</a>
  */
-public class UnmodifiableListSerializer extends Serializer<List<?>> {
-
-    @SuppressWarnings("unchecked")
-    static public IKryoRegistrar registrar() {
-        return new IterableRegistrar(
-                new SingleRegistrar(Collections.unmodifiableList(Collections.EMPTY_LIST).getClass(),
-                        new UnmodifiableListSerializer()),
-                new SingleRegistrar(Collections.unmodifiableList(new LinkedList(Collections.EMPTY_LIST)).getClass(),
-                        new UnmodifiableListSerializer())
-        );
-    }
-
-    final private Field listField;
-
-    public UnmodifiableListSerializer() {
-        try {
-            listField = Class.forName("java.util.Collections$UnmodifiableList").getDeclaredField("list");
-            listField.setAccessible(true);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public List<?> read(Kryo kryo, Input input, Class<List<?>> type) {
-        try {
-            List<?> list = (List<?>) kryo.readClassAndObject(input);
-            return Collections.unmodifiableList(list);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void write(Kryo kryo, Output output, List<?> object) {
-        try {
-            List<?> list = (List<?>) listField.get(object);
-            kryo.writeClassAndObject(output, list);
-        } catch (RuntimeException e) {
-            // Don't eat and wrap RuntimeExceptions because the ObjectBuffer.write...
-            // handles SerializationException specifically (resizing the buffer)...
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class UnmodifiableListSerializer extends UnmodifiableJavaCollectionSerializer<List<?>> {
+  
+  @SuppressWarnings("unchecked")
+  static public IKryoRegistrar registrar() {
+    return new IterableRegistrar(
+        new SingleRegistrar(Collections.unmodifiableList(Collections.EMPTY_LIST).getClass(),
+            new UnmodifiableListSerializer()),
+        new SingleRegistrar(Collections.unmodifiableList(new LinkedList(Collections.EMPTY_LIST)).getClass(),
+            new UnmodifiableListSerializer())
+    );
+  }
+  
+  @Override
+  protected Field getInnerField() throws Exception {
+    return Class.forName("java.util.Collections$UnmodifiableList").getDeclaredField("list");
+  }
+  
+  @Override
+  protected List<?> newInstance(List<?> l) {
+    return Collections.unmodifiableList(l);
+  }
 }

@@ -36,46 +36,21 @@ import java.util.*;
  *
  * @author <a href="mailto:alex@chermenin.ru">Alex Chermenin</a>
  */
-public class UnmodifiableSortedSetSerializer extends Serializer<SortedSet<?>> {
-
-    @SuppressWarnings("unchecked")
-    static public IKryoRegistrar registrar() {
-        return new SingleRegistrar(Collections.unmodifiableSortedSet(new TreeSet(Collections.EMPTY_SET)).getClass(),
-                new UnmodifiableSortedSetSerializer());
-    }
-
-    final private Field setField;
-
-    public UnmodifiableSortedSetSerializer() {
-        try {
-            setField = Class.forName("java.util.Collections$UnmodifiableSortedSet").getDeclaredField("ss");
-            setField.setAccessible(true);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public SortedSet<?> read(Kryo kryo, Input input, Class<SortedSet<?>> type) {
-        try {
-            SortedSet<?> set = (SortedSet<?>) kryo.readClassAndObject(input);
-            return Collections.unmodifiableSortedSet(set);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void write(Kryo kryo, Output output, SortedSet<?> object) {
-        try {
-            SortedSet<?> set = (SortedSet<?>) setField.get(object);
-            kryo.writeClassAndObject(output, set);
-        } catch (RuntimeException e) {
-            // Don't eat and wrap RuntimeExceptions because the ObjectBuffer.write...
-            // handles SerializationException specifically (resizing the buffer)...
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class UnmodifiableSortedSetSerializer extends UnmodifiableJavaCollectionSerializer<SortedSet<?>> {
+  
+  @SuppressWarnings("unchecked")
+  static public IKryoRegistrar registrar() {
+    return new SingleRegistrar(Collections.unmodifiableSortedSet(new TreeSet(Collections.EMPTY_SET)).getClass(),
+        new UnmodifiableSortedSetSerializer());
+  }
+  
+  @Override
+  protected Field getInnerField() throws Exception {
+    return Class.forName("java.util.Collections$UnmodifiableSortedSet").getDeclaredField("ss");
+  }
+  
+  @Override
+  protected SortedSet<?> newInstance(SortedSet<?> s) {
+    return Collections.unmodifiableSortedSet(s);
+  }
 }

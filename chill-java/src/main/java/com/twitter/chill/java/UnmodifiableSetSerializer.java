@@ -36,47 +36,21 @@ import java.util.*;
  *
  * @author <a href="mailto:alex@chermenin.ru">Alex Chermenin</a>
  */
-public class UnmodifiableSetSerializer extends Serializer<Set<?>> {
-
-    @SuppressWarnings("unchecked")
-    static public IKryoRegistrar registrar() {
-        return new SingleRegistrar(Collections.unmodifiableSet(Collections.EMPTY_SET).getClass(),
-                new UnmodifiableSetSerializer());
-    }
-
-    final private Field collectionField;
-
-    public UnmodifiableSetSerializer() {
-        try {
-            collectionField =
-                    Class.forName("java.util.Collections$UnmodifiableSet").getSuperclass().getDeclaredField("c");
-            collectionField.setAccessible(true);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Set<?> read(Kryo kryo, Input input, Class<Set<?>> type) {
-        try {
-            Set<?> c = (Set<?>) kryo.readClassAndObject(input);
-            return Collections.unmodifiableSet(c);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void write(Kryo kryo, Output output, Set<?> object) {
-        try {
-            Set<?> c = (Set<?>) collectionField.get(object);
-            kryo.writeClassAndObject(output, c);
-        } catch (RuntimeException e) {
-            // Don't eat and wrap RuntimeExceptions because the ObjectBuffer.write...
-            // handles SerializationException specifically (resizing the buffer)...
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class UnmodifiableSetSerializer extends UnmodifiableJavaCollectionSerializer<Set<?>> {
+  
+  @SuppressWarnings("unchecked")
+  static public IKryoRegistrar registrar() {
+    return new SingleRegistrar(Collections.unmodifiableSet(Collections.EMPTY_SET).getClass(),
+        new UnmodifiableSetSerializer());
+  }
+  
+  @Override
+  protected Field getInnerField() throws Exception {
+    return Class.forName("java.util.Collections$UnmodifiableSet").getSuperclass().getDeclaredField("c");
+  }
+  
+  @Override
+  protected Set<?> newInstance(Set<?> s) {
+    return Collections.unmodifiableSet(s);
+  }
 }

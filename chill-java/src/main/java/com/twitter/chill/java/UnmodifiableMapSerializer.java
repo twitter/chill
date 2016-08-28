@@ -36,46 +36,21 @@ import java.util.*;
  *
  * @author <a href="mailto:alex@chermenin.ru">Alex Chermenin</a>
  */
-public class UnmodifiableMapSerializer extends Serializer<Map<?, ?>> {
-
-    @SuppressWarnings("unchecked")
-    static public IKryoRegistrar registrar() {
-        return new SingleRegistrar(Collections.unmodifiableMap(Collections.EMPTY_MAP).getClass(),
-                new UnmodifiableMapSerializer());
-    }
-
-    final private Field mapField;
-
-    public UnmodifiableMapSerializer() {
-        try {
-            mapField = Class.forName("java.util.Collections$UnmodifiableMap").getDeclaredField("m");
-            mapField.setAccessible(true);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Map<?, ?> read(Kryo kryo, Input input, Class<Map<?, ?>> type) {
-        try {
-            Map<?, ?> map = (Map<?, ?>) kryo.readClassAndObject(input);
-            return Collections.unmodifiableMap(map);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void write(Kryo kryo, Output output, Map<?, ?> object) {
-        try {
-            Map<?, ?> map = (Map<?, ?>) mapField.get(object);
-            kryo.writeClassAndObject(output, map);
-        } catch (RuntimeException e) {
-            // Don't eat and wrap RuntimeExceptions because the ObjectBuffer.write...
-            // handles SerializationException specifically (resizing the buffer)...
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class UnmodifiableMapSerializer extends UnmodifiableJavaCollectionSerializer<Map<?, ?>> {
+  
+  @SuppressWarnings("unchecked")
+  static public IKryoRegistrar registrar() {
+    return new SingleRegistrar(Collections.unmodifiableMap(Collections.EMPTY_MAP).getClass(),
+        new UnmodifiableMapSerializer());
+  }
+  
+  @Override
+  protected Field getInnerField() throws Exception {
+    return Class.forName("java.util.Collections$UnmodifiableMap").getDeclaredField("m");
+  }
+  
+  @Override
+  protected Map<?, ?> newInstance(Map<?, ?> m) {
+    return Collections.unmodifiableMap(m);
+  }
 }

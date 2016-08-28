@@ -36,46 +36,21 @@ import java.util.*;
  *
  * @author <a href="mailto:alex@chermenin.ru">Alex Chermenin</a>
  */
-public class UnmodifiableSortedMapSerializer extends Serializer<SortedMap<?, ?>> {
-
-    @SuppressWarnings("unchecked")
-    static public IKryoRegistrar registrar() {
-        return new SingleRegistrar(Collections.unmodifiableSortedMap(new TreeMap(Collections.EMPTY_MAP)).getClass(),
-                new UnmodifiableSortedMapSerializer());
-    }
-
-    final private Field mapField;
-
-    public UnmodifiableSortedMapSerializer() {
-        try {
-            mapField = Class.forName("java.util.Collections$UnmodifiableSortedMap").getDeclaredField("sm");
-            mapField.setAccessible(true);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public SortedMap<?, ?> read(Kryo kryo, Input input, Class<SortedMap<?, ?>> type) {
-        try {
-            SortedMap<?, ?> map = (SortedMap<?, ?>) kryo.readClassAndObject(input);
-            return Collections.unmodifiableSortedMap(map);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void write(Kryo kryo, Output output, SortedMap<?, ?> object) {
-        try {
-            SortedMap<?, ?> map = (SortedMap<?, ?>) mapField.get(object);
-            kryo.writeClassAndObject(output, map);
-        } catch (RuntimeException e) {
-            // Don't eat and wrap RuntimeExceptions because the ObjectBuffer.write...
-            // handles SerializationException specifically (resizing the buffer)...
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class UnmodifiableSortedMapSerializer extends UnmodifiableJavaCollectionSerializer<SortedMap<?, ?>> {
+  
+  @SuppressWarnings("unchecked")
+  static public IKryoRegistrar registrar() {
+    return new SingleRegistrar(Collections.unmodifiableSortedMap(new TreeMap(Collections.EMPTY_MAP)).getClass(),
+        new UnmodifiableSortedMapSerializer());
+  }
+  
+  @Override
+  protected Field getInnerField() throws Exception {
+    return Class.forName("java.util.Collections$UnmodifiableSortedMap").getDeclaredField("sm");
+  }
+  
+  @Override
+  protected SortedMap<?, ?> newInstance(SortedMap<?, ?> m) {
+    return Collections.unmodifiableSortedMap(m);
+  }
 }

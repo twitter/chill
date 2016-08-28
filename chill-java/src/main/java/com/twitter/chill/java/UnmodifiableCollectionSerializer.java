@@ -36,46 +36,21 @@ import java.util.*;
  *
  * @author <a href="mailto:alex@chermenin.ru">Alex Chermenin</a>
  */
-public class UnmodifiableCollectionSerializer extends Serializer<Collection<?>> {
-
-    @SuppressWarnings("unchecked")
-    static public IKryoRegistrar registrar() {
-        return new SingleRegistrar(Collections.unmodifiableCollection(Collections.EMPTY_SET).getClass(),
-                new UnmodifiableCollectionSerializer());
-    }
-
-    final private Field collectionField;
-
-    public UnmodifiableCollectionSerializer() {
-        try {
-            collectionField = Class.forName("java.util.Collections$UnmodifiableCollection").getDeclaredField("c");
-            collectionField.setAccessible(true);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Collection<?> read(Kryo kryo, Input input, Class<Collection<?>> type) {
-        try {
-            Collection<?> c = (Collection<?>) kryo.readClassAndObject(input);
-            return Collections.unmodifiableCollection(c);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void write(Kryo kryo, Output output, Collection<?> object) {
-        try {
-            Collection<?> c = (Collection<?>) collectionField.get(object);
-            kryo.writeClassAndObject(output, c);
-        } catch (RuntimeException e) {
-            // Don't eat and wrap RuntimeExceptions because the ObjectBuffer.write...
-            // handles SerializationException specifically (resizing the buffer)...
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class UnmodifiableCollectionSerializer extends UnmodifiableJavaCollectionSerializer<Collection<?>> {
+  
+  @SuppressWarnings("unchecked")
+  static public IKryoRegistrar registrar() {
+    return new SingleRegistrar(Collections.unmodifiableCollection(Collections.EMPTY_SET).getClass(),
+        new UnmodifiableCollectionSerializer());
+  }
+  
+  @Override
+  protected Field getInnerField() throws Exception {
+    return Class.forName("java.util.Collections$UnmodifiableCollection").getDeclaredField("c");
+  }
+  
+  @Override
+  protected Collection<?> newInstance(Collection<?> c) {
+    return Collections.unmodifiableCollection(c);
+  }
 }

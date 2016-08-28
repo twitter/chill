@@ -26,30 +26,27 @@ import java.util.ArrayList;
  * Creates a registrar for all the serializers in the chill.java package
  */
 public class PackageRegistrar {
-
-    static public IKryoRegistrar all() {
-        return new IterableRegistrar(
-                ArraysAsListSerializer.registrar(),
-                BitSetSerializer.registrar(),
-                PriorityQueueSerializer.registrar(),
-                RegexSerializer.registrar(),
-                SqlDateSerializer.registrar(),
-                SqlTimeSerializer.registrar(),
-                TimestampSerializer.registrar(),
-                URISerializer.registrar(),
-                InetSocketAddressSerializer.registrar(),
-                UUIDSerializer.registrar(),
-                LocaleSerializer.registrar(),
-                SimpleDateFormatSerializer.registrar(),
-                UnmodifiableCollectionSerializer.registrar(),
-                UnmodifiableListSerializer.registrar(),
-                UnmodifiableMapSerializer.registrar(),
-                UnmodifiableSetSerializer.registrar(),
-                UnmodifiableSortedMapSerializer.registrar(),
-                UnmodifiableSortedSetSerializer.registrar(),
-                EmptyListSerializer.registrar(),
-                EmptyMapSerializer.registrar(),
-                EmptySetSerializer.registrar()
-        );
-    }
+  
+  static public IKryoRegistrar all() {
+    return new IterableRegistrar(
+        ArraysAsListSerializer.registrar(),
+        BitSetSerializer.registrar(),
+        PriorityQueueSerializer.registrar(),
+        RegexSerializer.registrar(),
+        SqlDateSerializer.registrar(),
+        SqlTimeSerializer.registrar(),
+        TimestampSerializer.registrar(),
+        URISerializer.registrar(),
+        InetSocketAddressSerializer.registrar(),
+        UUIDSerializer.registrar(),
+        LocaleSerializer.registrar(),
+        SimpleDateFormatSerializer.registrar(),
+        UnmodifiableCollectionSerializer.registrar(),
+        UnmodifiableListSerializer.registrar(),
+        UnmodifiableMapSerializer.registrar(),
+        UnmodifiableSetSerializer.registrar(),
+        UnmodifiableSortedMapSerializer.registrar(),
+        UnmodifiableSortedSetSerializer.registrar()
+    );
+  }
 }
