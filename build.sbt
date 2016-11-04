@@ -17,7 +17,7 @@ def isScala210x(scalaVersion: String) = scalaVersion match {
 val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
   scalaVersion := "2.10.5",
-  crossScalaVersions := Seq("2.10.5", "2.11.7", "2.12.0-M4"),
+  crossScalaVersions := Seq("2.10.5", "2.11.7", "2.12.0"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   ScalariformKeys.preferences := formattingPreferences,
 
@@ -31,7 +31,7 @@ val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalarifo
   ),
   libraryDependencies ++= Seq(
     "org.scalacheck" %% "scalacheck" % "1.11.6" % "test",
-    "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+    "org.scalatest" %% "scalatest" % "3.0.0" % "test",
     "com.esotericsoftware" % "kryo-shaded" % kryoVersion
   ),
 
