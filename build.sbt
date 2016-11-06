@@ -5,7 +5,7 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import scala.collection.JavaConverters._
 import scalariform.formatter.preferences._
 
-val kryoVersion = "3.0.3"
+val kryoVersion = "4.0.0"
 val bijectionVersion = "0.9.0"
 val algebirdVersion = "0.12.0"
 
