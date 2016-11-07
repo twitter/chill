@@ -48,6 +48,7 @@ import com.twitter.chill.java.PackageRegistrar
 import _root_.java.io.Serializable
 
 import scala.collection.JavaConverters._
+import scala.reflect.ClassTag
 
 /**
  * This class has a no-arg constructor, suitable for use with reflection instantiation
@@ -194,7 +195,7 @@ class AllScalaRegistrar extends IKryoRegistrar {
       def read(k: Kryo, in: Input, cls: Class[Symbol]) = Symbol(in.readString)
     })
       .forSubclass[Regex](new RegexSerializer)
-      .forClass[ClassManifest[Any]](new ClassManifestSerializer[Any])
+      .forClass[ClassTag[Any]](new ClassTagSerializer[Any])
       .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
       .forSubclass[scala.Enumeration#Value](new EnumerationSerializer)
 
