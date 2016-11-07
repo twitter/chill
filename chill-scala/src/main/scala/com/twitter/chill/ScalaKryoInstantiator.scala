@@ -43,8 +43,7 @@ import scala.collection.mutable.{
 
 import scala.util.matching.Regex
 
-import com.esotericsoftware.kryo.serializers.ClosureSerializer
-import com.twitter.chill.java.PackageRegistrar
+import com.twitter.chill.java.{Java8ClosureRegistrar, PackageRegistrar}
 import _root_.java.io.Serializable
 
 import scala.collection.JavaConverters._
@@ -203,13 +202,6 @@ class AllScalaRegistrar extends IKryoRegistrar {
     val boxedUnit = scala.Unit.box(())
     k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
-
-    // Enable Java 8 lambda serialization only if we are running on a Java 8 JRE:
-    try {
-      Class.forName("java.lang.invoke.SerializedLambda")
-      k.register(classOf[ClosureSerializer.Closure], new ClosureSerializer())
-    } catch {
-      case e: ClassNotFoundException => // not running on Java 8
-    }
+    new Java8ClosureRegistrar()(k)
   }
 }
