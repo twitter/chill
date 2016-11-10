@@ -17,7 +17,7 @@ def isScala210x(scalaVersion: String) = scalaVersion match {
 val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
   scalaVersion := "2.10.5",
-  crossScalaVersions := Seq("2.10.5", "2.11.7"),
+  crossScalaVersions := Seq("2.10.5", "2.11.7", "2.12.0"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   ScalariformKeys.preferences := formattingPreferences,
 
@@ -30,8 +30,8 @@ val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalarifo
     Opts.resolver.sonatypeReleases
   ),
   libraryDependencies ++= Seq(
-    "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
-    "org.scalatest" %% "scalatest" % "2.2.2" % "test",
+    "org.scalacheck" %% "scalacheck" % "1.11.6" % "test",
+    "org.scalatest" %% "scalatest" % "3.0.0" % "test",
     "com.esotericsoftware" % "kryo-shaded" % kryoVersion
   ),
 
@@ -86,7 +86,7 @@ lazy val chillAll = Project(
   id = "chill-all",
   base = file("."),
   settings = sharedSettings
-).settings(
+).enablePlugins(CrossPerProjectPlugin).settings(
   test := { },
   publish := { },
   publishLocal := { }
@@ -152,6 +152,7 @@ lazy val chill = Project(
 
 lazy val chillAkka = module("akka").settings(
   resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.typesafe" % "config" % "1.2.1",
     "com.typesafe.akka" %% "akka-actor" % "2.3.6" % "provided"
@@ -159,6 +160,7 @@ lazy val chillAkka = module("akka").settings(
 ).dependsOn(chill % "test->test;compile->compile")
 
 lazy val chillBijection = module("bijection").settings(
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.twitter" %% "bijection-core" % bijectionVersion
   )
@@ -202,6 +204,7 @@ lazy val chillThrift = module("thrift").settings(
 )
 
 lazy val chillScrooge = module("scrooge").settings(
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit"),
     "com.twitter" %% "scrooge-serializer" % "3.20.0"
@@ -218,6 +221,7 @@ lazy val chillProtobuf = module("protobuf").settings(
 ).dependsOn(chillJava)
 
 lazy val chillAvro = module("avro").settings(
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.twitter" %% "bijection-avro" % bijectionVersion,
     "junit" % "junit" % "4.5" % "test"
@@ -225,6 +229,7 @@ lazy val chillAvro = module("avro").settings(
 ).dependsOn(chill,chillJava, chillBijection)
 
 lazy val chillAlgebird = module("algebird").settings(
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.twitter" %% "algebird-core" % algebirdVersion
   )
