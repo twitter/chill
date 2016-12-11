@@ -43,7 +43,7 @@ import scala.collection.mutable.{
 
 import scala.util.matching.Regex
 
-import com.twitter.chill.java.{Java8ClosureRegistrar, PackageRegistrar}
+import com.twitter.chill.java.{ Java8ClosureRegistrar, PackageRegistrar }
 import _root_.java.io.Serializable
 
 import scala.collection.JavaConverters._
