@@ -1,23 +1,14 @@
-import ReleaseTransformations._
-import com.typesafe.sbt.SbtScalariform._
-import com.typesafe.tools.mima.plugin.MimaKeys._
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
-import scala.collection.JavaConverters._
-import scalariform.formatter.preferences._
 
 val kryoVersion = "4.0.0"
-val bijectionVersion = "0.9.0"
+val bijectionVersion = "0.9.4"
 val algebirdVersion = "0.12.0"
+val akkaVersion = "2.4.14"
 
-def isScala210x(scalaVersion: String) = scalaVersion match {
-    case version if version startsWith "2.10" => true
-    case _ => false
-}
-
-val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
+val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
-  scalaVersion := "2.10.5",
-  crossScalaVersions := Seq("2.10.5", "2.11.7", "2.12.0"),
+  scalaVersion := "2.12.1",
+  crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   ScalariformKeys.preferences := formattingPreferences,
 
@@ -44,15 +35,12 @@ val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalarifo
   publishArtifact in Test := false,
   pomIncludeRepository := { x => false },
 
-  publishTo <<= version { v =>
-    Some(
-      if (v.trim.toUpperCase.endsWith("SNAPSHOT"))
+  publishTo := Some(
+      if (version.value.trim.toUpperCase.endsWith("SNAPSHOT"))
         Opts.resolver.sonatypeSnapshots
       else
         Opts.resolver.sonatypeStaging
-        //"twttr" at "http://artifactory.local.twitter.com/libs-releases-local"
-    )
-  },
+    ),
   pomExtra := (
     <url>https://github.com/twitter/chill</url>
         <licenses>
@@ -86,11 +74,9 @@ lazy val chillAll = Project(
   id = "chill-all",
   base = file("."),
   settings = sharedSettings
-).enablePlugins(CrossPerProjectPlugin).settings(
-  test := { },
-  publish := { },
-  publishLocal := { }
-).aggregate(
+ ).enablePlugins(CrossPerProjectPlugin)
+  .settings(noPublishSettings)
+  .aggregate(
   chill,
   chillBijection,
   chillScrooge,
@@ -111,32 +97,49 @@ lazy val formattingPreferences = {
    setPreference(PreserveSpaceBeforeArguments, true)
 }
 
+lazy val noPublishSettings = Seq(
+    publish := (),
+    publishLocal := (),
+    test := (),
+    publishArtifact := false
+  )
+
 /**
   * This returns the youngest jar we released that is compatible
   * with the current.
   */
 val unreleasedModules = Set[String]("akka")
 val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
+val binaryCompatVersion = "0.8.0"
 
 def youngestForwardCompatible(subProj: String) =
   Some(subProj)
     .filterNot(unreleasedModules.contains(_))
     .map { s =>
-    val suffix = if (javaOnly.contains(s)) "" else "_2.10"
-    "com.twitter" % ("chill-" + s + suffix) % "0.7.2"
+    if (javaOnly.contains(s))
+      "com.twitter" % ("chill-" + s) % binaryCompatVersion
+    else
+      "com.twitter" %% ("chill-" + s) % binaryCompatVersion
   }
+
+val ignoredABIProblems = {
+  import com.typesafe.tools.mima.core._
+  import com.typesafe.tools.mima.core.ProblemFilters._
+  Seq(
+    exclude[MissingTypesProblem]("com.twitter.chill.storm.BlizzardKryoFactory")
+  )
+}
 
 def module(name: String) = {
   val id = "chill-%s".format(name)
   Project(id = id, base = file(id), settings = sharedSettings ++ Seq(
     Keys.name := id,
-    previousArtifact := youngestForwardCompatible(name),
+    mimaPreviousArtifacts := youngestForwardCompatible(name).toSet,
+    mimaBinaryIssueFilters ++= ignoredABIProblems,
     // Disable cross publishing for java artifacts
-    publishArtifact <<= (scalaVersion) { scalaVersion =>
-      if(javaOnly.contains(name) && scalaVersion.startsWith("2.11")) false else true
-    }
-    )
-  )
+    publishArtifact :=
+      (if (javaOnly.contains(name) && scalaVersion.value.startsWith("2.11")) false else true)
+  ))
 }
 
 // We usually do the pattern of having a core module, but we don't want to cause
@@ -147,20 +150,18 @@ lazy val chill = Project(
   settings = sharedSettings
 ).settings(
   name := "chill",
-  previousArtifact := Some("com.twitter" % "chill_2.10" % "0.7.2")
+  mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion)
 ).dependsOn(chillJava)
 
 lazy val chillAkka = module("akka").settings(
-  resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
+  resolvers += Resolver.typesafeRepo("releases"),
   libraryDependencies ++= Seq(
     "com.typesafe" % "config" % "1.2.1",
-    "com.typesafe.akka" %% "akka-actor" % "2.3.6" % "provided"
+    "com.typesafe.akka" %% "akka-actor" % akkaVersion % "provided"
   )
 ).dependsOn(chill % "test->test;compile->compile")
 
 lazy val chillBijection = module("bijection").settings(
-  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.twitter" %% "bijection-core" % bijectionVersion
   )
@@ -217,7 +218,6 @@ lazy val chillProtobuf = module("protobuf").settings(
 ).dependsOn(chillJava)
 
 lazy val chillAvro = module("avro").settings(
-  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.twitter" %% "bijection-avro" % bijectionVersion,
     "junit" % "junit" % "4.5" % "test"
