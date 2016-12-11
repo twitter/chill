@@ -3,11 +3,11 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 val kryoVersion = "4.0.0"
 val bijectionVersion = "0.9.4"
 val algebirdVersion = "0.12.0"
-val akkaVersion = "2.4.14"
+val akkaVersion = "2.3.6"
 
 val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
-  scalaVersion := "2.12.1",
+  scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   ScalariformKeys.preferences := formattingPreferences,
@@ -155,6 +155,7 @@ lazy val chill = Project(
 
 lazy val chillAkka = module("akka").settings(
   resolvers += Resolver.typesafeRepo("releases"),
+  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.typesafe" % "config" % "1.2.1",
     "com.typesafe.akka" %% "akka-actor" % akkaVersion % "provided"
