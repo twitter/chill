@@ -40,7 +40,7 @@ class PriorityQueueSpec extends WordSpec with Matchers {
       // This needs some special stuff
       val kryo = new Kryo {
         def isJavaLambda(klass: Class[_]): Boolean =
-          klass.getName().indexOf('/') >= 0
+          Java8ClosureRegistrar.areOnJava8 && klass.getName().indexOf('/') >= 0
 
         override def getRegistration(klass: Class[_]) =
           if (isJavaLambda(klass)) {

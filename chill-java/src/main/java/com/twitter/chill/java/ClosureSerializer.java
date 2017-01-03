@@ -41,9 +41,10 @@ public class ClosureSerializer extends Serializer {
 	}
 
 	private static Method readResolve;
-	private static Class serializedLambda = java.lang.invoke.SerializedLambda.class;
+	private static Class serializedLambda;
 	static {
 		try {
+      serializedLambda = Class.forName("java.lang.invoke.SerializedLambda");
 			readResolve = serializedLambda.getDeclaredMethod("readResolve");
 			readResolve.setAccessible(true);
 		} catch (Exception e) {

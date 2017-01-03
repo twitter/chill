@@ -8,14 +8,24 @@ import com.twitter.chill.IKryoRegistrar;
  */
 public class Java8ClosureRegistrar implements IKryoRegistrar {
 
-    @Override
-    public void apply(Kryo k) {
+    private static boolean checkJava8() {
         try {
             Class.forName("java.lang.invoke.SerializedLambda");
+            return true;
         } catch (ClassNotFoundException e) {
             // Not running on Java 8.
-            return;
+            return false;
         }
-        k.register(ClosureSerializer.Closure.class, new ClosureSerializer());
+    }
+    private static boolean onJava8Field = checkJava8();
+    public static boolean areOnJava8() {
+      return onJava8Field;
+    }
+
+    @Override
+    public void apply(Kryo k) {
+        if (areOnJava8()) {
+          k.register(ClosureSerializer.Closure.class, new ClosureSerializer());
+        }
     }
 }

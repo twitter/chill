@@ -22,6 +22,7 @@ import com.esotericsoftware.kryo.KryoException
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 import com.esotericsoftware.reflectasm.ConstructorAccess
 import com.twitter.chill.java.ClosureSerializer
+import com.twitter.chill.java.Java8ClosureRegistrar
 import org.objenesis.instantiator.ObjectInstantiator
 import org.objenesis.strategy.InstantiatorStrategy
 import scala.util.{ Try, Success, Failure }
@@ -43,7 +44,7 @@ class KryoBase extends Kryo {
     functions.find { _.isAssignableFrom(klass) }.isDefined
 
   def isJavaLambda(klass: Class[_]): Boolean =
-    klass.getName().indexOf('/') >= 0
+    Java8ClosureRegistrar.areOnJava8 && klass.getName().indexOf('/') >= 0
 
   override def getRegistration(klass: Class[_]) =
     if (isJavaLambda(klass)) {
