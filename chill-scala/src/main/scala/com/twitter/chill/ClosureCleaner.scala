@@ -216,10 +216,10 @@ object ClosureCleaner {
       .asInstanceOf[AnyRef]
 }
 
-class FieldAccessFinder(output: MMap[Class[_], MSet[String]]) extends ClassVisitor(ASM4) {
+class FieldAccessFinder(output: MMap[Class[_], MSet[String]]) extends ClassVisitor(ASM5) {
   override def visitMethod(access: Int, name: String, desc: String,
     sig: String, exceptions: Array[String]): MethodVisitor = {
-    return new MethodVisitor(ASM4) {
+    return new MethodVisitor(ASM5) {
       override def visitFieldInsn(op: Int, owner: String, name: String,
         desc: String) {
         if (op == GETFIELD)
@@ -228,7 +228,7 @@ class FieldAccessFinder(output: MMap[Class[_], MSet[String]]) extends ClassVisit
       }
 
       override def visitMethodInsn(op: Int, owner: String, name: String,
-        desc: String) {
+        desc: String, itf: Boolean) {
         // Check for calls a getter method for a variable in an interpreter wrapper object.
         // This means that the corresponding field will be accessed, so we should save it.
         if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith("$outer"))
@@ -239,7 +239,7 @@ class FieldAccessFinder(output: MMap[Class[_], MSet[String]]) extends ClassVisit
   }
 }
 
-class InnerClosureFinder(output: MSet[Class[_]]) extends ClassVisitor(ASM4) {
+class InnerClosureFinder(output: MSet[Class[_]]) extends ClassVisitor(ASM5) {
   var myName: String = null
 
   override def visit(version: Int, access: Int, name: String, sig: String,
@@ -249,9 +249,9 @@ class InnerClosureFinder(output: MSet[Class[_]]) extends ClassVisitor(ASM4) {
 
   override def visitMethod(access: Int, name: String, desc: String,
     sig: String, exceptions: Array[String]): MethodVisitor = {
-    return new MethodVisitor(ASM4) {
+    return new MethodVisitor(ASM5) {
       override def visitMethodInsn(op: Int, owner: String, name: String,
-        desc: String) {
+        desc: String, itf: Boolean) {
         val argTypes = Type.getArgumentTypes(desc)
         if (op == INVOKESPECIAL && name == "<init>" && argTypes.length > 0
           && argTypes(0).toString.startsWith("L") // is it an object?

@@ -16,15 +16,15 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.KryoException
-import com.esotericsoftware.reflectasm.ConstructorAccess
-import com.esotericsoftware.kryo.serializers.FieldSerializer
 import _root_.java.lang.Thread
+import _root_.java.lang.reflect.{ Constructor, Modifier }
+import com.esotericsoftware.kryo.KryoException
+import com.esotericsoftware.kryo.serializers.FieldSerializer
+import com.esotericsoftware.reflectasm.ConstructorAccess
+import com.twitter.chill.java.ClosureSerializer
+import com.twitter.chill.java.Java8ClosureRegistrar
 import org.objenesis.instantiator.ObjectInstantiator
 import org.objenesis.strategy.InstantiatorStrategy
-
-import _root_.java.lang.reflect.{ Constructor, Modifier }
-
 import scala.util.{ Try, Success, Failure }
 
 /*
@@ -42,6 +42,14 @@ class KryoBase extends Kryo {
 
   def isFn(klass: Class[_]): Boolean =
     functions.find { _.isAssignableFrom(klass) }.isDefined
+
+  def isJavaLambda(klass: Class[_]): Boolean =
+    Java8ClosureRegistrar.areOnJava8 && klass.getName().indexOf('/') >= 0
+
+  override def getRegistration(klass: Class[_]) =
+    if (isJavaLambda(klass)) {
+      getClassResolver.getRegistration(classOf[ClosureSerializer.Closure])
+    } else super.getRegistration(klass)
 
   override def newDefaultSerializer(klass: Class[_]): KSerializer[_] = {
     if (isSingleton(klass)) {
