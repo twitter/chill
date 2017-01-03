@@ -18,11 +18,23 @@ package com.twitter.chill.akka
 
 import org.scalatest._
 
-import akka.actor.{ ActorRef, ActorSystem }
+import akka.actor.{ Actor, ActorRef, ActorSystem, Props }
+import akka.util.Timeout
+import scala.concurrent.Await
+import scala.concurrent.duration._
 import akka.serialization._
 import com.typesafe.config.ConfigFactory
 
 class AkkaTests extends WordSpec with Matchers {
+  object IncActor {
+    def props: Props = Props(IncActor())
+  }
+
+  case class IncActor() extends Actor {
+    def receive = {
+      case x: Int => sender() ! (x + 1)
+    }
+  }
 
   val system = ActorSystem("example", ConfigFactory.parseString("""
     akka.actor.serializers {
@@ -45,21 +57,22 @@ class AkkaTests extends WordSpec with Matchers {
       serializer.getClass.equals(classOf[AkkaSerializer]) should equal(true)
     }
 
+    def actorRef(i: Int) = system.actorOf(IncActor.props, "incActor" + i)
+
     "be selected for ActorRef" in {
-      val serializer = serialization.findSerializerFor(system.actorFor("akka://test-system/test-actor"))
+      val serializer = serialization.findSerializerFor(actorRef(1))
       serializer.getClass.equals(classOf[AkkaSerializer]) should equal(true)
     }
 
     "serialize and deserialize ActorRef successfully" in {
-      val actorRef = system.actorFor("akka://test-system/test-actor")
-
-      val serialized = serialization.serialize(actorRef)
+      val actor = actorRef(2)
+      val serialized = serialization.serialize(actor)
       serialized.isSuccess should equal(true)
 
       val deserialized = serialization.deserialize(serialized.get, classOf[ActorRef])
       deserialized.isSuccess should equal(true)
 
-      deserialized.get.equals(actorRef) should equal(true)
+      deserialized.get.equals(actor) should equal(true)
     }
 
   }
