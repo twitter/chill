@@ -110,7 +110,7 @@ lazy val noPublishSettings = Seq(
   */
 val unreleasedModules = Set[String]("akka")
 val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
-val binaryCompatVersion = "0.8.1"
+val binaryCompatVersion = "0.7.4"
 
 def youngestForwardCompatible(subProj: String) =
   Some(subProj)
