@@ -125,7 +125,9 @@ def youngestForwardCompatible(subProj: String) =
 val ignoredABIProblems = {
   import com.typesafe.tools.mima.core._
   import com.typesafe.tools.mima.core.ProblemFilters._
-  Seq()
+  Seq(
+    ProblemFilters.exclude[MissingTypesProblem]("com.twitter.chill.storm.BlizzardKryoFactory")
+  )
 }
 
 def module(name: String) = {
