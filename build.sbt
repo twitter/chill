@@ -1,4 +1,5 @@
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import sbtrelease.ReleaseStateTransformations._
 
 val kryoVersion = "4.0.0"
 val bijectionVersion = "0.9.4"
@@ -29,8 +30,21 @@ val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
   parallelExecution in Test := true,
 
   // Publishing options:
-  releaseCrossBuild := true,
+  releaseCrossBuild := false, // needs to be false for sbt-doge
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
+  releaseProcess := Seq[ReleaseStep](
+    checkSnapshotDependencies,
+    inquireVersions,
+    runClean,
+    releaseStepCommandAndRemaining("+test"),
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    releaseStepCommandAndRemaining("+publishSigned"),
+    setNextVersion,
+    commitNextVersion,
+    pushChanges
+  ),
   publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { x => false },
