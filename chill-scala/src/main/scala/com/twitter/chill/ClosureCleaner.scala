@@ -36,6 +36,7 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable.{ Set => MSet, Map => MMap }
 
 import scala.annotation.tailrec
+import scala.util.Try
 
 import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.{ ClassReader, MethodVisitor, Type, ClassVisitor }
 import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.Opcodes._
@@ -143,8 +144,9 @@ object ClosureCleaner {
     accessedFieldsMap.get(cls) match {
       case Some(s) => s
       case None => {
-        //Compute and store:
-        val af = getAccessedFields(cls)
+        // Compute and store:
+        // in Java 8, this fails for lambdas, but I don't think this ASM version can deal with them.
+        val af = Try(getAccessedFields(cls)).getOrElse(Map.empty[Class[_], Set[String]])
         def toF(ss: Set[String]): Set[Field] = ss.map { cls.getDeclaredField(_) }
 
         val s = af.get(cls).map { _.toSet }.getOrElse(Set[String]())
