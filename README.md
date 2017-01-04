@@ -1,4 +1,9 @@
-## Chill [![Build Status](https://secure.travis-ci.org/twitter/chill.png)](http://travis-ci.org/twitter/chill)
+## Chill
+
+[![Build Status](https://secure.travis-ci.org/twitter/chill.png)](http://travis-ci.org/twitter/chill)
+[![Codecov branch](https://img.shields.io/codecov/c/github/twitter/chill/develop.svg?maxAge=3600)](https://codecov.io/github/twitter/chill)
+[![Latest version](https://index.scala-lang.org/twitter/chill/chill/latest.svg?color=orange)](https://index.scala-lang.org/twitter/chill/chill)
+[![Chat](https://badges.gitter.im/twitter/chill.svg)](https://gitter.im/twitter/chill?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Extensions for the [Kryo serialization library](https://github.com/EsotericSoftware/kryo) including
 serializers and a set of classes to ease configuration of Kryo in systems like Hadoop, Storm,
@@ -157,9 +162,21 @@ The latest ScalaDocs are hosted on Chill's [Github Project Page](http://twitter.
 
 Discussion occurs primarily on the [Chill mailing list](https://groups.google.com/forum/#!forum/chill-user). Issues should be reported on the [GitHub issue tracker](https://github.com/twitter/chill/issues).
 
+## Get Involved + Code of Conduct
+
+Pull requests and bug reports are always welcome!
+
+We use a lightweight form of project governance inspired by the one used by Apache projects.
+Please see [Contributing and Committership](https://github.com/twitter/analytics-infra-governance#contributing-and-committership) for our code of conduct and our pull request review process.
+The TL;DR is send us a pull request, iterate on the feedback + discussion, and get a +1 from a [Committer](COMMITTERS.md) in order to get your PR accepted.
+
+The current list of active committers (who can +1 a pull request) can be found here: [Committers](COMMITTERS.md)
+
+A list of contributors to the project can be found here: [Contributors](https://github.com/twitter/chill/graphs/contributors)
+
 ## Maven
 
-Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.7.4` and each scala project is published for `2.10` and `2.11`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.8.0` and each scala project is published for `2.10`, `2.11` and `2.12`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
 
 ## Authors
 
@@ -171,4 +188,4 @@ Chill modules are available on Maven Central. The current groupid and version fo
 
 Copyright 2012 Twitter, Inc.
 
-Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).

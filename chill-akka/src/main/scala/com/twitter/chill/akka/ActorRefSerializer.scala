@@ -17,13 +17,12 @@ package com.twitter.chill.akka
  * ****************************************************************************
  */
 
-import akka.actor.ExtendedActorSystem
-import akka.actor.ActorRef
+import akka.actor.{ ActorRef, ActorPath, ExtendedActorSystem }
 import akka.serialization.Serialization
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.Serializer
-import com.esotericsoftware.kryo.io.Input
-import com.esotericsoftware.kryo.io.Output
+import com.esotericsoftware.kryo.{ Kryo, Serializer }
+import com.esotericsoftware.kryo.io.{ Input, Output }
+
+import com.twitter.chill.{ toRich, IKryoRegistrar }
 
 /**
  * *
@@ -32,9 +31,6 @@ import com.esotericsoftware.kryo.io.Output
  * @author Roman Levenstein
  * @author P. Oscar Boykin
  */
-
-import com.twitter.chill.{ toRich, IKryoRegistrar }
-
 class ActorRefSerializer(system: ExtendedActorSystem) extends Serializer[ActorRef] with IKryoRegistrar {
 
   def apply(kryo: Kryo): Unit = {
@@ -45,8 +41,8 @@ class ActorRefSerializer(system: ExtendedActorSystem) extends Serializer[ActorRe
   }
 
   override def read(kryo: Kryo, input: Input, typ: Class[ActorRef]): ActorRef = {
-    val path = input.readString()
-    system.actorFor(path)
+    val path = ActorPath.fromString(input.readString())
+    system.provider.resolveActorRef(path)
   }
 
   override def write(kryo: Kryo, output: Output, obj: ActorRef) = {

@@ -36,6 +36,7 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable.{ Set => MSet, Map => MMap }
 
 import scala.annotation.tailrec
+import scala.util.Try
 
 import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.{ ClassReader, MethodVisitor, Type, ClassVisitor }
 import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.Opcodes._
@@ -143,8 +144,9 @@ object ClosureCleaner {
     accessedFieldsMap.get(cls) match {
       case Some(s) => s
       case None => {
-        //Compute and store:
-        val af = getAccessedFields(cls)
+        // Compute and store:
+        // in Java 8, this fails for lambdas, but I don't think this ASM version can deal with them.
+        val af = Try(getAccessedFields(cls)).getOrElse(Map.empty[Class[_], Set[String]])
         def toF(ss: Set[String]): Set[Field] = ss.map { cls.getDeclaredField(_) }
 
         val s = af.get(cls).map { _.toSet }.getOrElse(Set[String]())
@@ -227,8 +229,7 @@ class FieldAccessFinder(output: MMap[Class[_], MSet[String]]) extends ClassVisit
             output(cl) += name
       }
 
-      override def visitMethodInsn(op: Int, owner: String, name: String,
-        desc: String) {
+      override def visitMethodInsn(op: Int, owner: String, name: String, desc: String) {
         // Check for calls a getter method for a variable in an interpreter wrapper object.
         // This means that the corresponding field will be accessed, so we should save it.
         if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith("$outer"))
@@ -250,8 +251,7 @@ class InnerClosureFinder(output: MSet[Class[_]]) extends ClassVisitor(ASM4) {
   override def visitMethod(access: Int, name: String, desc: String,
     sig: String, exceptions: Array[String]): MethodVisitor = {
     return new MethodVisitor(ASM4) {
-      override def visitMethodInsn(op: Int, owner: String, name: String,
-        desc: String) {
+      override def visitMethodInsn(op: Int, owner: String, name: String, desc: String) {
         val argTypes = Type.getArgumentTypes(desc)
         if (op == INVOKESPECIAL && name == "<init>" && argTypes.length > 0
           && argTypes(0).toString.startsWith("L") // is it an object?
