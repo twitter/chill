@@ -3,11 +3,11 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 val kryoVersion = "3.0.3"
 val bijectionVersion = "0.9.4"
 val algebirdVersion = "0.12.0"
-val akkaVersion = "2.3.6"
+val akkaVersion = "2.4.16"
 
 val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
-  scalaVersion := "2.11.8",
+  scalaVersion := "2.12.1",
   crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   ScalariformKeys.preferences := formattingPreferences,
@@ -153,12 +153,17 @@ lazy val chill = Project(
   mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion)
 ).dependsOn(chillJava)
 
+def akka(scalaVersion: String) =
+  (scalaVersion match {
+    case "2.10.6"   => "com.typesafe.akka" %% "akka-actor" % "2.3.16"
+    case _ => "com.typesafe.akka" %% "akka-actor" % akkaVersion
+  }) % "provided"
+
 lazy val chillAkka = module("akka").settings(
   resolvers += Resolver.typesafeRepo("releases"),
-  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.typesafe" % "config" % "1.2.1",
-    "com.typesafe.akka" %% "akka-actor" % akkaVersion % "provided"
+    scalaVersion (sv => akka(sv)).value
   )
 ).dependsOn(chill % "test->test;compile->compile")
 
