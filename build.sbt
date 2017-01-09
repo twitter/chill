@@ -8,7 +8,7 @@ val akkaVersion = "2.4.16"
 
 val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
-  scalaVersion := "2.12.1",
+  scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   ScalariformKeys.preferences := formattingPreferences,
