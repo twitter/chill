@@ -31,11 +31,11 @@ import com.esotericsoftware.kryo.io.Output;
  * <code>
  * kryo.register(java.lang.invoke.SerializedLambda.class);<br>
  * kryo.register(ClosureSerializer.Closure.class, new ClosureSerializer());</code>
- * @author Roman Levenstein <romixlev@gmail.com> */
+ * @author Roman Levenstein romixlev@gmail.com */
 public class ClosureSerializer extends Serializer {
 
-	/** Marker class to bind ClosureSerializer to. See also {@link Kryo#isClosure(Class)} and
-	 * {@link Kryo#getRegistration(Class)} */
+	/** Marker class to bind ClosureSerializer to. See also Kryo#isClosure(Class) and
+	 * Kryo#getRegistration(Class) */
 	@SuppressWarnings("javadoc")
 	public static class Closure {
 	}
