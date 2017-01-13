@@ -130,11 +130,11 @@ def youngestForwardCompatible(subProj: String) =
   Some(subProj)
     .filterNot(unreleasedModules.contains(_))
     .map { s =>
-    if (javaOnly.contains(s))
-      "com.twitter" % ("chill-" + s) % binaryCompatVersion
-    else
-      "com.twitter" %% ("chill-" + s) % binaryCompatVersion
-  }
+      if (javaOnly.contains(s))
+        "com.twitter" % ("chill-" + s) % binaryCompatVersion
+      else
+        "com.twitter" %% ("chill-" + s) % binaryCompatVersion
+    }
 
 val ignoredABIProblems = {
   import com.typesafe.tools.mima.core._
