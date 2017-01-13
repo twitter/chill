@@ -126,16 +126,15 @@ val unreleasedModules = Set[String]("akka")
 val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
 val binaryCompatVersion = "0.8.1"
 
-def youngestForwardCompatible(subProj: String, scalaver: String) =
+def youngestForwardCompatible(subProj: String) =
   Some(subProj)
     .filterNot(unreleasedModules.contains(_))
     .map { s =>
-    if (javaOnly.contains(s))
-      "com.twitter" % ("chill-" + s) % binaryCompatVersion
-    else
-      "com.twitter" %% ("chill-" + s) % binaryCompatVersion
-  }
-  .filterNot(_ => scalaver.startsWith("2.12")) // 2.12 0.8.1 was not there
+      if (javaOnly.contains(s))
+        "com.twitter" % ("chill-" + s) % binaryCompatVersion
+      else
+        "com.twitter" %% ("chill-" + s) % binaryCompatVersion
+    }
 
 val ignoredABIProblems = {
   import com.typesafe.tools.mima.core._
@@ -149,7 +148,7 @@ def module(name: String) = {
   val id = "chill-%s".format(name)
   Project(id = id, base = file(id), settings = sharedSettings ++ Seq(
     Keys.name := id,
-    mimaPreviousArtifacts := youngestForwardCompatible(name, scalaVersion.value).toSet,
+    mimaPreviousArtifacts := youngestForwardCompatible(name).toSet,
     mimaBinaryIssueFilters ++= ignoredABIProblems,
     // Disable cross publishing for java artifacts
     publishArtifact :=

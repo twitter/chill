@@ -13,7 +13,8 @@ matrix:
 
     - scala: 2.12.1
       jdk: oraclejdk8
-      script: ./sbt "+++$TRAVIS_SCALA_VERSION clean" "+++$TRAVIS_SCALA_VERSION test" "+++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues" "+++$TRAVIS_SCALA_VERSION doc"
+      #script: ./sbt "+++$TRAVIS_SCALA_VERSION clean" "+++$TRAVIS_SCALA_VERSION test" "+++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues" "+++$TRAVIS_SCALA_VERSION doc"
+      script: ./sbt "+++$TRAVIS_SCALA_VERSION clean" "+++$TRAVIS_SCALA_VERSION test" "+++$TRAVIS_SCALA_VERSION doc"
 
 cache:
   directories:
