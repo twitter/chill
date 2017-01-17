@@ -1,10 +1,11 @@
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import sbtrelease.ReleaseStateTransformations._
 
-val kryoVersion = "4.0.0"
-val bijectionVersion = "0.9.4"
-val algebirdVersion = "0.12.0"
 val akkaVersion = "2.4.16"
+val algebirdVersion = "0.12.0"
+val bijectionVersion = "0.9.4"
+val kryoVersion = "4.0.0"
+val scroogeVersion = "4.12.0"
 
 val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
@@ -221,10 +222,9 @@ lazy val chillThrift = module("thrift").settings(
 )
 
 lazy val chillScrooge = module("scrooge").settings(
-  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit"),
-    "com.twitter" %% "scrooge-serializer" % "3.20.0"
+    "com.twitter" %% "scrooge-serializer" % scroogeVersion
   )
 ).dependsOn(chill % "test->test;compile->compile")
 
