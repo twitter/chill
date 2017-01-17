@@ -170,9 +170,17 @@ lazy val chill = Project(
 
 def akka(scalaVersion: String) =
   (scalaVersion match {
-    case "2.10.6"   => "com.typesafe.akka" %% "akka-actor" % "2.3.16"
+    case s if s.startsWith("2.10.") => "com.typesafe.akka" %% "akka-actor" % "2.3.16"
     case _ => "com.typesafe.akka" %% "akka-actor" % akkaVersion
   }) % "provided"
+
+def scrooge(scalaVersion: String) = {
+  val scroogeBase = "com.twitter" %% "scrooge-serializer"
+  scalaVersion match {
+    case s if s.startsWith("2.10.") => scroogeBase % "4.7.0" // the last 2.10 version
+    case _ => scroogeBase % scroogeVersion
+  }
+}
 
 lazy val chillAkka = module("akka").settings(
   resolvers += Resolver.typesafeRepo("releases"),
@@ -224,7 +232,7 @@ lazy val chillThrift = module("thrift").settings(
 lazy val chillScrooge = module("scrooge").settings(
   libraryDependencies ++= Seq(
     "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit"),
-    "com.twitter" %% "scrooge-serializer" % scroogeVersion
+    scalaVersion (sv => scrooge(sv)).value
   )
 ).dependsOn(chill % "test->test;compile->compile")
 
