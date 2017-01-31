@@ -2,7 +2,7 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import sbtrelease.ReleaseStateTransformations._
 
 val akkaVersion = "2.4.16"
-val algebirdVersion = "0.12.0"
+val algebirdVersion = "0.12.4"
 val bijectionVersion = "0.9.4"
 val kryoVersion = "4.0.0"
 val scroogeVersion = "4.12.0"
@@ -253,7 +253,6 @@ lazy val chillAvro = module("avro").settings(
 ).dependsOn(chill,chillJava, chillBijection)
 
 lazy val chillAlgebird = module("algebird").settings(
-  crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12")),
   libraryDependencies ++= Seq(
     "com.twitter" %% "algebird-core" % algebirdVersion
   )
