@@ -1,23 +1,16 @@
-import ReleaseTransformations._
-import com.typesafe.sbt.SbtScalariform._
-import com.typesafe.tools.mima.plugin.MimaKeys._
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
-import scala.collection.JavaConverters._
-import scalariform.formatter.preferences._
+import sbtrelease.ReleaseStateTransformations._
 
-val kryoVersion = "3.0.3"
-val bijectionVersion = "0.9.0"
-val algebirdVersion = "0.12.0"
+val akkaVersion = "2.4.16"
+val algebirdVersion = "0.13.0"
+val bijectionVersion = "0.9.4"
+val kryoVersion = "4.0.0"
+val scroogeVersion = "4.12.0"
 
-def isScala210x(scalaVersion: String) = scalaVersion match {
-    case version if version startsWith "2.10" => true
-    case _ => false
-}
-
-val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalariformSettings ++ Seq(
+val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
-  scalaVersion := "2.10.5",
-  crossScalaVersions := Seq("2.10.5", "2.11.7"),
+  scalaVersion := "2.11.8",
+  crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   ScalariformKeys.preferences := formattingPreferences,
 
@@ -30,29 +23,39 @@ val sharedSettings = Project.defaultSettings ++ mimaDefaultSettings ++ scalarifo
     Opts.resolver.sonatypeReleases
   ),
   libraryDependencies ++= Seq(
-    "org.scalacheck" %% "scalacheck" % "1.11.5" % "test",
-    "org.scalatest" %% "scalatest" % "2.2.2" % "test",
+    "org.scalacheck" %% "scalacheck" % "1.11.6" % "test",
+    "org.scalatest" %% "scalatest" % "3.0.0" % "test",
     "com.esotericsoftware" % "kryo-shaded" % kryoVersion
   ),
 
   parallelExecution in Test := true,
 
   // Publishing options:
-  releaseCrossBuild := true,
+  releaseCrossBuild := false, // needs to be false for sbt-doge
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
+  releaseProcess := Seq[ReleaseStep](
+    checkSnapshotDependencies,
+    inquireVersions,
+    runClean,
+    releaseStepCommandAndRemaining("+test"),
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    releaseStepCommandAndRemaining("+publishSigned"),
+    setNextVersion,
+    commitNextVersion,
+    pushChanges
+  ),
   publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { x => false },
 
-  publishTo <<= version { v =>
-    Some(
-      if (v.trim.toUpperCase.endsWith("SNAPSHOT"))
+  publishTo := Some(
+      if (version.value.trim.toUpperCase.endsWith("SNAPSHOT"))
         Opts.resolver.sonatypeSnapshots
       else
         Opts.resolver.sonatypeStaging
-        //"twttr" at "http://artifactory.local.twitter.com/libs-releases-local"
-    )
-  },
+    ),
   pomExtra := (
     <url>https://github.com/twitter/chill</url>
         <licenses>
@@ -86,11 +89,9 @@ lazy val chillAll = Project(
   id = "chill-all",
   base = file("."),
   settings = sharedSettings
-).settings(
-  test := { },
-  publish := { },
-  publishLocal := { }
-).aggregate(
+ ).enablePlugins(CrossPerProjectPlugin)
+  .settings(noPublishSettings)
+  .aggregate(
   chill,
   chillBijection,
   chillScrooge,
@@ -111,32 +112,49 @@ lazy val formattingPreferences = {
    setPreference(PreserveSpaceBeforeArguments, true)
 }
 
+lazy val noPublishSettings = Seq(
+    publish := (),
+    publishLocal := (),
+    test := (),
+    publishArtifact := false
+  )
+
 /**
   * This returns the youngest jar we released that is compatible
   * with the current.
   */
 val unreleasedModules = Set[String]("akka")
 val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
+val binaryCompatVersion = "0.8.0"
 
 def youngestForwardCompatible(subProj: String) =
   Some(subProj)
     .filterNot(unreleasedModules.contains(_))
     .map { s =>
-    val suffix = if (javaOnly.contains(s)) "" else "_2.10"
-    "com.twitter" % ("chill-" + s + suffix) % "0.7.2"
+    if (javaOnly.contains(s))
+      "com.twitter" % ("chill-" + s) % binaryCompatVersion
+    else
+      "com.twitter" %% ("chill-" + s) % binaryCompatVersion
   }
+
+val ignoredABIProblems = {
+  import com.typesafe.tools.mima.core._
+  import com.typesafe.tools.mima.core.ProblemFilters._
+  Seq(
+    exclude[MissingTypesProblem]("com.twitter.chill.storm.BlizzardKryoFactory")
+  )
+}
 
 def module(name: String) = {
   val id = "chill-%s".format(name)
   Project(id = id, base = file(id), settings = sharedSettings ++ Seq(
     Keys.name := id,
-    previousArtifact := youngestForwardCompatible(name),
+    mimaPreviousArtifacts := youngestForwardCompatible(name).toSet,
+    mimaBinaryIssueFilters ++= ignoredABIProblems,
     // Disable cross publishing for java artifacts
-    publishArtifact <<= (scalaVersion) { scalaVersion =>
-      if(javaOnly.contains(name) && scalaVersion.startsWith("2.11")) false else true
-    }
-    )
-  )
+    publishArtifact :=
+      (if (javaOnly.contains(name) && scalaVersion.value.startsWith("2.11")) false else true)
+  ))
 }
 
 // We usually do the pattern of having a core module, but we don't want to cause
@@ -147,14 +165,28 @@ lazy val chill = Project(
   settings = sharedSettings
 ).settings(
   name := "chill",
-  previousArtifact := Some("com.twitter" % "chill_2.10" % "0.7.2")
+  mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion)
 ).dependsOn(chillJava)
 
+def akka(scalaVersion: String) =
+  (scalaVersion match {
+    case s if s.startsWith("2.10.") => "com.typesafe.akka" %% "akka-actor" % "2.3.16"
+    case _ => "com.typesafe.akka" %% "akka-actor" % akkaVersion
+  }) % "provided"
+
+def scrooge(scalaVersion: String) = {
+  val scroogeBase = "com.twitter" %% "scrooge-serializer"
+  scalaVersion match {
+    case s if s.startsWith("2.10.") => scroogeBase % "4.7.0" // the last 2.10 version
+    case _ => scroogeBase % scroogeVersion
+  }
+}
+
 lazy val chillAkka = module("akka").settings(
-  resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+  resolvers += Resolver.typesafeRepo("releases"),
   libraryDependencies ++= Seq(
     "com.typesafe" % "config" % "1.2.1",
-    "com.typesafe.akka" %% "akka-actor" % "2.3.6" % "provided"
+    scalaVersion (sv => akka(sv)).value
   )
 ).dependsOn(chill % "test->test;compile->compile")
 
@@ -174,11 +206,7 @@ lazy val chillJava = module("java").settings(
 lazy val chillStorm = module("storm").settings(
   crossPaths := false,
   autoScalaLibrary := false,
-  resolvers ++= Seq(
-    "Clojars Repository" at "http://clojars.org/repo",
-    "Conjars Repository" at "http://conjars.org/repo"
-  ),
-  libraryDependencies += "storm" % "storm" % "0.9.0-wip9" % "provided"
+  libraryDependencies += "org.apache.storm" % "storm-core" % "1.0.2" % "provided"
 ).dependsOn(chillJava)
 
 // This can only have java deps!
@@ -204,7 +232,7 @@ lazy val chillThrift = module("thrift").settings(
 lazy val chillScrooge = module("scrooge").settings(
   libraryDependencies ++= Seq(
     "org.apache.thrift" % "libthrift" % "0.6.1" exclude("junit", "junit"),
-    "com.twitter" %% "scrooge-serializer" % "3.20.0"
+    scalaVersion (sv => scrooge(sv)).value
   )
 ).dependsOn(chill % "test->test;compile->compile")
 

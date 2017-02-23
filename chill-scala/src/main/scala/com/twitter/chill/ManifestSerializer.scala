@@ -32,7 +32,7 @@ class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
       out.writeInt(idxOpt.get + 1, true)
     } else {
       out.writeInt(0, true)
-      kser.writeObject(out, obj.erasure)
+      kser.writeObject(out, obj.runtimeClass)
       //write the type arguments:
       val targs = obj.typeArguments
       out.writeInt(targs.size, true)

@@ -25,7 +25,7 @@ class WrappedArraySerializer[T] extends KSerializer[WrappedArray[T]] {
   def write(kser: Kryo, out: Output, obj: WrappedArray[T]) {
     // Write the class-manifest, we don't use writeClass because it
     // uses the registration system, and this class might not be registered
-    kser.writeObject(out, obj.elemManifest.runtimeClass)
+    kser.writeObject(out, obj.elemTag.runtimeClass)
     kser.writeClassAndObject(out, obj.array)
   }
 
