@@ -206,7 +206,11 @@ lazy val chillJava = module("java").settings(
 lazy val chillStorm = module("storm").settings(
   crossPaths := false,
   autoScalaLibrary := false,
-  libraryDependencies += "org.apache.storm" % "storm-core" % "1.0.2" % "provided"
+  resolvers ++= Seq(
+    "Clojars Repository" at "http://clojars.org/repo",
+    "Conjars Repository" at "http://conjars.org/repo"
+  ),
+  libraryDependencies += "storm" % "storm" % "0.9.0-wip9" % "provided"
 ).dependsOn(chillJava)
 
 // This can only have java deps!
