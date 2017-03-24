@@ -66,7 +66,7 @@ public class SerDeState {
   public byte[] outputToBytes() { return output.toBytes(); }
   // There for ByteArrayOutputStream cases this can be optimized
   public void writeOutputTo(OutputStream os) throws IOException {
-    os.write(outputToBytes());
+    os.write(output.getBuffer(), 0, output.position());
   }
 
   public boolean hasRegistration(Class obj) {
