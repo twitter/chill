@@ -116,6 +116,12 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       c should roundtrip
       (rt(c) + 5) should equal(c + 5)
     }
+    "round trip a Stream" in {
+      Stream() should roundtrip
+      Stream(1, 2) should roundtrip
+      1 #:: 2 #:: Stream.empty should roundtrip
+      (1: Any) #:: (Stream(1, 2, 3): Any) #:: Stream.empty[Any] should roundtrip
+    }
     "round trip a ListSet" in {
       val a = ListSet[Long]() // Test empty SortedSet
       val b = ListSet[Int](1, 2) // Test small ListSet
