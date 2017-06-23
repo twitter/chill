@@ -18,7 +18,10 @@ package com.twitter.chill
 
 import org.scalatest._
 
-class ClosureCleanerSpec extends WordSpec with Matchers {
+import _root_.java.io.{ ByteArrayOutputStream, ObjectOutputStream }
+import scala.util.Try
+
+class ClosureCleanerSpec extends WordSpec with Matchers with BaseProperties {
   def debug(x: AnyRef) {
     println(x.getClass)
     println(x.getClass.getDeclaredFields.map { _.toString }.mkString("  "))
@@ -67,5 +70,29 @@ class ClosureCleanerSpec extends WordSpec with Matchers {
       ClosureCleaner(fn)
       fn(10) should equal(420)
     }
+
+    "Handle nested closures in non-serializable object" in {
+      class NestedClosuresNotSerializable {
+        val irrelevantInt: Int = 1
+        def closure(name: String)(body: => Int => Int): Int => Int = body
+        def getMapFn: Int => Int = closure("one") {
+          def x = irrelevantInt
+          def y = 2
+          val fn = { a: Int => a + y }
+          fn
+        }
+      }
+
+      val fn = new NestedClosuresNotSerializable().getMapFn
+      ClosureCleaner(fn)
+      isSerializable(fn) shouldBe true
+      fn(6) shouldEqual 8
+      val roundTripFn = jrt(fn.asInstanceOf[Serializable]).asInstanceOf[Int => Int]
+      roundTripFn(6) shouldEqual 8
+    }
   }
+
+  private def isSerializable(obj: AnyRef): Boolean =
+    Try(new ObjectOutputStream(new ByteArrayOutputStream())
+      .writeObject(obj)).isSuccess
 }
