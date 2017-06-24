@@ -72,23 +72,24 @@ class ClosureCleanerSpec extends WordSpec with Matchers with BaseProperties {
     }
 
     "Handle nested closures in non-serializable object" in {
-      class NestedClosuresNotSerializable {
-        val irrelevantInt: Int = 1
-        def closure(name: String)(body: => Int => Int): Int => Int = body
-        def getMapFn: Int => Int = closure("one") {
-          def x = irrelevantInt
-          def y = 2
-          val fn = { a: Int => a + y }
-          fn
-        }
-      }
-
       val fn = new NestedClosuresNotSerializable().getMapFn
+      isSerializable(fn) shouldBe false
       ClosureCleaner(fn)
       isSerializable(fn) shouldBe true
       fn(6) shouldEqual 8
       val roundTripFn = jrt(fn.asInstanceOf[Serializable]).asInstanceOf[Int => Int]
       roundTripFn(6) shouldEqual 8
+    }
+  }
+
+  class NestedClosuresNotSerializable {
+    val irrelevantInt: Int = 1
+    def closure(name: String)(body: => Int => Int): Int => Int = body
+    def getMapFn: Int => Int = closure("one") {
+      def x = irrelevantInt
+      def y = 2
+      val fn = { a: Int => a + y }
+      fn
     }
   }
 
