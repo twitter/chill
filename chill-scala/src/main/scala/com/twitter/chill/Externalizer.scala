@@ -179,7 +179,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
   private def maybeWriteJavaKryo(out: ObjectOutput, kryo: KryoInstantiator) {
     writeJava(out) || writeKryo(out, kryo) || {
       val inner = get
-      sys.error("Neither Java nor Kyro works for class: %s instance: %s\nexport CHILL_EXTERNALIZER_DEBUG=true to see both stack traces"
+      sys.error("Neither Java nor Kryo works for class: %s instance: %s\nexport CHILL_EXTERNALIZER_DEBUG=true to see both stack traces"
         .format(inner.getClass, inner))
     }
   }
