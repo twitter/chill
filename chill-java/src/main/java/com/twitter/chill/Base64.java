@@ -1485,7 +1485,8 @@ public class Base64
             int numBytes = 0;
 
             // Check for size of file
-            if( file.length() > Integer.MAX_VALUE )
+            // See: https://stackoverflow.com/questions/3038392/do-java-arrays-have-a-maximum-size
+            if( file.length() > Integer.MAX_VALUE - 8 )
             {
                 throw new java.io.IOException( "File is too big for this convenience method (" + file.length() + " bytes)." );
             }   // end if: file too big for int index
