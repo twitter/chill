@@ -176,7 +176,11 @@ A list of contributors to the project can be found here: [Contributors](https://
 
 ## Maven
 
-Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.8.0` and each scala project is published for `2.10`, `2.11` and `2.12`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.9.1` and each scala project is published for `2.10`, `2.11` and `2.12`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
+
+`chill-scala` is not published separately; to use it, reference `chill`. To add the dependency to your project using SBT:
+
+    "com.twitter" %% "chill" % "0.9.1"
 
 ## Authors
 
