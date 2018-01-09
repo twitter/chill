@@ -1,6 +1,6 @@
 package com.twitter.chill
 
-import scala.collection.immutable.{ HashSet, ListSet }
+import scala.collection.immutable.{ HashSet, ListSet, Queue }
 
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -37,10 +37,18 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
             assert(false, message)
         }
       }
-      "be everything needed to serialize the empty set" in { roundtrip(Set()) }
-      "be everything needed to serialize the empty hash set" in { roundtrip(HashSet()) }
-      "be everything needed to serialize the one-element hash set" in { roundtrip(HashSet(1)) }
-      "be everything needed to serialize the empty list set" in { roundtrip(ListSet()) }
-      "be everything needed to serialize the one-element list set" in { roundtrip(ListSet(1)) }
+      "serialize the empty set" in { roundtrip(Set()) }
+      "serialize the empty hash set" in { roundtrip(HashSet()) }
+      "serialize the one-element hash set" in { roundtrip(HashSet(1)) }
+      "serialize the empty list set" in { roundtrip(ListSet()) }
+      "serialize the one-element list set" in { roundtrip(ListSet(1)) }
+      // TODO TreeSet, and more examples like Set(1)
+      "serialize the empty list" in { roundtrip(Nil) }
+      "serialize the one-element list" in { roundtrip(List(1)) }
+      // TODO more examples like List.empty[Int], 1 :: Nil, List(1, 2), List(1, 2, 3, 4)
+      "serialize the empty queue" in { roundtrip(Queue()) }
+      // TODO more examples like Queue(1)
+      "serialize a range" in { roundtrip(Range(2, 10, 3)) }
+      // TODO more examples like Vector(), Vector(1)
     }
 }
