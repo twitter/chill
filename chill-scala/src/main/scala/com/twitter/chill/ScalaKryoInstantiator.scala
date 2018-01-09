@@ -128,8 +128,10 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forClass[Left[Any, Any]](new LeftSerializer[Any, Any])
       .forClass[Right[Any, Any]](new RightSerializer[Any, Any])
       .forTraversableSubclass(Queue.empty[Any])
+      .registerClasses(Seq(classOf[Queue[_]]))
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.empty[Any])
+      .registerClasses(Seq(Nil.getClass, classOf[::[_]]))
       // Add ListBuffer subclass before Buffer to prevent the more general case taking precedence
       .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
       // add mutable Buffer before Vector, otherwise Vector is used
@@ -157,7 +159,9 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       // default map implementation
       .forConcreteTraversableClass(HashMap[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
       // The normal fields serializer works for ranges
-      .registerClasses(Seq(classOf[Range.Inclusive],
+      .registerClasses(Seq(
+        classOf[Range],
+        classOf[Range.Inclusive],
         classOf[NumericRange.Inclusive[_]],
         classOf[NumericRange.Exclusive[_]]))
       // Add some maps
