@@ -138,6 +138,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableClass(Vector.empty[Any])
       .forTraversableSubclass(ListSet.empty[Any])
       // specifically register small sets since Scala represents them differently
+      .forConcreteTraversableClass(Set[Any]())
       .forConcreteTraversableClass(Set[Any]('a))
       .forConcreteTraversableClass(Set[Any]('a, 'b))
       .forConcreteTraversableClass(Set[Any]('a, 'b, 'c))
