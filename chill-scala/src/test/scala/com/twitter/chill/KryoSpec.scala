@@ -22,7 +22,6 @@ import org.scalatest.matchers.{ Matcher, MatchResult }
 import scala.collection.immutable.{ SortedSet, BitSet, ListSet, HashSet, SortedMap, ListMap, HashMap }
 import scala.collection.mutable.{ ArrayBuffer => MArrayBuffer, BitSet => MBitSet, HashMap => MHashMap }
 import _root_.java.util.PriorityQueue
-import _root_.java.util.Locale
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 import scala.reflect._
@@ -55,7 +54,7 @@ case class Foo(m1: Map[String, Int], m2: Map[String, Seq[String]])
 class KryoSpec extends WordSpec with Matchers with BaseProperties {
 
   def roundtrip[T] = new Matcher[T] {
-    def apply(t: T) = MatchResult(rtEquiv(t), "successfull serialization roundtrip for " + t, "failed serialization roundtrip for " + t)
+    def apply(t: T) = MatchResult(rtEquiv(t), "successful serialization roundtrip for " + t, "failed serialization roundtrip for " + t)
   }
 
   def getKryo = KryoSerializer.registered.newKryo
