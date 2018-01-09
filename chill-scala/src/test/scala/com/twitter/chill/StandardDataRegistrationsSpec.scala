@@ -1,6 +1,6 @@
 package com.twitter.chill
 
-import scala.collection.immutable.HashSet
+import scala.collection.immutable.{ HashSet, ListSet }
 
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -39,6 +39,8 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       }
       "be everything needed to serialize the empty set" in { roundtrip(Set()) }
       "be everything needed to serialize the empty hash set" in { roundtrip(HashSet()) }
-      "be everything needed to serialize the one-element hash" in { roundtrip(HashSet(1)) }
+      "be everything needed to serialize the one-element hash set" in { roundtrip(HashSet(1)) }
+      "be everything needed to serialize the empty list set" in { roundtrip(ListSet()) }
+      "be everything needed to serialize the one-element list set" in { roundtrip(ListSet(1)) }
     }
 }
