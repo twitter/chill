@@ -2,7 +2,7 @@ package com.twitter.chill
 
 import org.scalatest.{ Matchers, WordSpec }
 
-class PersistenceRegistrationSpec extends WordSpec with Matchers {
+class RegistrationIdsSpec extends WordSpec with Matchers {
   """
     |Projects using chill to long term persist serialized data (for example in event
     |sourcing scenarios) depend on the registration IDs of the pre-registered
