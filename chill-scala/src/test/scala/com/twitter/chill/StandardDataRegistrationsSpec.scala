@@ -1,6 +1,7 @@
 package com.twitter.chill
 
 import scala.collection.immutable.{ HashMap, HashSet, ListMap, ListSet, Queue }
+import scala.collection.mutable
 
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -74,5 +75,15 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       "serialize Char arrays" in { roundtrip(Array.empty[Char]) }
       "serialize String arrays" in { roundtrip(Array.empty[String]) }
       // TODO more examples like filled arrays and Array.empty[Object]
+      "serialize the empty wrapped array" in { roundtrip(mutable.WrappedArray.empty[Object]) }
+      "serialize Int wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Byte]())) }
+      "serialize Byte wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Short]())) }
+      "serialize Short wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Int]())) }
+      "serialize Long wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Long]())) }
+      "serialize Float wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Float]())) }
+      "serialize Double wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Double]())) }
+      "serialize Boolean wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Boolean]())) }
+      "serialize Char wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Char]())) }
+      "serialize String wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[String]())) }
     }
 }
