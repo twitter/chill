@@ -16,31 +16,8 @@ limitations under the License.
 
 package com.twitter.chill
 
-import scala.collection.immutable.{
-  BitSet,
-  HashSet,
-  ListSet,
-  NumericRange,
-  Range,
-  SortedSet,
-  SortedMap,
-  ListMap,
-  HashMap,
-  Queue
-}
-
-import scala.collection.mutable.{
-  WrappedArray,
-  BitSet => MBitSet,
-  Map => MMap,
-  HashMap => MHashMap,
-  Set => MSet,
-  HashSet => MHashSet,
-  ListBuffer,
-  Queue => MQueue,
-  Buffer
-}
-
+import scala.collection.immutable.{ BitSet, HashMap, HashSet, ListMap, ListSet, NumericRange, Queue, Range, SortedMap, SortedSet, WrappedString }
+import scala.collection.mutable.{ Buffer, ListBuffer, WrappedArray, BitSet => MBitSet, HashMap => MHashMap, HashSet => MHashSet, Map => MMap, Queue => MQueue, Set => MSet }
 import scala.util.matching.Regex
 
 import com.twitter.chill.java.{ Java8ClosureRegistrar, PackageRegistrar }
@@ -231,5 +208,8 @@ class AllScalaRegistrar extends IKryoRegistrar {
     k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
     new Java8ClosureRegistrar()(k)
+
+    // register other useful classes
+    k.registerClasses(Seq(classOf[WrappedString]))
   }
 }

@@ -157,7 +157,8 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
             |122 -> class java.util.Collections$UnmodifiableSet
             |123 -> class java.util.Collections$UnmodifiableSortedMap
             |124 -> class java.util.Collections$UnmodifiableSortedSet
-            |125 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure"""
+            |125 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure
+            |126 -> class scala.collection.immutable.WrappedString"""
             .stripMargin.lines.mkString("\n")
       }
     }
