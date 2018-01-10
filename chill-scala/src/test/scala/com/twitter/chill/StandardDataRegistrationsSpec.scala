@@ -1,6 +1,6 @@
 package com.twitter.chill
 
-import scala.collection.immutable.{ HashMap, HashSet, ListMap, ListSet, Queue }
+import scala.collection.immutable.{ HashMap, HashSet, ListMap, ListSet, Queue, WrappedString }
 import scala.collection.mutable
 
 import org.scalatest.{ Matchers, WordSpec }
@@ -85,5 +85,7 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       "serialize Boolean wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Boolean]())) }
       "serialize Char wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Char]())) }
       "serialize String wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[String]())) }
+      // TODO more examples of wrapped arrays
+      "serialize wrapped strings" in { roundtrip(new WrappedString("abc")) }
     }
 }
