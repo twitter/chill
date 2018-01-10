@@ -125,6 +125,16 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
         classOf[Array[Byte]], classOf[Array[Short]], classOf[Array[Int]],
         classOf[Array[Long]], classOf[Array[Float]], classOf[Array[Double]],
         classOf[Array[Boolean]], classOf[Array[Char]], classOf[Array[String]], classOf[Array[Object]]))
+      .registerClasses(Seq(
+        WrappedArray.make(Array[Byte]()).getClass,
+        WrappedArray.make(Array[Short]()).getClass,
+        WrappedArray.make(Array[Int]()).getClass,
+        WrappedArray.make(Array[Long]()).getClass,
+        WrappedArray.make(Array[Float]()).getClass,
+        WrappedArray.make(Array[Double]()).getClass,
+        WrappedArray.make(Array[Boolean]()).getClass,
+        WrappedArray.make(Array[Char]()).getClass,
+        WrappedArray.make(Array[String]()).getClass))
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
       .forSubclass[SortedSet[Any]](new SortedSetSerializer)

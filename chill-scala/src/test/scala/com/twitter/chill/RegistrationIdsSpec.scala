@@ -15,7 +15,15 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
     .should {
       "be as expected, i.e. contain the list of registrations defined in this test.".in {
         val k = new ScalaKryoInstantiator().newKryo
-        if (registeredEntries != expectedEntries) println(s"\n\n\n$registeredEntries\n\n\n") // FIXME remove this line
+        if (registeredEntries != expectedEntries)
+          println(
+            s"""\n\n
+               |This test ($getClass) will fail, most probably
+               |because the order of registration IDs has changed or a registration was added
+               |or removed. If that was intended, here is the new list of entries that can be
+               |set as expected value in the test:
+               |
+               |$registeredEntries\n\n\n""".stripMargin)
         assert(registeredEntries == expectedEntries)
         def registeredEntries =
           Stream.from(0)
@@ -49,98 +57,107 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
             |22 -> class [C
             |23 -> class [Ljava.lang.String;
             |24 -> class [Ljava.lang.Object;
-            |25 -> class scala.None$
-            |26 -> class scala.Some
-            |27 -> class scala.util.Left
-            |28 -> class scala.util.Right
-            |29 -> class scala.collection.immutable.Queue
-            |30 -> class scala.collection.immutable.Nil$
-            |31 -> class scala.collection.immutable.$colon$colon
-            |32 -> class scala.collection.immutable.Vector
-            |33 -> class scala.collection.immutable.Set$EmptySet$
-            |34 -> class scala.collection.immutable.Set$Set1
-            |35 -> class scala.collection.immutable.Set$Set2
-            |36 -> class scala.collection.immutable.Set$Set3
-            |37 -> class scala.collection.immutable.Set$Set4
-            |38 -> class scala.collection.immutable.ListSet$EmptyListSet$
-            |39 -> class scala.collection.immutable.ListSet$Node
-            |40 -> class scala.collection.immutable.HashSet$EmptyHashSet$
-            |41 -> class scala.collection.immutable.HashSet$HashSet1
-            |42 -> class scala.collection.immutable.HashSet$HashTrieSet
-            |43 -> class scala.collection.immutable.Map$Map1
-            |44 -> class scala.collection.immutable.Map$Map2
-            |45 -> class scala.collection.immutable.Map$Map3
-            |46 -> class scala.collection.immutable.Map$Map4
-            |47 -> class scala.collection.immutable.HashMap$EmptyHashMap$
-            |48 -> class scala.collection.immutable.HashMap$HashMap1
-            |49 -> class scala.collection.immutable.HashMap$HashTrieMap
-            |50 -> class scala.collection.immutable.ListMap$EmptyListMap$
-            |51 -> class scala.collection.immutable.ListMap$Node
-            |52 -> class scala.collection.immutable.Range
-            |53 -> class scala.collection.immutable.Range$Inclusive
-            |54 -> class scala.collection.immutable.NumericRange$Inclusive
-            |55 -> class scala.collection.immutable.NumericRange$Exclusive
-            |56 -> class scala.collection.mutable.BitSet
-            |57 -> class scala.collection.mutable.HashMap
-            |58 -> class scala.collection.mutable.HashSet
-            |59 -> class scala.collection.convert.Wrappers$IterableWrapper
-            |60 -> class scala.Tuple1
-            |61 -> class scala.Tuple2
-            |62 -> class scala.Tuple3
-            |63 -> class scala.Tuple4
-            |64 -> class scala.Tuple5
-            |65 -> class scala.Tuple6
-            |66 -> class scala.Tuple7
-            |67 -> class scala.Tuple8
-            |68 -> class scala.Tuple9
-            |69 -> class scala.Tuple10
-            |70 -> class scala.Tuple11
-            |71 -> class scala.Tuple12
-            |72 -> class scala.Tuple13
-            |73 -> class scala.Tuple14
-            |74 -> class scala.Tuple15
-            |75 -> class scala.Tuple16
-            |76 -> class scala.Tuple17
-            |77 -> class scala.Tuple18
-            |78 -> class scala.Tuple19
-            |79 -> class scala.Tuple20
-            |80 -> class scala.Tuple21
-            |81 -> class scala.Tuple22
-            |82 -> class scala.Tuple1$mcJ$sp
-            |83 -> class scala.Tuple1$mcI$sp
-            |84 -> class scala.Tuple1$mcD$sp
-            |85 -> class scala.Tuple2$mcJJ$sp
-            |86 -> class scala.Tuple2$mcJI$sp
-            |87 -> class scala.Tuple2$mcJD$sp
-            |88 -> class scala.Tuple2$mcIJ$sp
-            |89 -> class scala.Tuple2$mcII$sp
-            |90 -> class scala.Tuple2$mcID$sp
-            |91 -> class scala.Tuple2$mcDJ$sp
-            |92 -> class scala.Tuple2$mcDI$sp
-            |93 -> class scala.Tuple2$mcDD$sp
-            |94 -> class scala.Symbol
-            |95 -> interface scala.reflect.ClassTag
-            |96 -> class scala.runtime.BoxedUnit
-            |97 -> class java.util.Arrays$ArrayList
-            |98 -> class java.util.BitSet
-            |99 -> class java.util.PriorityQueue
-            |100 -> class java.util.regex.Pattern
-            |101 -> class java.sql.Date
-            |102 -> class java.sql.Time
-            |103 -> class java.sql.Timestamp
-            |104 -> class java.net.URI
-            |105 -> class java.net.InetSocketAddress
-            |106 -> class java.util.UUID
-            |107 -> class java.util.Locale
-            |108 -> class java.text.SimpleDateFormat
-            |109 -> class java.util.Collections$UnmodifiableCollection
-            |110 -> class java.util.Collections$UnmodifiableRandomAccessList
-            |111 -> class java.util.Collections$UnmodifiableList
-            |112 -> class java.util.Collections$UnmodifiableMap
-            |113 -> class java.util.Collections$UnmodifiableSet
-            |114 -> class java.util.Collections$UnmodifiableSortedMap
-            |115 -> class java.util.Collections$UnmodifiableSortedSet
-            |116 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure"""
+            |25 -> class scala.collection.mutable.WrappedArray$ofByte
+            |26 -> class scala.collection.mutable.WrappedArray$ofShort
+            |27 -> class scala.collection.mutable.WrappedArray$ofInt
+            |28 -> class scala.collection.mutable.WrappedArray$ofLong
+            |29 -> class scala.collection.mutable.WrappedArray$ofFloat
+            |30 -> class scala.collection.mutable.WrappedArray$ofDouble
+            |31 -> class scala.collection.mutable.WrappedArray$ofBoolean
+            |32 -> class scala.collection.mutable.WrappedArray$ofChar
+            |33 -> class scala.collection.mutable.WrappedArray$ofRef
+            |34 -> class scala.None$
+            |35 -> class scala.Some
+            |36 -> class scala.util.Left
+            |37 -> class scala.util.Right
+            |38 -> class scala.collection.immutable.Queue
+            |39 -> class scala.collection.immutable.Nil$
+            |40 -> class scala.collection.immutable.$colon$colon
+            |41 -> class scala.collection.immutable.Vector
+            |42 -> class scala.collection.immutable.Set$EmptySet$
+            |43 -> class scala.collection.immutable.Set$Set1
+            |44 -> class scala.collection.immutable.Set$Set2
+            |45 -> class scala.collection.immutable.Set$Set3
+            |46 -> class scala.collection.immutable.Set$Set4
+            |47 -> class scala.collection.immutable.ListSet$EmptyListSet$
+            |48 -> class scala.collection.immutable.ListSet$Node
+            |49 -> class scala.collection.immutable.HashSet$EmptyHashSet$
+            |50 -> class scala.collection.immutable.HashSet$HashSet1
+            |51 -> class scala.collection.immutable.HashSet$HashTrieSet
+            |52 -> class scala.collection.immutable.Map$Map1
+            |53 -> class scala.collection.immutable.Map$Map2
+            |54 -> class scala.collection.immutable.Map$Map3
+            |55 -> class scala.collection.immutable.Map$Map4
+            |56 -> class scala.collection.immutable.HashMap$EmptyHashMap$
+            |57 -> class scala.collection.immutable.HashMap$HashMap1
+            |58 -> class scala.collection.immutable.HashMap$HashTrieMap
+            |59 -> class scala.collection.immutable.ListMap$EmptyListMap$
+            |60 -> class scala.collection.immutable.ListMap$Node
+            |61 -> class scala.collection.immutable.Range
+            |62 -> class scala.collection.immutable.Range$Inclusive
+            |63 -> class scala.collection.immutable.NumericRange$Inclusive
+            |64 -> class scala.collection.immutable.NumericRange$Exclusive
+            |65 -> class scala.collection.mutable.BitSet
+            |66 -> class scala.collection.mutable.HashMap
+            |67 -> class scala.collection.mutable.HashSet
+            |68 -> class scala.collection.convert.Wrappers$IterableWrapper
+            |69 -> class scala.Tuple1
+            |70 -> class scala.Tuple2
+            |71 -> class scala.Tuple3
+            |72 -> class scala.Tuple4
+            |73 -> class scala.Tuple5
+            |74 -> class scala.Tuple6
+            |75 -> class scala.Tuple7
+            |76 -> class scala.Tuple8
+            |77 -> class scala.Tuple9
+            |78 -> class scala.Tuple10
+            |79 -> class scala.Tuple11
+            |80 -> class scala.Tuple12
+            |81 -> class scala.Tuple13
+            |82 -> class scala.Tuple14
+            |83 -> class scala.Tuple15
+            |84 -> class scala.Tuple16
+            |85 -> class scala.Tuple17
+            |86 -> class scala.Tuple18
+            |87 -> class scala.Tuple19
+            |88 -> class scala.Tuple20
+            |89 -> class scala.Tuple21
+            |90 -> class scala.Tuple22
+            |91 -> class scala.Tuple1$mcJ$sp
+            |92 -> class scala.Tuple1$mcI$sp
+            |93 -> class scala.Tuple1$mcD$sp
+            |94 -> class scala.Tuple2$mcJJ$sp
+            |95 -> class scala.Tuple2$mcJI$sp
+            |96 -> class scala.Tuple2$mcJD$sp
+            |97 -> class scala.Tuple2$mcIJ$sp
+            |98 -> class scala.Tuple2$mcII$sp
+            |99 -> class scala.Tuple2$mcID$sp
+            |100 -> class scala.Tuple2$mcDJ$sp
+            |101 -> class scala.Tuple2$mcDI$sp
+            |102 -> class scala.Tuple2$mcDD$sp
+            |103 -> class scala.Symbol
+            |104 -> interface scala.reflect.ClassTag
+            |105 -> class scala.runtime.BoxedUnit
+            |106 -> class java.util.Arrays$ArrayList
+            |107 -> class java.util.BitSet
+            |108 -> class java.util.PriorityQueue
+            |109 -> class java.util.regex.Pattern
+            |110 -> class java.sql.Date
+            |111 -> class java.sql.Time
+            |112 -> class java.sql.Timestamp
+            |113 -> class java.net.URI
+            |114 -> class java.net.InetSocketAddress
+            |115 -> class java.util.UUID
+            |116 -> class java.util.Locale
+            |117 -> class java.text.SimpleDateFormat
+            |118 -> class java.util.Collections$UnmodifiableCollection
+            |119 -> class java.util.Collections$UnmodifiableRandomAccessList
+            |120 -> class java.util.Collections$UnmodifiableList
+            |121 -> class java.util.Collections$UnmodifiableMap
+            |122 -> class java.util.Collections$UnmodifiableSet
+            |123 -> class java.util.Collections$UnmodifiableSortedMap
+            |124 -> class java.util.Collections$UnmodifiableSortedSet
+            |125 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure"""
             .stripMargin.lines.mkString("\n")
       }
     }
