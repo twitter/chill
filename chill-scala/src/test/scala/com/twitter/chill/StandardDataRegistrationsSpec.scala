@@ -1,6 +1,6 @@
 package com.twitter.chill
 
-import scala.collection.immutable.{ HashSet, ListSet, Queue }
+import scala.collection.immutable.{ HashMap, HashSet, ListMap, ListSet, Queue }
 
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -37,6 +37,12 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
             assert(false, message)
         }
       }
+      "serialize the empty hash map" in { roundtrip(HashMap()) }
+      "serialize the one-element hash map" in { roundtrip(HashMap(1 -> 2)) }
+      // TODO larger hash maps
+      "serialize the empty list map" in { roundtrip(ListMap()) }
+      "serialize the one-element list map" in { roundtrip(ListMap(1 -> 2)) }
+      // TODO larger list maps
       "serialize the empty set" in { roundtrip(Set()) }
       "serialize the empty hash set" in { roundtrip(HashSet()) }
       "serialize the one-element hash set" in { roundtrip(HashSet(1)) }
@@ -50,5 +56,18 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       // TODO more examples like Queue(1)
       "serialize a range" in { roundtrip(Range(2, 10, 3)) }
       // TODO more examples like Vector(), Vector(1)
+      "serialize the empty option" in { roundtrip(None) }
+      // TODO more examples like Some(1), Left(2), Right(3), Option.empty, Option(5)
+      "serialize the empty array" in { roundtrip(Array()) }
+      "serialize Int arrays" in { roundtrip(Array.empty[Int]) }
+      "serialize Byte arrays" in { roundtrip(Array.empty[Byte]) }
+      "serialize Short arrays" in { roundtrip(Array.empty[Short]) }
+      "serialize Long arrays" in { roundtrip(Array.empty[Long]) }
+      "serialize Float arrays" in { roundtrip(Array.empty[Float]) }
+      "serialize Double arrays" in { roundtrip(Array.empty[Double]) }
+      "serialize Boolean arrays" in { roundtrip(Array.empty[Boolean]) }
+      "serialize Char arrays" in { roundtrip(Array.empty[Char]) }
+      "serialize String arrays" in { roundtrip(Array.empty[String]) }
+      // TODO more examples like filled arrays and Array.empty[Object]
     }
 }
