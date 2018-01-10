@@ -121,9 +121,14 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
      */
     newK
       // wrapper array is abstract
+      .registerClasses(Seq(
+        classOf[Array[Byte]], classOf[Array[Short]], classOf[Array[Int]],
+        classOf[Array[Long]], classOf[Array[Float]], classOf[Array[Double]],
+        classOf[Array[Boolean]], classOf[Array[Char]], classOf[Array[String]], classOf[Array[Object]]))
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
       .forSubclass[SortedSet[Any]](new SortedSetSerializer)
+      .registerClasses(Seq(None.getClass))
       .forClass[Some[Any]](new SomeSerializer[Any])
       .forClass[Left[Any, Any]](new LeftSerializer[Any, Any])
       .forClass[Right[Any, Any]](new RightSerializer[Any, Any])
@@ -157,7 +162,11 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd))
       // default map implementation
+      .forConcreteTraversableClass(HashMap())
+      .forConcreteTraversableClass(HashMap('a -> 'a))
       .forConcreteTraversableClass(HashMap[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
+      .forConcreteTraversableClass(ListMap())
+      .forConcreteTraversableClass(ListMap('a -> 'a))
       // The normal fields serializer works for ranges
       .registerClasses(Seq(
         classOf[Range],

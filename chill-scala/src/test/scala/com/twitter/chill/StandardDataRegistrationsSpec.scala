@@ -29,7 +29,12 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       def roundtrip(original: AnyRef): Unit = {
         try {
           val serde = kryo.fromBytes(kryo.toBytesWithClass(original))
-          assert(serde == original)
+          (original, serde) match {
+            case (originalArray: Array[_], serdeArray: Array[_]) =>
+              assert(originalArray.toSeq == serdeArray.toSeq)
+            case _ =>
+              assert(serde == original)
+          }
         } catch {
           case e: Throwable =>
             val message = s"exception during serialization round trip for $original of class ${original.getClass}:\n" +
