@@ -62,6 +62,8 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       // TODO more examples like Queue(1)
       "serialize a range" in { roundtrip(Range(2, 10, 3)) }
       // TODO more examples like Vector(), Vector(1)
+      "serialize the empty stream" in { roundtrip(Stream()) }
+      "serialize the one-element stream" in { roundtrip(Stream(1)) }
       "serialize the empty option" in { roundtrip(None) }
       // TODO more examples like Some(1), Left(2), Right(3), Option.empty, Option(5)
       "serialize the empty array" in { roundtrip(Array()) }

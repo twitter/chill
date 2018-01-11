@@ -173,6 +173,9 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(MQueue.empty[Any], isImmutable = false)
       .forTraversableSubclass(MMap.empty[Any, Any], isImmutable = false)
       .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
+    // Streams
+    newK.register(classOf[Stream.Cons[_]], new StreamSerializer[Any])
+    newK.register(Stream().getClass, new StreamSerializer[Any])
   }
 }
 
