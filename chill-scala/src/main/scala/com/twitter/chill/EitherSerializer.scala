@@ -17,6 +17,8 @@ limitations under the License.
 package com.twitter.chill
 
 class LeftSerializer[A, B] extends KSerializer[Left[A, B]] {
+  setImmutable(true)
+
   def write(kser: Kryo, out: Output, left: Left[A, B]) {
     kser.writeClassAndObject(out, left.a)
   }
@@ -26,6 +28,8 @@ class LeftSerializer[A, B] extends KSerializer[Left[A, B]] {
 }
 
 class RightSerializer[A, B] extends KSerializer[Right[A, B]] {
+  setImmutable(true)
+
   def write(kser: Kryo, out: Output, right: Right[A, B]) {
     kser.writeClassAndObject(out, right.b)
   }

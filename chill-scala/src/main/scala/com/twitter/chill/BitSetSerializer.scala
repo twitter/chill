@@ -19,6 +19,8 @@ package com.twitter.chill
 import scala.collection.immutable.BitSet
 
 class BitSetSerializer extends KSerializer[BitSet] {
+  setImmutable(true)
+
   def write(k: Kryo, o: Output, v: BitSet) {
     val size = v.size
     o.writeInt(size, true)

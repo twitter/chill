@@ -17,6 +17,8 @@ limitations under the License.
 package com.twitter.chill
 
 class SomeSerializer[T] extends KSerializer[Some[T]] {
+  setImmutable(true)
+
   def write(kser: Kryo, out: Output, item: Some[T]) {
     kser.writeClassAndObject(out, item.get)
   }

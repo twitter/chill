@@ -19,6 +19,8 @@ package com.twitter.chill
 import scala.collection.immutable.SortedMap
 
 class SortedMapSerializer[A, B] extends KSerializer[SortedMap[A, B]] {
+  setImmutable(true)
+
   type M = SortedMap[A, B]
 
   def write(kser: Kryo, out: Output, map: M) {

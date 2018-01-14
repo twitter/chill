@@ -17,12 +17,12 @@ limitations under the License.
 package com.twitter.chill
 
 import org.scalatest._
-import org.scalatest.matchers.{ Matcher, MatchResult }
+import org.scalatest.matchers.{ MatchResult, Matcher }
 
-import scala.collection.immutable.{ SortedSet, BitSet, ListSet, HashSet, SortedMap, ListMap, HashMap }
+import scala.collection.immutable.{ BitSet, HashMap, HashSet, ListMap, ListSet, SortedMap, SortedSet }
 import scala.collection.mutable.{ ArrayBuffer => MArrayBuffer, BitSet => MBitSet, HashMap => MHashMap }
 import _root_.java.util.PriorityQueue
-import _root_.java.util.Locale
+
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 import scala.reflect._
@@ -312,6 +312,47 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       serialize((1.0 to 10000.0 by 2.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
       serialize((1.0 until 10000.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
       serialize((1.0 until 10000.0 by 2.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
+    }
+    "handle copying of immutable objects" in {
+      val kryo = getKryo
+      val test = List(1, 2, "hey", (1, 2),
+        ("hey", "you"),
+        ("slightly", 1L, "longer", 42, "tuple"),
+        Foo(Map("1" -> 1), Map("1" -> Seq("foo.com"))),
+        Map(1 -> 2, 4 -> 5),
+        0 to 100,
+        (0 to 42).toList, Seq(1, 100, 1000),
+        Right(Map("hello" -> 100)),
+        Left(Map(1 -> "YO!")),
+        Some(Left(10)),
+        Map("good" -> 0.5, "bad" -> -1.0),
+        Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e),
+        List(Some(MHashMap(1 -> 1, 2 -> 2)), None, Some(MHashMap(3 -> 4))),
+        Set(1, 2, 3, 4, 10),
+        HashSet(1, 2),
+        SortedSet[Long](),
+        SortedSet(1L, 2L, 3L, 4L),
+        BitSet(),
+        BitSet((0 until 1000).map{ x: Int => x * x }: _*),
+        SortedMap[Long, String](),
+        SortedMap("b" -> 2, "a" -> 1),
+        ListMap("good" -> 0.5, "bad" -> -1.0),
+        HashMap("good" -> 0.5, "bad" -> -1.0),
+        TestCaseClassForSerialization("case classes are: ", 10),
+        TestValMap(Map("you" -> 1.0, "every" -> 2.0, "body" -> 3.0, "a" -> 1.0,
+          "b" -> 2.0, "c" -> 3.0, "d" -> 4.0)),
+        TestValHashMap(HashMap("you" -> 1.0)),
+        implicitly[ClassTag[(Int, Int)]],
+        Vector(1, 2, 3, 4, 5),
+        TestValMap(null),
+        Some("junk"),
+        (),
+        'hai)
+        .asInstanceOf[List[AnyRef]]
+
+      test.foreach { obj =>
+        kryo.copy(obj) shouldBe obj
+      }
     }
   }
 }

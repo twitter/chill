@@ -19,6 +19,8 @@ package com.twitter.chill
 import scala.collection.immutable.SortedSet
 
 class SortedSetSerializer[T] extends KSerializer[SortedSet[T]] {
+  setImmutable(true)
+
   def write(kser: Kryo, out: Output, set: SortedSet[T]) {
     //Write the size
     out.writeInt(set.size, true)
