@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import scala.collection.immutable.{ BitSet, HashMap, HashSet, ListMap, ListSet, NumericRange, Queue, Range, SortedMap, SortedSet, WrappedString }
+import scala.collection.immutable.{ BitSet, HashMap, HashSet, ListMap, ListSet, NumericRange, Queue, Range, SortedMap, SortedSet, TreeMap, TreeSet, WrappedString }
 import scala.collection.mutable.{ Buffer, ListBuffer, WrappedArray, BitSet => MBitSet, HashMap => MHashMap, HashSet => MHashSet, Map => MMap, Queue => MQueue, Set => MSet }
 import scala.util.matching.Regex
 
@@ -176,6 +176,18 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
     // Streams
     newK.register(classOf[Stream.Cons[_]], new StreamSerializer[Any])
     newK.register(Stream().getClass, new StreamSerializer[Any])
+    // TreeSet and TreeMap along with the most common orderings
+    newK.register(classOf[TreeSet[_]])
+    newK.register(classOf[TreeMap[_, _]])
+    newK.register(Ordering.Byte.getClass)
+    newK.register(Ordering.Short.getClass)
+    newK.register(Ordering.Int.getClass)
+    newK.register(Ordering.Long.getClass)
+    newK.register(Ordering.Float.getClass)
+    newK.register(Ordering.Double.getClass)
+    newK.register(Ordering.Boolean.getClass)
+    newK.register(Ordering.Char.getClass)
+    newK.register(Ordering.String.getClass)
   }
 }
 
