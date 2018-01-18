@@ -43,6 +43,8 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
             assert(false, message)
         }
       }
+      "serialize the empty map" in { roundtrip(Map()) }
+      "serialize the one-element map" in { roundtrip(Map(1 -> 2)) }
       "serialize the empty hash map" in { roundtrip(HashMap()) }
       "serialize the one-element hash map" in { roundtrip(HashMap(1 -> 2)) }
       // TODO larger hash maps

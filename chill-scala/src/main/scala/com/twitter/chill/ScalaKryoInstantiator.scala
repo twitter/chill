@@ -144,6 +144,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forConcreteTraversableClass(HashSet[Any]('a))
       .forConcreteTraversableClass(HashSet[Any]('a, 'b, 'c, 'd, 'e))
       // specifically register small maps since Scala represents them differently
+      .forConcreteTraversableClass(Map[Any, Any]())
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c))
