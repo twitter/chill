@@ -355,7 +355,6 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
         .asInstanceOf[List[AnyRef]]
 
       test.foreach { obj =>
-        println(obj)
         kryo.copy(obj) shouldBe obj
       }
     }
