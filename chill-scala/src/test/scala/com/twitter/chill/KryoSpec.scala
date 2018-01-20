@@ -315,19 +315,23 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
     }
     "handle copying of immutable objects" in {
       val kryo = getKryo
-      val test = List(1, 2, "hey", (1, 2),
+      val test = List(
+        1,
+        2,
+        "hey",
+        (1, 2),
         ("hey", "you"),
         ("slightly", 1L, "longer", 42, "tuple"),
         Foo(Map("1" -> 1), Map("1" -> Seq("foo.com"))),
         Map(1 -> 2, 4 -> 5),
         0 to 100,
         (0 to 42).toList, Seq(1, 100, 1000),
-        Right(Map("hello" -> 100)),
-        Left(Map(1 -> "YO!")),
-        Some(Left(10)),
+        None,
         Map("good" -> 0.5, "bad" -> -1.0),
         Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e),
         List(Some(MHashMap(1 -> 1, 2 -> 2)), None, Some(MHashMap(3 -> 4))),
+        Nil,
+        Seq(),
         Set(1, 2, 3, 4, 10),
         HashSet(1, 2),
         SortedSet[Long](),
@@ -345,12 +349,13 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
         implicitly[ClassTag[(Int, Int)]],
         Vector(1, 2, 3, 4, 5),
         TestValMap(null),
-        Some("junk"),
         (),
+        Unit,
         'hai)
         .asInstanceOf[List[AnyRef]]
 
       test.foreach { obj =>
+        println(obj)
         kryo.copy(obj) shouldBe obj
       }
     }
