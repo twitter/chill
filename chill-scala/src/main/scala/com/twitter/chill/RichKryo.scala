@@ -43,8 +43,8 @@ class RichKryo(k: Kryo) {
     k
   }
 
-  def forTraversableSubclass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit mf: ClassTag[C], cbf: CanBuildFrom[C, T, C]): Kryo = {
-    k.addDefaultSerializer(mf.runtimeClass, new TraversableSerializer(isImmutable)(cbf))
+  def forTraversableSubclass[T, C <: Traversable[T]](c: C with Traversable[T], immutable: Boolean = true)(implicit mf: ClassTag[C], cbf: CanBuildFrom[C, T, C]): Kryo = {
+    k.addDefaultSerializer(mf.runtimeClass, new TraversableSerializer(immutable)(cbf))
     k
   }
 
@@ -53,8 +53,8 @@ class RichKryo(k: Kryo) {
     k
   }
 
-  def forTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit mf: ClassTag[C], cbf: CanBuildFrom[C, T, C]): Kryo =
-    forClass(new TraversableSerializer(isImmutable)(cbf))
+  def forTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], immutable: Boolean = true)(implicit mf: ClassTag[C], cbf: CanBuildFrom[C, T, C]): Kryo =
+    forClass(new TraversableSerializer(immutable)(cbf))
 
   def forConcreteTraversableClass[T, C <: Traversable[T]](c: C with Traversable[T], isImmutable: Boolean = true)(implicit cbf: CanBuildFrom[C, T, C]): Kryo = {
     // a ClassTag is not used here since its runtimeClass method does not return the concrete internal type

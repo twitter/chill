@@ -131,9 +131,9 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.empty[Any])
       // Add ListBuffer subclass before Buffer to prevent the more general case taking precedence
-      .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
+      .forTraversableSubclass(ListBuffer.empty[Any], immutable = false)
       // add mutable Buffer before Vector, otherwise Vector is used
-      .forTraversableSubclass(Buffer.empty[Any], isImmutable = false)
+      .forTraversableSubclass(Buffer.empty[Any], immutable = false)
       // Vector is a final class
       .forTraversableClass(Vector.empty[Any])
       .forTraversableSubclass(ListSet.empty[Any])
@@ -162,12 +162,12 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       // The above ListMap/HashMap must appear before this:
       .forTraversableSubclass(Map.empty[Any, Any])
       // here are the mutable ones:
-      .forTraversableClass(MBitSet.empty, isImmutable = false)
-      .forTraversableClass(MHashMap.empty[Any, Any], isImmutable = false)
-      .forTraversableClass(MHashSet.empty[Any], isImmutable = false)
-      .forTraversableSubclass(MQueue.empty[Any], isImmutable = false)
-      .forTraversableSubclass(MMap.empty[Any, Any], isImmutable = false)
-      .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
+      .forTraversableClass(MBitSet.empty, immutable = false)
+      .forTraversableClass(MHashMap.empty[Any, Any], immutable = false)
+      .forTraversableClass(MHashSet.empty[Any], immutable = false)
+      .forTraversableSubclass(MQueue.empty[Any], immutable = false)
+      .forTraversableSubclass(MMap.empty[Any, Any], immutable = false)
+      .forTraversableSubclass(MSet.empty[Any], immutable = false)
   }
 }
 
@@ -189,7 +189,7 @@ class AllScalaRegistrar extends IKryoRegistrar {
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
     k.forClass[Symbol](new KSerializer[Symbol] {
-      override def isImmutable = true
+      setImmutable(true)
       def write(k: Kryo, out: Output, obj: Symbol) { out.writeString(obj.name) }
       def read(k: Kryo, in: Input, cls: Class[Symbol]) = Symbol(in.readString)
     })
@@ -200,7 +200,9 @@ class AllScalaRegistrar extends IKryoRegistrar {
 
     // use the singleton serializer for boxed Unit
     val boxedUnit = scala.Unit.box(())
-    k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
+    k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit, immutable = true))
+    k.register(Unit.getClass, new SingletonSerializer(Unit, immutable = true))
+    k.register(None.getClass, new SingletonSerializer(None, immutable = true))
     PackageRegistrar.all()(k)
     new Java8ClosureRegistrar()(k)
   }
