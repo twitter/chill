@@ -77,9 +77,6 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       "serialize vectors" in { roundtrip(Vector(), Vector(1), Vector(1, 2), Vector(1, 2, 3), Vector(1, 2, 3, 4), Vector(1, 2, 3, 4, 5)) }
       "serialize the empty stream" in { roundtrip(Stream()) }
       "serialize the one-element stream" in { roundtrip(Stream(1)) }
-      "serialize larger streams2" in { roundtrip(Stream(1, 2)) } // FIXME remove 2,3,4
-      "serialize larger streams3" in { roundtrip(Stream(1, 2), Stream(1, 2, 3)) }
-      "serialize larger streams4" in { roundtrip(Stream(1, 2), Stream(1, 2, 3), Stream(1, 2, 3, 4)) }
       "serialize larger streams" in { roundtrip(Stream(1, 2), Stream(1, 2, 3), Stream(1, 2, 3, 4), Stream(1, 2, 3, 4, 5)) }
       "serialize the options" in { roundtrip(None, Some(1), Option.empty[Int], Option(3)) }
       "serialize the eithers" in { roundtrip(Left(2), Right(4), Left.apply[Int, Int](3)) }

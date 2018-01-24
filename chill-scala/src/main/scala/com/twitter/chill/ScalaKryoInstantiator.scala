@@ -176,7 +176,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
     // Streams
     newK.register(classOf[Stream.Cons[_]], new StreamSerializer[Any])
-    newK.register(Stream().getClass, new StreamSerializer[Any])
+    newK.register(Stream.empty[Any].getClass)
     // TreeSet and TreeMap along with the most common orderings
     newK.register(classOf[TreeSet[_]])
     newK.register(classOf[TreeMap[_, _]])
