@@ -87,24 +87,33 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       "serialize Short arrays" in { roundtrip(Array(3.toShort, 4.toShort)) }
       "serialize empty Byte arrays" in { roundtrip(Array.empty[Byte]) }
       "serialize Byte arrays" in { roundtrip(Array(3.toByte, 4.toByte)) }
-      "serialize Long arrays" in { roundtrip(Array.empty[Long]) } // FIXME continue with adding more example
-      "serialize Float arrays" in { roundtrip(Array.empty[Float]) }
-      "serialize Double arrays" in { roundtrip(Array.empty[Double]) }
-      "serialize Boolean arrays" in { roundtrip(Array.empty[Boolean]) }
-      "serialize Char arrays" in { roundtrip(Array.empty[Char]) }
-      "serialize String arrays" in { roundtrip(Array.empty[String]) }
-      // TODO more examples like filled arrays and Array.empty[Object]
+      "serialize empty Long arrays" in { roundtrip(Array.empty[Long]) }
+      "serialize Long arrays" in { roundtrip(Array(3L, 5L)) }
+      "serialize empty Float arrays" in { roundtrip(Array.empty[Float]) }
+      "serialize Float arrays" in { roundtrip(Array(3f, 5.3f)) }
+      "serialize empty Double arrays" in { roundtrip(Array.empty[Double]) }
+      "serialize Double arrays" in { roundtrip(Array(4d, 3.2d)) }
+      "serialize empty Boolean arrays" in { roundtrip(Array.empty[Boolean]) }
+      "serialize Boolean arrays" in { roundtrip(Array(true, false)) }
+      "serialize empty Char arrays" in { roundtrip(Array.empty[Char]) }
+      "serialize Char arrays" in { roundtrip(Array('a', 'b')) }
+      "serialize empty String arrays" in { roundtrip(Array.empty[String]) }
+      "serialize String arrays" in { roundtrip(Array("a", "")) }
+      "serialize empty Object arrays" in { roundtrip(Array.empty[Object]) }
+      "serialize Object arrays" in { roundtrip(Array("a", List())) }
+      "serialize empty Any arrays" in { roundtrip(Array.empty[Any]) }
+      "serialize Any arrays" in { roundtrip(Array("a", 3, Nil)) }
       "serialize the empty wrapped array" in { roundtrip(mutable.WrappedArray.empty[Object]) }
-      "serialize Int wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Byte]())) }
-      "serialize Byte wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Short]())) }
-      "serialize Short wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Int]())) }
-      "serialize Long wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Long]())) }
-      "serialize Float wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Float]())) }
-      "serialize Double wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Double]())) }
-      "serialize Boolean wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Boolean]())) }
-      "serialize Char wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Char]())) }
-      "serialize String wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[String]())) }
-      // TODO more examples of wrapped arrays
+      "serialize empty Int wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Byte]())) }
+      "serialize Int wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Byte](1, 3))) }
+      "serialize empty Byte wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Short]())) }
+      "serialize empty Short wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Int]())) }
+      "serialize empty Long wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Long]())) }
+      "serialize empty Float wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Float]())) }
+      "serialize empty Double wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Double]())) }
+      "serialize empty Boolean wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Boolean]())) }
+      "serialize empty Char wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[Char]())) }
+      "serialize empty String wrapped arrays" in { roundtrip(mutable.WrappedArray.make(Array[String]())) }
       "serialize wrapped strings" in { roundtrip(new WrappedString("abc")) }
     }
 }
