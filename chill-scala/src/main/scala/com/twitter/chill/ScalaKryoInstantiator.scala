@@ -16,8 +16,31 @@ limitations under the License.
 
 package com.twitter.chill
 
-import scala.collection.immutable.{ BitSet, HashMap, HashSet, ListMap, ListSet, NumericRange, Queue, Range, SortedMap, SortedSet, TreeMap, TreeSet, WrappedString }
-import scala.collection.mutable.{ Buffer, ListBuffer, WrappedArray, BitSet => MBitSet, HashMap => MHashMap, HashSet => MHashSet, Map => MMap, Queue => MQueue, Set => MSet }
+import scala.collection.immutable.{
+  BitSet,
+  HashSet,
+  ListSet,
+  NumericRange,
+  Range,
+  SortedSet,
+  SortedMap,
+  ListMap,
+  HashMap,
+  Queue
+}
+
+import scala.collection.mutable.{
+  WrappedArray,
+  BitSet => MBitSet,
+  Map => MMap,
+  HashMap => MHashMap,
+  Set => MSet,
+  HashSet => MHashSet,
+  ListBuffer,
+  Queue => MQueue,
+  Buffer
+}
+
 import scala.util.matching.Regex
 
 import com.twitter.chill.java.{ Java8ClosureRegistrar, PackageRegistrar }
@@ -98,32 +121,15 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
      */
     newK
       // wrapper array is abstract
-      .registerClasses(Seq(
-        classOf[Array[Byte]], classOf[Array[Short]], classOf[Array[Int]],
-        classOf[Array[Long]], classOf[Array[Float]], classOf[Array[Double]],
-        classOf[Array[Boolean]], classOf[Array[Char]], classOf[Array[String]], classOf[Array[Object]]))
-      .registerClasses(Seq(
-        WrappedArray.make(Array[Byte]()).getClass,
-        WrappedArray.make(Array[Short]()).getClass,
-        WrappedArray.make(Array[Int]()).getClass,
-        WrappedArray.make(Array[Long]()).getClass,
-        WrappedArray.make(Array[Float]()).getClass,
-        WrappedArray.make(Array[Double]()).getClass,
-        WrappedArray.make(Array[Boolean]()).getClass,
-        WrappedArray.make(Array[Char]()).getClass,
-        WrappedArray.make(Array[String]()).getClass))
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
       .forSubclass[SortedSet[Any]](new SortedSetSerializer)
-      .registerClasses(Seq(None.getClass))
       .forClass[Some[Any]](new SomeSerializer[Any])
       .forClass[Left[Any, Any]](new LeftSerializer[Any, Any])
       .forClass[Right[Any, Any]](new RightSerializer[Any, Any])
       .forTraversableSubclass(Queue.empty[Any])
-      .registerClasses(Seq(classOf[Queue[_]]))
       // List is a sealed class, so there are only two subclasses:
       .forTraversableSubclass(List.empty[Any])
-      .registerClasses(Seq(Nil.getClass, classOf[::[_]]))
       // Add ListBuffer subclass before Buffer to prevent the more general case taking precedence
       .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
       // add mutable Buffer before Vector, otherwise Vector is used
@@ -132,33 +138,21 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableClass(Vector.empty[Any])
       .forTraversableSubclass(ListSet.empty[Any])
       // specifically register small sets since Scala represents them differently
-      .forConcreteTraversableClass(Set[Any]())
       .forConcreteTraversableClass(Set[Any]('a))
       .forConcreteTraversableClass(Set[Any]('a, 'b))
       .forConcreteTraversableClass(Set[Any]('a, 'b, 'c))
       .forConcreteTraversableClass(Set[Any]('a, 'b, 'c, 'd))
-      .forConcreteTraversableClass(ListSet[Any]())
-      .forConcreteTraversableClass(ListSet[Any]('a))
       // default set implementation
-      .forConcreteTraversableClass(HashSet[Any]())
-      .forConcreteTraversableClass(HashSet[Any]('a))
       .forConcreteTraversableClass(HashSet[Any]('a, 'b, 'c, 'd, 'e))
       // specifically register small maps since Scala represents them differently
-      .forConcreteTraversableClass(Map[Any, Any]())
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c))
       .forConcreteTraversableClass(Map[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd))
       // default map implementation
-      .forConcreteTraversableClass(HashMap())
-      .forConcreteTraversableClass(HashMap('a -> 'a))
       .forConcreteTraversableClass(HashMap[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
-      .forConcreteTraversableClass(ListMap())
-      .forConcreteTraversableClass(ListMap('a -> 'a))
       // The normal fields serializer works for ranges
-      .registerClasses(Seq(
-        classOf[Range],
-        classOf[Range.Inclusive],
+      .registerClasses(Seq(classOf[Range.Inclusive],
         classOf[NumericRange.Inclusive[_]],
         classOf[NumericRange.Exclusive[_]]))
       // Add some maps
@@ -174,21 +168,6 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(MQueue.empty[Any], isImmutable = false)
       .forTraversableSubclass(MMap.empty[Any, Any], isImmutable = false)
       .forTraversableSubclass(MSet.empty[Any], isImmutable = false)
-    // Streams
-    newK.register(classOf[Stream.Cons[_]], new StreamSerializer[Any])
-    newK.register(Stream.empty[Any].getClass)
-    // TreeSet and TreeMap along with the most common orderings
-    newK.register(classOf[TreeSet[_]])
-    newK.register(classOf[TreeMap[_, _]])
-    newK.register(Ordering.Byte.getClass)
-    newK.register(Ordering.Short.getClass)
-    newK.register(Ordering.Int.getClass)
-    newK.register(Ordering.Long.getClass)
-    newK.register(Ordering.Float.getClass)
-    newK.register(Ordering.Double.getClass)
-    newK.register(Ordering.Boolean.getClass)
-    newK.register(Ordering.Char.getClass)
-    newK.register(Ordering.String.getClass)
   }
 }
 
@@ -224,8 +203,5 @@ class AllScalaRegistrar extends IKryoRegistrar {
     k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
     new Java8ClosureRegistrar()(k)
-
-    // register other useful classes
-    k.registerClasses(Seq(classOf[WrappedString]))
   }
 }
