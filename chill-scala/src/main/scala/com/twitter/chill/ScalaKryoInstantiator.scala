@@ -77,6 +77,8 @@ class ScalaKryoInstantiator extends EmptyScalaKryoInstantiator {
   }
 }
 
+/** Note that additional scala collections registrations are provided by [[AllScalaRegistrar]]. They have not been
+  * included in this registrar for backwards compatibility reasons. */
 class ScalaCollectionsRegistrar extends IKryoRegistrar {
   def apply(newK: Kryo) {
     // for binary compat this is here, but could be moved to RichKryo
