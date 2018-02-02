@@ -178,7 +178,7 @@ class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
 }
 
 /** Registers all the scala (and java) serializers we have */
-class AllScalaRegistrar extends IKryoRegistrar {
+class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   def apply(k: Kryo) {
     val col = new ScalaCollectionsRegistrar
     col(k)
@@ -203,5 +203,13 @@ class AllScalaRegistrar extends IKryoRegistrar {
     k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
     new Java8ClosureRegistrar()(k)
+  }
+}
+
+class AllScalaRegistrar extends IKryoRegistrar {
+  def apply(k: Kryo) {
+    val compatibilityLayer = new AllScalaRegistrar_0_9_2
+    compatibilityLayer(k)
+
   }
 }
