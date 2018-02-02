@@ -16,37 +16,15 @@ limitations under the License.
 
 package com.twitter.chill
 
-import scala.collection.immutable.{
-  BitSet,
-  HashSet,
-  ListSet,
-  NumericRange,
-  Range,
-  SortedSet,
-  SortedMap,
-  ListMap,
-  HashMap,
-  Queue
-}
-
-import scala.collection.mutable.{
-  WrappedArray,
-  BitSet => MBitSet,
-  Map => MMap,
-  HashMap => MHashMap,
-  Set => MSet,
-  HashSet => MHashSet,
-  ListBuffer,
-  Queue => MQueue,
-  Buffer
-}
-
+import scala.collection.immutable.{ BitSet, HashMap, HashSet, ListMap, ListSet, NumericRange, Queue, Range, SortedMap, SortedSet, TreeMap, TreeSet, WrappedString }
+import scala.collection.mutable.{ Buffer, ListBuffer, WrappedArray, BitSet => MBitSet, HashMap => MHashMap, HashSet => MHashSet, Map => MMap, Queue => MQueue, Set => MSet }
 import scala.util.matching.Regex
 
 import com.twitter.chill.java.{ Java8ClosureRegistrar, PackageRegistrar }
 import _root_.java.io.Serializable
 
 import scala.collection.JavaConverters._
+import scala.collection.mutable
 import scala.reflect.ClassTag
 
 /**
@@ -180,11 +158,8 @@ class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
 /** Registers all the scala (and java) serializers we have */
 class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   def apply(k: Kryo) {
-    val col = new ScalaCollectionsRegistrar
-    col(k)
-
-    val jcol = new JavaWrapperCollectionRegistrar
-    jcol(k)
+    new ScalaCollectionsRegistrar()(k)
+    new JavaWrapperCollectionRegistrar()(k)
 
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
@@ -208,8 +183,59 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
 
 class AllScalaRegistrar extends IKryoRegistrar {
   def apply(k: Kryo) {
-    val compatibilityLayer = new AllScalaRegistrar_0_9_2
-    compatibilityLayer(k)
+    new AllScalaRegistrar_0_9_2()(k)
 
+    k.registerClasses(Seq(
+      classOf[Array[Byte]],
+      classOf[Array[Short]],
+      classOf[Array[Int]],
+      classOf[Array[Long]],
+      classOf[Array[Float]],
+      classOf[Array[Double]],
+      classOf[Array[Boolean]],
+      classOf[Array[Char]],
+      classOf[Array[String]],
+      classOf[Array[Any]],
+      classOf[Class[_]], // needed for the WrappedArraySerializer
+      classOf[Any], // needed for scala.collection.mutable.WrappedArray$ofRef
+      mutable.WrappedArray.make(Array[Byte]()).getClass,
+      mutable.WrappedArray.make(Array[Short]()).getClass,
+      mutable.WrappedArray.make(Array[Int]()).getClass,
+      mutable.WrappedArray.make(Array[Long]()).getClass,
+      mutable.WrappedArray.make(Array[Float]()).getClass,
+      mutable.WrappedArray.make(Array[Double]()).getClass,
+      mutable.WrappedArray.make(Array[Boolean]()).getClass,
+      mutable.WrappedArray.make(Array[Char]()).getClass,
+      mutable.WrappedArray.make(Array[String]()).getClass,
+      None.getClass,
+      classOf[Queue[_]],
+      Nil.getClass,
+      classOf[::[_]],
+      classOf[Range],
+      classOf[WrappedString],
+      classOf[TreeSet[_]],
+      classOf[TreeMap[_, _]],
+      // The most common orderings for TreeSet and TreeMap
+      Ordering.Byte.getClass,
+      Ordering.Short.getClass,
+      Ordering.Int.getClass,
+      Ordering.Long.getClass,
+      Ordering.Float.getClass,
+      Ordering.Double.getClass,
+      Ordering.Boolean.getClass,
+      Ordering.Char.getClass,
+      Ordering.String.getClass))
+      .forConcreteTraversableClass(Set[Any]())
+      .forConcreteTraversableClass(ListSet[Any]())
+      .forConcreteTraversableClass(ListSet[Any]('a))
+      .forConcreteTraversableClass(HashSet[Any]())
+      .forConcreteTraversableClass(HashSet[Any]('a))
+      .forConcreteTraversableClass(Map[Any, Any]())
+      .forConcreteTraversableClass(HashMap())
+      .forConcreteTraversableClass(HashMap('a -> 'a))
+      .forConcreteTraversableClass(ListMap())
+      .forConcreteTraversableClass(ListMap('a -> 'a))
+    k.register(classOf[Stream.Cons[_]], new StreamSerializer[Any])
+    k.register(Stream.empty[Any].getClass)
   }
 }
