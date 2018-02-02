@@ -77,8 +77,10 @@ class ScalaKryoInstantiator extends EmptyScalaKryoInstantiator {
   }
 }
 
-/** Note that additional scala collections registrations are provided by [[AllScalaRegistrar]]. They have not been
-  * included in this registrar for backwards compatibility reasons. */
+/**
+ * Note that additional scala collections registrations are provided by [[AllScalaRegistrar]]. They have not been
+ * included in this registrar for backwards compatibility reasons.
+ */
 class ScalaCollectionsRegistrar extends IKryoRegistrar {
   def apply(newK: Kryo) {
     // for binary compat this is here, but could be moved to RichKryo
@@ -157,7 +159,7 @@ class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
   }
 }
 
-/** Registers all the scala (and java) serializers we have */
+/** Registrar for everything that was registered in chill 0.9.2 - included for backwards compatibility. */
 class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   def apply(k: Kryo) {
     new ScalaCollectionsRegistrar()(k)
@@ -183,6 +185,11 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   }
 }
 
+/**
+ * Registers all the scala (and java) serializers we have. The registrations are designed to cover most of
+ * scala.collecion.immutable, so they can be used in long term persistence scenarios that run with
+ * setRegistrationRequired(true).
+ */
 class AllScalaRegistrar extends IKryoRegistrar {
   def apply(k: Kryo) {
     new AllScalaRegistrar_0_9_2()(k)
