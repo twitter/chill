@@ -38,7 +38,7 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
           }
         } catch {
           case e: Throwable =>
-            val message = s"exception during serialization round trip for $original of class ${original.getClass}:\n" +
+            val message = s"exception during serialization round trip for $original of ${original.getClass}:\n" +
               e.toString.lines.next
             assert(false, message)
         }

@@ -42,10 +42,12 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
   private def printMessageFor(k: KryoBase, scope: String): Unit =
     System.err.println(
       s"""\n\n
-         |This test ($getClass) will fail for $scope, most probably because
-         |the order of registration IDs has changed or a registration was
-         |added or removed. If that was intended, here is the new list of
-         |entries that can be set as expected value in the test:
+         |This test ($getClass)
+         |will fail for $scope, most probably because the order of
+         |registration IDs has changed or a registration was added or
+         |removed. If that was intended, here is the list of entries
+         |that are currently found, so you can updated the test's
+         |expected values:
          |
          |${registeredEntries(k)}\n\n\n""".stripMargin)
 
@@ -146,7 +148,54 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
       .stripMargin.lines.mkString("\n")
 
   private def expectedEntries_recent =
-    """"""
+    """93 -> class [B
+      |94 -> class [S
+      |95 -> class [I
+      |96 -> class [J
+      |97 -> class [F
+      |98 -> class [D
+      |99 -> class [Z
+      |100 -> class [C
+      |101 -> class [Ljava.lang.String;
+      |102 -> class [Ljava.lang.Object;
+      |103 -> class scala.collection.mutable.WrappedArray$ofByte
+      |104 -> class scala.collection.mutable.WrappedArray$ofShort
+      |105 -> class scala.collection.mutable.WrappedArray$ofInt
+      |106 -> class scala.collection.mutable.WrappedArray$ofLong
+      |107 -> class scala.collection.mutable.WrappedArray$ofFloat
+      |108 -> class scala.collection.mutable.WrappedArray$ofDouble
+      |109 -> class scala.collection.mutable.WrappedArray$ofBoolean
+      |110 -> class scala.collection.mutable.WrappedArray$ofChar
+      |111 -> class scala.collection.mutable.WrappedArray$ofRef
+      |112 -> class scala.None$
+      |113 -> class scala.collection.immutable.Queue
+      |114 -> class scala.collection.immutable.Nil$
+      |115 -> class scala.collection.immutable.$colon$colon
+      |116 -> class scala.collection.immutable.Set$EmptySet$
+      |117 -> class scala.collection.immutable.ListSet$EmptyListSet$
+      |118 -> class scala.collection.immutable.ListSet$Node
+      |119 -> class scala.collection.immutable.HashSet$EmptyHashSet$
+      |120 -> class scala.collection.immutable.HashSet$HashSet1
+      |121 -> class scala.collection.immutable.Map$EmptyMap$
+      |122 -> class scala.collection.immutable.HashMap$EmptyHashMap$
+      |123 -> class scala.collection.immutable.HashMap$HashMap1
+      |124 -> class scala.collection.immutable.ListMap$EmptyListMap$
+      |125 -> class scala.collection.immutable.ListMap$Node
+      |126 -> class scala.collection.immutable.Range
+      |127 -> class scala.collection.immutable.WrappedString
+      |128 -> class scala.collection.immutable.TreeSet
+      |129 -> class scala.collection.immutable.TreeMap
+      |130 -> class scala.math.Ordering$Byte$
+      |131 -> class scala.math.Ordering$Short$
+      |132 -> class scala.math.Ordering$Int$
+      |133 -> class scala.math.Ordering$Long$
+      |134 -> class scala.math.Ordering$Float$
+      |135 -> class scala.math.Ordering$Double$
+      |136 -> class scala.math.Ordering$Boolean$
+      |137 -> class scala.math.Ordering$Char$
+      |138 -> class scala.math.Ordering$String$
+      |139 -> class scala.collection.immutable.Stream$Cons
+      |140 -> class scala.collection.immutable.Stream$Empty$"""
       .stripMargin.lines.mkString("\n")
 
   private def expectedEntries_current =
