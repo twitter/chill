@@ -186,22 +186,45 @@ class AllScalaRegistrar extends IKryoRegistrar {
     new AllScalaRegistrar_0_9_2()(k)
 
     k.registerClasses(Seq(
-      classOf[Array[Byte]], classOf[Array[Short]], classOf[Array[Int]],
-      classOf[Array[Long]], classOf[Array[Float]], classOf[Array[Double]],
-      classOf[Array[Boolean]], classOf[Array[Char]], classOf[Array[String]], classOf[Array[Object]]))
-      .registerClasses(Seq(
-        mutable.WrappedArray.make(Array[Byte]()).getClass,
-        mutable.WrappedArray.make(Array[Short]()).getClass,
-        mutable.WrappedArray.make(Array[Int]()).getClass,
-        mutable.WrappedArray.make(Array[Long]()).getClass,
-        mutable.WrappedArray.make(Array[Float]()).getClass,
-        mutable.WrappedArray.make(Array[Double]()).getClass,
-        mutable.WrappedArray.make(Array[Boolean]()).getClass,
-        mutable.WrappedArray.make(Array[Char]()).getClass,
-        mutable.WrappedArray.make(Array[String]()).getClass))
-      .registerClasses(Seq(None.getClass))
-      .registerClasses(Seq(classOf[Queue[_]]))
-      .registerClasses(Seq(Nil.getClass, classOf[::[_]]))
+      classOf[Array[Byte]],
+      classOf[Array[Short]],
+      classOf[Array[Int]],
+      classOf[Array[Long]],
+      classOf[Array[Float]],
+      classOf[Array[Double]],
+      classOf[Array[Boolean]],
+      classOf[Array[Char]],
+      classOf[Array[String]],
+      classOf[Array[Any]],
+      classOf[Class[_]], // needed for the WrappedArraySerializer
+      classOf[Any], // needed for scala.collection.mutable.WrappedArray$ofRef
+      mutable.WrappedArray.make(Array[Byte]()).getClass,
+      mutable.WrappedArray.make(Array[Short]()).getClass,
+      mutable.WrappedArray.make(Array[Int]()).getClass,
+      mutable.WrappedArray.make(Array[Long]()).getClass,
+      mutable.WrappedArray.make(Array[Float]()).getClass,
+      mutable.WrappedArray.make(Array[Double]()).getClass,
+      mutable.WrappedArray.make(Array[Boolean]()).getClass,
+      mutable.WrappedArray.make(Array[Char]()).getClass,
+      mutable.WrappedArray.make(Array[String]()).getClass,
+      None.getClass,
+      classOf[Queue[_]],
+      Nil.getClass,
+      classOf[::[_]],
+      classOf[Range],
+      classOf[WrappedString],
+      classOf[TreeSet[_]],
+      classOf[TreeMap[_, _]],
+      // The most common orderings for TreeSet and TreeMap
+      Ordering.Byte.getClass,
+      Ordering.Short.getClass,
+      Ordering.Int.getClass,
+      Ordering.Long.getClass,
+      Ordering.Float.getClass,
+      Ordering.Double.getClass,
+      Ordering.Boolean.getClass,
+      Ordering.Char.getClass,
+      Ordering.String.getClass))
       .forConcreteTraversableClass(Set[Any]())
       .forConcreteTraversableClass(ListSet[Any]())
       .forConcreteTraversableClass(ListSet[Any]('a))
@@ -212,21 +235,6 @@ class AllScalaRegistrar extends IKryoRegistrar {
       .forConcreteTraversableClass(HashMap('a -> 'a))
       .forConcreteTraversableClass(ListMap())
       .forConcreteTraversableClass(ListMap('a -> 'a))
-      .registerClasses(Seq(
-        classOf[Range],
-        classOf[WrappedString],
-        classOf[TreeSet[_]],
-        classOf[TreeMap[_, _]],
-        // The most common orderings for TreeSet and TreeMap
-        Ordering.Byte.getClass,
-        Ordering.Short.getClass,
-        Ordering.Int.getClass,
-        Ordering.Long.getClass,
-        Ordering.Float.getClass,
-        Ordering.Double.getClass,
-        Ordering.Boolean.getClass,
-        Ordering.Char.getClass,
-        Ordering.String.getClass))
     k.register(classOf[Stream.Cons[_]], new StreamSerializer[Any])
     k.register(Stream.empty[Any].getClass)
   }

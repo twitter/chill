@@ -6,7 +6,7 @@ import scala.collection.mutable
 import org.scalatest.{ Matchers, WordSpec }
 
 class StandardDataRegistrationsSpec extends WordSpec with Matchers {
-  """
+  s"""
     |For projects using chill to persist serialized data (for example in event
     |sourcing scenarios), it can be beneficial or even required to turn on the
     |Kryo.setRegistrationRequired setting. For such projects, chill should provide
@@ -17,7 +17,8 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
     |Int, Long, Float, Double, Boolean, Char, and String are registered (and not for
     |example the reverse orderings).
     |
-    |The ScalaKryoInstantiator with setRegistrationRequired(true)""".stripMargin
+    |In addition to what is ensured by ${classOf[KryoSpec].getSimpleName},
+    |the ScalaKryoInstantiator with setRegistrationRequired(true)""".stripMargin
     .should {
       def registrationRequiredInstantiator = new ScalaKryoInstantiator() {
         override def newKryo: KryoBase = {
