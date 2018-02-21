@@ -19,7 +19,7 @@ package com.twitter.chill
 class ClassManifestSerializer[T] extends KSerializer[ClassManifest[T]] {
 
   def write(kser: Kryo, out: Output, obj: ClassManifest[T]) {
-    kser.writeObject(out, obj.erasure)
+    kser.writeObject(out, obj.runtimeClass)
   }
 
   def read(kser: Kryo, in: Input, cls: Class[ClassManifest[T]]): ClassManifest[T] = {
