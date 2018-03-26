@@ -141,12 +141,27 @@ To use, add a key to your config like:
     }
 ```
 
-Then for the super-classes of all your message types, for instance, scala.Product, write:
+Then for the super-classes of all your message types, for instance, `java.io.Serializable` (all case classes and case objects are serializable), write:
 ```scala
    akka.actor.serialization-bindings {
-     "scala.Product" = kryo
+     "java.io.Serializable" = kryo
    }
 ```
+
+With this in place you can now [disable Java serialization entirely](https://doc.akka.io/docs/akka/current/remoting.html#disable-java-serializer):
+
+```scala
+akka.actor {
+  # Set this to on to enable serialization-bindings defined in
+  # additional-serialization-bindings. Those are by default not included
+  # for backwards compatibility reasons. They are enabled by default if
+  # akka.remote.artery.enabled=on.
+  enable-additional-serialization-bindings = on
+  
+  allow-java-serialization = off
+}
+```
+
 
 If you want to use the `chill.config.ConfiguredInstantiator` see `ConfiguredAkkaSerializer`
 otherwise, subclass `AkkaSerializer` and override `kryoInstantiator` to control how the `Kryo`
