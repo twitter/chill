@@ -16,15 +16,22 @@ limitations under the License.
 
 package com.twitter.chill.algebird
 
-import com.twitter.chill.{ KSerializer, ScalaKryoInstantiator, KryoPool }
-import com.twitter.algebird.{ AveragedValue, DecayedValue, HyperLogLogMonoid, MomentsGroup, AdaptiveVector }
+import com.twitter.chill.{ ScalaKryoInstantiator, KryoPool }
+import com.twitter.algebird.Operators._
+import com.twitter.algebird._
+
 import org.scalatest._
 
+
 class AlgebirdSerializersSpec extends WordSpec with Matchers {
+  implicit def string2Bytes(i: String) = i.toCharArray.map(_.toByte)
+  implicit val skmMonoid = SketchMap.monoid[String, Long](SketchMapParams[String](1, 0.01, 1e-3, 10))
+
   val kryo = {
     val inst = () => {
       val newK = (new ScalaKryoInstantiator).newKryo
       newK.setReferences(false) // typical in production environment (scalding, spark)
+      newK.register(classOf[com.twitter.algebird.SketchMap[_, _]], new SketchMapSerializer)
       (new AlgebirdRegistrar).apply(newK)
       newK
     }
@@ -75,6 +82,36 @@ class AlgebirdSerializersSpec extends WordSpec with Matchers {
       val dense = AdaptiveVector.fromVector(Vector(1, 2, 3, 1, 2, 3), 1)
       roundtrip(sparse)
       roundtrip(dense)
+    }
+
+    "serialize and deserialize SketchMap" in {
+      val skm = skmMonoid.create(Seq(("test1", 1L), ("test2", 2L)))
+      roundtrip[SketchMap[String, Long]](skm)
+
+      roundtripNoEq(skm)(_.heavyHitterKeys)
+      roundtripNoEq(skm)(_.totalValue)
+      roundtripNoEq(skm) { s => skmMonoid.frequency(s, "test1") }
+      roundtripNoEq(skm) { s => skmMonoid.frequency(s, "test2") }
+
+      // do it here explicit se/deserialization to check summation
+      val bin = kryo.toBytesWithoutClass(skm)
+      val skmAfter = kryo.fromBytes(bin, classOf[SketchMap[String, Long]])
+
+      //should be able to sum afterwards
+      a[scala.Throwable] shouldNot be (thrownBy (skmAfter + skmAfter))
+      a[scala.Throwable] shouldNot be (thrownBy (skm + skmAfter))
+
+      // do the same for "zero" or empty SketchMap
+      val zero = skmMonoid.zero
+      val binZero = kryo.toBytesWithoutClass(zero)
+      val zeroAfter = kryo.fromBytes(binZero, classOf[SketchMap[String, Long]])
+
+      zeroAfter.heavyHitterKeys should be (empty)
+      zeroAfter.totalValue should be (0)
+
+      //should be able to sum afterwards
+      a[scala.Throwable] shouldNot be (thrownBy (zeroAfter + zeroAfter))
+      a[scala.Throwable] shouldNot be (thrownBy (zero + zeroAfter))
     }
 
   }

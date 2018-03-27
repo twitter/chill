@@ -19,20 +19,11 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{ Serializer => KSerializer }
 import com.esotericsoftware.kryo.io.{ Input, Output }
 
-import com.twitter.algebird.{
-  AveragedValue,
-  DecayedValue,
-  HLL,
-  HyperLogLog,
-  HyperLogLogMonoid,
-  Moments,
-  SpaceSaver,
-  SSOne,
-  SSMany
-}
+import com.twitter.algebird._
+import com.twitter.algebird.matrix.AdaptiveMatrix
 
 import scala.collection.mutable.{ Map => MMap }
-import scala.collection.immutable.SortedMap
+
 
 class AveragedValueSerializer extends KSerializer[AveragedValue] {
   setImmutable(true)
@@ -94,4 +85,43 @@ class HLLMonoidSerializer extends KSerializer[HyperLogLogMonoid] {
     val bits = in.readInt(true)
     hllMonoids.getOrElseUpdate(bits, new HyperLogLogMonoid(bits))
   }
+}
+
+class SketchMapSerializer[K, V](implicit skmMonoid: SketchMapMonoid[K, V], valueMonoid: Monoid[V])
+  extends KSerializer[SketchMap[K, V]] {
+
+  def write(kryo: Kryo, output: Output, skm: SketchMap[K, V]) {
+    val rows = skm.valuesTable.rows
+    val cols = skm.valuesTable.cols
+
+    val values: Seq[((Int, Int), V)] =
+      for (
+        r: Int <- 0 until rows; c: Int <- 0 until cols if valueMonoid.isNonZero(skm.valuesTable.getValue((r, c)))
+      ) yield ((r, c), skm.valuesTable.getValue((r, c)))
+
+    output.writeInt(rows, true)
+    output.writeInt(cols, true)
+    kryo.writeClassAndObject(output, values)
+    kryo.writeClassAndObject(output, skm.totalValue)
+    kryo.writeClassAndObject(output, skm.heavyHitterKeys)
+
+    output.flush()
+  }
+
+  def read(kryo: Kryo, in: Input, cls: Class[SketchMap[K, V]]): SketchMap[K, V] = {
+    val rowsOrig = in.readInt(true)
+    val colsOrig = in.readInt(true)
+    val values = kryo.readClassAndObject(in).asInstanceOf[Seq[((Int, Int), V)]]
+    val totalValue = kryo.readClassAndObject(in).asInstanceOf[V]
+    val heavyHitterKeys = kryo.readClassAndObject(in).asInstanceOf[List[K]]
+
+    val rows = if (rowsOrig == 0) skmMonoid.params.depth else rowsOrig
+    val cols = if (colsOrig == 0) skmMonoid.params.width else colsOrig
+
+    val zero = AdaptiveMatrix.fill[V](rows, cols)(valueMonoid.zero)
+    val valuesTable = values.foldLeft(zero){ case (acc, ((r, c), v)) => acc.updated((r, c), v) }
+
+    SketchMap(valuesTable, heavyHitterKeys, totalValue)
+  }
+
 }
