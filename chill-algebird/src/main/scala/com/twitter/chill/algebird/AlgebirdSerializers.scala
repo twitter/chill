@@ -26,6 +26,7 @@ import com.twitter.algebird.{
   HyperLogLog,
   HyperLogLogMonoid,
   Moments,
+  QTree,
   SpaceSaver,
   SSOne,
   SSMany
@@ -93,5 +94,25 @@ class HLLMonoidSerializer extends KSerializer[HyperLogLogMonoid] {
   def read(kser: Kryo, in: Input, cls: Class[HyperLogLogMonoid]): HyperLogLogMonoid = {
     val bits = in.readInt(true)
     hllMonoids.getOrElseUpdate(bits, new HyperLogLogMonoid(bits))
+  }
+}
+
+class QTreeSerializer extends KSerializer[QTree[Any]] {
+  setImmutable(true)
+  override def read(kryo: Kryo, input: Input, cls: Class[QTree[Any]]): QTree[Any] = {
+    val (v1, v2, v3) = (input.readLong(), input.readInt(), input.readLong())
+    val v4 = kryo.readClassAndObject(input)
+    val v5 = kryo.readClassAndObject(input).asInstanceOf[Option[QTree[Any]]]
+    val v6 = kryo.readClassAndObject(input).asInstanceOf[Option[QTree[Any]]]
+    QTree(v1, v2, v3, v4, v5, v6)
+  }
+
+  override def write(kryo: Kryo, output: Output, obj: QTree[Any]): Unit = {
+    output.writeLong(obj._1)
+    output.writeInt(obj._2)
+    output.writeLong(obj._3)
+    kryo.writeClassAndObject(output, obj._4)
+    kryo.writeClassAndObject(output, obj._5)
+    kryo.writeClassAndObject(output, obj._6)
   }
 }
