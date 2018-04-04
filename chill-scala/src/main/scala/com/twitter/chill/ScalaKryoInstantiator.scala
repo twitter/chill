@@ -202,5 +202,6 @@ class AllScalaRegistrar extends IKryoRegistrar {
     k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
     new Java8ClosureRegistrar()(k)
+    k.forClass[scala.runtime.VolatileByteRef](new VolatileByteRefSerializer)
   }
 }
