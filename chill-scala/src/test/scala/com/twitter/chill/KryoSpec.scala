@@ -22,7 +22,6 @@ import org.scalatest.matchers.{ Matcher, MatchResult }
 import scala.collection.immutable.{ SortedSet, BitSet, ListSet, HashSet, SortedMap, ListMap, HashMap }
 import scala.collection.mutable.{ ArrayBuffer => MArrayBuffer, BitSet => MBitSet, HashMap => MHashMap }
 import _root_.java.util.PriorityQueue
-import _root_.java.util.Locale
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 import scala.reflect._
@@ -55,7 +54,7 @@ case class Foo(m1: Map[String, Int], m2: Map[String, Seq[String]])
 class KryoSpec extends WordSpec with Matchers with BaseProperties {
 
   def roundtrip[T] = new Matcher[T] {
-    def apply(t: T) = MatchResult(rtEquiv(t), "successfull serialization roundtrip for " + t, "failed serialization roundtrip for " + t)
+    def apply(t: T) = MatchResult(rtEquiv(t), "successful serialization roundtrip for " + t, "failed serialization roundtrip for " + t)
   }
 
   def getKryo = KryoSerializer.registered.newKryo
@@ -312,6 +311,14 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       serialize((1.0 to 10000.0 by 2.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
       serialize((1.0 until 10000.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
       serialize((1.0 until 10000.0 by 2.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
+    }
+    "VolatileByteRef" in {
+      import scala.runtime.VolatileByteRef
+
+      val br0 = new VolatileByteRef(100: Byte)
+      br0.elem = 42: Byte
+      val br1 = rt(br0)
+      assert(br0.elem == br1.elem)
     }
   }
 }
