@@ -197,7 +197,8 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
       |139 -> class scala.collection.immutable.ListMap$EmptyListMap$
       |140 -> class scala.collection.immutable.ListMap$Node
       |141 -> class scala.collection.immutable.Stream$Cons
-      |142 -> class scala.collection.immutable.Stream$Empty$"""
+      |142 -> class scala.collection.immutable.Stream$Empty$
+      |143 -> class scala.runtime.VolatileByteRef"""
       .stripMargin.lines.mkString("\n")
 
   private def expectedEntries_current =

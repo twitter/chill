@@ -17,7 +17,7 @@ limitations under the License.
 package com.twitter.chill.algebird
 
 import com.twitter.chill.{ KSerializer, ScalaKryoInstantiator, KryoPool }
-import com.twitter.algebird.{ AveragedValue, DecayedValue, HyperLogLogMonoid, MomentsGroup, AdaptiveVector }
+import com.twitter.algebird.{ AveragedValue, DecayedValue, HyperLogLogMonoid, MomentsGroup, AdaptiveVector, QTree }
 import org.scalatest._
 
 class AlgebirdSerializersSpec extends WordSpec with Matchers {
@@ -61,6 +61,10 @@ class AlgebirdSerializersSpec extends WordSpec with Matchers {
 
     "serialize and deserialize Moments" in {
       roundtrip(MomentsGroup.zero)
+    }
+
+    "serialize and deserialize QTree" in {
+      roundtrip(QTree(1.0))
     }
 
     "serialize and deserialize HLL" in {

@@ -246,5 +246,6 @@ class AllScalaRegistrar extends IKryoRegistrar {
       .forConcreteTraversableClass(ListMap('a -> 'a))
     k.register(classOf[Stream.Cons[_]], new StreamSerializer[Any])
     k.register(Stream.empty[Any].getClass)
+    k.forClass[scala.runtime.VolatileByteRef](new VolatileByteRefSerializer)
   }
 }
