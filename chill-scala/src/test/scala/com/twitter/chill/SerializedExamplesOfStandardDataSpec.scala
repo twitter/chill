@@ -13,9 +13,18 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     |When changing a serialization becomes necessary, details of the changes should
     |be mentioned in the release notes.
     |
+    |This spec verifies for all registered classes of ScalaKryoInstantiators
+    |- that the serialization class id is as expected,
+    |- that a scala instance serializes to the expected binary representation,
+    |- that the binary representation after deserializing & serializing
+    |  does not change.
+    |Note that it would be difficult to implement an equals check comparing
+    |the scala instance with the instance obtained from deserialization, so
+    |this is not implemented here.
+    |
     |With ScalaKryoInstantiators, the registered classes""".stripMargin
     .should {
-      "serialize to the provided examples and back with the provided serialization id"
+      "serialize as expected to the correct value (see above for details)"
         .in {
           examples.foreach {
             case (serId, (serialized, scala)) =>
@@ -49,13 +58,12 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     // 9 -> void is a special case
     10 -> ("DAEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBdwEBAgQ=" ->
       JavaConverters.seqAsJavaList(Seq(2))), // Wrappers$SeqWrapper
-    // FIXME equals seems not to work...
     11 -> ("DQEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBAQFzY2FsYS5jb2xsZWN0aW9uLkluZGV4ZWRTZXFMaWtlJEVsZW1lbnTzAW0BAQIBYQECBAIA" ->
       JavaConverters.asJavaIterator(Iterator(2))), // Wrappers$IteratorWrapper
-    12 -> ("EQECBA==" -> Some(2)), // Wrappers$MapWrapper
-    13 -> ("EQECBA==" -> Some(2)),
-    14 -> ("EQECBA==" -> Some(2)),
-    15 -> ("EQECBA==" -> Some(2)),
+    //    12 -> ("EQECBA==" -> Some(2)), // Wrappers$MapWrapper
+    //    13 -> ("EQECBA==" -> Some(2)),
+    //    14 -> ("EQECBA==" -> Some(2)),
+    //    15 -> ("EQECBA==" -> Some(2)),
     16 -> ("EgECBA==" -> Left(2)),
     17 -> ("EwECBA==" -> Right(2)),
     18 -> ("FAEBAgQ=" -> Vector(2)),
@@ -74,34 +82,43 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     System.err.println(
       s"\n##########\n$message\nThe example serialized is $serialized\n##########\n")
 
-  def checkSerialization(example: String, serId: Int, expected: AnyRef): Unit = {
-    val serialized =
-      try Base64.encodeBytes(pool.toBytesWithClass(expected))
+  def checkSerialization(serializedExample: String, expectedSerializationId: Int, scalaInstance: AnyRef): Unit = {
+    val idForScalaInstance = kryo.getRegistration(scalaInstance.getClass).getId
+    assert(
+      idForScalaInstance == expectedSerializationId,
+      s"$scalaInstance is registered with ID $idForScalaInstance, but expected $expectedSerializationId")
+
+    val serializedScalaInstance =
+      try Base64.encodeBytes(pool.toBytesWithClass(scalaInstance))
       catch {
         case e: Throwable =>
-          err(s"can't kryo serialize $expected: $e"); throw e
+          err(s"can't kryo serialize $scalaInstance: $e"); throw e
       }
+    assert(
+      serializedScalaInstance == serializedExample,
+      s"$scalaInstance serializes to $serializedScalaInstance, but the test example is $serializedExample")
+
     val bytes =
-      try Base64.decode(example)
+      try Base64.decode(serializedExample)
       catch {
         case e: Throwable =>
-          err(s"can't base64 decode $example: $e", serialized); throw e
+          err(s"can't base64 decode $serializedExample: $e", serializedScalaInstance); throw e
       }
     val deserialized =
       try pool.fromBytes(bytes)
       catch {
         case e: Throwable =>
-          err(s"can't kryo deserialize $example: $e", serialized); throw e
+          err(s"can't kryo deserialize $serializedExample: $e", serializedScalaInstance); throw e
       }
-    val idOfExpected = kryo.getRegistration(expected.getClass).getId
+    val roundtrip =
+      try Base64.encodeBytes(pool.toBytesWithClass(deserialized))
+      catch {
+        case e: Throwable =>
+          err(s"can't kryo serialize roundtrip $deserialized: $e"); throw e
+      }
+
     assert(
-      idOfExpected == serId,
-      s"$expected is registered with ID $idOfExpected, but expected $serId")
-    assert(
-      deserialized == expected,
-      s"deserializing $example yields $deserialized, but expected $expected which serializes to $serialized")
-    assert(
-      serialized == example,
-      s"$expected serializes to $serialized, but the test example is $example")
+      roundtrip == serializedExample,
+      s"deserializing $serializedExample yields $deserialized, but expected $scalaInstance which serializes to $serializedScalaInstance")
   }
 }
