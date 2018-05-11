@@ -38,12 +38,17 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
         val exampleStrings = examples.map(_._2._1)
         assert(exampleStrings == exampleStrings.distinct,
           "duplicate example strings in examples map detected")
-        val specialCasesNotInExamplesMap = Seq(9) // no way to write an example for 9 -> void
-        assert((serIds ++ specialCasesNotInExamplesMap).sorted ==
-          Seq.range(0, kryo.getNextRegistrationId),
-          "examples missing for preregistered classes")
+        assert(
+          (serIds ++ specialCasesNotInExamplesMap).sorted ==
+            Seq.range(0, kryo.getNextRegistrationId),
+          s"there are approx ${kryo.getNextRegistrationId - serIds.size - specialCasesNotInExamplesMap.size} " +
+            "examples missing for preregistered classes")
       }
     }
+
+  val specialCasesNotInExamplesMap = Seq(
+    9 // no way to write an example for 9 -> void
+    )
 
   val examples = Seq(
     0 -> ("AgI=" -> Int.box(1)),
@@ -60,10 +65,13 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
       JavaConverters.seqAsJavaList(Seq(2))), // Wrappers$SeqWrapper
     11 -> ("DQEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBAQFzY2FsYS5jb2xsZWN0aW9uLkluZGV4ZWRTZXFMaWtlJEVsZW1lbnTzAW0BAQIBYQECBAIA" ->
       JavaConverters.asJavaIterator(Iterator(2))), // Wrappers$IteratorWrapper
-    //    12 -> ("EQECBA==" -> Some(2)), // Wrappers$MapWrapper
-    //    13 -> ("EQECBA==" -> Some(2)),
-    //    14 -> ("EQECBA==" -> Some(2)),
-    //    15 -> ("EQECBA==" -> Some(2)),
+    12 -> ("DgEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBGgEBJwECBAIE" ->
+      JavaConverters.mapAsJavaMap(Map(2 -> 2))), // Wrappers$MapWrapper
+    13 -> ("DwEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBAQFqYXZhLnV0aWwuQ29sbGVjdGlvbnMkU2luZ2xldG9uTGlz9AECBA==" ->
+      JavaConverters.asScalaBuffer(_root_.java.util.Collections.singletonList(2))), // Wrappers$JListWrapper
+    14 -> ("EAEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBAQFqYXZhLnV0aWwuQ29sbGVjdGlvbnMkU2luZ2xldG9uTWHwAQIEAgQ=" ->
+      JavaConverters.mapAsScalaMap(_root_.java.util.Collections.singletonMap(2, 2))), // Wrappers$JMapWrapper
+    15 -> ("EQECBA==" -> Some(2)),
     16 -> ("EgECBA==" -> Left(2)),
     17 -> ("EwECBA==" -> Right(2)),
     18 -> ("FAEBAgQ=" -> Vector(2)),
@@ -82,7 +90,9 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     System.err.println(
       s"\n##########\n$message\nThe example serialized is $serialized\n##########\n")
 
-  def checkSerialization(serializedExample: String, expectedSerializationId: Int, scalaInstance: AnyRef): Unit = {
+  def checkSerialization(serializedExample: String,
+    expectedSerializationId: Int,
+    scalaInstance: AnyRef): Unit = {
     val idForScalaInstance = kryo.getRegistration(scalaInstance.getClass).getId
     assert(
       idForScalaInstance == expectedSerializationId,
@@ -102,13 +112,15 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
       try Base64.decode(serializedExample)
       catch {
         case e: Throwable =>
-          err(s"can't base64 decode $serializedExample: $e", serializedScalaInstance); throw e
+          err(s"can't base64 decode $serializedExample: $e",
+            serializedScalaInstance); throw e
       }
     val deserialized =
       try pool.fromBytes(bytes)
       catch {
         case e: Throwable =>
-          err(s"can't kryo deserialize $serializedExample: $e", serializedScalaInstance); throw e
+          err(s"can't kryo deserialize $serializedExample: $e",
+            serializedScalaInstance); throw e
       }
     val roundtrip =
       try Base64.encodeBytes(pool.toBytesWithClass(deserialized))
