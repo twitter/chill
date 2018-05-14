@@ -27,6 +27,7 @@ import com.twitter.algebird.{
   HyperLogLog,
   HyperLogLogMonoid,
   Moments,
+  QTree,
   SpaceSaver,
   DenseVector,
   SparseVector,
@@ -41,6 +42,7 @@ class AlgebirdRegistrar extends IKryoRegistrar {
     k.register(classOf[DecayedValue], new DecayedValueSerializer)
     k.register(classOf[HyperLogLogMonoid], new HLLMonoidSerializer)
     k.register(classOf[Moments], new MomentsSerializer)
+    k.register(classOf[QTree[Any]], new QTreeSerializer)
     k.addDefaultSerializer(classOf[HLL], new HLLSerializer)
 
     /**

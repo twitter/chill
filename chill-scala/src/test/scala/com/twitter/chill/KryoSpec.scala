@@ -312,5 +312,13 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       serialize((1.0 until 10000.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
       serialize((1.0 until 10000.0 by 2.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
     }
+    "VolatileByteRef" in {
+      import scala.runtime.VolatileByteRef
+
+      val br0 = new VolatileByteRef(100: Byte)
+      br0.elem = 42: Byte
+      val br1 = rt(br0)
+      assert(br0.elem == br1.elem)
+    }
   }
 }
