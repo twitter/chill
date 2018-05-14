@@ -61,16 +61,19 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     7 -> ("CQI=" -> Long.box(1)),
     8 -> ("Cj/wAAAAAAAA" -> Double.box(1)),
     // 9 -> void is a special case
+    // Note: Instead of JavaConverters.***Converter(***).as***, in Scala 2.12
+    // methods JavaConverters.*** can be used directly. For backwards compatibility,
+    // the legacy methods to convert are used here.
     10 -> ("DAEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBdwEBAgQ=" ->
-      JavaConverters.seqAsJavaList(Seq(2))), // Wrappers$SeqWrapper
+      JavaConverters.seqAsJavaListConverter(Seq(2)).asJava), // Wrappers$SeqWrapper
     11 -> ("DQEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBAQFzY2FsYS5jb2xsZWN0aW9uLkluZGV4ZWRTZXFMaWtlJEVsZW1lbnTzAW0BAQIBYQECBAIA" ->
-      JavaConverters.asJavaIterator(Iterator(2))), // Wrappers$IteratorWrapper
+      JavaConverters.asJavaIteratorConverter(Iterator(2)).asJava), // Wrappers$IteratorWrapper
     12 -> ("DgEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBGgEBJwECBAIE" ->
-      JavaConverters.mapAsJavaMap(Map(2 -> 2))), // Wrappers$MapWrapper
+      JavaConverters.mapAsJavaMapConverter(Map(2 -> 2)).asJava), // Wrappers$MapWrapper
     13 -> ("DwEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBAQFqYXZhLnV0aWwuQ29sbGVjdGlvbnMkU2luZ2xldG9uTGlz9AECBA==" ->
-      JavaConverters.asScalaBuffer(_root_.java.util.Collections.singletonList(2))), // Wrappers$JListWrapper
+      JavaConverters.asScalaBufferConverter(_root_.java.util.Collections.singletonList(2)).asScala), // Wrappers$JListWrapper
     14 -> ("EAEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBAQFqYXZhLnV0aWwuQ29sbGVjdGlvbnMkU2luZ2xldG9uTWHwAQIEAgQ=" ->
-      JavaConverters.mapAsScalaMap(_root_.java.util.Collections.singletonMap(2, 2))), // Wrappers$JMapWrapper
+      JavaConverters.mapAsScalaMapConverter(_root_.java.util.Collections.singletonMap(2, 2)).asScala), // Wrappers$JMapWrapper
     15 -> ("EQECBA==" -> Some(2)),
     16 -> ("EgECBA==" -> Left(2)),
     17 -> ("EwECBA==" -> Right(2)),
