@@ -1,6 +1,7 @@
 package com.twitter.chill
 
 import scala.collection.JavaConverters
+import scala.collection.immutable.NumericRange
 
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -53,15 +54,17 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
       }
     }
 
-  // In Scala 2.10, instances of the following classes have a serialized representation that differs from
-  // newer Scala versions: Wrappers$IteratorWrapper
+  // In older Scala versions, instances of the following classes have a serialized representation that differs from
+  // the current Scala version 2.12.4:
+  // 11 -> scala.collection.convert.Wrappers.IteratorWrapper
+  // 29 -> scala.collection.immutable.Range$Inclusive
   val omitExamplesInScalaVersion: Map[String, Seq[Int]] = Map(
-    "2.10." -> Seq(11))
+    "2.10." -> Seq(11, 29),
+    "2.11." -> Seq(29))
 
   val specialCasesNotInExamplesMap: Seq[Int] = Seq(
     9 // no way to write an example for 9 -> void
-    // FIXME for the first discussion, let's just assume that all other examples are already implemented
-    ) ++ Seq.range(19, 143).filterNot(_ == 114)
+    ) // TODO remove once no more needed ++ Seq.range(19, 143).filterNot(_ == 114)
 
   val examples = Seq(
     0 -> ("AgI=" -> Int.box(1)),
@@ -91,6 +94,24 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     16 -> ("EgECBA==" -> Left(2)),
     17 -> ("EwECBA==" -> Right(2)),
     18 -> ("FAEBAgQ=" -> Vector(2)),
+    19 -> ("FQEBAgQ=" -> Set(2)),
+    20 -> ("FgECAgQCBg==" -> Set(2, 3)),
+    21 -> ("FwEDAgQCBgII" -> Set(2, 3, 4)),
+    22 -> ("GAEEAgQCBgIIAgo=" -> Set(2, 3, 4, 5)),
+    // 23 -> TODO find a way to instantiate HashSet$HashTrieSet
+    24 -> ("GgEBJwECBAIG" -> Map(2 -> 3)),
+    25 -> ("GwECJwECBAIGJwECCAIK" -> Map(2 -> 3, 4 -> 5)),
+    26 -> ("HAEDJwECBAIGJwECCAIKJwECDAIO" -> Map(2 -> 3, 4 -> 5, 6 -> 7)),
+    27 -> ("HQEEJwECBAIGJwECCAIKJwECDAIOJwECEAIS" -> Map(2 -> 3, 4 -> 5, 6 -> 7, 8 -> 9)),
+    // 28 -> TODO find a way to instantiate HashMap$HashTrieMap
+    29 -> ("HwEMAAwIBgI=" -> new Range.Inclusive(3, 6, 1)),
+    30 -> ("IAEBAgoAAQABAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMIAgQCAg==" ->
+      new NumericRange.Inclusive[Int](2, 5, 1)),
+    31 -> ("IQEBAgoAAAABAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMGAgQCAg==" ->
+      new NumericRange.Exclusive[Int](2, 5, 1)),
+    32 -> ("IgECAgYCCg==" -> scala.collection.mutable.BitSet(3, 5)),
+    33 -> ("IwEBJwECBgIK" -> scala.collection.mutable.HashMap(3 -> 5)),
+    34 -> ("JAEBAgY=" -> scala.collection.mutable.HashSet(3)),
     114 -> ("dAE=" -> None))
 
   val kryo: KryoBase = {
