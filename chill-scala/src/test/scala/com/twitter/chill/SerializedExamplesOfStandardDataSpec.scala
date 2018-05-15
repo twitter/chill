@@ -26,9 +26,16 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     .should {
       "serialize as expected to the correct value (see above for details)"
         .in {
+          val scalaVersion = scala.util.Properties.versionNumberString
+          val examplesToOmit = omitExamplesInScalaVersion
+            .filterKeys(scalaVersion.startsWith)
+            .values.flatten.toSet
           examples.foreach {
             case (serId, (serialized, scala)) =>
-              checkSerialization(serialized, serId, scala)
+              if (examplesToOmit.contains(serId))
+                println(s"### SerializedExamplesOfStandardDataSpec: Omitting $serId in scala $scalaVersion")
+              else
+                checkSerialization(serialized, serId, scala)
           }
         }
       "all be covered by an example".in {
@@ -44,20 +51,17 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
           s"there are approx ${kryo.getNextRegistrationId - serIds.size - specialCasesNotInExamplesMap.size} " +
             "examples missing for preregistered classes")
       }
-      "should also work correctly in special case that is to be discussed for scala 2.10"
-        .in {
-          // JavaConverters.asJavaIteratorConverter(Iterator(2)).asJava)
-          val scala_2_12 =
-            "DQEBAHNjYWxhLmNvbGxlY3Rpb24uY29udmVydC5XcmFwcGVyc6QBAQFzY2FsYS5jb2xsZWN0aW9uLkluZGV4ZWRTZXFMaWtlJEVsZW1lbnTzAW0BAQIBYQECBAIA"
-          val bytes = Base64.decode(scala_2_12)
-          pool.fromBytes(bytes)
-        }
     }
 
-  val specialCasesNotInExamplesMap = Seq(
+  // In Scala 2.10, instances of the following classes have a serialized representation that differs from
+  // newer Scala versions: Wrappers$IteratorWrapper
+  val omitExamplesInScalaVersion: Map[String, Seq[Int]] = Map(
+    "2.10." -> Seq(11))
+
+  val specialCasesNotInExamplesMap: Seq[Int] = Seq(
     9 // no way to write an example for 9 -> void
     // FIXME for the first discussion, let's just assume that all other examples are already implemented
-    ) ++ Seq.range(19, 144).filterNot(_ == 114)
+    ) ++ Seq.range(19, 143).filterNot(_ == 114)
 
   val examples = Seq(
     0 -> ("AgI=" -> Int.box(1)),
