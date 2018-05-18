@@ -136,6 +136,9 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     55 -> ("OQECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDAIOAhACEgIA" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0)),
     56 -> ("OgECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDAIOAhACEgIAAgI=" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1)),
     57 -> ("OwECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDAIOAhACEgIAAgICBA==" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2)),
+    58 -> ("PAEAAAAAAAAAAQ==" -> Tuple1(1L)),
+    59 -> ("PQEAAAAB" -> Tuple1(1)),
+    60 -> ("PgE/8AAAAAAAAA==" -> Tuple1(1.0)),
     114 -> ("dAE=" -> None))
 
   val kryo: KryoBase = {
