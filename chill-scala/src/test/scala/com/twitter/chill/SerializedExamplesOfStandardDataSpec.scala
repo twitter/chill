@@ -1,6 +1,6 @@
 package com.twitter.chill
 
-import scala.collection.JavaConverters
+import scala.collection.{ JavaConversions, JavaConverters }
 import scala.collection.immutable.NumericRange
 
 import org.scalatest.{ Matchers, WordSpec }
@@ -112,6 +112,30 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     32 -> ("IgECAgYCCg==" -> scala.collection.mutable.BitSet(3, 5)),
     33 -> ("IwEBJwECBgIK" -> scala.collection.mutable.HashMap(3 -> 5)),
     34 -> ("JAEBAgY=" -> scala.collection.mutable.HashSet(3)),
+    35 -> ("JQF3AQECBA==" ->
+      JavaConversions.asJavaCollection(Seq(2))), // Wrappers$IterableWrapper
+    36 -> ("JgEDAYJh" -> Tuple1("a")),
+    37 -> ("JwEDAYJhAwGCYg==" -> ("a", "b")),
+    38 -> ("KAECAgIEAgY=" -> (1, 2, 3)),
+    39 -> ("KQECAgIEAgYCCA==" -> (1, 2, 3, 4)),
+    40 -> ("KgECAgIEAgYCCAIK" -> (1, 2, 3, 4, 5)),
+    41 -> ("KwECAgIEAgYCCAIKAgw=" -> (1, 2, 3, 4, 5, 6)),
+    42 -> ("LAECAgIEAgYCCAIKAgwCDg==" -> (1, 2, 3, 4, 5, 6, 7)),
+    43 -> ("LQECAgIEAgYCCAIKAgwCDgIQ" -> (1, 2, 3, 4, 5, 6, 7, 8)),
+    44 -> ("LgECAgIEAgYCCAIKAgwCDgIQAhI=" -> (1, 2, 3, 4, 5, 6, 7, 8, 9)),
+    45 -> ("LwECAgIEAgYCCAIKAgwCDgIQAhICAA==" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0)),
+    46 -> ("MAECAgIEAgYCCAIKAgwCDgIQAhICAAIC" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1)),
+    47 -> ("MQECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQ=" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2)),
+    48 -> ("MgECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBg==" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3)),
+    49 -> ("MwECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgII" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4)),
+    50 -> ("NAECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgo=" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5)),
+    51 -> ("NQECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDA==" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6)),
+    52 -> ("NgECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDAIO" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7)),
+    53 -> ("NwECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDAIOAhA=" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8)),
+    54 -> ("OAECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDAIOAhACEg==" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9)),
+    55 -> ("OQECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDAIOAhACEgIA" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0)),
+    56 -> ("OgECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDAIOAhACEgIAAgI=" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1)),
+    57 -> ("OwECAgIEAgYCCAIKAgwCDgIQAhICAAICAgQCBgIIAgoCDAIOAhACEgIAAgICBA==" -> (1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2)),
     114 -> ("dAE=" -> None))
 
   val kryo: KryoBase = {
