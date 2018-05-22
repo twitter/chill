@@ -139,7 +139,31 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     58 -> ("PAEAAAAAAAAAAQ==" -> Tuple1(1L)),
     59 -> ("PQEAAAAB" -> Tuple1(1)),
     60 -> ("PgE/8AAAAAAAAA==" -> Tuple1(1.0)),
+    61 -> ("PwEAAAAAAAAAAQAAAAAAAAAC" -> (1L, 2L)),
+    62 -> ("QAEAAAAAAAAAAQAAAAI=" -> (1L, 2)),
+    63 -> ("QQEAAAAAAAAAAUAAAAAAAAAA" -> (1L, 2.0)),
+    64 -> ("QgEAAAABAAAAAAAAAAI=" -> (1, 2L)),
+    65 -> ("QwEAAAABAAAAAg==" -> (1, 2)),
+    66 -> ("RAEAAAABQAAAAAAAAAA=" -> (1, 2.0)),
+    67 -> ("RQE/8AAAAAAAAAAAAAAAAAAC" -> (1.0, 2L)),
+    68 -> ("RgE/8AAAAAAAAAAAAAI=" -> (1.0, 2)),
+    69 -> ("RwE/8AAAAAAAAEAAAAAAAAAA" -> (1.0, 2.0)),
     114 -> ("dAE=" -> None))
+
+  /*
+58 -> class scala.Tuple1$mcJ$sp
+59 -> class scala.Tuple1$mcI$sp
+60 -> class scala.Tuple1$mcD$sp
+61 -> class scala.Tuple2$mcJJ$sp
+62 -> class scala.Tuple2$mcJI$sp
+63 -> class scala.Tuple2$mcJD$sp
+64 -> class scala.Tuple2$mcIJ$sp
+65 -> class scala.Tuple2$mcII$sp
+66 -> class scala.Tuple2$mcID$sp
+67 -> class scala.Tuple2$mcDJ$sp
+68 -> class scala.Tuple2$mcDI$sp
+69 -> class scala.Tuple2$mcDD$sp
+   */
 
   val kryo: KryoBase = {
     val instantiator = new ScalaKryoInstantiator()
