@@ -106,6 +106,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
       .forSubclass[SortedSet[Any]](new SortedSetSerializer)
+      .forClass[BigDecimal](new BigDecimalSerializer)
       .forClass[Some[Any]](new SomeSerializer[Any])
       .forClass[Left[Any, Any]](new LeftSerializer[Any, Any])
       .forClass[Right[Any, Any]](new RightSerializer[Any, Any])

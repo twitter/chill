@@ -101,7 +101,8 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
         new _root_.java.util.ArrayList(Seq(1, 2, 3).asJava).asScala,
         new _root_.java.util.HashMap[Int, Int](Map(1 -> 2, 3 -> 4).asJava).asScala,
         (),
-        'hai)
+        'hai,
+        BigDecimal(1000.24))
         .asInstanceOf[List[AnyRef]]
 
       test.foreach { _ should roundtrip }
