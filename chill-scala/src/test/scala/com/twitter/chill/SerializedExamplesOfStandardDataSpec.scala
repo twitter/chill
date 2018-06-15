@@ -1,7 +1,7 @@
 package com.twitter.chill
 
 import scala.collection.{ JavaConversions, JavaConverters }
-import scala.collection.immutable.NumericRange
+import scala.collection.immutable.{ HashMap, HashSet, ListMap, ListSet, NumericRange }
 
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -62,9 +62,8 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     "2.10." -> Seq(11, 29),
     "2.11." -> Seq(29))
 
-  // TODO continue implementing concrete examples until we can omit the part "++ Seq.range(...)..."
   val specialCasesNotInExamplesMap: Seq[Int] = Seq(
-    9, 23, 28, 71, 84, 91, 92) ++ Seq.range(93, 143).filterNot(_ == 114)
+    9, 23, 28, 71, 84, 91, 92)
 
   val examples = Seq(
     0 -> ("AgI=" -> Int.box(1)),
@@ -187,58 +186,56 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     // com.twitter.chill.Instantiators$ can not access a member of class java.util.Collections$UnmodifiableNavigableSet$EmptyNavigableSet with modifiers "public"
     // 92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure"""
 
-    // 93 -> class [B
-    // 94 -> class [S
-    // 95 -> class [I
-    // 96 -> class [J
-    // 97 -> class [F
-    // 98 -> class [D
-    // 99 -> class [Z
-    // 100 -> class [C
-    // 101 -> class [Ljava.lang.String;
-    // 102 -> class [Ljava.lang.Object;
-    // 103 -> class java.lang.Class
-    // 104 -> class java.lang.Object
-    // 105 -> class scala.collection.mutable.WrappedArray$ofByte
-    // 106 -> class scala.collection.mutable.WrappedArray$ofShort
-    // 107 -> class scala.collection.mutable.WrappedArray$ofInt
-    // 108 -> class scala.collection.mutable.WrappedArray$ofLong
-    // 109 -> class scala.collection.mutable.WrappedArray$ofFloat
-    // 110 -> class scala.collection.mutable.WrappedArray$ofDouble
-    // 111 -> class scala.collection.mutable.WrappedArray$ofBoolean
-    // 112 -> class scala.collection.mutable.WrappedArray$ofChar
-    // 113 -> class scala.collection.mutable.WrappedArray$ofRef
-    // 114 -> class scala.None$
-    // 115 -> class scala.collection.immutable.Queue
-    // 116 -> class scala.collection.immutable.Nil$
-    // 117 -> class scala.collection.immutable.$colon$colon
-    // 118 -> class scala.collection.immutable.Range
-    // 119 -> class scala.collection.immutable.WrappedString
-    // 120 -> class scala.collection.immutable.TreeSet
-    // 121 -> class scala.collection.immutable.TreeMap
-    // 122 -> class scala.math.Ordering$Byte$
-    // 123 -> class scala.math.Ordering$Short$
-    // 124 -> class scala.math.Ordering$Int$
-    // 125 -> class scala.math.Ordering$Long$
-    // 126 -> class scala.math.Ordering$Float$
-    // 127 -> class scala.math.Ordering$Double$
-    // 128 -> class scala.math.Ordering$Boolean$
-    // 129 -> class scala.math.Ordering$Char$
-    // 130 -> class scala.math.Ordering$String$
-    // 131 -> class scala.collection.immutable.Set$EmptySet$
-    // 132 -> class scala.collection.immutable.ListSet$EmptyListSet$
-    // 133 -> class scala.collection.immutable.ListSet$Node
-    // 134 -> class scala.collection.immutable.HashSet$EmptyHashSet$
-    // 135 -> class scala.collection.immutable.HashSet$HashSet1
-    // 136 -> class scala.collection.immutable.Map$EmptyMap$
-    // 137 -> class scala.collection.immutable.HashMap$EmptyHashMap$
-    // 138 -> class scala.collection.immutable.HashMap$HashMap1
-    // 139 -> class scala.collection.immutable.ListMap$EmptyListMap$
-    // 140 -> class scala.collection.immutable.ListMap$Node
-    // 141 -> class scala.collection.immutable.Stream$Cons
-    // 142 -> class scala.collection.immutable.Stream$Empty$
-
-    114 -> ("dAE=" -> None))
+    93 -> ("XwECgA==" -> Array(Byte.MinValue)),
+    94 -> ("YAECf/8=" -> Array(Short.MaxValue)),
+    95 -> ("YQEC/////w8=" -> Array(Int.MinValue)),
+    96 -> ("YgEC/v//////////" -> Array(Long.MaxValue)),
+    97 -> ("YwECAAAAAQ==" -> Array(Float.MinPositiveValue)),
+    98 -> ("ZAEC/+////////8=" -> Array(Double.MinValue)),
+    99 -> ("ZQECAQ==" -> Array(true)),
+    100 -> ("ZgECAHg=" -> Array('x')),
+    101 -> ("ZwECAWNh9A==" -> Array("cat")),
+    102 -> ("aAEDAgQDAW1vdXPl" -> Array(2, "mouse")),
+    103 -> ("aQECAQ==" -> classOf[Int]),
+    104 -> ("agE=" -> new Object()),
+    105 -> ("awEBBgFfAQKA" -> wrapByteArray(Array(Byte.MinValue))),
+    106 -> ("bAEBCAFgAQJ//w==" -> wrapShortArray(Array(Short.MaxValue))),
+    107 -> ("bQEBAgFhAQL/////Dw==" -> wrapIntArray(Array(Int.MinValue))),
+    108 -> ("bgEBCQFiAQL+//////////8=" -> wrapLongArray(Array(Long.MaxValue))),
+    109 -> ("bwEBBAFjAQIAAAAB" -> wrapFloatArray(Array(Float.MinPositiveValue))),
+    110 -> ("cAEBCgFkAQL/7////////w==" -> wrapDoubleArray(Array(Double.MinValue))),
+    111 -> ("cQEBBQFlAQIB" -> wrapBooleanArray(Array(true))),
+    112 -> ("cgEBBwFmAQIAeA==" -> wrapCharArray(Array('x'))),
+    113 -> ("cwEBAwBnAQIBY2H0" -> wrapRefArray(Array("cat"))),
+    114 -> ("dAE=" -> None),
+    115 -> ("dQEA" -> collection.immutable.Queue()),
+    116 -> ("dgEA" -> Nil),
+    117 -> ("dwEBAgQ=" -> (2 :: Nil)),
+    118 -> ("eAEGAAQEAgI=" -> collection.immutable.Range(1, 3)),
+    119 -> ("eQEBdGHj" -> wrapString("tac")),
+    120 -> ("egECfgECBAIG" -> collection.immutable.TreeSet(3, 2)),
+    121 -> ("ewEBfgEnAQIGAgQ=" -> collection.immutable.TreeMap(3 -> 2)),
+    122 -> ("fAE=" -> math.Ordering.Byte),
+    123 -> ("fQE=" -> math.Ordering.Short),
+    124 -> ("fgE=" -> math.Ordering.Int),
+    125 -> ("fwE=" -> math.Ordering.Long),
+    126 -> ("gAEB" -> math.Ordering.Float),
+    127 -> ("gQEB" -> math.Ordering.Double),
+    128 -> ("ggEB" -> math.Ordering.Boolean),
+    129 -> ("gwEB" -> math.Ordering.Char),
+    130 -> ("hAEB" -> math.Ordering.String),
+    131 -> ("hQEBAA==" -> Set[Any]()),
+    132 -> ("hgEBAA==" -> ListSet[Any]()),
+    133 -> ("hwEBAUgBgmE=" -> ListSet[Any]('a)),
+    134 -> ("iAEBAA==" -> HashSet[Any]()),
+    135 -> ("iQEBAUgBgmE=" -> HashSet[Any]('a)),
+    136 -> ("igEBAA==" -> Map[Any, Any]()),
+    137 -> ("iwEBAA==" -> HashMap()),
+    138 -> ("jAEBAScBSAGCYUgE" -> HashMap('a -> 'a)),
+    139 -> ("jQEBAA==" -> ListMap()),
+    140 -> ("jgEBAScBSAGCYUgE" -> ListMap('a -> 'a)),
+    141 -> ("jwEBdwEBAgI=" -> Stream(1)),
+    142 -> ("kAEB" -> Stream()))
 
   val kryo: KryoBase = {
     val instantiator = new ScalaKryoInstantiator()
