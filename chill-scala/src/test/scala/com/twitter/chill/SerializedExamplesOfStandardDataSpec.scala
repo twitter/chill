@@ -55,12 +55,12 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     }
 
   // In older Scala versions, instances of the following classes have a serialized representation that differs from
-  // the current Scala version 2.12.4:
+  // the current Scala version 2.12.6:
   // 11 -> scala.collection.convert.Wrappers.IteratorWrapper
   // 29 -> scala.collection.immutable.Range$Inclusive
   val omitExamplesInScalaVersion: Map[String, Seq[Int]] = Map(
-    "2.10." -> Seq(11, 29),
-    "2.11." -> Seq(29))
+    "2.10." -> Seq(11, 29, 118),
+    "2.11." -> Seq(29, 118))
 
   val specialCasesNotInExamplesMap: Seq[Int] = Seq(
     9, 23, 28, 71, 84, 91, 92)
