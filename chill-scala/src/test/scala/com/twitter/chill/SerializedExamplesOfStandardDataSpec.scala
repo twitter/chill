@@ -62,9 +62,9 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     "2.10." -> Seq(11, 29),
     "2.11." -> Seq(29))
 
+  // TODO continue implementing concrete examples until we can omit the part "++ Seq.range(...)..."
   val specialCasesNotInExamplesMap: Seq[Int] = Seq(
-    9 // no way to write an example for 9 -> void
-    ) // TODO remove once no more needed ++ Seq.range(19, 143).filterNot(_ == 114)
+    9, 23, 28, 71, 84, 91, 92) ++ Seq.range(93, 143).filterNot(_ == 114)
 
   val examples = Seq(
     0 -> ("AgI=" -> Int.box(1)),
@@ -98,12 +98,12 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     20 -> ("FgECAgQCBg==" -> Set(2, 3)),
     21 -> ("FwEDAgQCBgII" -> Set(2, 3, 4)),
     22 -> ("GAEEAgQCBgIIAgo=" -> Set(2, 3, 4, 5)),
-    // 23 -> TODO find a way to instantiate HashSet$HashTrieSet
+    // 23 -> class HashSet$HashTrieSet
     24 -> ("GgEBJwECBAIG" -> Map(2 -> 3)),
     25 -> ("GwECJwECBAIGJwECCAIK" -> Map(2 -> 3, 4 -> 5)),
     26 -> ("HAEDJwECBAIGJwECCAIKJwECDAIO" -> Map(2 -> 3, 4 -> 5, 6 -> 7)),
     27 -> ("HQEEJwECBAIGJwECCAIKJwECDAIOJwECEAIS" -> Map(2 -> 3, 4 -> 5, 6 -> 7, 8 -> 9)),
-    // 28 -> TODO find a way to instantiate HashMap$HashTrieMap
+    // 28 -> class HashMap$HashTrieMap
     29 -> ("HwEMAAwIBgI=" -> new Range.Inclusive(3, 6, 1)),
     30 -> ("IAEBAgoAAQABAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMIAgQCAg==" ->
       new NumericRange.Inclusive[Int](2, 5, 1)),
@@ -148,22 +148,97 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     67 -> ("RQE/8AAAAAAAAAAAAAAAAAAC" -> (1.0, 2L)),
     68 -> ("RgE/8AAAAAAAAAAAAAI=" -> (1.0, 2)),
     69 -> ("RwE/8AAAAAAAAEAAAAAAAAAA" -> (1.0, 2.0)),
-    114 -> ("dAE=" -> None))
+    70 -> ("SAGCYQ==" -> Symbol("a")),
+    // 71 -> interface scala.reflect.ClassTag
+    72 -> ("SgE=" -> runtime.BoxedUnit.UNIT),
+    73 -> ("SwEDagICAgQCBg==" -> _root_.java.util.Arrays.asList(1, 2, 3)),
+    74 -> ("TAECAAAAAAAAAAAAAAAAAAAAAA==" -> new _root_.java.util.BitSet(65)),
+    75 -> ("TQEAAA==" -> new _root_.java.util.PriorityQueue[Int](7)),
+    76 -> ("TgFhKuI=" -> _root_.java.util.regex.Pattern.compile("a*b")),
+    77 -> ("TwEA" -> new _root_.java.sql.Date(0)),
+    78 -> ("UAEH" -> new _root_.java.sql.Time(7)),
+    79 -> ("UQEDwI23AQ==" -> new _root_.java.sql.Timestamp(3)),
+    80 -> ("UgGB" -> new _root_.java.net.URI("")),
+    81 -> ("UwEwLjAuMC6wAg==" -> new _root_.java.net.InetSocketAddress(2)),
+    82 -> ("VAECBA==" -> new _root_.java.util.UUID(1, 2)),
+    83 -> ("VQGs7QAFc3IAEGphdmEudXRpbC5Mb2NhbGV++BFgnDD57AMABkkACGhhc2hjb2RlTAAHY291bnRyeXQAEkxqYXZhL2xhbmcvU3RyaW5nO0wACmV4dGVuc2lvbnNxAH4AAUwACGxhbmd1YWdlcQB+AAFMAAZzY3JpcHRxAH4AAUwAB3ZhcmlhbnRxAH4AAXhw/////3QAAHEAfgADdAACZW5xAH4AA3EAfgADeA==" ->
+      _root_.java.util.Locale.ENGLISH),
+    // 84 -> class java.text.SimpleDateFormat - this case has two very special aspects:
+    // a) SimpleDateFormat("") serializes to about 40.000 bytes
+    // b) each time you serialize SimpleDateFormat(""), you get a slightly different binary representation.
+    // Probably, one should write a custom serializer for this class...
+    85 -> ("VwEBAGphdmEudXRpbC5Db2xsZWN0aW9ucyRFbXB0eUxpc/QB" ->
+      _root_.java.util.Collections.unmodifiableCollection(_root_.java.util.Collections.EMPTY_LIST)),
+    86 -> ("WAEBAGphdmEudXRpbC5Db2xsZWN0aW9ucyRFbXB0eUxpc/QB" ->
+      _root_.java.util.Collections.unmodifiableList(_root_.java.util.Collections.EMPTY_LIST)),
+    87 -> ("WQEBAGphdmEudXRpbC5MaW5rZWRMaXP0AQA=" ->
+      _root_.java.util.Collections.unmodifiableList(new _root_.java.util.LinkedList[Int]())),
+    88 -> ("WgEBAGphdmEudXRpbC5Db2xsZWN0aW9ucyRTaW5nbGV0b25NYfABAgICBA==" ->
+      _root_.java.util.Collections.unmodifiableMap[Int, Int](_root_.java.util.Collections.singletonMap(1, 2))),
+    89 -> ("WwEBAGphdmEudXRpbC5Db2xsZWN0aW9ucyRFbXB0eVNl9AE=" ->
+      _root_.java.util.Collections.unmodifiableSet(_root_.java.util.Collections.EMPTY_SET)),
+    90 -> ("XAEBAMEBamF2YS51dGlsLkNvbGxlY3Rpb25zJFVubW9kaWZpYWJsZU5hdmlnYWJsZU1hcCRFbXB0eU5hdmlnYWJsZU1hcAEA" ->
+      _root_.java.util.Collections.unmodifiableSortedMap[Int, Int](_root_.java.util.Collections.emptySortedMap())),
+    // 91 -> class java.util.Collections$UnmodifiableSortedSet
+    // With the following implementation, we have a problem
+    // 91 -> ("XQEBAMEBamF2YS51dGlsLkNvbGxlY3Rpb25zJFVubW9kaWZpYWJsZU5hdmlnYWJsZVNldCRFbXB0eU5hdmlnYWJsZVNldAEA" ->
+    //   _root_.java.util.Collections.unmodifiableSortedSet[Int](_root_.java.util.Collections.emptySortedSet())),
+    // because we get an exception in the test with the root cause:
+    // com.twitter.chill.Instantiators$ can not access a member of class java.util.Collections$UnmodifiableNavigableSet$EmptyNavigableSet with modifiers "public"
+    // 92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure"""
 
-  /*
-58 -> class scala.Tuple1$mcJ$sp
-59 -> class scala.Tuple1$mcI$sp
-60 -> class scala.Tuple1$mcD$sp
-61 -> class scala.Tuple2$mcJJ$sp
-62 -> class scala.Tuple2$mcJI$sp
-63 -> class scala.Tuple2$mcJD$sp
-64 -> class scala.Tuple2$mcIJ$sp
-65 -> class scala.Tuple2$mcII$sp
-66 -> class scala.Tuple2$mcID$sp
-67 -> class scala.Tuple2$mcDJ$sp
-68 -> class scala.Tuple2$mcDI$sp
-69 -> class scala.Tuple2$mcDD$sp
-   */
+    // 93 -> class [B
+    // 94 -> class [S
+    // 95 -> class [I
+    // 96 -> class [J
+    // 97 -> class [F
+    // 98 -> class [D
+    // 99 -> class [Z
+    // 100 -> class [C
+    // 101 -> class [Ljava.lang.String;
+    // 102 -> class [Ljava.lang.Object;
+    // 103 -> class java.lang.Class
+    // 104 -> class java.lang.Object
+    // 105 -> class scala.collection.mutable.WrappedArray$ofByte
+    // 106 -> class scala.collection.mutable.WrappedArray$ofShort
+    // 107 -> class scala.collection.mutable.WrappedArray$ofInt
+    // 108 -> class scala.collection.mutable.WrappedArray$ofLong
+    // 109 -> class scala.collection.mutable.WrappedArray$ofFloat
+    // 110 -> class scala.collection.mutable.WrappedArray$ofDouble
+    // 111 -> class scala.collection.mutable.WrappedArray$ofBoolean
+    // 112 -> class scala.collection.mutable.WrappedArray$ofChar
+    // 113 -> class scala.collection.mutable.WrappedArray$ofRef
+    // 114 -> class scala.None$
+    // 115 -> class scala.collection.immutable.Queue
+    // 116 -> class scala.collection.immutable.Nil$
+    // 117 -> class scala.collection.immutable.$colon$colon
+    // 118 -> class scala.collection.immutable.Range
+    // 119 -> class scala.collection.immutable.WrappedString
+    // 120 -> class scala.collection.immutable.TreeSet
+    // 121 -> class scala.collection.immutable.TreeMap
+    // 122 -> class scala.math.Ordering$Byte$
+    // 123 -> class scala.math.Ordering$Short$
+    // 124 -> class scala.math.Ordering$Int$
+    // 125 -> class scala.math.Ordering$Long$
+    // 126 -> class scala.math.Ordering$Float$
+    // 127 -> class scala.math.Ordering$Double$
+    // 128 -> class scala.math.Ordering$Boolean$
+    // 129 -> class scala.math.Ordering$Char$
+    // 130 -> class scala.math.Ordering$String$
+    // 131 -> class scala.collection.immutable.Set$EmptySet$
+    // 132 -> class scala.collection.immutable.ListSet$EmptyListSet$
+    // 133 -> class scala.collection.immutable.ListSet$Node
+    // 134 -> class scala.collection.immutable.HashSet$EmptyHashSet$
+    // 135 -> class scala.collection.immutable.HashSet$HashSet1
+    // 136 -> class scala.collection.immutable.Map$EmptyMap$
+    // 137 -> class scala.collection.immutable.HashMap$EmptyHashMap$
+    // 138 -> class scala.collection.immutable.HashMap$HashMap1
+    // 139 -> class scala.collection.immutable.ListMap$EmptyListMap$
+    // 140 -> class scala.collection.immutable.ListMap$Node
+    // 141 -> class scala.collection.immutable.Stream$Cons
+    // 142 -> class scala.collection.immutable.Stream$Empty$
+
+    114 -> ("dAE=" -> None))
 
   val kryo: KryoBase = {
     val instantiator = new ScalaKryoInstantiator()
