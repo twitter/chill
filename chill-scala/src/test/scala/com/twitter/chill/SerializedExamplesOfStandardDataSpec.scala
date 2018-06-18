@@ -2,6 +2,7 @@ package com.twitter.chill
 
 import scala.collection.{ JavaConversions, JavaConverters }
 import scala.collection.immutable.{ HashMap, HashSet, ListMap, ListSet, NumericRange }
+import scala.runtime.VolatileByteRef
 
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -235,7 +236,9 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     139 -> ("jQEBAA==" -> ListMap()),
     140 -> ("jgEBAScBSAGCYUgE" -> ListMap('a -> 'a)),
     141 -> ("jwEBdwEBAgI=" -> Stream(1)),
-    142 -> ("kAEB" -> Stream()))
+    142 -> ("kAEB" -> Stream()),
+    143 -> ("kQEBCg==" -> new VolatileByteRef(10)),
+    144 -> ("kgEBAQBqYXZhLm1hdGguQmlnRGVjaW1h7AECAgA=" -> math.BigDecimal(2)))
 
   val kryo: KryoBase = {
     val instantiator = new ScalaKryoInstantiator()
