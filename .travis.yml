@@ -11,7 +11,7 @@ matrix:
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
-    - scala: 2.12.4
+    - scala: 2.12.6
       jdk: oraclejdk8
       script: ./sbt "+++$TRAVIS_SCALA_VERSION clean" "+++$TRAVIS_SCALA_VERSION test" # "+++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues"
 
