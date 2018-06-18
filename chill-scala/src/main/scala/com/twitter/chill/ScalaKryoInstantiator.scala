@@ -189,6 +189,9 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
  * Registers all the scala (and java) serializers we have. The registrations are designed to cover most of
  * scala.collecion.immutable, so they can be used in long term persistence scenarios that run with
  * setRegistrationRequired(true).
+ *
+ * When adding new serializers, add them to the end of the list, so compatibility is not broken needlessly
+ * for projects using chill for long term persistence - see com.twitter.chill.RegistrationIdsSpec.
  */
 class AllScalaRegistrar extends IKryoRegistrar {
   def apply(k: Kryo) {
@@ -247,5 +250,6 @@ class AllScalaRegistrar extends IKryoRegistrar {
     k.register(classOf[Stream.Cons[_]], new StreamSerializer[Any])
     k.register(Stream.empty[Any].getClass)
     k.forClass[scala.runtime.VolatileByteRef](new VolatileByteRefSerializer)
+    k.forClass[BigDecimal](new BigDecimalSerializer)
   }
 }
