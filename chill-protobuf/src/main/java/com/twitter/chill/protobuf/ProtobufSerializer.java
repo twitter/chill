@@ -76,5 +76,16 @@ public class ProtobufSerializer extends Serializer<Message> {
       throw new RuntimeException("Could not create " + pbClass, e);
     }
   }
+
+  @Override
+  public Message copy(Kryo kryo, Message original) {
+    try {
+      byte[] bytes = original.toByteArray();
+      return (Message)getParse(original.getClass()).invoke(null, bytes);
+    } catch (Exception exception) {
+      throw new RuntimeException("Copy message error.", exception);
+    }
+  }
+
 }
 
