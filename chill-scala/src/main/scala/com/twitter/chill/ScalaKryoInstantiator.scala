@@ -251,5 +251,6 @@ class AllScalaRegistrar extends IKryoRegistrar {
     k.register(Stream.empty[Any].getClass)
     k.forClass[scala.runtime.VolatileByteRef](new VolatileByteRefSerializer)
     k.forClass[BigDecimal](new BigDecimalSerializer)
+    k.forConcreteTraversableClass(Queue.empty[Any])
   }
 }
