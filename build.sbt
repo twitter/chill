@@ -56,6 +56,11 @@ val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
       else
         Opts.resolver.sonatypeStaging
     ),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/twitter/chill"),
+      "scm:git:git@github.com:twitter/chill.git"
+    )),
   pomExtra := (
     <url>https://github.com/twitter/chill</url>
         <licenses>
@@ -66,10 +71,6 @@ val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
       <comments>A business-friendly OSS license</comments>
       </license>
       </licenses>
-      <scm>
-      <url>git@github.com:twitter/chill.git</url>
-      <connection>scm:git:git@github.com:twitter/chill.git</connection>
-      </scm>
       <developers>
       <developer>
       <id>oscar</id>
@@ -125,7 +126,7 @@ lazy val noPublishSettings = Seq(
   */
 val unreleasedModules = Set[String]("akka")
 val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
-val binaryCompatVersion = "0.8.0"
+val binaryCompatVersion = "0.9.2"
 
 def youngestForwardCompatible(subProj: String) =
   Some(subProj)
