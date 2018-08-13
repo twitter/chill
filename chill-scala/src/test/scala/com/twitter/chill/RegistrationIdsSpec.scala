@@ -199,7 +199,8 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
       |141 -> class scala.collection.immutable.Stream$Cons
       |142 -> class scala.collection.immutable.Stream$Empty$
       |143 -> class scala.runtime.VolatileByteRef
-      |144 -> class scala.math.BigDecimal"""
+      |144 -> class scala.math.BigDecimal
+      |145 -> class scala.collection.immutable.Queue$EmptyQueue$"""
       .stripMargin.lines.mkString("\n")
 
   private def expectedEntries_current =

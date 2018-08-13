@@ -1,7 +1,7 @@
 package com.twitter.chill
 
 import scala.collection.{ JavaConversions, JavaConverters }
-import scala.collection.immutable.{ HashMap, HashSet, ListMap, ListSet, NumericRange }
+import scala.collection.immutable.{ HashMap, HashSet, ListMap, ListSet, NumericRange, Queue }
 import scala.runtime.VolatileByteRef
 
 import org.scalatest.{ Matchers, WordSpec }
@@ -33,11 +33,17 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
             .filterKeys(scalaVersion.startsWith)
             .values.flatten.toSet
           examples.foreach {
+            case (serId, (serialized, (scala: AnyRef, useObjectEquality: Boolean))) =>
+              println(s"######## $serId")
+              if (examplesToOmit.contains(serId))
+                println(s"### SerializedExamplesOfStandardDataSpec: Omitting $serId in scala $scalaVersion")
+              else
+                checkSerialization(serialized, serId, scala, useObjectEquality)
             case (serId, (serialized, scala)) =>
               if (examplesToOmit.contains(serId))
                 println(s"### SerializedExamplesOfStandardDataSpec: Omitting $serId in scala $scalaVersion")
               else
-                checkSerialization(serialized, serId, scala)
+                checkSerialization(serialized, serId, scala, useObjectEquality = false)
           }
         }
       "all be covered by an example".in {
@@ -238,7 +244,8 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     141 -> ("jwEBdwEBAgI=" -> Stream(1)),
     142 -> ("kAEB" -> Stream()),
     143 -> ("kQEBCg==" -> new VolatileByteRef(10)),
-    144 -> ("kgEBAQBqYXZhLm1hdGguQmlnRGVjaW1h7AECAgA=" -> math.BigDecimal(2)))
+    144 -> ("kgEBAQBqYXZhLm1hdGguQmlnRGVjaW1h7AECAgA=" -> math.BigDecimal(2)),
+    145 -> ("kwEBAA==" -> (Queue.empty[Any], true)))
 
   val kryo: KryoBase = {
     val instantiator = new ScalaKryoInstantiator()
@@ -255,7 +262,8 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
 
   def checkSerialization(serializedExample: String,
     expectedSerializationId: Int,
-    scalaInstance: AnyRef): Unit = {
+    scalaInstance: AnyRef,
+    useObjectEquality: Boolean): Unit = {
     val idForScalaInstance = kryo.getRegistration(scalaInstance.getClass).getId
     assert(
       idForScalaInstance == expectedSerializationId,
@@ -287,17 +295,29 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
           err(s"can't kryo deserialize $serializedExample with serialization id $idForScalaInstance: $e", serializedScalaInstance)
           throw e
       }
-    val roundtrip =
-      try Base64.encodeBytes(pool.toBytesWithClass(deserialized))
-      catch {
-        case e: Throwable =>
-          err(s"can't kryo serialize roundtrip $deserialized with serialization id $idForScalaInstance: $e")
-          throw e
-      }
 
-    assert(
-      roundtrip == serializedExample,
-      s"deserializing $serializedExample yields $deserialized (serialization id $idForScalaInstance), " +
-        s"but expected $scalaInstance which serializes to $serializedScalaInstance")
+    // Some objects like arrays can't be deserialized and compared with "==", so the roundtrip serialization is used
+    // for checking. Other objects like Queue.empty can't be roundtrip compared, so object equality is checked.
+    if (useObjectEquality) {
+      assert(
+        deserialized == scalaInstance,
+        s"deserializing $serializedExample yields $deserialized (serialization id $idForScalaInstance), " +
+          s"but expected $scalaInstance which does not equal to the deserialized example and which in turn " +
+          s"serializes to $serializedScalaInstance")
+
+    } else {
+      val roundtrip =
+        try Base64.encodeBytes(pool.toBytesWithClass(deserialized))
+        catch {
+          case e: Throwable =>
+            err(s"can't kryo serialize roundtrip $deserialized with serialization id $idForScalaInstance: $e")
+            throw e
+        }
+
+      assert(
+        roundtrip == serializedExample,
+        s"deserializing $serializedExample yields $deserialized (serialization id $idForScalaInstance), " +
+          s"but expected $scalaInstance which serializes to $serializedScalaInstance")
+    }
   }
 }
