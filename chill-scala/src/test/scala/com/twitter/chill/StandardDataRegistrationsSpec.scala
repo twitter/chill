@@ -72,7 +72,8 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       "serialize the one-element list" in { roundtrip(List(1)) }
       "serialize alternative ways to instantiate lists" in { roundtrip(List.empty[Int], 1 :: Nil) }
       "serialize larger lists" in { roundtrip(List(1, 2), List(1, 2, 3), List(1, 2, 3, 4), List(1, 2, 3, 4, 5)) }
-      "serialize the empty queue" in { roundtrip(Queue()) }
+      "serialize the empty queue" in { roundtrip(Queue.empty[Int]) }
+      "serialize the no-elements queue" in { roundtrip(Queue()) }
       "serialize larger queues" in { roundtrip(Queue(1), Queue(1, 2), Queue(1, 2, 3), Queue(1, 2, 3, 4), Queue(1, 2, 3, 4, 5)) }
       "serialize a range" in { roundtrip(Range(2, 10, 3)) }
       "serialize vectors" in { roundtrip(Vector(), Vector(1), Vector(1, 2), Vector(1, 2, 3), Vector(1, 2, 3, 4), Vector(1, 2, 3, 4, 5)) }
