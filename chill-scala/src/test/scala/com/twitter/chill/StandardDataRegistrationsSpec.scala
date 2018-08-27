@@ -47,6 +47,8 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       def tuples(count: Int): Seq[(Int, Int)] = Seq.range(0, count).map(n => (n, n + 1))
       "serialize the empty map" in { roundtrip(Map()) }
       "serialize the one-element map" in { roundtrip(Map(1 -> 2)) }
+      "serialize a filtered map" in { roundtrip(Map(1 -> 2).filterKeys(_ != 2)) }
+      "serialize a mapped values map" in { roundtrip(Map(1 -> 2).mapValues(_ + 1)) }
       "serialize larger maps" in { roundtrip(Map(tuples(2): _*), Map(tuples(3): _*), Map(tuples(4): _*), Map(tuples(5): _*)) }
       "serialize the empty hash map" in { roundtrip(HashMap()) }
       "serialize the one-element hash map" in { roundtrip(HashMap(1 -> 2)) }
@@ -68,6 +70,7 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
       "serialize the empty tree set" in { roundtrip(TreeSet.empty[Int]) }
       "serialize the one-element tree set" in { roundtrip(TreeSet(1)) }
       "serialize larger tree sets" in { roundtrip(TreeSet(1, 2), TreeSet(1, 2, 3), TreeSet(1, 2, 3, 4), TreeSet(1, 2, 3, 4, 5)) }
+      "serialize a map's key set" in { roundtrip(Map(1 -> 2).keySet) }
       "serialize the empty list" in { roundtrip(Nil) }
       "serialize the one-element list" in { roundtrip(List(1)) }
       "serialize alternative ways to instantiate lists" in { roundtrip(List.empty[Int], 1 :: Nil) }
