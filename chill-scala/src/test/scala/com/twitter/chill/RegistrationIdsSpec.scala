@@ -46,7 +46,7 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
          |will fail for $scope, most probably because the order of
          |registration IDs has changed or a registration was added or
          |removed. If that was intended, here is the list of entries
-         |that are currently found, so you can updated the test's
+         |that are currently found, so you can update the test's
          |expected values:
          |
          |${registeredEntries(k)}\n\n\n""".stripMargin)
@@ -198,7 +198,9 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
       |140 -> class scala.collection.immutable.ListMap$Node
       |141 -> class scala.collection.immutable.Stream$Cons
       |142 -> class scala.collection.immutable.Stream$Empty$
-      |143 -> class scala.runtime.VolatileByteRef"""
+      |143 -> class scala.runtime.VolatileByteRef
+      |144 -> class scala.math.BigDecimal
+      |145 -> class scala.collection.immutable.Queue$EmptyQueue$"""
       .stripMargin.lines.mkString("\n")
 
   private def expectedEntries_current =

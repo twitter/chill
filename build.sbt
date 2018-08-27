@@ -4,13 +4,13 @@ import sbtrelease.ReleaseStateTransformations._
 val akkaVersion = "2.4.16"
 val algebirdVersion = "0.13.0"
 val bijectionVersion = "0.9.4"
-val kryoVersion = "4.0.1"
+val kryoVersion = "4.0.2"
 val scroogeVersion = "4.12.0"
 
 val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
   organization := "com.twitter",
   scalaVersion := "2.11.12",
-  crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.4"),
+  crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.6"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   ScalariformKeys.preferences := formattingPreferences,
 
@@ -56,6 +56,11 @@ val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
       else
         Opts.resolver.sonatypeStaging
     ),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/twitter/chill"),
+      "scm:git:git@github.com:twitter/chill.git"
+    )),
   pomExtra := (
     <url>https://github.com/twitter/chill</url>
         <licenses>
@@ -66,10 +71,6 @@ val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
       <comments>A business-friendly OSS license</comments>
       </license>
       </licenses>
-      <scm>
-      <url>git@github.com:twitter/chill.git</url>
-      <connection>scm:git:git@github.com:twitter/chill.git</connection>
-      </scm>
       <developers>
       <developer>
       <id>oscar</id>
@@ -125,7 +126,7 @@ lazy val noPublishSettings = Seq(
   */
 val unreleasedModules = Set[String]("akka")
 val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
-val binaryCompatVersion = "0.8.0"
+val binaryCompatVersion = "0.9.2"
 
 def youngestForwardCompatible(subProj: String) =
   Some(subProj)
