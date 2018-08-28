@@ -247,7 +247,7 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     145 -> ("kwEBAA==" -> (Queue.empty[Any], true)),
     146 -> ("lAEBAScBAgICBA==" -> (Map(1 -> 2).filterKeys(_ != 2), true)),
     147 -> ("lQEBAScBAgICBg==" -> (Map(1 -> 2).mapValues(_ + 1), true)),
-    148 -> ("lgEBGgEBJwECAgIE" -> Map(1 -> 2).keySet))
+    148 -> ("lgEBAQIC" -> (Map(1 -> 2).keySet, true)))
 
   val kryo: KryoBase = {
     val instantiator = new ScalaKryoInstantiator()
