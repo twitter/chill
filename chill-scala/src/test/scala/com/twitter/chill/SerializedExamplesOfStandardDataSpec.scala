@@ -34,7 +34,6 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
             .values.flatten.toSet
           examples.foreach {
             case (serId, (serialized, (scala: AnyRef, useObjectEquality: Boolean))) =>
-              println(s"######## $serId")
               if (examplesToOmit.contains(serId))
                 println(s"### SerializedExamplesOfStandardDataSpec: Omitting $serId in scala $scalaVersion")
               else
@@ -245,7 +244,10 @@ class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
     142 -> ("kAEB" -> Stream()),
     143 -> ("kQEBCg==" -> new VolatileByteRef(10)),
     144 -> ("kgEBAQBqYXZhLm1hdGguQmlnRGVjaW1h7AECAgA=" -> math.BigDecimal(2)),
-    145 -> ("kwEBAA==" -> (Queue.empty[Any], true)))
+    145 -> ("kwEBAA==" -> (Queue.empty[Any], true)),
+    146 -> ("lAEBAScBAgICBA==" -> (Map(1 -> 2).filterKeys(_ != 2), true)),
+    147 -> ("lQEBAScBAgICBg==" -> (Map(1 -> 2).mapValues(_ + 1), true)),
+    148 -> ("lgEBAQIC" -> (Map(1 -> 2).keySet, true)))
 
   val kryo: KryoBase = {
     val instantiator = new ScalaKryoInstantiator()

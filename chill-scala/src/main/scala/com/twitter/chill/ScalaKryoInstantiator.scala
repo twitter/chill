@@ -252,5 +252,8 @@ class AllScalaRegistrar extends IKryoRegistrar {
     k.forClass[scala.runtime.VolatileByteRef](new VolatileByteRefSerializer)
     k.forClass[BigDecimal](new BigDecimalSerializer)
     k.register(Queue.empty[Any].getClass)
+    k.forConcreteTraversableClass(Map(1 -> 2).filterKeys(_ != 2))
+      .forConcreteTraversableClass(Map(1 -> 2).mapValues(_ + 1))
+      .forConcreteTraversableClass(Map(1 -> 2).keySet)
   }
 }
