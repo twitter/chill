@@ -35,7 +35,7 @@ To deserialize or serialize easily, look at `KryoPool`:
 ```java
 int POOL_SIZE = 10;
 KryoPool kryo = KryoPool.withByteArrayOutputStream(POOL_SIZE, new KryoInstantiator());
-byte[] ser = kryo.toBytesWithClass(myObj);
+byte[] ser = kryo.toBytesWithoutClass(myObj);
 Object deserObj = kryo.fromBytes(myObj);
 ```
 
