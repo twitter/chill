@@ -35,10 +35,11 @@ public class RegexSerializer extends Serializer<Pattern> {
     @Override
     public void write(Kryo kryo, Output output, Pattern pattern) {
         output.writeString(pattern.pattern());
+        output.writeInt(pattern.flags(), true);
     }
 
     @Override
     public Pattern read(Kryo kryo, Input input, Class<Pattern> patternClass) {
-        return Pattern.compile(input.readString());
+        return Pattern.compile(input.readString(), input.readInt(true));
     }
 }
