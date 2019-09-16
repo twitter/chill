@@ -13,6 +13,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
   crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.10"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   scalariformPreferences := formattingPreferences,
+  scalariformAutoformat := false,
 
   // Twitter Hadoop needs this, sorry 1.7 fans
   javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
