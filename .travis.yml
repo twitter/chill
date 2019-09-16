@@ -3,16 +3,17 @@ sudo: false
 matrix:
   include:
     - scala: 2.10.7
+      jdk: openjdk8
       script: ./sbt ++$TRAVIS_SCALA_VERSION clean test mimaReportBinaryIssues
 
     - scala: 2.11.12
-      jdk: oraclejdk8
+      jdk: openjdk8
       script: ./sbt ++$TRAVIS_SCALA_VERSION clean coverage test coverageReport mimaReportBinaryIssues
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
-    - scala: 2.12.6
-      jdk: oraclejdk8
+    - scala: 2.12.10
+      jdk: openjdk8
       script: ./sbt "+++$TRAVIS_SCALA_VERSION clean" "+++$TRAVIS_SCALA_VERSION test" # "+++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues"
 
 cache:
