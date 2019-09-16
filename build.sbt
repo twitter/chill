@@ -2,8 +2,8 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import sbtrelease.ReleaseStateTransformations._
 
 val akkaVersion = "2.4.16"
-val algebirdVersion = "0.13.0"
-val bijectionVersion = "0.9.4"
+val algebirdVersion = "0.13.5"
+val bijectionVersion = "0.9.6"
 val kryoVersion = "4.0.2"
 val scroogeVersion = "4.12.0"
 
@@ -24,8 +24,8 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
     Opts.resolver.sonatypeReleases
   ),
   libraryDependencies ++= Seq(
-    "org.scalacheck" %% "scalacheck" % "1.11.6" % "test",
-    "org.scalatest" %% "scalatest" % "3.0.0" % "test",
+    "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
+    "org.scalatest" %% "scalatest" % "3.0.8" % "test",
     "com.esotericsoftware" % "kryo-shaded" % kryoVersion
   ),
 
