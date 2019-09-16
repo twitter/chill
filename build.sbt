@@ -7,12 +7,12 @@ val bijectionVersion = "0.9.4"
 val kryoVersion = "4.0.2"
 val scroogeVersion = "4.12.0"
 
-val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
+val sharedSettings = mimaDefaultSettings ++ Seq(
   organization := "com.twitter",
   scalaVersion := "2.11.12",
   crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.10"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
-  ScalariformKeys.preferences := formattingPreferences,
+  scalariformPreferences := formattingPreferences,
 
   // Twitter Hadoop needs this, sorry 1.7 fans
   javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
@@ -88,9 +88,8 @@ val sharedSettings = mimaDefaultSettings ++ scalariformSettings ++ Seq(
 // Aggregated project
 lazy val chillAll = Project(
   id = "chill-all",
-  base = file("."),
-  settings = sharedSettings
- ).enablePlugins(CrossPerProjectPlugin)
+  base = file(".")
+ ).settings(sharedSettings)
   .settings(noPublishSettings)
   .aggregate(
   chill,
@@ -114,9 +113,9 @@ lazy val formattingPreferences = {
 }
 
 lazy val noPublishSettings = Seq(
-    publish := (),
-    publishLocal := (),
-    test := (),
+    publish := {},
+    publishLocal := {},
+    test := {},
     publishArtifact := false
   )
 
@@ -148,23 +147,25 @@ val ignoredABIProblems = {
 
 def module(name: String) = {
   val id = "chill-%s".format(name)
-  Project(id = id, base = file(id), settings = sharedSettings ++ Seq(
-    Keys.name := id,
-    mimaPreviousArtifacts := youngestForwardCompatible(name).toSet,
-    mimaBinaryIssueFilters ++= ignoredABIProblems,
-    // Disable cross publishing for java artifacts
-    publishArtifact :=
-      (if (javaOnly.contains(name) && scalaVersion.value.startsWith("2.11")) false else true)
-  ))
+  Project(id = id, base = file(id))
+    .settings(sharedSettings)
+    .settings(
+      Keys.name := id,
+      mimaPreviousArtifacts := youngestForwardCompatible(name).toSet,
+      mimaBinaryIssueFilters ++= ignoredABIProblems,
+      // Disable cross publishing for java artifacts
+      publishArtifact :=
+        (if (javaOnly.contains(name) && scalaVersion.value.startsWith("2.11")) false else true)
+    )
 }
 
 // We usually do the pattern of having a core module, but we don't want to cause
 // pain for legacy deploys. With this, they can stay the same.
 lazy val chill = Project(
   id = "chill",
-  base = file("chill-scala"),
-  settings = sharedSettings
-).settings(
+  base = file("chill-scala")
+).settings(sharedSettings)
+ .settings(
   name := "chill",
   mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion)
 ).dependsOn(chillJava)
