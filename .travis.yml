@@ -12,7 +12,7 @@ matrix:
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
-    - scala: 2.12.10
+    - scala: 2.12.8
       jdk: openjdk8
       script: sbt ++$TRAVIS_SCALA_VERSION clean test # mimaReportBinaryIssues
 
