@@ -92,6 +92,9 @@ lazy val chillAll = Project(
   base = file(".")
  ).settings(sharedSettings)
   .settings(noPublishSettings)
+  .settings(
+    mimaPreviousArtifacts := Set.empty,
+  )
   .aggregate(
   chill,
   chillBijection,
