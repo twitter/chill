@@ -220,7 +220,7 @@ lazy val chillHadoop = module("hadoop").settings(
   crossPaths := false,
   autoScalaLibrary := false,
   libraryDependencies ++= Seq(
-    "org.apache.hadoop" % "hadoop-core" % "0.20.2" % "provided",
+    "org.apache.hadoop" % "hadoop-core" % "0.20.205.0" % "provided",
     "org.slf4j" % "slf4j-api" % "1.6.6",
     "org.slf4j" % "slf4j-log4j12" % "1.6.6" % "provided"
   )
