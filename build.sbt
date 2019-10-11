@@ -247,7 +247,7 @@ lazy val chillProtobuf = module("protobuf").settings(
   crossPaths := false,
   autoScalaLibrary := false,
   libraryDependencies ++= Seq(
-    "com.google.protobuf" % "protobuf-java" % "2.3.0" % "provided"
+    "com.google.protobuf" % "protobuf-java" % "2.6.1" % "provided"
   )
 ).dependsOn(chillJava)
 
