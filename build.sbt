@@ -254,7 +254,7 @@ lazy val chillProtobuf = module("protobuf").settings(
 lazy val chillAvro = module("avro").settings(
   libraryDependencies ++= Seq(
     "com.twitter" %% "bijection-avro" % bijectionVersion,
-    "junit" % "junit" % "4.5" % "test"
+    "junit" % "junit" % "4.12" % "test"
   )
 ).dependsOn(chill,chillJava, chillBijection)
 
