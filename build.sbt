@@ -191,7 +191,7 @@ def scrooge(scalaVersion: String) = {
 lazy val chillAkka = module("akka").settings(
   resolvers += Resolver.typesafeRepo("releases"),
   libraryDependencies ++= Seq(
-    "com.typesafe" % "config" % "1.3.4",
+    "com.typesafe" % "config" % "1.4.0",
     scalaVersion (sv => akka(sv)).value
   )
 ).dependsOn(chill % "test->test;compile->compile")
