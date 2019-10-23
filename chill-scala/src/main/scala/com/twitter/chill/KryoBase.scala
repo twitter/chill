@@ -20,10 +20,15 @@ import com.esotericsoftware.kryo.KryoException
 import com.esotericsoftware.reflectasm.ConstructorAccess
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 import _root_.java.lang.Thread
+
 import org.objenesis.instantiator.ObjectInstantiator
 import org.objenesis.strategy.InstantiatorStrategy
-
 import _root_.java.lang.reflect.{Constructor, Modifier}
+
+import com.esotericsoftware.kryo.ClassResolver
+import com.esotericsoftware.kryo.ReferenceResolver
+import com.esotericsoftware.kryo.util.DefaultClassResolver
+import com.esotericsoftware.kryo.util.MapReferenceResolver
 
 import scala.util.{Failure, Success, Try}
 
@@ -31,7 +36,9 @@ import scala.util.{Failure, Success, Try}
  * This is the base class of Kryo we use to fix specific scala
  * related issues discovered (ideally, this should be fixed in Kryo)
  */
-class KryoBase extends Kryo {
+class KryoBase(classResolver: ClassResolver = new DefaultClassResolver,
+               referenceResolver: ReferenceResolver = new MapReferenceResolver) extends Kryo(classResolver, referenceResolver) {
+
   lazy val objSer = new ObjectSerializer[AnyRef]
 
   protected var strategy: Option[InstantiatorStrategy] = None
