@@ -150,7 +150,15 @@ val ignoredABIProblems = {
   import com.typesafe.tools.mima.core._
   import com.typesafe.tools.mima.core.ProblemFilters._
   Seq(
-    exclude[MissingTypesProblem]("com.twitter.chill.storm.BlizzardKryoFactory")
+    exclude[MissingTypesProblem]("com.twitter.chill.storm.BlizzardKryoFactory"),
+    exclude[IncompatibleResultTypeProblem]("com.twitter.chill.ClosureCleaner.*"),
+    exclude[DirectMissingMethodProblem]("com.twitter.chill.ClosureCleaner.*"),
+    exclude[IncompatibleMethTypeProblem]("com.twitter.chill.ClosureCleaner.*"),
+    exclude[IncompatibleTemplateDefProblem]("com.twitter.chill.ClosureCleaner"),
+    exclude[FinalClassProblem]("com.twitter.chill.InnerClosureFinder"),
+    exclude[DirectMissingMethodProblem]("com.twitter.chill.InnerClosureFinder.*"),
+    exclude[IncompatibleResultTypeProblem]("com.twitter.chill.InnerClosureFinder.*"),
+    exclude[MissingClassProblem]("com.twitter.chill.FieldAccessFinder")
   )
 }
 
@@ -177,6 +185,7 @@ lazy val chill = Project(
   .settings(
     name := "chill",
     mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion),
+    mimaBinaryIssueFilters ++= ignoredABIProblems,
     libraryDependencies += "org.apache.xbean" % "xbean-asm7-shaded" % asmVersion
   )
   .dependsOn(chillJava)
