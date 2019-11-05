@@ -20,7 +20,8 @@ import _root_.java.io._
 import scala.reflect.ClassTag
 
 trait BaseProperties {
-  def serialize[T](t: T): Array[Byte] = ScalaKryoInstantiator.defaultPool.toBytesWithClass(t)
+  def serialize[T](t: T): Array[Byte] =
+    ScalaKryoInstantiator.defaultPool.toBytesWithClass(t)
   def deserialize[T](bytes: Array[Byte]): T =
     ScalaKryoInstantiator.defaultPool.fromBytes(bytes).asInstanceOf[T]
 
@@ -32,12 +33,14 @@ trait BaseProperties {
 
   def rtEquiv[T](t: T): Boolean = {
     val serdeser = rt(t)
-    serdeser == t && serdeser.getClass.asInstanceOf[Class[Any]] == t.getClass.asInstanceOf[Class[Any]]
+    serdeser == t && serdeser.getClass.asInstanceOf[Class[Any]] == t.getClass
+      .asInstanceOf[Class[Any]]
   }
 
   def rtEquiv[T](k: KryoInstantiator, t: T): Boolean = {
     val serdeser = rt(k, t)
-    serdeser == t && serdeser.getClass.asInstanceOf[Class[Any]] == t.getClass.asInstanceOf[Class[Any]]
+    serdeser == t && serdeser.getClass.asInstanceOf[Class[Any]] == t.getClass
+      .asInstanceOf[Class[Any]]
   }
 
   // using java serialization. TODO: remove when this is shipped in bijection
@@ -48,8 +51,8 @@ trait BaseProperties {
       out.writeObject(t)
       bos.toByteArray
     } finally {
-      out.close
-      bos.close
+      out.close()
+      bos.close()
     }
   }
   def jdeserialize[T](bytes: Array[Byte])(implicit cmf: ClassTag[T]): T = {
@@ -57,10 +60,11 @@ trait BaseProperties {
     val bis = new ByteArrayInputStream(bytes)
     val in = new ObjectInputStream(bis);
     try {
+      println(cls.getName)
       cls.cast(in.readObject)
     } finally {
-      bis.close
-      in.close
+      bis.close()
+      in.close()
     }
   }
   def jrt[T <: Serializable](t: T)(implicit cmf: ClassTag[T]): T =

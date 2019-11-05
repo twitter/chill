@@ -6,6 +6,7 @@ val algebirdVersion = "0.13.5"
 val bijectionVersion = "0.9.6"
 val kryoVersion = "4.0.2"
 val scroogeVersion = "4.12.0"
+val asmVersion = "4.15"
 
 val sharedSettings = mimaDefaultSettings ++ Seq(
   organization := "com.twitter",
@@ -175,7 +176,8 @@ lazy val chill = Project(
 ).settings(sharedSettings)
   .settings(
     name := "chill",
-    mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion)
+    mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion),
+    libraryDependencies += "org.apache.xbean" % "xbean-asm7-shaded" % asmVersion
   )
   .dependsOn(chillJava)
 
