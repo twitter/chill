@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
@@ -23,7 +23,6 @@ class RegexSerializer extends KSerializer[Regex] {
     out.writeString(obj.pattern.pattern)
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[Regex]): Regex = {
+  def read(kser: Kryo, in: Input, cls: Class[Regex]): Regex =
     new Regex(in.readString)
-  }
 }

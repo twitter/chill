@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.chill.algebird
 
 import com.esotericsoftware.kryo.Kryo
@@ -21,21 +21,20 @@ import com.esotericsoftware.kryo.serializers.FieldSerializer
 import com.twitter.chill.IKryoRegistrar
 
 import com.twitter.algebird.{
+  AdaptiveVector,
   AveragedValue,
   DecayedValue,
+  DenseVector,
   HLL,
   HyperLogLog,
   HyperLogLogMonoid,
   Moments,
   QTree,
   SpaceSaver,
-  DenseVector,
-  SparseVector,
-  AdaptiveVector
+  SparseVector
 }
 
 class AlgebirdRegistrar extends IKryoRegistrar {
-
   def apply(k: Kryo) {
     // Some of the monoids from Algebird that we use:
     k.register(classOf[AveragedValue], new AveragedValueSerializer)

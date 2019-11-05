@@ -21,9 +21,7 @@ import TestCollections._
 import org.scalatest._
 
 class UnmodifiableCollectionsTest extends WordSpec with Matchers {
-
   "UnmodifiableListSerializer" should {
-
     "UnmodifiableArrayList" in {
       val list = getUnmodifiableArrayList
       list should equal(serializeAndDeserialize(list))
@@ -36,7 +34,6 @@ class UnmodifiableCollectionsTest extends WordSpec with Matchers {
   }
 
   "UnmodifiableMapSerializer" should {
-
     "UnmodifiableHashMap" in {
       val map = getUnmodifiableHashMap
       map should equal(serializeAndDeserialize(map))
@@ -44,7 +41,6 @@ class UnmodifiableCollectionsTest extends WordSpec with Matchers {
   }
 
   "UnmodifiableSortedMapSerializer" should {
-
     "UnmodifiableTreeMap" in {
       val map = getUnmodifiableTreeMap
       map should equal(serializeAndDeserialize(map))
@@ -52,7 +48,6 @@ class UnmodifiableCollectionsTest extends WordSpec with Matchers {
   }
 
   "UnmodifiableSetSerializer" should {
-
     "UnmodifiableHashSet" in {
       val set = getUnmodifiableHashSet
       set should equal(serializeAndDeserialize(set))
@@ -60,7 +55,6 @@ class UnmodifiableCollectionsTest extends WordSpec with Matchers {
   }
 
   "UnmodifiableSortedSetSerializer" should {
-
     "UnmodifiableTreeSet" in {
       val set = getUnmodifiableTreeSet
       set should equal(serializeAndDeserialize(set))
@@ -68,7 +62,6 @@ class UnmodifiableCollectionsTest extends WordSpec with Matchers {
   }
 
   "UnmodifiableCollectionSerializer" should {
-
     "UnmodifiableCollection" in {
       val before = getUnmodifiableCollection
       val after = serializeAndDeserialize(before)

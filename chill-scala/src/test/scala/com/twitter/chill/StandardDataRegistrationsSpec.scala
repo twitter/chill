@@ -1,9 +1,9 @@
 package com.twitter.chill
 
-import scala.collection.immutable.{ HashMap, HashSet, ListMap, ListSet, Queue, TreeMap, TreeSet, WrappedString }
+import scala.collection.immutable.{HashMap, HashSet, ListMap, ListSet, Queue, TreeMap, TreeSet, WrappedString}
 import scala.collection.mutable
 
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 class StandardDataRegistrationsSpec extends WordSpec with Matchers {
   s"""
@@ -28,7 +28,7 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
         }
       }
       val kryo = KryoPool.withByteArrayOutputStream(4, registrationRequiredInstantiator)
-      def roundtrip(original: AnyRef): Unit = {
+      def roundtrip(original: AnyRef): Unit =
         try {
           val serde = kryo.fromBytes(kryo.toBytesWithClass(original))
           (original, serde) match {
@@ -43,46 +43,91 @@ class StandardDataRegistrationsSpec extends WordSpec with Matchers {
               e.toString.lines.next
             assert(false, message)
         }
-      }
       def tuples(count: Int): Seq[(Int, Int)] = Seq.range(0, count).map(n => (n, n + 1))
       "serialize the empty map" in { roundtrip(Map()) }
       "serialize the one-element map" in { roundtrip(Map(1 -> 2)) }
       "serialize a filtered map" in { roundtrip(Map(1 -> 2).filterKeys(_ != 2)) }
       "serialize a mapped values map" in { roundtrip(Map(1 -> 2).mapValues(_ + 1)) }
-      "serialize larger maps" in { roundtrip(Map(tuples(2): _*), Map(tuples(3): _*), Map(tuples(4): _*), Map(tuples(5): _*)) }
+      "serialize larger maps" in {
+        roundtrip(Map(tuples(2): _*), Map(tuples(3): _*), Map(tuples(4): _*), Map(tuples(5): _*))
+      }
       "serialize the empty hash map" in { roundtrip(HashMap()) }
       "serialize the one-element hash map" in { roundtrip(HashMap(1 -> 2)) }
-      "serialize larger hash maps" in { roundtrip(HashMap(tuples(2): _*), HashMap(tuples(3): _*), HashMap(tuples(4): _*), HashMap(tuples(5): _*)) }
+      "serialize larger hash maps" in {
+        roundtrip(
+          HashMap(tuples(2): _*),
+          HashMap(tuples(3): _*),
+          HashMap(tuples(4): _*),
+          HashMap(tuples(5): _*)
+        )
+      }
       "serialize the empty list map" in { roundtrip(ListMap()) }
       "serialize the one-element list map" in { roundtrip(ListMap(1 -> 2)) }
-      "serialize larger list maps" in { roundtrip(ListMap(tuples(2): _*), ListMap(tuples(3): _*), ListMap(tuples(4): _*), ListMap(tuples(5): _*)) }
+      "serialize larger list maps" in {
+        roundtrip(
+          ListMap(tuples(2): _*),
+          ListMap(tuples(3): _*),
+          ListMap(tuples(4): _*),
+          ListMap(tuples(5): _*)
+        )
+      }
       "serialize the empty tree map" in { roundtrip(TreeMap.empty[Int, Int]) }
       "serialize the one-element tree map" in { roundtrip(TreeMap(1 -> 2)) }
-      "serialize larger tree maps" in { roundtrip(TreeMap(tuples(2): _*), TreeMap(tuples(3): _*), TreeMap(tuples(4): _*), TreeMap(tuples(5): _*)) }
+      "serialize larger tree maps" in {
+        roundtrip(
+          TreeMap(tuples(2): _*),
+          TreeMap(tuples(3): _*),
+          TreeMap(tuples(4): _*),
+          TreeMap(tuples(5): _*)
+        )
+      }
       "serialize the empty set" in { roundtrip(Set()) }
-      "serialize larger sets" in { roundtrip(Set(1), Set(1, 2), Set(1, 2, 3), Set(1, 2, 3, 4), Set(1, 2, 3, 4, 5)) }
+      "serialize larger sets" in {
+        roundtrip(Set(1), Set(1, 2), Set(1, 2, 3), Set(1, 2, 3, 4), Set(1, 2, 3, 4, 5))
+      }
       "serialize the empty hash set" in { roundtrip(HashSet()) }
       "serialize the one-element hash set" in { roundtrip(HashSet(1)) }
-      "serialize larger hash sets" in { roundtrip(HashSet(1, 2), HashSet(1, 2, 3), HashSet(1, 2, 3, 4), HashSet(1, 2, 3, 4, 5)) }
+      "serialize larger hash sets" in {
+        roundtrip(HashSet(1, 2), HashSet(1, 2, 3), HashSet(1, 2, 3, 4), HashSet(1, 2, 3, 4, 5))
+      }
       "serialize the empty list set" in { roundtrip(ListSet()) }
       "serialize the one-element list set" in { roundtrip(ListSet(1)) }
-      "serialize larger list sets" in { roundtrip(ListSet(1, 2), ListSet(1, 2, 3), ListSet(1, 2, 3, 4), ListSet(1, 2, 3, 4, 5)) }
+      "serialize larger list sets" in {
+        roundtrip(ListSet(1, 2), ListSet(1, 2, 3), ListSet(1, 2, 3, 4), ListSet(1, 2, 3, 4, 5))
+      }
       "serialize the empty tree set" in { roundtrip(TreeSet.empty[Int]) }
       "serialize the one-element tree set" in { roundtrip(TreeSet(1)) }
-      "serialize larger tree sets" in { roundtrip(TreeSet(1, 2), TreeSet(1, 2, 3), TreeSet(1, 2, 3, 4), TreeSet(1, 2, 3, 4, 5)) }
+      "serialize larger tree sets" in {
+        roundtrip(TreeSet(1, 2), TreeSet(1, 2, 3), TreeSet(1, 2, 3, 4), TreeSet(1, 2, 3, 4, 5))
+      }
       "serialize a map's key set" in { roundtrip(Map(1 -> 2).keySet) }
       "serialize the empty list" in { roundtrip(Nil) }
       "serialize the one-element list" in { roundtrip(List(1)) }
       "serialize alternative ways to instantiate lists" in { roundtrip(List.empty[Int], 1 :: Nil) }
-      "serialize larger lists" in { roundtrip(List(1, 2), List(1, 2, 3), List(1, 2, 3, 4), List(1, 2, 3, 4, 5)) }
+      "serialize larger lists" in {
+        roundtrip(List(1, 2), List(1, 2, 3), List(1, 2, 3, 4), List(1, 2, 3, 4, 5))
+      }
       "serialize the empty queue" in { roundtrip(Queue.empty[Int]) }
       "serialize the no-elements queue" in { roundtrip(Queue()) }
-      "serialize larger queues" in { roundtrip(Queue(1), Queue(1, 2), Queue(1, 2, 3), Queue(1, 2, 3, 4), Queue(1, 2, 3, 4, 5)) }
+      "serialize larger queues" in {
+        roundtrip(Queue(1), Queue(1, 2), Queue(1, 2, 3), Queue(1, 2, 3, 4), Queue(1, 2, 3, 4, 5))
+      }
       "serialize a range" in { roundtrip(Range(2, 10, 3)) }
-      "serialize vectors" in { roundtrip(Vector(), Vector(1), Vector(1, 2), Vector(1, 2, 3), Vector(1, 2, 3, 4), Vector(1, 2, 3, 4, 5)) }
+      "serialize vectors" in {
+        roundtrip(
+          Vector(),
+          Vector(1),
+          Vector(1, 2),
+          Vector(1, 2, 3),
+          Vector(1, 2, 3, 4),
+          Vector(1, 2, 3, 4, 5)
+        )
+      }
       "serialize the empty stream" in { roundtrip(Stream()) }
       "serialize the one-element stream" in { roundtrip(Stream(1)) }
-      "serialize larger streams" in { roundtrip(Stream(1, 2), Stream(1, 2, 3), Stream(1, 2, 3, 4), Stream(1, 2, 3, 4, 5)) }
+      "serialize larger streams" in {
+        roundtrip(Stream(1, 2), Stream(1, 2, 3), Stream(1, 2, 3, 4), Stream(1, 2, 3, 4, 5))
+      }
       "serialize the options" in { roundtrip(None, Some(1), Option.empty[Int], Option(3)) }
       "serialize the eithers" in { roundtrip(Left(2), Right(4), Left.apply[Int, Int](3)) }
       "serialize the empty array" in { roundtrip(Array()) }

@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
@@ -23,27 +23,28 @@ import _root_.java.lang.Thread
 import org.objenesis.instantiator.ObjectInstantiator
 import org.objenesis.strategy.InstantiatorStrategy
 
-import _root_.java.lang.reflect.{ Constructor, Modifier }
+import _root_.java.lang.reflect.{Constructor, Modifier}
 
-import scala.util.{ Try, Success, Failure }
+import scala.util.{Failure, Success, Try}
 
 /*
  * This is the base class of Kryo we use to fix specific scala
  * related issues discovered (ideally, this should be fixed in Kryo)
  */
 class KryoBase extends Kryo {
-
   lazy val objSer = new ObjectSerializer[AnyRef]
 
   protected var strategy: Option[InstantiatorStrategy] = None
 
   val functions: Iterable[Class[_]] =
-    (0 to 22).map { idx => Class.forName("scala.Function" + idx.toString, true, Thread.currentThread().getContextClassLoader()) }
+    (0 to 22).map { idx =>
+      Class.forName("scala.Function" + idx.toString, true, Thread.currentThread().getContextClassLoader())
+    }
 
   def isFn(klass: Class[_]): Boolean =
     functions.find { _.isAssignableFrom(klass) }.isDefined
 
-  override def newDefaultSerializer(klass: Class[_]): KSerializer[_] = {
+  override def newDefaultSerializer(klass: Class[_]): KSerializer[_] =
     if (isSingleton(klass)) {
       objSer
     } else {
@@ -66,7 +67,6 @@ class KryoBase extends Kryo {
         case x: KSerializer[_] => x
       }
     }
-  }
 
   /**
    * return true if this class is a scala "object"
@@ -96,55 +96,57 @@ class KryoBase extends Kryo {
 
   private[this] def newTypedInstantiator[T](cls: Class[T]) = {
     import Instantiators._
-    newOrElse(cls,
+    newOrElse(
+      cls,
       List(reflectAsm[T](_), normalJava[T](_)),
       // Or fall back on the strategy:
-      tryStrategy(cls).newInstantiatorOf(cls))
+      tryStrategy(cls).newInstantiatorOf(cls)
+    )
   }
 }
 
 object Instantiators {
   // Go through the list and use the first that works
-  def newOrElse[T](cls: Class[T],
-    it: TraversableOnce[Class[T] => Try[ObjectInstantiator[T]]],
-    elsefn: => ObjectInstantiator[T]): ObjectInstantiator[T] = {
+  def newOrElse[T](
+      cls: Class[T],
+      it: TraversableOnce[Class[T] => Try[ObjectInstantiator[T]]],
+      elsefn: => ObjectInstantiator[T]
+  ): ObjectInstantiator[T] =
     // Just go through and try each one,
-
-    it
-      .flatMap { fn =>
+    it.flatMap { fn =>
         fn(cls).toOption
       }
-      .find (_ => true) // first element in traversable once (no headOption defined.)
+      .find(_ => true) // first element in traversable once (no headOption defined.)
       .getOrElse(elsefn)
-  }
 
   // Use call by name:
   def forClass[T](t: Class[T])(fn: () => T): ObjectInstantiator[T] =
     new ObjectInstantiator[T] {
-      override def newInstance() = {
-        try { fn() }
-        catch {
+      override def newInstance() =
+        try {
+          fn()
+        } catch {
           case x: Exception => {
             throw new KryoException("Error constructing instance of class: " + t.getName, x)
           }
         }
-      }
     }
 
   // This one tries reflectasm, which is a fast way of constructing an object
-  def reflectAsm[T](t: Class[T]): Try[ObjectInstantiator[T]] = {
+  def reflectAsm[T](t: Class[T]): Try[ObjectInstantiator[T]] =
     try {
       val access = ConstructorAccess.get(t)
       // Try it once, because this isn't always successful:
       access.newInstance
       // Okay, looks good:
-      Success(forClass(t) { () => access.newInstance() })
+      Success(forClass(t) { () =>
+        access.newInstance()
+      })
     } catch {
       case x: Throwable => Failure(x)
     }
-  }
 
-  def getConstructor[T](c: Class[T]): Constructor[T] = {
+  def getConstructor[T](c: Class[T]): Constructor[T] =
     try {
       c.getConstructor()
     } catch {
@@ -154,14 +156,14 @@ object Instantiators {
         cons
       }
     }
-  }
 
-  def normalJava[T](t: Class[T]): Try[ObjectInstantiator[T]] = {
+  def normalJava[T](t: Class[T]): Try[ObjectInstantiator[T]] =
     try {
       val cons = getConstructor(t)
-      Success(forClass(t) { () => cons.newInstance() })
+      Success(forClass(t) { () =>
+        cons.newInstance()
+      })
     } catch {
       case x: Throwable => Failure(x)
     }
-  }
 }

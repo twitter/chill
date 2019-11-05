@@ -12,12 +12,19 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.algebird
 
-import com.twitter.chill.{ KSerializer, ScalaKryoInstantiator, KryoPool }
-import com.twitter.algebird.{ AveragedValue, DecayedValue, HyperLogLogMonoid, MomentsGroup, AdaptiveVector, QTree }
+import com.twitter.chill.{KSerializer, KryoPool, ScalaKryoInstantiator}
+import com.twitter.algebird.{
+  AdaptiveVector,
+  AveragedValue,
+  DecayedValue,
+  HyperLogLogMonoid,
+  MomentsGroup,
+  QTree
+}
 import org.scalatest._
 
 class AlgebirdSerializersSpec extends WordSpec with Matchers {
@@ -37,7 +44,6 @@ class AlgebirdSerializersSpec extends WordSpec with Matchers {
     //println("bytes: " + new String(bytes, "UTF-8"))
     val result = kryo.fromBytes(bytes).asInstanceOf[X]
     result should equal(x)
-
   }
 
   def roundtripNoEq[X](x: X)(f: X => Any) {
@@ -69,7 +75,8 @@ class AlgebirdSerializersSpec extends WordSpec with Matchers {
 
     "serialize and deserialize HLL" in {
       val sparse = new HyperLogLogMonoid(4).create(Array(-127.toByte))
-      val dense = new HyperLogLogMonoid(4).batchCreate(Seq(-127, 100, 23, 44, 15, 96, 10).map(x => Array(x.toByte)))
+      val dense =
+        new HyperLogLogMonoid(4).batchCreate(Seq(-127, 100, 23, 44, 15, 96, 10).map(x => Array(x.toByte)))
       roundtrip(sparse)
       roundtrip(dense)
     }
@@ -80,6 +87,5 @@ class AlgebirdSerializersSpec extends WordSpec with Matchers {
       roundtrip(sparse)
       roundtrip(dense)
     }
-
   }
 }

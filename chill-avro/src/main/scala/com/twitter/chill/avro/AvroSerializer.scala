@@ -11,12 +11,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.chill.avro
 
 import com.twitter.bijection.Injection
-import com.twitter.bijection.avro.{ GenericAvroCodecs, SpecificAvroCodecs }
-import com.twitter.chill.{ InjectiveSerializer, KSerializer }
+import com.twitter.bijection.avro.{GenericAvroCodecs, SpecificAvroCodecs}
+import com.twitter.chill.{InjectiveSerializer, KSerializer}
 import org.apache.avro.Schema
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.specific.SpecificRecordBase
@@ -28,7 +28,6 @@ import scala.reflect.ClassTag
  * @since 2/9/14.
  */
 object AvroSerializer {
-
   def SpecificRecordSerializer[T <: SpecificRecordBase: ClassTag]: KSerializer[T] = {
     implicit val inj = SpecificAvroCodecs[T]
     InjectiveSerializer.asKryo

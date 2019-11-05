@@ -2,8 +2,8 @@ package com.twitter.chill.java
 
 import java.io.ByteArrayOutputStream
 
-import com.twitter.chill.{ KryoInstantiator, KryoPool }
-import org.scalatest.{ Matchers, WordSpec }
+import com.twitter.chill.{KryoInstantiator, KryoPool}
+import org.scalatest.{Matchers, WordSpec}
 
 class SerDeStateTest extends WordSpec with Matchers {
   "SerDeState" should {

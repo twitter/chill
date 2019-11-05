@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
@@ -23,7 +23,9 @@ class BitSetSerializer extends KSerializer[BitSet] {
     val size = v.size
     o.writeInt(size, true)
     // Duplicates some data, but helps size on the other end:
-    if (size > 0) { o.writeInt(v.max, true) }
+    if (size > 0) {
+      o.writeInt(v.max, true)
+    }
     var previous: Int = -1
     v.foreach { vi =>
       if (previous >= 0) {

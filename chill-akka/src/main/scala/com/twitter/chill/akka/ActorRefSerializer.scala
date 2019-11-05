@@ -1,4 +1,5 @@
 package com.twitter.chill.akka
+
 /**
  * *****************************************************************************
  * Copyright 2012 Roman Levenstein
@@ -16,13 +17,12 @@ package com.twitter.chill.akka
  * limitations under the License.
  * ****************************************************************************
  */
-
-import akka.actor.{ ActorRef, ActorPath, ExtendedActorSystem }
+import akka.actor.{ActorPath, ActorRef, ExtendedActorSystem}
 import akka.serialization.Serialization
-import com.esotericsoftware.kryo.{ Kryo, Serializer }
-import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.{Kryo, Serializer}
+import com.esotericsoftware.kryo.io.{Input, Output}
 
-import com.twitter.chill.{ toRich, IKryoRegistrar }
+import com.twitter.chill.{toRich, IKryoRegistrar}
 
 /**
  * *
@@ -32,20 +32,17 @@ import com.twitter.chill.{ toRich, IKryoRegistrar }
  * @author P. Oscar Boykin
  */
 class ActorRefSerializer(system: ExtendedActorSystem) extends Serializer[ActorRef] with IKryoRegistrar {
-
-  def apply(kryo: Kryo): Unit = {
+  def apply(kryo: Kryo): Unit =
     if (!kryo.alreadyRegistered(classOf[ActorRef])) {
       kryo.forClass[ActorRef](this)
       kryo.forSubclass[ActorRef](this)
     }
-  }
 
   override def read(kryo: Kryo, input: Input, typ: Class[ActorRef]): ActorRef = {
     val path = ActorPath.fromString(input.readString())
     system.provider.resolveActorRef(path)
   }
 
-  override def write(kryo: Kryo, output: Output, obj: ActorRef) = {
+  override def write(kryo: Kryo, output: Output, obj: ActorRef) =
     output.writeString(Serialization.serializedActorPath(obj))
-  }
 }

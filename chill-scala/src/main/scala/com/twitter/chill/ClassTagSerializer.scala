@@ -12,14 +12,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
 import scala.reflect.ClassTag
 
 class ClassTagSerializer[T] extends KSerializer[ClassTag[T]] {
-
   def write(kser: Kryo, out: Output, obj: ClassTag[T]) {
     kser.writeObject(out, obj.runtimeClass)
   }
