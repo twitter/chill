@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.java
 
@@ -25,7 +25,6 @@ import com.esotericsoftware.kryo.io.Output
 import org.objenesis.strategy.StdInstantiatorStrategy
 
 class PriorityQueueSpec extends WordSpec with Matchers {
-
   def rt[A](k: Kryo, a: A): A = {
     val out = new Output(1000, -1)
     k.writeClassAndObject(out, a.asInstanceOf[AnyRef])
@@ -41,7 +40,9 @@ class PriorityQueueSpec extends WordSpec with Matchers {
       kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
       PriorityQueueSerializer.registrar()(kryo)
       new Java8ClosureRegistrar()(kryo)
-      val ord = Ordering.fromLessThan[(Int, Int)] { (l, r) => l._1 < r._1 }
+      val ord = Ordering.fromLessThan[(Int, Int)] { (l, r) =>
+        l._1 < r._1
+      }
       val q = new java.util.PriorityQueue[(Int, Int)](3, ord)
       q.add((2, 3))
       q.add((4, 5))

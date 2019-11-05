@@ -32,7 +32,6 @@ object Globals {
 class CustomSerializationSpec extends WordSpec with Matchers with BaseProperties {
   "Custom KryoSerializers and KryoDeserializers" should {
     "serialize objects that have registered serialization" in {
-
       /* These classes can be inside CustomSerializationSpec since their
        * serialization is precisely specified. */
       case class Point(x: Int, y: Int)
@@ -42,19 +41,16 @@ class CustomSerializationSpec extends WordSpec with Matchers with BaseProperties
       }
 
       // write bijections
-      implicit val pointBijection = Bijection.build[Point, (Int, Int)](
-        Point.unapply(_).get)(
-          (Point.apply _).tupled)
-      implicit val colorBijection = Bijection.build[Color, String](
-        Color.unapply(_).get)(
-          Color.apply)
+      implicit val pointBijection =
+        Bijection.build[Point, (Int, Int)](Point.unapply(_).get)((Point.apply _).tupled)
+      implicit val colorBijection = Bijection.build[Color, String](Color.unapply(_).get)(Color.apply)
       implicit val coloredPointBijection = Bijection.build[ColoredPoint, (Color, Point)](
-        ColoredPoint.unapply(_).get)(
-          (ColoredPoint.apply _).tupled)
+        ColoredPoint.unapply(_).get
+      )((ColoredPoint.apply _).tupled)
 
       val myInst = { () =>
         (new ScalaKryoInstantiator).newKryo
-          // use the implicit bijection by specifying the type
+        // use the implicit bijection by specifying the type
           .forClassViaBijection[Point, (Int, Int)]
           // use an explicit bijection, avoiding specifying the type
           .forClassViaBijection(pointBijection)
@@ -71,14 +67,17 @@ class CustomSerializationSpec extends WordSpec with Matchers with BaseProperties
     "use bijections" in {
       implicit val bij = Bijection.build[TestCaseClassForSerialization, (String, Int)] { s =>
         (s.x, s.y)
-      } { tup => TestCaseClassForSerialization(tup._1, tup._2) }
+      } { tup =>
+        TestCaseClassForSerialization(tup._1, tup._2)
+      }
 
       val inst = { () =>
-        (new ScalaKryoInstantiator)
-          .newKryo
+        (new ScalaKryoInstantiator).newKryo
           .forClassViaBijection[TestCaseClassForSerialization, (String, Int)]
       }
-      rt(inst, TestCaseClassForSerialization("hey", 42)) should equal(TestCaseClassForSerialization("hey", 42))
+      rt(inst, TestCaseClassForSerialization("hey", 42)) should equal(
+        TestCaseClassForSerialization("hey", 42)
+      )
     }
     "Make sure KryoInjection and instances are Java Serializable" in {
       val ki = jrt(KryoInjection)

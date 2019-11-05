@@ -21,9 +21,7 @@ import TestLists._
 import org.scalatest._
 
 class ArraysAsListTest extends WordSpec with Matchers {
-
   "ArraysAsListSerializer" should {
-
     "byte[]" in {
       val list = getList(java.lang.Byte.TYPE)
       list should equal(serializeAndDeserialize(list))

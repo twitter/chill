@@ -12,25 +12,25 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
 import org.scalatest._
-import org.scalatest.matchers.{ Matcher, MatchResult }
+import org.scalatest.matchers.{MatchResult, Matcher}
 
-import scala.collection.immutable.{ SortedSet, BitSet, ListSet, HashSet, SortedMap, ListMap, HashMap }
-import scala.collection.mutable.{ ArrayBuffer => MArrayBuffer, BitSet => MBitSet, HashMap => MHashMap }
+import scala.collection.immutable.{BitSet, HashMap, HashSet, ListMap, ListSet, SortedMap, SortedSet}
+import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, BitSet => MBitSet, HashMap => MHashMap}
 import _root_.java.util.PriorityQueue
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 import scala.reflect._
 
 /*
-* This is just a test case for Kryo to deal with. It should
-* be outside KryoSpec, otherwise the enclosing class, KryoSpec
-* will also need to be serialized
-*/
+ * This is just a test case for Kryo to deal with. It should
+ * be outside KryoSpec, otherwise the enclosing class, KryoSpec
+ * will also need to be serialized
+ */
 case class TestCaseClassForSerialization(x: String, y: Int)
 
 case class TestValMap(map: Map[String, Double])
@@ -52,22 +52,31 @@ trait ExampleUsingSelf { self =>
 case class Foo(m1: Map[String, Int], m2: Map[String, Seq[String]])
 
 class KryoSpec extends WordSpec with Matchers with BaseProperties {
-
   def roundtrip[T] = new Matcher[T] {
-    def apply(t: T) = MatchResult(rtEquiv(t), "successful serialization roundtrip for " + t, "failed serialization roundtrip for " + t)
+    def apply(t: T) =
+      MatchResult(
+        rtEquiv(t),
+        "successful serialization roundtrip for " + t,
+        "failed serialization roundtrip for " + t
+      )
   }
 
   def getKryo = KryoSerializer.registered.newKryo
 
   "KryoSerializers and KryoDeserializers" should {
     "round trip any non-array object" in {
-      val test = List(1, 2, "hey", (1, 2),
+      val test = List(
+        1,
+        2,
+        "hey",
+        (1, 2),
         ("hey", "you"),
         ("slightly", 1L, "longer", 42, "tuple"),
         Foo(Map("1" -> 1), Map("1" -> Seq("foo.com"))),
         Map(1 -> 2, 4 -> 5),
         0 to 100,
-        (0 to 42).toList, Seq(1, 100, 1000),
+        (0 to 42).toList,
+        Seq(1, 100, 1000),
         Right(Map("hello" -> 100)),
         Left(Map(1 -> "YO!")),
         Some(Left(10)),
@@ -80,16 +89,21 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
         SortedSet[Long](),
         SortedSet(1L, 2L, 3L, 4L),
         BitSet(),
-        BitSet((0 until 1000).map{ x: Int => x * x }: _*),
+        BitSet((0 until 1000).map { x: Int =>
+          x * x
+        }: _*),
         MBitSet(),
-        MBitSet((0 until 1000).map{ x: Int => x * x }: _*),
+        MBitSet((0 until 1000).map { x: Int =>
+          x * x
+        }: _*),
         SortedMap[Long, String](),
         SortedMap("b" -> 2, "a" -> 1),
         ListMap("good" -> 0.5, "bad" -> -1.0),
         HashMap("good" -> 0.5, "bad" -> -1.0),
         TestCaseClassForSerialization("case classes are: ", 10),
-        TestValMap(Map("you" -> 1.0, "every" -> 2.0, "body" -> 3.0, "a" -> 1.0,
-          "b" -> 2.0, "c" -> 3.0, "d" -> 4.0)),
+        TestValMap(
+          Map("you" -> 1.0, "every" -> 2.0, "body" -> 3.0, "a" -> 1.0, "b" -> 2.0, "c" -> 3.0, "d" -> 4.0)
+        ),
         TestValHashMap(HashMap("you" -> 1.0)),
         TestVarArgs("hey", "you", "guys"),
         implicitly[ClassTag[(Int, Int)]],
@@ -102,8 +116,8 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
         new _root_.java.util.HashMap[Int, Int](Map(1 -> 2, 3 -> 4).asJava).asScala,
         (),
         'hai,
-        BigDecimal(1000.24))
-        .asInstanceOf[List[AnyRef]]
+        BigDecimal(1000.24)
+      ).asInstanceOf[List[AnyRef]]
 
       test.foreach { _ should roundtrip }
     }
@@ -150,7 +164,8 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       val tests = Seq(
         Array((1, 1), (2, 2), (3, 3)).toSeq,
         Array((1.0, 1.0), (2.0, 2.0)).toSeq,
-        Array((1.0, "1.0"), (2.0, "2.0")).toSeq)
+        Array((1.0, "1.0"), (2.0, "2.0")).toSeq
+      )
       tests.foreach { _ should roundtrip }
     }
     "handle lists of lists" in {
@@ -166,7 +181,9 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       val list2 = rt(bigList)
       list2.size should equal(bigList.size)
       //Specs, it turns out, also doesn't deal with giant lists well:
-      list2.zip(bigList).foreach { tup => tup._1 should equal(tup._2) }
+      list2.zip(bigList).foreach { tup =>
+        tup._1 should equal(tup._2)
+      }
     }
     "handle scala enums" in {
       WeekDay.values.foreach { _ should roundtrip }
@@ -176,30 +193,32 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       col should roundtrip
     }
     "use java serialization" in {
-      val kinst = { () => getKryo.javaForClass[TestCaseClassForSerialization] }
+      val kinst = { () =>
+        getKryo.javaForClass[TestCaseClassForSerialization]
+      }
       rtEquiv(kinst, TestCaseClassForSerialization("hey", 42)) should equal(true)
     }
     "work with Meatlocker" in {
       val l = List(1, 2, 3)
       val ml = MeatLocker(l)
-      jrt(ml).get should equal (l)
+      jrt(ml).get should equal(l)
     }
     "work with Externalizer" in {
       val l = List(1, 2, 3)
       val ext = Externalizer(l)
       ext.javaWorks should equal(true)
-      jrt(ext).get should equal (l)
+      jrt(ext).get should equal(l)
     }
     "work with Externalizer with non-java-ser" in {
       val l = new SomeRandom(3)
       val ext = Externalizer(l)
       ext.javaWorks should equal(false)
-      jrt(ext).get.x should equal (l.x)
+      jrt(ext).get.x should equal(l.x)
     }
     "Externalizer can RT with Kryo" in {
       val l = new SomeRandom(10)
       val ext = Externalizer(l)
-      rt(ext).get.x should equal (l.x)
+      rt(ext).get.x should equal(l.x)
     }
     "handle Regex" in {
       val test = """\bhilarious""".r
@@ -239,14 +258,18 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
         kryo.setRegistrationRequired(true)
         kryo
       }
-      val obj0 = mutable.Map(4 -> mutable.Set("house1", "house2"),
+      val obj0 = mutable.Map(
+        4 -> mutable.Set("house1", "house2"),
         1 -> mutable.Set("name3", "name4", "name1", "name2"),
-        0 -> mutable.Set(1, 2, 3, 4))
+        0 -> mutable.Set(1, 2, 3, 4)
+      )
 
       // Make sure to make a totally separate map to check equality with
-      val obj1 = mutable.Map(4 -> mutable.Set("house1", "house2"),
+      val obj1 = mutable.Map(
+        4 -> mutable.Set("house1", "house2"),
         1 -> mutable.Set("name3", "name4", "name1", "name2"),
-        0 -> mutable.Set(1, 2, 3, 4))
+        0 -> mutable.Set(1, 2, 3, 4)
+      )
 
       rtEquiv(inst, obj0) should equal(true)
     }
@@ -286,7 +309,9 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
     }
     "Handle Ordering.reverse" in {
       // This is exercising the synthetic field serialization in 2.10
-      val ord = Ordering.fromLessThan[(Int, Int)] { (l, r) => l._1 < r._1 }
+      val ord = Ordering.fromLessThan[(Int, Int)] { (l, r) =>
+        l._1 < r._1
+      }
       // Now with a reverse ordering:
       val qr = new PriorityQueue[(Int, Int)](3, ord.reverse)
       qr.add((2, 3))

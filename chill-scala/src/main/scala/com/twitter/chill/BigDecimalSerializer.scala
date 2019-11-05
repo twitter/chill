@@ -12,11 +12,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
-import _root_.java.math.{ BigDecimal => JBigDecimal }
+import _root_.java.math.{BigDecimal => JBigDecimal}
 import _root_.scala.math.BigDecimal
 
 private class BigDecimalSerializer extends KSerializer[BigDecimal] {
@@ -25,7 +25,6 @@ private class BigDecimalSerializer extends KSerializer[BigDecimal] {
     BigDecimal(jBigDec)
   }
 
-  override def write(kryo: Kryo, output: Output, obj: BigDecimal): Unit = {
+  override def write(kryo: Kryo, output: Output, obj: BigDecimal): Unit =
     kryo.writeClassAndObject(output, obj.bigDecimal)
-  }
 }

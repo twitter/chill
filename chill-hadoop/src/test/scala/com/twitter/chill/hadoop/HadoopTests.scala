@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.hadoop
 
@@ -24,7 +24,7 @@ import com.esotericsoftware.kryo.io.Output;
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
-import java.io.{ ByteArrayOutputStream => BAOut, ByteArrayInputStream => BAIn }
+import java.io.{ByteArrayOutputStream => BAOut, ByteArrayInputStream => BAIn}
 import org.apache.hadoop.conf.Configuration;
 
 import com.twitter.chill.config.ConfiguredInstantiator;

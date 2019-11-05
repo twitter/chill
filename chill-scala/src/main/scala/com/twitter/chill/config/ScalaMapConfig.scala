@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.config
 
@@ -30,11 +30,10 @@ class ScalaMapConfig(in: Map[String, String]) extends Config {
   def toMap: Map[String, String] = conf
 
   def get(k: String) = conf.getOrElse(k, null)
-  def set(k: String, v: String): Unit = {
+  def set(k: String, v: String): Unit =
     if (null == v) {
       conf -= k
     } else {
       conf += k -> v
     }
-  }
 }

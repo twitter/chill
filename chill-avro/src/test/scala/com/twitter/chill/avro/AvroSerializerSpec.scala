@@ -11,11 +11,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.chill.avro
 
 import org.scalatest._
-import com.twitter.chill.{ KSerializer, ScalaKryoInstantiator, KryoPool }
+import com.twitter.chill.{KSerializer, KryoPool, ScalaKryoInstantiator}
 import avro.FiscalRecord
 import org.apache.avro.generic.GenericRecordBuilder
 import org.apache.avro.SchemaBuilder
@@ -28,10 +28,9 @@ import scala.reflect.ClassTag
  * @since 2/9/14.
  */
 class AvroSerializerSpec extends WordSpec with Matchers {
-
   def getKryo[T: ClassTag](k: KSerializer[T]) = {
-    val inst = {
-      () => (new ScalaKryoInstantiator).newKryo.forClass(k)
+    val inst = { () =>
+      (new ScalaKryoInstantiator).newKryo.forClass(k)
     }
     KryoPool.withByteArrayOutputStream(1, inst)
   }
@@ -39,8 +38,14 @@ class AvroSerializerSpec extends WordSpec with Matchers {
   val schema = SchemaBuilder
     .record("person")
     .fields
-    .name("name").`type`().stringType().noDefault()
-    .name("ID").`type`().intType().noDefault()
+    .name("name")
+    .`type`()
+    .stringType()
+    .noDefault()
+    .name("ID")
+    .`type`()
+    .intType()
+    .noDefault()
     .endRecord
 
   // Build an object conforming to the schema
@@ -49,7 +54,8 @@ class AvroSerializerSpec extends WordSpec with Matchers {
     .set("ID", 1)
     .build
 
-  val testRecord = FiscalRecord.newBuilder().setCalendarDate("2012-01-01").setFiscalWeek(1).setFiscalYear(2012).build()
+  val testRecord =
+    FiscalRecord.newBuilder().setCalendarDate("2012-01-01").setFiscalWeek(1).setFiscalYear(2012).build()
 
   "SpecificRecordSerializer" should {
     "Serialize and Deserialize Avro Record" in {

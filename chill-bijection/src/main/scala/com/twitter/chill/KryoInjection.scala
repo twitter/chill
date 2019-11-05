@@ -12,11 +12,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
-import com.twitter.bijection.{ Bijection, Injection, Inversion }
+import com.twitter.bijection.{Bijection, Injection, Inversion}
 
 import _root_.java.io.Serializable
 
@@ -57,7 +57,9 @@ class KryoInjectionInstance(lazyKryoP: => KryoPool) extends Injection[Any, Array
   @transient private var kpool: KryoPool = null
 
   private def kryoP: KryoPool = mutex.synchronized {
-    if (null == kpool) { kpool = lazyKryoP }
+    if (null == kpool) {
+      kpool = lazyKryoP
+    }
     kpool
   }
 

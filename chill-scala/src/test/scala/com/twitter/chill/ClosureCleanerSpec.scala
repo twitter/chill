@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
@@ -30,7 +30,9 @@ class ClosureCleanerSpec extends WordSpec with Matchers {
       myList should equal(List(1, 2, 3))
     }
     "clean actual closures" in {
-      val myFun = { x: Int => x * 2 }
+      val myFun = { x: Int =>
+        x * 2
+      }
 
       ClosureCleaner(myFun)
       myFun(1) should equal(2)
@@ -43,7 +45,6 @@ class ClosureCleanerSpec extends WordSpec with Matchers {
     }
 
     "handle outers with constructors" in {
-
       class Test(x: String) {
         val l = x.size
         def rev(y: String) = (x + y).size
@@ -63,7 +64,9 @@ class ClosureCleanerSpec extends WordSpec with Matchers {
     }
     "Handle captured vals" in {
       val answer = 42
-      val fn = { x: Int => answer * x }
+      val fn = { x: Int =>
+        answer * x
+      }
       ClosureCleaner(fn)
       fn(10) should equal(420)
     }

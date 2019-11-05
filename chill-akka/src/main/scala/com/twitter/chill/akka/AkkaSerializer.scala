@@ -12,11 +12,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.akka
 
-import akka.actor.{ ExtendedActorSystem, ActorRef }
+import akka.actor.{ActorRef, ExtendedActorSystem}
 import akka.serialization.Serializer
 
 import com.twitter.chill._
@@ -43,7 +43,6 @@ import com.twitter.chill.config.ConfiguredInstantiator
  * Kryo is not thread-safe so we use an object pool to avoid over allocating.
  */
 class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
-
   /**
    * You can override this to easily change your serializers.
    * If you do so, make sure to change the config to use the name of

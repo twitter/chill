@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
@@ -22,7 +22,7 @@ import scala.collection.immutable.BitSet
 import scala.collection.immutable.ListMap
 import scala.collection.immutable.HashMap
 
-import scala.collection.mutable.{ ArrayBuffer => MArrayBuffer, HashMap => MHashMap }
+import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
 import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
 import scala.collection.mutable
@@ -52,7 +52,6 @@ class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
       val ext2 = Externalizer(nonJavaSer)
       jrt(ext2).get(0).x should equal(2)
       ext2.javaWorks should equal(false)
-
     }
 
     "Externalizer handle circular references with kryo only serialzable objects" in {
@@ -63,7 +62,7 @@ class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
       l3.update(1, new ExtSomeRandom(3)) // make a loop
       (l3(0) eq ext3) should equal(true)
       ext3.javaWorks should equal(false)
-      (jrt(ext3).get)(1).asInstanceOf[ExtSomeRandom].x should equal (l3(1).asInstanceOf[ExtSomeRandom].x)
+      (jrt(ext3).get)(1).asInstanceOf[ExtSomeRandom].x should equal(l3(1).asInstanceOf[ExtSomeRandom].x)
     }
 
     "Externalizer circular reference with scala tuples(java and kryo Serializable" in {
@@ -73,8 +72,8 @@ class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
       l4.update(1, (3, 7)) // make a loop
       (l4(0) eq ext4) should equal(true)
       ext4.javaWorks should equal(true)
-      (rt(ext4).get)(1) should equal (l4(1))
-      (jrt(ext4).get)(1) should equal (l4(1))
+      (rt(ext4).get)(1) should equal(l4(1))
+      (jrt(ext4).get)(1) should equal(l4(1))
     }
 
     "Externalizer handle circular references with non Kryo Serializable members" in {
@@ -85,7 +84,7 @@ class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
       (l4(0) eq ext4) should equal(true)
       ext4.javaWorks should equal(true)
       (rt(new EmptyScalaKryoInstantiator(), ext4).get)(1)
-      (jrt(ext4).get)(1) should equal (l4(1))
+      (jrt(ext4).get)(1) should equal(l4(1))
     }
   }
 }

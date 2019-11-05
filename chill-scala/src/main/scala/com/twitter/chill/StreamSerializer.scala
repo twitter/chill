@@ -5,7 +5,6 @@ class StreamSerializer[T]() extends KSerializer[Stream[T]] {
     kser.writeClassAndObject(out, stream.toList)
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[Stream[T]]): Stream[T] = {
+  def read(kser: Kryo, in: Input, cls: Class[Stream[T]]): Stream[T] =
     kser.readClassAndObject(in).asInstanceOf[List[T]].toStream
-  }
 }

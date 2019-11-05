@@ -12,16 +12,27 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
 class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
-
-  val singletons: IndexedSeq[Manifest[_]] = IndexedSeq(Manifest.Any, Manifest.AnyVal,
-    Manifest.Boolean, Manifest.Byte, Manifest.Char, Manifest.Double, Manifest.Float,
-    Manifest.Int, Manifest.Long, Manifest.Nothing, Manifest.Null, Manifest.Object,
-    Manifest.Short, Manifest.Unit)
+  val singletons: IndexedSeq[Manifest[_]] = IndexedSeq(
+    Manifest.Any,
+    Manifest.AnyVal,
+    Manifest.Boolean,
+    Manifest.Byte,
+    Manifest.Char,
+    Manifest.Double,
+    Manifest.Float,
+    Manifest.Int,
+    Manifest.Long,
+    Manifest.Nothing,
+    Manifest.Null,
+    Manifest.Object,
+    Manifest.Short,
+    Manifest.Unit
+  )
 
   val singletonToIdx = singletons.zipWithIndex.toMap
 
@@ -52,7 +63,9 @@ class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
         Manifest.classType(clazz)
       } else {
         // We don't need to know the cls:
-        val typeArgs = (0 until targsCnt).map { _ => read(kser, in, null) }
+        val typeArgs = (0 until targsCnt).map { _ =>
+          read(kser, in, null)
+        }
         Manifest.classType(clazz, typeArgs.head, typeArgs.tail: _*)
       }
     } else {
