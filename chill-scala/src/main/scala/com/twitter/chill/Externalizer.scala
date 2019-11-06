@@ -12,22 +12,22 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.chill
 
 import _root_.java.io.{
-  ByteArrayOutputStream,
   ByteArrayInputStream,
+  ByteArrayOutputStream,
   Externalizable,
   ObjectInput,
-  ObjectOutput,
   ObjectInputStream,
+  ObjectOutput,
   ObjectOutputStream
 }
 
 import com.esotericsoftware.kryo.serializers.JavaSerializer
 import com.esotericsoftware.kryo.DefaultSerializer
-import _root_.java.util.concurrent.atomic.{ AtomicBoolean, AtomicReference }
+import _root_.java.util.concurrent.atomic.{AtomicBoolean, AtomicReference}
 import com.esotericsoftware.kryo.KryoSerializable
 
 object Externalizer {
@@ -59,7 +59,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
   // No vals or var's below this line!
 
   def getOption: Option[T] = item match {
-    case Left(e) => e.getOption
+    case Left(e)  => e.getOption
     case Right(i) => i
   }
 
@@ -70,14 +70,13 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
    * you are going to control how the serialization is done.
    * Use the companion object to creat new instances of this
    */
-  def set(it: T): Unit = {
+  def set(it: T): Unit =
     item match {
       case Left(e) => e.set(it)
       case Right(x) =>
         assert(x.isEmpty, "Tried to call .set on an already constructed Externalizer")
         item = Right(Some(it))
     }
-  }
 
   /**
    * Override this to configure Kryo creation with a named subclass,
@@ -97,7 +96,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
   def javaWorks: Boolean =
     doesJavaWork.get match {
       case Some(v) => v
-      case None => probeJavaWorks
+      case None    => probeJavaWorks
     }
 
   /**
@@ -119,7 +118,9 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
       case t: Throwable =>
         Option(System.getenv.get("CHILL_EXTERNALIZER_DEBUG"))
           .filter(_.toBoolean)
-          .foreach { _ => t.printStackTrace }
+          .foreach { _ =>
+            t.printStackTrace
+          }
         doesJavaWork.set(Some(false))
         false
     } finally {
@@ -127,7 +128,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
     }
   }
 
-  private def safeToBytes(kryo: KryoInstantiator): Option[Array[Byte]] = {
+  private def safeToBytes(kryo: KryoInstantiator): Option[Array[Byte]] =
     try {
       val kpool = KryoPool.withByteArrayOutputStream(1, kryo)
       val bytes = kpool.toBytesWithClass(getOption)
@@ -136,12 +137,14 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
       case t: Throwable =>
         Option(System.getenv.get("CHILL_EXTERNALIZER_DEBUG"))
           .filter(_.toBoolean)
-          .foreach { _ => t.printStackTrace }
+          .foreach { _ =>
+            t.printStackTrace
+          }
         None
     }
-  }
   private def fromBytes(b: Array[Byte], kryo: KryoInstantiator): Option[T] =
-    KryoPool.withByteArrayOutputStream(1, kryo)
+    KryoPool
+      .withByteArrayOutputStream(1, kryo)
       .fromBytes(b)
       .asInstanceOf[Option[T]]
 
@@ -169,18 +172,22 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
   protected def writeKryo(out: ObjectOutput): Boolean = writeKryo(out, kryo)
 
   protected def writeKryo(out: ObjectOutput, kryo: KryoInstantiator): Boolean =
-    safeToBytes(kryo).map { bytes =>
-      out.write(KRYO)
-      out.writeInt(bytes.size)
-      out.write(bytes)
-      true
-    }.getOrElse(false)
+    safeToBytes(kryo)
+      .map { bytes =>
+        out.write(KRYO)
+        out.writeInt(bytes.size)
+        out.write(bytes)
+        true
+      }
+      .getOrElse(false)
 
   private def maybeWriteJavaKryo(out: ObjectOutput, kryo: KryoInstantiator) {
     writeJava(out) || writeKryo(out, kryo) || {
       val inner = get
-      sys.error("Neither Java nor Kryo works for class: %s instance: %s\nexport CHILL_EXTERNALIZER_DEBUG=true to see both stack traces"
-        .format(inner.getClass, inner))
+      sys.error(
+        "Neither Java nor Kryo works for class: %s instance: %s\nexport CHILL_EXTERNALIZER_DEBUG=true to see both stack traces"
+          .format(inner.getClass, inner)
+      )
     }
   }
 
@@ -215,5 +222,4 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
         if (!(z eq this)) item = Left(z)
     }
   }
-
 }

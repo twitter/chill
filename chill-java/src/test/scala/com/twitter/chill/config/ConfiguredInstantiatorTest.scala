@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.config
 
@@ -48,7 +48,7 @@ class ReflectingInstantiatorTest extends WordSpec with Matchers {
       ConfiguredInstantiator.setSerialized(conf, new TestInstTwo)
       val cci3 = new ConfiguredInstantiator(conf)
       cci3.getDelegate.getClass should equal(classOf[TestInstTwo])
-      cci3.getDelegate should not equal (cci2.getDelegate)
+      (cci3.getDelegate should not).equal(cci2.getDelegate)
     }
   }
 }
@@ -56,7 +56,7 @@ class ReflectingInstantiatorTest extends WordSpec with Matchers {
 object ConfiguredInstantiatorProperties extends Properties("ConfiguredInstantiator") {
   property("properly split keys") = forAll { (str: String) =>
     ConfiguredInstantiator.fastSplitKey(str) match {
-      case null => str.split(":").length > 2
+      case null    => str.split(":").length > 2
       case success => success.mkString(":") == str
     }
   }

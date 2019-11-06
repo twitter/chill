@@ -16,8 +16,8 @@
 
 package com.twitter.chill.protobuf
 
-import com.twitter.chill.{ KryoPool, KryoInstantiator }
-import com.twitter.chill.protobuf.TestMessages.{ FatigueCount }
+import com.twitter.chill.{KryoInstantiator, KryoPool}
+import com.twitter.chill.protobuf.TestMessages.{FatigueCount}
 
 import com.esotericsoftware.kryo.Kryo
 
@@ -27,7 +27,8 @@ import org.scalatest._
 
 class ProtobufTest extends WordSpec with Matchers {
   def buildFatigueCount(target: Long, id: Long, count: Int, recentClicks: List[Long]) = {
-    val bldr = FatigueCount.newBuilder()
+    val bldr = FatigueCount
+      .newBuilder()
       .setTargetId(target)
       .setSuggestedId(id)
       .setServeCount(count)
@@ -46,7 +47,8 @@ class ProtobufTest extends WordSpec with Matchers {
     })
 
     kpool.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))) should equal(
-      buildFatigueCount(12L, -1L, 42, List(1L, 2L)))
+      buildFatigueCount(12L, -1L, 42, List(1L, 2L))
+    )
 
     // Without the protobuf serializer, this fails:
     val kpoolBusted = KryoPool.withByteArrayOutputStream(1, new KryoInstantiator)

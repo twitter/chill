@@ -12,12 +12,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.akka
 
-import com.twitter.chill.config.{ Config => ChillConfig }
-import com.typesafe.config.{ Config => TypesafeConfig }
+import com.twitter.chill.config.{Config => ChillConfig}
+import com.typesafe.config.{Config => TypesafeConfig}
 import com.typesafe.config.ConfigFactory
 
 import scala.util.Try
@@ -32,10 +32,12 @@ class AkkaConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
     Try(typesafeConfig.getString(key)).toOption.orNull
 
   def set(key: String, value: String) {
-    typesafeConfig = Option(value).map { v =>
-      ConfigFactory.parseString("%s = \"%s\"".format(key, v))
-        .withFallback(typesafeConfig)
-    }
+    typesafeConfig = Option(value)
+      .map { v =>
+        ConfigFactory
+          .parseString("%s = \"%s\"".format(key, v))
+          .withFallback(typesafeConfig)
+      }
       .getOrElse(typesafeConfig.withoutPath(key))
   }
 }

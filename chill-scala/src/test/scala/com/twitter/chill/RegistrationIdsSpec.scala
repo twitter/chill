@@ -1,6 +1,6 @@
 package com.twitter.chill
 
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 class RegistrationIdsSpec extends WordSpec with Matchers {
   """
@@ -16,32 +16,32 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
       val compatibility = classOf[AllScalaRegistrar_0_9_2].getSimpleName
       (s"be as expected for the backward compatibility layer $compatibility,\n" +
         "  i.e. contain the list of registrations defined in this test.").in {
-          val k = new KryoBase
-          new AllScalaRegistrar_0_9_2().apply(k)
-          if (registeredEntries(k) != expectedEntries_0_9_2) printMessageFor(k, compatibility)
-          assert(registeredEntries(k) == expectedEntries_0_9_2)
-        }
+        val k = new KryoBase
+        new AllScalaRegistrar_0_9_2().apply(k)
+        if (registeredEntries(k) != expectedEntries_0_9_2) printMessageFor(k, compatibility)
+        assert(registeredEntries(k) == expectedEntries_0_9_2)
+      }
 
       val current = classOf[AllScalaRegistrar].getSimpleName
       (s"be as expected for the current $current,\n" +
         "  i.e. contain the list of registrations defined in this test.").in {
-          val k = new KryoBase
-          new AllScalaRegistrar().apply(k)
-          if (registeredEntries(k) != expectedEntries_current) printMessageFor(k, current)
-          assert(registeredEntries(k) == expectedEntries_current)
-        }
+        val k = new KryoBase
+        new AllScalaRegistrar().apply(k)
+        if (registeredEntries(k) != expectedEntries_current) printMessageFor(k, current)
+        assert(registeredEntries(k) == expectedEntries_current)
+      }
     }
 
   private def registeredEntries(k: KryoBase) =
-    Stream.from(0)
+    Stream
+      .from(0)
       .map(k.getRegistration)
       .takeWhile(_ != null)
       .map(r => s"${r.getId} -> ${r.getType}")
       .mkString("\n")
 
   private def printMessageFor(k: KryoBase, scope: String): Unit =
-    System.err.println(
-      s"""\n\n
+    System.err.println(s"""\n\n
          |This test ($getClass)
          |will fail for $scope, most probably because the order of
          |registration IDs has changed or a registration was added or
@@ -144,8 +144,8 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
       |89 -> class java.util.Collections$UnmodifiableSet
       |90 -> class java.util.Collections$UnmodifiableSortedMap
       |91 -> class java.util.Collections$UnmodifiableSortedSet
-      |92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure"""
-      .stripMargin.lines.mkString("\n")
+      |92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure""".stripMargin.lines
+      .mkString("\n")
 
   private def expectedEntries_recent =
     """93 -> class [B
@@ -203,8 +203,8 @@ class RegistrationIdsSpec extends WordSpec with Matchers {
       |145 -> class scala.collection.immutable.Queue$EmptyQueue$
       |146 -> class scala.collection.immutable.MapLike$$anon$1
       |147 -> class scala.collection.immutable.MapLike$$anon$2
-      |148 -> class scala.collection.immutable.MapLike$ImmutableDefaultKeySet"""
-      .stripMargin.lines.mkString("\n")
+      |148 -> class scala.collection.immutable.MapLike$ImmutableDefaultKeySet""".stripMargin.lines
+      .mkString("\n")
 
   private def expectedEntries_current =
     (expectedEntries_0_9_2.lines ++ expectedEntries_recent.lines).mkString("\n")

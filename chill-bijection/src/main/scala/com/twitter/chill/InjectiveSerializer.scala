@@ -11,7 +11,6 @@ import com.twitter.bijection.Injection
  * This KryoSerializer extension delegates the actual serialization to
  * an instance of Injection[T,Array[Byte]].
  */
-
 object InjectiveSerializer {
   // Importing this implicit into scope will allow bijections to be
   // registered as Kryo Serializers, given an instance of Kryo.
@@ -19,7 +18,9 @@ object InjectiveSerializer {
     new InjectiveSerializer(injection)
 }
 
-class InjectiveSerializer[T] private (injection: Injection[T, Array[Byte]]) extends KSerializer[T] with Serializable {
+class InjectiveSerializer[T] private (injection: Injection[T, Array[Byte]])
+    extends KSerializer[T]
+    with Serializable {
   def write(kser: Kryo, out: Output, obj: T) {
     val bytes = injection(obj)
     out.writeInt(bytes.length, true)
