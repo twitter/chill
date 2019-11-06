@@ -1,6 +1,6 @@
 package com.twitter.chill
 
-import _root_.java.lang.{ Iterable => JIterable }
+import _root_.java.lang.{Iterable => JIterable}
 
 /**
  * A Kryo serializer for serializing results returned by asJavaIterable.
@@ -11,10 +11,9 @@ import _root_.java.lang.{ Iterable => JIterable }
  * Ported from Apache Spark's KryoSerializer.scala.
  */
 private class JavaIterableWrapperSerializer extends KSerializer[JIterable[_]] {
-
   import JavaIterableWrapperSerializer._
 
-  override def write(kryo: Kryo, out: Output, obj: JIterable[_]): Unit = {
+  override def write(kryo: Kryo, out: Output, obj: JIterable[_]): Unit =
     // If the object is the wrapper, simply serialize the underlying Scala Iterable object.
     // Otherwise, serialize the object itself.
     if (obj.getClass == wrapperClass && underlyingMethodOpt.isDefined) {
@@ -22,16 +21,14 @@ private class JavaIterableWrapperSerializer extends KSerializer[JIterable[_]] {
     } else {
       kryo.writeClassAndObject(out, obj)
     }
-  }
 
-  override def read(kryo: Kryo, in: Input, clz: Class[JIterable[_]]): JIterable[_] = {
+  override def read(kryo: Kryo, in: Input, clz: Class[JIterable[_]]): JIterable[_] =
     kryo.readClassAndObject(in) match {
       case scalaIterable: Iterable[_] =>
         scala.collection.JavaConversions.asJavaIterable(scalaIterable)
       case javaIterable: JIterable[_] =>
         javaIterable
     }
-  }
 }
 
 private object JavaIterableWrapperSerializer {
@@ -40,7 +37,8 @@ private object JavaIterableWrapperSerializer {
 
   // Get the underlying method so we can use it to get the Scala collection for serialization.
   private val underlyingMethodOpt = {
-    try Some(wrapperClass.getDeclaredMethod("underlying")) catch {
+    try Some(wrapperClass.getDeclaredMethod("underlying"))
+    catch {
       case e: Exception =>
         None
     }

@@ -12,15 +12,39 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
-import scala.collection.immutable.{ BitSet, HashMap, HashSet, ListMap, ListSet, NumericRange, Queue, Range, SortedMap, SortedSet, TreeMap, TreeSet, WrappedString }
-import scala.collection.mutable.{ Buffer, ListBuffer, WrappedArray, BitSet => MBitSet, HashMap => MHashMap, HashSet => MHashSet, Map => MMap, Queue => MQueue, Set => MSet }
+import scala.collection.immutable.{
+  BitSet,
+  HashMap,
+  HashSet,
+  ListMap,
+  ListSet,
+  NumericRange,
+  Queue,
+  Range,
+  SortedMap,
+  SortedSet,
+  TreeMap,
+  TreeSet,
+  WrappedString
+}
+import scala.collection.mutable.{
+  Buffer,
+  ListBuffer,
+  WrappedArray,
+  BitSet => MBitSet,
+  HashMap => MHashMap,
+  HashSet => MHashSet,
+  Map => MMap,
+  Queue => MQueue,
+  Set => MSet
+}
 import scala.util.matching.Regex
 
-import com.twitter.chill.java.{ Java8ClosureRegistrar, PackageRegistrar }
+import com.twitter.chill.java.{Java8ClosureRegistrar, PackageRegistrar}
 import _root_.java.io.Serializable
 
 import scala.collection.JavaConverters._
@@ -102,7 +126,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
      * default serializers. The FIRST one found is the one used
      */
     newK
-      // wrapper array is abstract
+    // wrapper array is abstract
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
       .forSubclass[SortedSet[Any]](new SortedSetSerializer)
@@ -134,9 +158,9 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       // default map implementation
       .forConcreteTraversableClass(HashMap[Any, Any]('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e))
       // The normal fields serializer works for ranges
-      .registerClasses(Seq(classOf[Range.Inclusive],
-        classOf[NumericRange.Inclusive[_]],
-        classOf[NumericRange.Exclusive[_]]))
+      .registerClasses(
+        Seq(classOf[Range.Inclusive], classOf[NumericRange.Inclusive[_]], classOf[NumericRange.Exclusive[_]])
+      )
       // Add some maps
       .forSubclass[SortedMap[Any, Any]](new SortedMapSerializer)
       .forTraversableSubclass(ListMap.empty[Any, Any])
@@ -168,10 +192,10 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
     k.forClass[Symbol](new KSerializer[Symbol] {
-      override def isImmutable = true
-      def write(k: Kryo, out: Output, obj: Symbol) { out.writeString(obj.name) }
-      def read(k: Kryo, in: Input, cls: Class[Symbol]) = Symbol(in.readString)
-    })
+        override def isImmutable = true
+        def write(k: Kryo, out: Output, obj: Symbol) { out.writeString(obj.name) }
+        def read(k: Kryo, in: Input, cls: Class[Symbol]) = Symbol(in.readString)
+      })
       .forSubclass[Regex](new RegexSerializer)
       .forClass[ClassTag[Any]](new ClassTagSerializer[Any])
       .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
@@ -197,46 +221,49 @@ class AllScalaRegistrar extends IKryoRegistrar {
   def apply(k: Kryo) {
     new AllScalaRegistrar_0_9_2()(k)
 
-    k.registerClasses(Seq(
-      classOf[Array[Byte]],
-      classOf[Array[Short]],
-      classOf[Array[Int]],
-      classOf[Array[Long]],
-      classOf[Array[Float]],
-      classOf[Array[Double]],
-      classOf[Array[Boolean]],
-      classOf[Array[Char]],
-      classOf[Array[String]],
-      classOf[Array[Any]],
-      classOf[Class[_]], // needed for the WrappedArraySerializer
-      classOf[Any], // needed for scala.collection.mutable.WrappedArray$ofRef
-      mutable.WrappedArray.make(Array[Byte]()).getClass,
-      mutable.WrappedArray.make(Array[Short]()).getClass,
-      mutable.WrappedArray.make(Array[Int]()).getClass,
-      mutable.WrappedArray.make(Array[Long]()).getClass,
-      mutable.WrappedArray.make(Array[Float]()).getClass,
-      mutable.WrappedArray.make(Array[Double]()).getClass,
-      mutable.WrappedArray.make(Array[Boolean]()).getClass,
-      mutable.WrappedArray.make(Array[Char]()).getClass,
-      mutable.WrappedArray.make(Array[String]()).getClass,
-      None.getClass,
-      classOf[Queue[_]],
-      Nil.getClass,
-      classOf[::[_]],
-      classOf[Range],
-      classOf[WrappedString],
-      classOf[TreeSet[_]],
-      classOf[TreeMap[_, _]],
-      // The most common orderings for TreeSet and TreeMap
-      Ordering.Byte.getClass,
-      Ordering.Short.getClass,
-      Ordering.Int.getClass,
-      Ordering.Long.getClass,
-      Ordering.Float.getClass,
-      Ordering.Double.getClass,
-      Ordering.Boolean.getClass,
-      Ordering.Char.getClass,
-      Ordering.String.getClass))
+    k.registerClasses(
+        Seq(
+          classOf[Array[Byte]],
+          classOf[Array[Short]],
+          classOf[Array[Int]],
+          classOf[Array[Long]],
+          classOf[Array[Float]],
+          classOf[Array[Double]],
+          classOf[Array[Boolean]],
+          classOf[Array[Char]],
+          classOf[Array[String]],
+          classOf[Array[Any]],
+          classOf[Class[_]], // needed for the WrappedArraySerializer
+          classOf[Any], // needed for scala.collection.mutable.WrappedArray$ofRef
+          mutable.WrappedArray.make(Array[Byte]()).getClass,
+          mutable.WrappedArray.make(Array[Short]()).getClass,
+          mutable.WrappedArray.make(Array[Int]()).getClass,
+          mutable.WrappedArray.make(Array[Long]()).getClass,
+          mutable.WrappedArray.make(Array[Float]()).getClass,
+          mutable.WrappedArray.make(Array[Double]()).getClass,
+          mutable.WrappedArray.make(Array[Boolean]()).getClass,
+          mutable.WrappedArray.make(Array[Char]()).getClass,
+          mutable.WrappedArray.make(Array[String]()).getClass,
+          None.getClass,
+          classOf[Queue[_]],
+          Nil.getClass,
+          classOf[::[_]],
+          classOf[Range],
+          classOf[WrappedString],
+          classOf[TreeSet[_]],
+          classOf[TreeMap[_, _]],
+          // The most common orderings for TreeSet and TreeMap
+          Ordering.Byte.getClass,
+          Ordering.Short.getClass,
+          Ordering.Int.getClass,
+          Ordering.Long.getClass,
+          Ordering.Float.getClass,
+          Ordering.Double.getClass,
+          Ordering.Boolean.getClass,
+          Ordering.Char.getClass,
+          Ordering.String.getClass
+        )
+      )
       .forConcreteTraversableClass(Set[Any]())
       .forConcreteTraversableClass(ListSet[Any]())
       .forConcreteTraversableClass(ListSet[Any]('a))

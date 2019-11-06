@@ -12,14 +12,14 @@ import _root_.java.io.Serializable
  * Convenience class that holds both a Class[T] and an Injection from
  * type T to Array[Byte].
  */
-
 object InjectionRegistrar {
   def apply[T](klass: Class[T], injection: Injection[T, Array[Byte]]): InjectionRegistrar[T] =
     new InjectionRegistrar(klass, injection)
 }
 
 class InjectionRegistrar[T](val klass: Class[T], @transient b: Injection[T, Array[Byte]])
-  extends IKryoRegistrar with Serializable {
+    extends IKryoRegistrar
+    with Serializable {
   protected val bBox = MeatLocker(b)
 
   implicit def injection = bBox.copy
@@ -37,7 +37,7 @@ object InjectionDefaultRegistrar {
 }
 
 class InjectionDefaultRegistrar[T](klass: Class[T], @transient b: Injection[T, Array[Byte]])
-  extends InjectionRegistrar(klass, b) {
+    extends InjectionRegistrar(klass, b) {
   override def apply(k: Kryo) {
     if (!k.alreadyRegistered(klass)) {
       k.addDefaultSerializer(klass, InjectiveSerializer.asKryo[T])
@@ -45,4 +45,3 @@ class InjectionDefaultRegistrar[T](klass: Class[T], @transient b: Injection[T, A
     }
   }
 }
-

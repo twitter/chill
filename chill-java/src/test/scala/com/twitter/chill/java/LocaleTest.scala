@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.java
 
@@ -27,7 +27,6 @@ import org.objenesis.strategy.StdInstantiatorStrategy
 import _root_.java.util.Locale
 
 class LocaleSpec extends WordSpec with Matchers {
-
   def rt[A](k: Kryo, a: A): A = {
     val out = new Output(1000, -1)
     k.writeClassAndObject(out, a.asInstanceOf[AnyRef])

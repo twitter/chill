@@ -12,16 +12,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
-import scala.collection.mutable.{ WrappedArray, WrappedArrayBuilder }
+import scala.collection.mutable.{WrappedArray, WrappedArrayBuilder}
 
 import scala.reflect._
 
 class WrappedArraySerializer[T] extends KSerializer[WrappedArray[T]] {
-
   def write(kser: Kryo, out: Output, obj: WrappedArray[T]) {
     // Write the class-manifest, we don't use writeClass because it
     // uses the registration system, and this class might not be registered

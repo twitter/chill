@@ -12,15 +12,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
 import scala.collection.generic.CanBuildFrom
 
-class TraversableSerializer[T, C <: Traversable[T]](override val isImmutable: Boolean = true)(implicit cbf: CanBuildFrom[C, T, C])
-  extends KSerializer[C] {
-
+class TraversableSerializer[T, C <: Traversable[T]](override val isImmutable: Boolean = true)(
+    implicit cbf: CanBuildFrom[C, T, C]
+) extends KSerializer[C] {
   def write(kser: Kryo, out: Output, obj: C) {
     //Write the size:
     out.writeInt(obj.size, true)

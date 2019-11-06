@@ -3,14 +3,13 @@ package com.twitter.chill.java
 import java.util
 
 import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.{ Input, Output }
+import com.esotericsoftware.kryo.io.{Input, Output}
 import org.objenesis.strategy.StdInstantiatorStrategy
 import org.scalatest._
 
 import scala.util.Random
 
 class BitSetSpec extends WordSpec with MustMatchers {
-
   implicit val kryo = new Kryo()
 
   def rt[A](a: A)(implicit k: Kryo): A = {
