@@ -12,13 +12,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.akka
 
 import org.scalatest._
 
-import akka.actor.{ Actor, ActorRef, ActorSystem, Props }
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.util.Timeout
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -36,7 +36,9 @@ class AkkaTests extends WordSpec with Matchers {
     }
   }
 
-  val system = ActorSystem("example", ConfigFactory.parseString("""
+  val system = ActorSystem(
+    "example",
+    ConfigFactory.parseString("""
     akka.actor.serializers {
       kryo = "com.twitter.chill.akka.AkkaSerializer"
     }
@@ -45,7 +47,8 @@ class AkkaTests extends WordSpec with Matchers {
       "scala.Product" = kryo
       "akka.actor.ActorRef" = kryo
     }
-"""))
+""")
+  )
 
   // Get the Serialization Extension
   val serialization = SerializationExtension(system)
@@ -74,6 +77,5 @@ class AkkaTests extends WordSpec with Matchers {
 
       deserialized.get.equals(actor) should equal(true)
     }
-
   }
 }

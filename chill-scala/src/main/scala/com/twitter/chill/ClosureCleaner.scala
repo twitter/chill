@@ -27,17 +27,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.twitter.chill
 
 import _root_.java.lang.reflect.Field
 
 import scala.collection.JavaConverters._
-import scala.collection.mutable.{ Set => MSet, Map => MMap }
+import scala.collection.mutable.{Set => MSet, Map => MMap}
 
 import scala.annotation.tailrec
 
-import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.{ ClassReader, MethodVisitor, Type, ClassVisitor }
+import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.{
+  ClassReader,
+  ClassVisitor,
+  MethodVisitor,
+  Type
+}
 import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.Opcodes._
 
 /**
@@ -65,8 +69,7 @@ object ClosureCleaner {
   // Return the $outer field for this class
   def outerFieldOf(c: Class[_]): Option[Field] =
     outerFields
-      .getOrElseUpdate(c,
-        c.getDeclaredFields.find { _.getName == OUTER })
+      .getOrElseUpdate(c, c.getDeclaredFields.find { _.getName == OUTER })
 
   /**
    * this does reflection each time
@@ -139,7 +142,7 @@ object ClosureCleaner {
   /**
    * Uses ASM to return the names of the fields accessed by this cls
    */
-  def accessedFieldsOf(cls: Class[_]): Set[Field] = {
+  def accessedFieldsOf(cls: Class[_]): Set[Field] =
     accessedFieldsMap.get(cls) match {
       case Some(s) => s
       case None => {
@@ -156,7 +159,6 @@ object ClosureCleaner {
         toF(s)
       }
     }
-  }
 
   def apply(obj: AnyRef): Unit = {
     val newCleanedOuter = allocCleanedOuter(obj)
@@ -173,7 +175,7 @@ object ClosureCleaner {
   private def allocCleanedOuter(in: AnyRef): AnyRef =
     // Go top down filling in the actual accessed fields:
     getOutersOf(in)
-      // the outer-most-outer is null:
+    // the outer-most-outer is null:
       .foldLeft(null: AnyRef) { (prevOuter, clsData) =>
         val (thisOuterCls, realOuter) = clsData
         // create a new outer class that does not have the constructor
@@ -209,26 +211,28 @@ object ClosureCleaner {
   private val objectCtor = classOf[_root_.java.lang.Object].getDeclaredConstructor();
   // Use reflection to instantiate object without calling constructor
   private def instantiateClass(cls: Class[_]): AnyRef =
-    sun.reflect.ReflectionFactory
-      .getReflectionFactory
+    sun.reflect.ReflectionFactory.getReflectionFactory
       .newConstructorForSerialization(cls, objectCtor)
       .newInstance()
       .asInstanceOf[AnyRef]
 }
 
 class FieldAccessFinder(output: MMap[Class[_], MSet[String]]) extends ClassVisitor(ASM5) {
-  override def visitMethod(access: Int, name: String, desc: String,
-    sig: String, exceptions: Array[String]): MethodVisitor = {
+  override def visitMethod(
+      access: Int,
+      name: String,
+      desc: String,
+      sig: String,
+      exceptions: Array[String]
+  ): MethodVisitor =
     return new MethodVisitor(ASM5) {
-      override def visitFieldInsn(op: Int, owner: String, name: String,
-        desc: String) {
+      override def visitFieldInsn(op: Int, owner: String, name: String, desc: String) {
         if (op == GETFIELD)
           for (cl <- output.keys if cl.getName == owner.replace('/', '.'))
             output(cl) += name
       }
 
-      override def visitMethodInsn(op: Int, owner: String, name: String,
-        desc: String, itf: Boolean) {
+      override def visitMethodInsn(op: Int, owner: String, name: String, desc: String, itf: Boolean) {
         // Check for calls a getter method for a variable in an interpreter wrapper object.
         // This means that the corresponding field will be accessed, so we should save it.
         if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith("$outer"))
@@ -236,29 +240,36 @@ class FieldAccessFinder(output: MMap[Class[_], MSet[String]]) extends ClassVisit
             output(cl) += name
       }
     }
-  }
 }
 
 class InnerClosureFinder(output: MSet[Class[_]]) extends ClassVisitor(ASM5) {
   var myName: String = null
 
-  override def visit(version: Int, access: Int, name: String, sig: String,
-    superName: String, interfaces: Array[String]) {
+  override def visit(
+      version: Int,
+      access: Int,
+      name: String,
+      sig: String,
+      superName: String,
+      interfaces: Array[String]
+  ) {
     myName = name
   }
 
-  override def visitMethod(access: Int, name: String, desc: String,
-    sig: String, exceptions: Array[String]): MethodVisitor = {
+  override def visitMethod(
+      access: Int,
+      name: String,
+      desc: String,
+      sig: String,
+      exceptions: Array[String]
+  ): MethodVisitor =
     return new MethodVisitor(ASM5) {
-      override def visitMethodInsn(op: Int, owner: String, name: String,
-        desc: String, itf: Boolean) {
+      override def visitMethodInsn(op: Int, owner: String, name: String, desc: String, itf: Boolean) {
         val argTypes = Type.getArgumentTypes(desc)
         if (op == INVOKESPECIAL && name == "<init>" && argTypes.length > 0
-          && argTypes(0).toString.startsWith("L") // is it an object?
-          && argTypes(0).getInternalName == myName)
-          output += Class.forName(owner.replace('/', '.'), false,
-            Thread.currentThread.getContextClassLoader)
+            && argTypes(0).toString.startsWith("L") // is it an object?
+            && argTypes(0).getInternalName == myName)
+          output += Class.forName(owner.replace('/', '.'), false, Thread.currentThread.getContextClassLoader)
       }
     }
-  }
 }

@@ -12,14 +12,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
-import scala.collection.mutable.{ Map => MMap }
+import scala.collection.mutable.{Map => MMap}
 
 class EnumerationSerializer extends KSerializer[Enumeration#Value] {
-
   private val enumMethod = "scala$Enumeration$$outerEnum"
   private val outerMethod = classOf[Enumeration#Value].getMethod(enumMethod)
   // Cache the enum lookup:
@@ -28,9 +27,12 @@ class EnumerationSerializer extends KSerializer[Enumeration#Value] {
   private def enumOf(v: Enumeration#Value): Enumeration =
     enumMap.synchronized {
       //TODO: hacky, but not clear how to fix:
-      enumMap.getOrElseUpdate(v, outerMethod
-        .invoke(v)
-        .asInstanceOf[scala.Enumeration])
+      enumMap.getOrElseUpdate(
+        v,
+        outerMethod
+          .invoke(v)
+          .asInstanceOf[scala.Enumeration]
+      )
     }
 
   def write(kser: Kryo, out: Output, obj: Enumeration#Value) {

@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill
 
@@ -21,17 +21,23 @@ import org.scalatest._
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 trait AwesomeFns {
-  val myfun = { x: Int => 2 * x }
+  val myfun = { x: Int =>
+    2 * x
+  }
 }
 
 object BaseFns extends AwesomeFns {
-  val myfun2 = { x: Int => 4 * x }
+  val myfun2 = { x: Int =>
+    4 * x
+  }
   def apply(x: Int) = myfun.apply(x)
 }
 
 trait AwesomeFn2 {
   def mult: Int
-  val timesByMult = { x: Int => mult * x }
+  val timesByMult = { x: Int =>
+    mult * x
+  }
 }
 
 object BaseFns2 extends AwesomeFn2 {

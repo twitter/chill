@@ -26,7 +26,7 @@ class NotSerializable {
   override def equals(other: Any): Boolean =
     other match {
       case i: NotSerializable => true
-      case _ => false
+      case _                  => false
     }
 }
 class ExternalizerCodecSpec extends WordSpec {
@@ -49,7 +49,5 @@ class ExternalizerCodecSpec extends WordSpec {
       assert(x == baseSerializable, "Should be value equal")
       assert(x ne baseSerializable, "Should not be reference equal, since through a serializer")
     }
-
   }
 }
-
