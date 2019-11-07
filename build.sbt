@@ -151,14 +151,12 @@ val ignoredABIProblems = {
   import com.typesafe.tools.mima.core.ProblemFilters._
   Seq(
     exclude[MissingTypesProblem]("com.twitter.chill.storm.BlizzardKryoFactory"),
-    exclude[IncompatibleResultTypeProblem]("com.twitter.chill.ClosureCleaner.*"),
-    exclude[DirectMissingMethodProblem]("com.twitter.chill.ClosureCleaner.*"),
-    exclude[IncompatibleMethTypeProblem]("com.twitter.chill.ClosureCleaner.*"),
-    exclude[IncompatibleTemplateDefProblem]("com.twitter.chill.ClosureCleaner"),
-    exclude[FinalClassProblem]("com.twitter.chill.InnerClosureFinder"),
-    exclude[DirectMissingMethodProblem]("com.twitter.chill.InnerClosureFinder.*"),
-    exclude[IncompatibleResultTypeProblem]("com.twitter.chill.InnerClosureFinder.*"),
-    exclude[MissingClassProblem]("com.twitter.chill.FieldAccessFinder")
+    exclude[MissingTypesProblem]("com.twitter.chill.InnerClosureFinder"),
+    exclude[IncompatibleResultTypeProblem]("com.twitter.chill.InnerClosureFinder.visitMethod"),
+    exclude[IncompatibleResultTypeProblem]("com.twitter.chill.FieldAccessFinder.visitMethod"),
+    exclude[MissingClassProblem]("com.twitter.chill.FieldAccessFinder"),
+    exclude[MissingTypesProblem]("com.twitter.chill.FieldAccessFinder"),
+    exclude[DirectMissingMethodProblem]("com.twitter.chill.FieldAccessFinder.this")
   )
 }
 
