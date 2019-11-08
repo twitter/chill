@@ -149,7 +149,7 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       manifest[Array[Int]] should roundtrip
     }
     "handle arrays" in {
-      def arrayRT[T](arr: Array[T]) {
+      def arrayRT[T](arr: Array[T]): Unit = {
         // Array doesn't have a good equals
         rt(arr).toList should equal(arr.toList)
       }
@@ -265,7 +265,7 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       )
 
       // Make sure to make a totally separate map to check equality with
-      val obj1 = mutable.Map(
+      mutable.Map(
         4 -> mutable.Set("house1", "house2"),
         1 -> mutable.Set("name3", "name4", "name1", "name2"),
         0 -> mutable.Set(1, 2, 3, 4)

@@ -19,7 +19,7 @@ package com.twitter.chill
 import org.scalatest._
 
 class ClosureCleanerSpec extends WordSpec with Matchers {
-  def debug(x: AnyRef) {
+  def debug(x: AnyRef): Unit = {
     println(x.getClass)
     println(x.getClass.getDeclaredFields.map { _.toString }.mkString("  "))
   }
