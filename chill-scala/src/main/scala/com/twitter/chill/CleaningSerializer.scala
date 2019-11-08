@@ -17,7 +17,7 @@ limitations under the License.
 package com.twitter.chill
 
 class CleaningSerializer[T <: AnyRef](wrapped: KSerializer[T]) extends KSerializer[T] {
-  def write(kser: Kryo, out: Output, item: T) {
+  def write(kser: Kryo, out: Output, item: T): Unit = {
     ClosureCleaner(item)
     wrapped.write(kser, out, item)
   }

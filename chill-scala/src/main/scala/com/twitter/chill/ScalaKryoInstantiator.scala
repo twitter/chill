@@ -106,9 +106,9 @@ class ScalaKryoInstantiator extends EmptyScalaKryoInstantiator {
  * included in this registrar for backwards compatibility reasons.
  */
 class ScalaCollectionsRegistrar extends IKryoRegistrar {
-  def apply(newK: Kryo) {
+  def apply(newK: Kryo): Unit = {
     // for binary compat this is here, but could be moved to RichKryo
-    def useField[T](cls: Class[T]) {
+    def useField[T](cls: Class[T]): Unit = {
       val fs = new com.esotericsoftware.kryo.serializers.FieldSerializer(newK, cls)
       fs.setIgnoreSyntheticFields(false) // scala generates a lot of these attributes
       newK.register(cls, fs)
@@ -178,14 +178,13 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
 }
 
 class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
-  def apply(newK: Kryo) {
+  def apply(newK: Kryo): Unit =
     newK.register(JavaIterableWrapperSerializer.wrapperClass, new JavaIterableWrapperSerializer)
-  }
 }
 
 /** Registrar for everything that was registered in chill 0.9.2 - included for backwards compatibility. */
 class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
-  def apply(k: Kryo) {
+  def apply(k: Kryo): Unit = {
     new ScalaCollectionsRegistrar()(k)
     new JavaWrapperCollectionRegistrar()(k)
 
@@ -193,7 +192,7 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
     ScalaTupleSerialization.register(k)
     k.forClass[Symbol](new KSerializer[Symbol] {
         override def isImmutable = true
-        def write(k: Kryo, out: Output, obj: Symbol) { out.writeString(obj.name) }
+        def write(k: Kryo, out: Output, obj: Symbol): Unit = out.writeString(obj.name)
         def read(k: Kryo, in: Input, cls: Class[Symbol]) = Symbol(in.readString)
       })
       .forSubclass[Regex](new RegexSerializer)
@@ -218,7 +217,7 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
  * for projects using chill for long term persistence - see com.twitter.chill.RegistrationIdsSpec.
  */
 class AllScalaRegistrar extends IKryoRegistrar {
-  def apply(k: Kryo) {
+  def apply(k: Kryo): Unit = {
     new AllScalaRegistrar_0_9_2()(k)
 
     k.registerClasses(

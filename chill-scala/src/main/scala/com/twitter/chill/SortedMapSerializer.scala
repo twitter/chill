@@ -21,7 +21,7 @@ import scala.collection.immutable.SortedMap
 class SortedMapSerializer[A, B] extends KSerializer[SortedMap[A, B]] {
   type M = SortedMap[A, B]
 
-  def write(kser: Kryo, out: Output, map: M) {
+  def write(kser: Kryo, out: Output, map: M): Unit = {
     //Write the size
     out.writeInt(map.size, true)
 

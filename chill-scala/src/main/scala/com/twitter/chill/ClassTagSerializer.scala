@@ -19,9 +19,8 @@ package com.twitter.chill
 import scala.reflect.ClassTag
 
 class ClassTagSerializer[T] extends KSerializer[ClassTag[T]] {
-  def write(kser: Kryo, out: Output, obj: ClassTag[T]) {
+  def write(kser: Kryo, out: Output, obj: ClassTag[T]): Unit =
     kser.writeObject(out, obj.runtimeClass)
-  }
 
   def read(kser: Kryo, in: Input, cls: Class[ClassTag[T]]): ClassTag[T] = {
     val clazz = kser.readObject(in, classOf[Class[T]])

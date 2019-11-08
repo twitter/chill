@@ -21,7 +21,7 @@ object InjectiveSerializer {
 class InjectiveSerializer[T] private (injection: Injection[T, Array[Byte]])
     extends KSerializer[T]
     with Serializable {
-  def write(kser: Kryo, out: Output, obj: T) {
+  def write(kser: Kryo, out: Output, obj: T): Unit = {
     val bytes = injection(obj)
     out.writeInt(bytes.length, true)
     out.writeBytes(bytes)

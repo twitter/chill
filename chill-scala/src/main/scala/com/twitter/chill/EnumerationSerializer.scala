@@ -35,7 +35,7 @@ class EnumerationSerializer extends KSerializer[Enumeration#Value] {
       )
     }
 
-  def write(kser: Kryo, out: Output, obj: Enumeration#Value) {
+  def write(kser: Kryo, out: Output, obj: Enumeration#Value): Unit = {
     val enum = enumOf(obj)
     // Note due to the ObjectSerializer, this only really writes the class.
     kser.writeClassAndObject(out, enum)

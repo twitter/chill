@@ -19,9 +19,8 @@ package com.twitter.chill
 import scala.util.matching.Regex
 
 class RegexSerializer extends KSerializer[Regex] {
-  def write(kser: Kryo, out: Output, obj: Regex) {
+  def write(kser: Kryo, out: Output, obj: Regex): Unit =
     out.writeString(obj.pattern.pattern)
-  }
 
   def read(kser: Kryo, in: Input, cls: Class[Regex]): Regex =
     new Regex(in.readString)

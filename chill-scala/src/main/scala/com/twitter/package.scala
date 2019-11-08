@@ -33,18 +33,16 @@ package object chill {
     def apply(k: Kryo) = fn(k)
   }
   implicit def toRegistrar(items: Iterable[IKryoRegistrar]): IKryoRegistrar = new IKryoRegistrar {
-    def apply(k: Kryo) { items.foreach { _.apply(k) } }
+    def apply(k: Kryo): Unit = items.foreach { _.apply(k) }
   }
   def printIfRegistered(cls: Class[_]): IKryoRegistrar = new IKryoRegistrar {
-    def apply(k: Kryo) {
+    def apply(k: Kryo): Unit =
       if (k.alreadyRegistered(cls)) {
         System.err.printf("%s is already registered.", cls.getName)
       }
-    }
   }
   def assertNotRegistered(cls: Class[_]): IKryoRegistrar = new IKryoRegistrar {
-    def apply(k: Kryo) {
+    def apply(k: Kryo): Unit =
       assert(!k.alreadyRegistered(cls), String.format("%s is already registered.", cls.getName))
-    }
   }
 }

@@ -20,6 +20,6 @@ package com.twitter.chill
 // It's important you actually do this, or Kryo will generate Nil != Nil, or None != None
 
 class SingletonSerializer[T](obj: T) extends KSerializer[T] {
-  def write(kser: Kryo, out: Output, obj: T) {}
+  def write(kser: Kryo, out: Output, obj: T): Unit = {}
   def read(kser: Kryo, in: Input, cls: Class[T]): T = obj
 }

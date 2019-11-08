@@ -84,7 +84,7 @@ class KryoBase extends Kryo {
         throw new KryoException("Class cannot be created (missing no-arg constructor): " + name);
     }
 
-  override def setInstantiatorStrategy(st: InstantiatorStrategy) {
+  override def setInstantiatorStrategy(st: InstantiatorStrategy): Unit = {
     super.setInstantiatorStrategy(st)
     strategy = Some(st)
   }

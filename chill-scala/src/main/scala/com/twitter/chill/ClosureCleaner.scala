@@ -194,19 +194,18 @@ object ClosureCleaner {
       }
 
   // Set the given field in newv to the same value as old
-  private def setFromTo(f: Field, old: AnyRef, newv: AnyRef) {
+  private def setFromTo(f: Field, old: AnyRef, newv: AnyRef): Unit = {
     f.setAccessible(true)
     val accessedValue = f.get(old)
     f.set(newv, accessedValue)
   }
 
-  private def setOuter(obj: AnyRef, outer: AnyRef) {
+  private def setOuter(obj: AnyRef, outer: AnyRef): Unit =
     if (null != outer) {
       val field = outerFieldOf(obj.getClass).get
       field.setAccessible(true)
       field.set(obj, outer)
     }
-  }
 
   private val objectCtor = classOf[_root_.java.lang.Object].getDeclaredConstructor();
   // Use reflection to instantiate object without calling constructor
@@ -226,19 +225,17 @@ class FieldAccessFinder(output: MMap[Class[_], MSet[String]]) extends ClassVisit
       exceptions: Array[String]
   ): MethodVisitor =
     return new MethodVisitor(ASM5) {
-      override def visitFieldInsn(op: Int, owner: String, name: String, desc: String) {
+      override def visitFieldInsn(op: Int, owner: String, name: String, desc: String): Unit =
         if (op == GETFIELD)
           for (cl <- output.keys if cl.getName == owner.replace('/', '.'))
             output(cl) += name
-      }
 
-      override def visitMethodInsn(op: Int, owner: String, name: String, desc: String, itf: Boolean) {
+      override def visitMethodInsn(op: Int, owner: String, name: String, desc: String, itf: Boolean): Unit =
         // Check for calls a getter method for a variable in an interpreter wrapper object.
         // This means that the corresponding field will be accessed, so we should save it.
         if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith("$outer"))
           for (cl <- output.keys if cl.getName == owner.replace('/', '.'))
             output(cl) += name
-      }
     }
 }
 
@@ -252,9 +249,8 @@ class InnerClosureFinder(output: MSet[Class[_]]) extends ClassVisitor(ASM5) {
       sig: String,
       superName: String,
       interfaces: Array[String]
-  ) {
+  ): Unit =
     myName = name
-  }
 
   override def visitMethod(
       access: Int,
@@ -264,7 +260,7 @@ class InnerClosureFinder(output: MSet[Class[_]]) extends ClassVisitor(ASM5) {
       exceptions: Array[String]
   ): MethodVisitor =
     return new MethodVisitor(ASM5) {
-      override def visitMethodInsn(op: Int, owner: String, name: String, desc: String, itf: Boolean) {
+      override def visitMethodInsn(op: Int, owner: String, name: String, desc: String, itf: Boolean): Unit = {
         val argTypes = Type.getArgumentTypes(desc)
         if (op == INVOKESPECIAL && name == "<init>" && argTypes.length > 0
             && argTypes(0).toString.startsWith("L") // is it an object?

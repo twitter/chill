@@ -31,7 +31,7 @@ class AkkaConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
   def get(key: String) =
     Try(typesafeConfig.getString(key)).toOption.orNull
 
-  def set(key: String, value: String) {
+  def set(key: String, value: String): Unit =
     typesafeConfig = Option(value)
       .map { v =>
         ConfigFactory
@@ -39,5 +39,4 @@ class AkkaConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
           .withFallback(typesafeConfig)
       }
       .getOrElse(typesafeConfig.withoutPath(key))
-  }
 }
