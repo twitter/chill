@@ -149,10 +149,9 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       manifest[Array[Int]] should roundtrip
     }
     "handle arrays" in {
-      def arrayRT[T](arr: Array[T]): Unit = {
+      def arrayRT[T](arr: Array[T]): Unit =
         // Array doesn't have a good equals
         rt(arr).toList should equal(arr.toList)
-      }
       arrayRT(Array(0))
       arrayRT(Array(0.1))
       arrayRT(Array("hey"))
