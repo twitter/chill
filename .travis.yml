@@ -20,16 +20,8 @@ matrix:
           "++$TRAVIS_SCALA_VERSION test"
           "++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues"
 
-    - scala: 2.11.12
-      jdk: openjdk8
-      script:
-        - >
-          sbt
-          "++$TRAVIS_SCALA_VERSION clean"
-          "++$TRAVIS_SCALA_VERSION test"
-          "++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues"
 
-    - scala: 2.12.8
+    - scala: 2.11.12
       jdk: openjdk8
       script:
         - >
@@ -41,6 +33,15 @@ matrix:
           "++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues"
       after_success:
         - bash <(curl -s https://codecov.io/bash)
+
+    - scala: 2.12.8
+      jdk: openjdk8
+      script:
+        - >
+          sbt
+          "++$TRAVIS_SCALA_VERSION clean"
+          "++$TRAVIS_SCALA_VERSION test"
+          "++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues"
 
 cache:
   directories:
