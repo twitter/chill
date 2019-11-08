@@ -11,7 +11,13 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
   organization := "com.twitter",
   scalaVersion := "2.11.12",
   crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.8"),
-  scalacOptions ++= Seq("-unchecked", "-deprecation", "-Ywarn-unused"),
+  scalacOptions ++= Seq("-unchecked", "-deprecation"),
+  scalacOptions ++= {
+    scalaVersion.value match {
+      case v if v.startsWith("2.10") => Nil
+      case _                         => Seq("-Ywarn-unused")
+    }
+  },
   scalariformPreferences := formattingPreferences,
   scalariformAutoformat := false,
   // Twitter Hadoop needs this, sorry 1.7 fans
