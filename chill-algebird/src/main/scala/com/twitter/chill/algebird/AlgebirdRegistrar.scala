@@ -35,7 +35,7 @@ import com.twitter.algebird.{
 }
 
 class AlgebirdRegistrar extends IKryoRegistrar {
-  def apply(k: Kryo) {
+  def apply(k: Kryo): Unit = {
     // Some of the monoids from Algebird that we use:
     k.register(classOf[AveragedValue], new AveragedValueSerializer)
     k.register(classOf[DecayedValue], new DecayedValueSerializer)

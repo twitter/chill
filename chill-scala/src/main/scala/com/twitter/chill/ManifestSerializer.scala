@@ -36,7 +36,7 @@ class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
 
   val singletonToIdx = singletons.zipWithIndex.toMap
 
-  private def writeInternal(kser: Kryo, out: Output, obj: Manifest[_]) {
+  private def writeInternal(kser: Kryo, out: Output, obj: Manifest[_]): Unit = {
     val idxOpt = singletonToIdx.get(obj)
     if (idxOpt.isDefined) {
       // We offset by 1 to keep positive and save space
@@ -52,7 +52,7 @@ class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
     }
   }
 
-  def write(kser: Kryo, out: Output, obj: Manifest[T]) { writeInternal(kser, out, obj) }
+  def write(kser: Kryo, out: Output, obj: Manifest[T]): Unit = writeInternal(kser, out, obj)
 
   def read(kser: Kryo, in: Input, cls: Class[Manifest[T]]): Manifest[T] = {
     val sidx = in.readInt(true)

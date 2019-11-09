@@ -27,7 +27,7 @@ class ObjectSerializer[T] extends KSerializer[T] {
   val cachedObj = MMap[Class[_], Option[T]]()
 
   // Does nothing
-  override def write(kser: Kryo, out: Output, obj: T) {}
+  override def write(kser: Kryo, out: Output, obj: T): Unit = {}
 
   protected def createSingleton(cls: Class[_]): Option[T] =
     moduleField(cls).map { _.get(null).asInstanceOf[T] }

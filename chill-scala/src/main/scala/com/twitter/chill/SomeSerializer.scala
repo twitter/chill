@@ -17,9 +17,8 @@ limitations under the License.
 package com.twitter.chill
 
 class SomeSerializer[T] extends KSerializer[Some[T]] {
-  def write(kser: Kryo, out: Output, item: Some[T]) {
+  def write(kser: Kryo, out: Output, item: Some[T]): Unit =
     kser.writeClassAndObject(out, item.get)
-  }
 
   def read(kser: Kryo, in: Input, cls: Class[Some[T]]) =
     Some(kser.readClassAndObject(in).asInstanceOf[T])

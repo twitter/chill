@@ -37,7 +37,7 @@ import scala.collection.immutable.SortedMap
 
 class AveragedValueSerializer extends KSerializer[AveragedValue] {
   setImmutable(true)
-  def write(kser: Kryo, out: Output, s: AveragedValue) {
+  def write(kser: Kryo, out: Output, s: AveragedValue): Unit = {
     out.writeLong(s.count, true)
     out.writeDouble(s.value)
   }
@@ -47,7 +47,7 @@ class AveragedValueSerializer extends KSerializer[AveragedValue] {
 
 class MomentsSerializer extends KSerializer[Moments] {
   setImmutable(true)
-  def write(kser: Kryo, out: Output, s: Moments) {
+  def write(kser: Kryo, out: Output, s: Moments): Unit = {
     out.writeLong(s.m0, true)
     out.writeDouble(s.m1)
     out.writeDouble(s.m2)
@@ -60,7 +60,7 @@ class MomentsSerializer extends KSerializer[Moments] {
 
 class DecayedValueSerializer extends KSerializer[DecayedValue] {
   setImmutable(true)
-  def write(kser: Kryo, out: Output, s: DecayedValue) {
+  def write(kser: Kryo, out: Output, s: DecayedValue): Unit = {
     out.writeDouble(s.value)
     out.writeDouble(s.scaledTime)
   }
@@ -70,7 +70,7 @@ class DecayedValueSerializer extends KSerializer[DecayedValue] {
 
 class HLLSerializer extends KSerializer[HLL] {
   setImmutable(true)
-  def write(kser: Kryo, out: Output, s: HLL) {
+  def write(kser: Kryo, out: Output, s: HLL): Unit = {
     val bytes = HyperLogLog.toBytes(s)
     out.writeInt(bytes.size, true)
     out.writeBytes(bytes)
@@ -82,9 +82,8 @@ class HLLSerializer extends KSerializer[HLL] {
 class HLLMonoidSerializer extends KSerializer[HyperLogLogMonoid] {
   setImmutable(true)
   val hllMonoids = MMap[Int, HyperLogLogMonoid]()
-  def write(kser: Kryo, out: Output, mon: HyperLogLogMonoid) {
+  def write(kser: Kryo, out: Output, mon: HyperLogLogMonoid): Unit =
     out.writeInt(mon.bits, true)
-  }
   def read(kser: Kryo, in: Input, cls: Class[HyperLogLogMonoid]): HyperLogLogMonoid = {
     val bits = in.readInt(true)
     hllMonoids.getOrElseUpdate(bits, new HyperLogLogMonoid(bits))

@@ -150,7 +150,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
 
   override def readExternal(in: ObjectInput) = maybeReadJavaKryo(in, kryo)
 
-  private def maybeReadJavaKryo(in: ObjectInput, kryo: KryoInstantiator) {
+  private def maybeReadJavaKryo(in: ObjectInput, kryo: KryoInstantiator): Unit =
     in.read match {
       case JAVA =>
         item = Right(in.readObject.asInstanceOf[Option[T]])
@@ -160,7 +160,6 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
         in.readFully(buf)
         item = Right(fromBytes(buf, kryo))
     }
-  }
 
   protected def writeJava(out: ObjectOutput): Boolean =
     javaWorks && {
@@ -181,7 +180,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
       }
       .getOrElse(false)
 
-  private def maybeWriteJavaKryo(out: ObjectOutput, kryo: KryoInstantiator) {
+  private def maybeWriteJavaKryo(out: ObjectOutput, kryo: KryoInstantiator): Unit =
     writeJava(out) || writeKryo(out, kryo) || {
       val inner = get
       sys.error(
@@ -189,7 +188,6 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
           .format(inner.getClass, inner)
       )
     }
-  }
 
   override def writeExternal(out: ObjectOutput) = maybeWriteJavaKryo(out, kryo)
 

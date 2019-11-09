@@ -24,11 +24,10 @@ class InjectionRegistrar[T](val klass: Class[T], @transient b: Injection[T, Arra
 
   implicit def injection = bBox.copy
 
-  def apply(k: Kryo) {
+  def apply(k: Kryo): Unit =
     if (!k.alreadyRegistered(klass)) {
       k.register(klass, InjectiveSerializer.asKryo[T])
     }
-  }
 }
 
 object InjectionDefaultRegistrar {
@@ -38,10 +37,9 @@ object InjectionDefaultRegistrar {
 
 class InjectionDefaultRegistrar[T](klass: Class[T], @transient b: Injection[T, Array[Byte]])
     extends InjectionRegistrar(klass, b) {
-  override def apply(k: Kryo) {
+  override def apply(k: Kryo): Unit =
     if (!k.alreadyRegistered(klass)) {
       k.addDefaultSerializer(klass, InjectiveSerializer.asKryo[T])
       k.register(klass)
     }
-  }
 }

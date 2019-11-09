@@ -21,7 +21,7 @@ import scala.collection.mutable.{WrappedArray, WrappedArrayBuilder}
 import scala.reflect._
 
 class WrappedArraySerializer[T] extends KSerializer[WrappedArray[T]] {
-  def write(kser: Kryo, out: Output, obj: WrappedArray[T]) {
+  def write(kser: Kryo, out: Output, obj: WrappedArray[T]): Unit = {
     // Write the class-manifest, we don't use writeClass because it
     // uses the registration system, and this class might not be registered
     kser.writeObject(out, obj.elemTag.runtimeClass)

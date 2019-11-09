@@ -38,7 +38,7 @@ class AlgebirdSerializersSpec extends WordSpec with Matchers {
     KryoPool.withByteArrayOutputStream(1, inst)
   }
 
-  def roundtrip[X](x: X) {
+  def roundtrip[X](x: X): Unit = {
     val bytes = kryo.toBytesWithClass(x)
     //println("bytes size : " + bytes.size)
     //println("bytes: " + new String(bytes, "UTF-8"))
@@ -46,7 +46,7 @@ class AlgebirdSerializersSpec extends WordSpec with Matchers {
     result should equal(x)
   }
 
-  def roundtripNoEq[X](x: X)(f: X => Any) {
+  def roundtripNoEq[X](x: X)(f: X => Any): Unit = {
     val bytes = kryo.toBytesWithClass(x)
     val result = kryo.fromBytes(bytes).asInstanceOf[X]
     f(result) should equal(f(x))
