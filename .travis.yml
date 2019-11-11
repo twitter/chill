@@ -8,8 +8,8 @@ matrix:
       script:
         - >
           sbt
-            "; scalafmtCheckAll; scalafmtSbtCheck"
-            "; scalafixEnable; scalafix --check; test:scalafix --check"
+          "; scalafmtCheckAll; scalafmtSbtCheck"
+          "; scalafixEnable; scalafix --check; test:scalafix --check"
 
     - scala: 2.10.7
       jdk: openjdk8
