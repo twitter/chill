@@ -26,11 +26,9 @@ import com.twitter.algebird.{
   DecayedValue,
   DenseVector,
   HLL,
-  HyperLogLog,
   HyperLogLogMonoid,
   Moments,
   QTree,
-  SpaceSaver,
   SparseVector
 }
 

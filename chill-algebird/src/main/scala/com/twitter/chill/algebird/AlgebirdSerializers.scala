@@ -19,21 +19,9 @@ import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.{Serializer => KSerializer}
 import com.esotericsoftware.kryo.io.{Input, Output}
 
-import com.twitter.algebird.{
-  AveragedValue,
-  DecayedValue,
-  HLL,
-  HyperLogLog,
-  HyperLogLogMonoid,
-  Moments,
-  QTree,
-  SSMany,
-  SSOne,
-  SpaceSaver
-}
+import com.twitter.algebird.{AveragedValue, DecayedValue, HLL, HyperLogLog, HyperLogLogMonoid, Moments, QTree}
 
 import scala.collection.mutable.{Map => MMap}
-import scala.collection.immutable.SortedMap
 
 class AveragedValueSerializer extends KSerializer[AveragedValue] {
   setImmutable(true)

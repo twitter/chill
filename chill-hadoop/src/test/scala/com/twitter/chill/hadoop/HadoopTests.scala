@@ -18,9 +18,7 @@ package com.twitter.chill.hadoop
 
 import org.scalatest._
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.Kryo;;;
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 

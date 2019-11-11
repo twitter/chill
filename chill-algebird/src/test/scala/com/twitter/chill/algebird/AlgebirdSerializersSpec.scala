@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill.algebird
 
-import com.twitter.chill.{KSerializer, KryoPool, ScalaKryoInstantiator}
+import com.twitter.chill.{KryoPool, ScalaKryoInstantiator}
 import com.twitter.algebird.{
   AdaptiveVector,
   AveragedValue,

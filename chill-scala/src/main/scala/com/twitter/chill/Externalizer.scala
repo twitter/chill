@@ -25,8 +25,6 @@ import _root_.java.io.{
   ObjectOutputStream
 }
 
-import com.esotericsoftware.kryo.serializers.JavaSerializer
-import com.esotericsoftware.kryo.DefaultSerializer
 import _root_.java.util.concurrent.atomic.{AtomicBoolean, AtomicReference}
 import com.esotericsoftware.kryo.KryoSerializable
 

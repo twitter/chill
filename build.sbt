@@ -15,6 +15,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
   scalacOptions ++= {
     scalaVersion.value match {
       case v if v.startsWith("2.10") => Nil
+      case v if v.startsWith("2.11") => Seq("-Ywarn-unused", "-Ywarn-unused-import")
       case _                         => Seq("-Ywarn-unused")
     }
   },

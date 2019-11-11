@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill.akka
 
-import akka.actor.{ActorRef, ExtendedActorSystem}
+import akka.actor.ExtendedActorSystem
 import akka.serialization.Serializer
 
 import com.twitter.chill._

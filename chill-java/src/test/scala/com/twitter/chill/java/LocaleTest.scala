@@ -36,8 +36,6 @@ class LocaleSpec extends WordSpec with Matchers {
 
   "A Locale Serializer" should {
     "serialize all the things" in {
-      import scala.collection.JavaConverters._
-
       val kryo = new Kryo()
       kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
       LocaleSerializer.registrar()(kryo)

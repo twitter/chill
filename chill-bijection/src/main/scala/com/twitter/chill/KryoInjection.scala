@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.twitter.bijection.{Bijection, Injection, Inversion}
+import com.twitter.bijection.{Injection, Inversion}
 
 import _root_.java.io.Serializable
 
