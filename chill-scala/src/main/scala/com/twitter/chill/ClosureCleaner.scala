@@ -225,20 +225,19 @@ object ClosureCleaner {
   }
 
   // Set the given field in newv to the same value as old
-  private def setFromTo(f: Field, old: AnyRef, newv: AnyRef) {
+  private def setFromTo(f: Field, old: AnyRef, newv: AnyRef): Unit = {
     f.setAccessible(true)
     val accessedValue = f.get(old)
     f.set(newv, accessedValue)
   }
 
-  private def setOuter(obj: AnyRef, outer: AnyRef) {
+  private def setOuter(obj: AnyRef, outer: AnyRef): Unit =
     if (null != outer) {
       outerFieldOf(obj.getClass).foreach { field =>
         field.setAccessible(true)
         field.set(obj, outer)
       }
     }
-  }
 
   // Use reflection to instantiate object without calling constructor
   def instantiateClass(cls: Class[_]): AnyRef = {
