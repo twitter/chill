@@ -18,17 +18,15 @@ package com.twitter.chill.hadoop
 
 import org.scalatest._
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.Kryo
 
 import org.objenesis.strategy.StdInstantiatorStrategy
 
 import java.io.{ByteArrayOutputStream => BAOut, ByteArrayInputStream => BAIn}
-import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configuration
 
-import com.twitter.chill.config.ConfiguredInstantiator;
-import com.twitter.chill.KryoInstantiator;
+import com.twitter.chill.config.ConfiguredInstantiator
+import com.twitter.chill.KryoInstantiator
 
 class StdKryoInstantiator extends KryoInstantiator {
   override def newKryo = {

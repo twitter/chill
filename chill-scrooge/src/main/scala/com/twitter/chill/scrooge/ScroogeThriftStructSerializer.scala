@@ -21,7 +21,7 @@ import com.esotericsoftware.kryo.Serializer
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
 import com.twitter.scrooge.{ThriftStruct, ThriftStructCodec, ThriftStructSerializer}
-import org.apache.thrift.protocol.{TBinaryProtocol, TProtocolFactory}
+import org.apache.thrift.protocol.TBinaryProtocol
 import scala.collection.mutable
 import scala.util.Try
 

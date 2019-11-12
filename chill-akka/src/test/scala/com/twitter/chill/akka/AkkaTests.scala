@@ -19,9 +19,6 @@ package com.twitter.chill.akka
 import org.scalatest._
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-import akka.util.Timeout
-import scala.concurrent.Await
-import scala.concurrent.duration._
 import akka.serialization._
 import com.typesafe.config.ConfigFactory
 

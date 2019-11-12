@@ -20,7 +20,6 @@ import com.esotericsoftware.kryo.io.ByteBufferInputStream
 
 import _root_.java.io.{InputStream, Serializable}
 import _root_.java.nio.ByteBuffer
-import _root_.java.util.{Map => JMap}
 
 import scala.collection.generic.CanBuildFrom
 import scala.util.control.Exception.allCatch

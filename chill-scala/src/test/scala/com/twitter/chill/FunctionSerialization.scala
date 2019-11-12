@@ -18,8 +18,6 @@ package com.twitter.chill
 
 import org.scalatest._
 
-import com.esotericsoftware.kryo.serializers.FieldSerializer
-
 trait AwesomeFns {
   val myfun = { x: Int =>
     2 * x

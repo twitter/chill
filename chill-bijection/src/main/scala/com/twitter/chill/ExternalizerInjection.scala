@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import _root_.java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
-
 import com.twitter.bijection.Injection
 import scala.util.Try
 

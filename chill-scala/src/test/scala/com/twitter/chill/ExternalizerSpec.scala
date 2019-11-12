@@ -18,14 +18,7 @@ package com.twitter.chill
 
 import org.scalatest._
 
-import scala.collection.immutable.BitSet
-import scala.collection.immutable.ListMap
-import scala.collection.immutable.HashMap
-
-import scala.collection.mutable.{ArrayBuffer => MArrayBuffer, HashMap => MHashMap}
-import _root_.java.util.PriorityQueue
 import _root_.java.util.Locale
-import scala.collection.mutable
 
 class ExtSomeRandom(val x: Int)
 
