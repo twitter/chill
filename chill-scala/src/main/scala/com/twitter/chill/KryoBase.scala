@@ -36,8 +36,12 @@ import scala.util.{Failure, Success, Try}
  * This is the base class of Kryo we use to fix specific scala
  * related issues discovered (ideally, this should be fixed in Kryo)
  */
-class KryoBase(classResolver: ClassResolver = new DefaultClassResolver,
-               referenceResolver: ReferenceResolver = new MapReferenceResolver) extends Kryo(classResolver, referenceResolver) {
+class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolver)
+    extends Kryo(classResolver, referenceResolver) {
+  // no-args constructor instead of constructor with default args for binary compatibility
+  def this() {
+    this(new DefaultClassResolver, new MapReferenceResolver)
+  }
 
   lazy val objSer = new ObjectSerializer[AnyRef]
 
