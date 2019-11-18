@@ -253,14 +253,14 @@ lazy val chillThrift = module("thrift").settings(
   crossPaths := false,
   autoScalaLibrary := false,
   libraryDependencies ++= Seq(
-    "org.apache.thrift" % "libthrift" % "0.12.0" % "provided"
+    "org.apache.thrift" % "libthrift" % "0.13.0" % "provided"
   )
 )
 
 lazy val chillScrooge = module("scrooge")
   .settings(
     libraryDependencies ++= Seq(
-      ("org.apache.thrift" % "libthrift" % "0.12.0").exclude("junit", "junit"),
+      ("org.apache.thrift" % "libthrift" % "0.13.0").exclude("junit", "junit"),
       scalaVersion(sv => scrooge(sv)).value
     )
   )
