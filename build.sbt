@@ -51,6 +51,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
     commitNextVersion,
     pushChanges
   ),
+  publishConfiguration := publishConfiguration.value.withOverwrite(true),
   publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { x =>
