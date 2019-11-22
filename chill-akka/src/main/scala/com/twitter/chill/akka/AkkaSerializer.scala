@@ -79,6 +79,6 @@ class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
  */
 class ConfiguredAkkaSerializer(system: ExtendedActorSystem) extends AkkaSerializer(system) {
   override def kryoInstantiator: KryoInstantiator =
-    (new ConfiguredInstantiator(new AkkaConfig(system.settings.config)))
+    new ConfiguredInstantiator(new AkkaConfig(system.settings.config))
       .withRegistrar(new ActorRefSerializer(system))
 }

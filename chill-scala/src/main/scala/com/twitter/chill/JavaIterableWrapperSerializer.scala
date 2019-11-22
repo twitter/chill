@@ -33,7 +33,8 @@ private class JavaIterableWrapperSerializer extends KSerializer[JIterable[_]] {
 
 private object JavaIterableWrapperSerializer {
   // The class returned by asJavaIterable (scala.collection.convert.Wrappers$IterableWrapper).
-  val wrapperClass = scala.collection.JavaConversions.asJavaIterable(Seq(1)).getClass
+  val wrapperClass: Class[_ <: JIterable[Int]] =
+    scala.collection.JavaConversions.asJavaIterable(Seq(1)).getClass
 
   // Get the underlying method so we can use it to get the Scala collection for serialization.
   private val underlyingMethodOpt = {

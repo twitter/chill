@@ -146,7 +146,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
       .fromBytes(b)
       .asInstanceOf[Option[T]]
 
-  override def readExternal(in: ObjectInput) = maybeReadJavaKryo(in, kryo)
+  override def readExternal(in: ObjectInput): Unit = maybeReadJavaKryo(in, kryo)
 
   private def maybeReadJavaKryo(in: ObjectInput, kryo: KryoInstantiator): Unit =
     in.read match {
@@ -187,7 +187,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
       )
     }
 
-  override def writeExternal(out: ObjectOutput) = maybeWriteJavaKryo(out, kryo)
+  override def writeExternal(out: ObjectOutput): Unit = maybeWriteJavaKryo(out, kryo)
 
   def write(kryo: Kryo, output: Output): Unit = {
     val resolver = kryo.getReferenceResolver

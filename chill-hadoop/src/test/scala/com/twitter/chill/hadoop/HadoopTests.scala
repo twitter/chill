@@ -29,7 +29,7 @@ import com.twitter.chill.config.ConfiguredInstantiator
 import com.twitter.chill.KryoInstantiator
 
 class StdKryoInstantiator extends KryoInstantiator {
-  override def newKryo = {
+  override def newKryo: Kryo = {
     val k = new Kryo
     k.setInstantiatorStrategy(new StdInstantiatorStrategy)
     k

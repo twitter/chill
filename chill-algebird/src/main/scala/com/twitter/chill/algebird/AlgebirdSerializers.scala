@@ -69,7 +69,7 @@ class HLLSerializer extends KSerializer[HLL] {
 
 class HLLMonoidSerializer extends KSerializer[HyperLogLogMonoid] {
   setImmutable(true)
-  val hllMonoids = MMap[Int, HyperLogLogMonoid]()
+  val hllMonoids: MMap[Int, HyperLogLogMonoid] = MMap[Int, HyperLogLogMonoid]()
   def write(kser: Kryo, out: Output, mon: HyperLogLogMonoid): Unit =
     out.writeInt(mon.bits, true)
   def read(kser: Kryo, in: Input, cls: Class[HyperLogLogMonoid]): HyperLogLogMonoid = {

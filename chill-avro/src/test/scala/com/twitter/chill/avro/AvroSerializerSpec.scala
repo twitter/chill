@@ -18,7 +18,7 @@ import org.scalatest._
 import com.twitter.chill.{KSerializer, KryoPool, ScalaKryoInstantiator}
 import avro.FiscalRecord
 import org.apache.avro.generic.GenericRecordBuilder
-import org.apache.avro.SchemaBuilder
+import org.apache.avro.{Schema, SchemaBuilder}
 import org.apache.avro.generic.GenericData.Record
 
 import scala.reflect.ClassTag
@@ -28,14 +28,14 @@ import scala.reflect.ClassTag
  * @since 2/9/14.
  */
 class AvroSerializerSpec extends WordSpec with Matchers {
-  def getKryo[T: ClassTag](k: KSerializer[T]) = {
+  def getKryo[T: ClassTag](k: KSerializer[T]): KryoPool = {
     val inst = { () =>
       (new ScalaKryoInstantiator).newKryo.forClass(k)
     }
     KryoPool.withByteArrayOutputStream(1, inst)
   }
 
-  val schema = SchemaBuilder
+  val schema: Schema = SchemaBuilder
     .record("person")
     .fields
     .name("name")
@@ -49,12 +49,12 @@ class AvroSerializerSpec extends WordSpec with Matchers {
     .endRecord
 
   // Build an object conforming to the schema
-  val user = new GenericRecordBuilder(schema)
+  val user: Record = new GenericRecordBuilder(schema)
     .set("name", "Jeff")
     .set("ID", 1)
     .build
 
-  val testRecord =
+  val testRecord: FiscalRecord =
     FiscalRecord.newBuilder().setCalendarDate("2012-01-01").setFiscalWeek(1).setFiscalYear(2012).build()
 
   "SpecificRecordSerializer" should {

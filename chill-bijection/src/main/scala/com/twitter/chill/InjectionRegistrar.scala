@@ -20,9 +20,9 @@ object InjectionRegistrar {
 class InjectionRegistrar[T](val klass: Class[T], @transient b: Injection[T, Array[Byte]])
     extends IKryoRegistrar
     with Serializable {
-  protected val bBox = MeatLocker(b)
+  protected val bBox: MeatLocker[Injection[T, Array[Byte]]] = MeatLocker(b)
 
-  implicit def injection = bBox.copy
+  implicit def injection: Injection[T, Array[Byte]] = bBox.copy
 
   def apply(k: Kryo): Unit =
     if (!k.alreadyRegistered(klass)) {

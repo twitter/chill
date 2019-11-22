@@ -46,14 +46,14 @@ object WeekDay extends Enumeration {
 
 trait ExampleUsingSelf { self =>
   def count = 0
-  def addOne = new ExampleUsingSelf { override def count = self.count + 1 }
+  def addOne: ExampleUsingSelf = new ExampleUsingSelf { override def count: Int = self.count + 1 }
 }
 
 case class Foo(m1: Map[String, Int], m2: Map[String, Seq[String]])
 
 class KryoSpec extends WordSpec with Matchers with BaseProperties {
-  def roundtrip[T] = new Matcher[T] {
-    def apply(t: T) =
+  def roundtrip[T]: Matcher[T] = new Matcher[T] {
+    def apply(t: T): MatchResult =
       MatchResult(
         rtEquiv(t),
         "successful serialization roundtrip for " + t,
@@ -61,7 +61,7 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       )
   }
 
-  def getKryo = KryoSerializer.registered.newKryo
+  def getKryo: Kryo = KryoSerializer.registered.newKryo
 
   "KryoSerializers and KryoDeserializers" should {
     "round trip any non-array object" in {
@@ -139,8 +139,8 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
       c should roundtrip
     }
     "handle trait with reference of self" in {
-      var a = new ExampleUsingSelf {}
-      var b = rt(a.addOne)
+      val a = new ExampleUsingSelf {}
+      val b = rt(a.addOne)
       b.count should equal(1)
     }
     "handle manifests" in {
@@ -324,18 +324,18 @@ class KryoSpec extends WordSpec with Matchers with BaseProperties {
     }
     "Ranges should be fixed size" in {
       val MAX_RANGE_SIZE = 453 // what seems to be needed.
-      serialize((1 to 10000)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1 to 10000 by 2)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1 until 10000)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1 until 10000 by 2)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1L to 10000L)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1L to 10000L by 2L)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1L until 10000L)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1L until 10000L by 2L)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1.0 to 10000.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1.0 to 10000.0 by 2.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1.0 until 10000.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
-      serialize((1.0 until 10000.0 by 2.0)).size should be < (MAX_RANGE_SIZE) // some fixed size
+      serialize(1 to 10000).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1 to 10000 by 2).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1 until 10000).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1 until 10000 by 2).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1L to 10000L).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1L to 10000L by 2L).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1L until 10000L).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1L until 10000L by 2L).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1.0 to 10000.0).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1.0 to 10000.0 by 2.0).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1.0 until 10000.0).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(1.0 until 10000.0 by 2.0).size should be < MAX_RANGE_SIZE // some fixed size
     }
     "VolatileByteRef" in {
       import scala.runtime.VolatileByteRef

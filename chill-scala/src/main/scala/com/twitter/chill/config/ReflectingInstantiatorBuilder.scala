@@ -52,9 +52,9 @@ case class ReflectingInstantiatorBuilder(
     new ReflectingInstantiator(
       kryoClass,
       instantiatorStrategyClass,
-      classes.asJava.asInstanceOf[JIterable[ClassRegistrar[_]]],
-      serializers.asJava.asInstanceOf[JIterable[ReflectingRegistrar[_]]],
-      defaults.asJava.asInstanceOf[JIterable[ReflectingDefaultRegistrar[_]]],
+      classes.asJava,
+      serializers.asJava,
+      defaults.asJava,
       registrationRequired,
       skipMissing
     )
