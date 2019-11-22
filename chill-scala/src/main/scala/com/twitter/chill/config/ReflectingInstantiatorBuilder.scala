@@ -24,8 +24,6 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import scala.collection.JavaConverters._
 
-import _root_.java.lang.{Iterable => JIterable}
-
 /**
  * a builder for the ReflectingInstantiator
  * use the copy(arg = value) to change values:
