@@ -78,7 +78,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
       "scm:git:git@github.com:twitter/chill.git"
     )
   ),
-  pomExtra := (<url>https://github.com/twitter/chill</url>
+  pomExtra := <url>https://github.com/twitter/chill</url>
         <licenses>
       <license>
       <name>Apache 2</name>

@@ -28,7 +28,7 @@ object MeatLocker {
  */
 class MeatLocker[T](@transient protected var t: T) extends Serializable {
   protected def pool: KryoPool = ScalaKryoInstantiator.defaultPool
-  protected val tBytes = pool.toBytesWithClass(t)
+  protected val tBytes: Array[Byte] = pool.toBytesWithClass(t)
 
   def get: T = {
     if (null == t) {

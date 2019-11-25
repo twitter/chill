@@ -19,21 +19,21 @@ package com.twitter.chill
 import org.scalatest._
 
 trait AwesomeFns {
-  val myfun = { x: Int =>
+  val myfun: Int => Int = { x: Int =>
     2 * x
   }
 }
 
 object BaseFns extends AwesomeFns {
-  val myfun2 = { x: Int =>
+  val myfun2: Int => Int = { x: Int =>
     4 * x
   }
-  def apply(x: Int) = myfun.apply(x)
+  def apply(x: Int): Int = myfun.apply(x)
 }
 
 trait AwesomeFn2 {
   def mult: Int
-  val timesByMult = { x: Int =>
+  val timesByMult: Int => Int = { x: Int =>
     mult * x
   }
 }

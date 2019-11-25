@@ -17,8 +17,9 @@ limitations under the License.
 package com.twitter.chill
 
 import com.twitter.bijection.{Injection, Inversion}
-
 import _root_.java.io.Serializable
+
+import scala.util.Try
 
 /**
  * A default KryoInjection that uses the ScalaKryoInstantiator with
@@ -26,7 +27,7 @@ import _root_.java.io.Serializable
  */
 object KryoInjection extends Injection[Any, Array[Byte]] {
   def apply(obj: Any): Array[Byte] = ScalaKryoInstantiator.defaultPool.toBytesWithClass(obj)
-  def invert(b: Array[Byte]) = Inversion.attempt(b) {
+  def invert(b: Array[Byte]): Try[Any] = Inversion.attempt(b) {
     ScalaKryoInstantiator.defaultPool.fromBytes(_)
   }
 
@@ -64,5 +65,5 @@ class KryoInjectionInstance(lazyKryoP: => KryoPool) extends Injection[Any, Array
   }
 
   def apply(obj: Any): Array[Byte] = kryoP.toBytesWithClass(obj)
-  def invert(b: Array[Byte]) = Inversion.attempt(b) { kryoP.fromBytes(_) }
+  def invert(b: Array[Byte]): Try[Any] = Inversion.attempt(b) { kryoP.fromBytes(_) }
 }

@@ -28,7 +28,7 @@ import com.twitter.algebird.{
 import org.scalatest._
 
 class AlgebirdSerializersSpec extends WordSpec with Matchers {
-  val kryo = {
+  val kryo: KryoPool = {
     val inst = () => {
       val newK = (new ScalaKryoInstantiator).newKryo
       newK.setReferences(false) // typical in production environment (scalding, spark)

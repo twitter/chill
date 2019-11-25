@@ -10,7 +10,7 @@ import org.scalatest._
 import scala.util.Random
 
 class BitSetSpec extends WordSpec with MustMatchers {
-  implicit val kryo = new Kryo()
+  implicit val kryo: Kryo = new Kryo()
 
   def rt[A](a: A)(implicit k: Kryo): A = {
     val out = new Output(1000, -1)
@@ -31,7 +31,7 @@ class BitSetSpec extends WordSpec with MustMatchers {
       // we assume everything after 1337 to be false
       simple.get(1338) must equal(false)
       simple.get(2000) must equal(false)
-      var dolly = rt(simple)
+      val dolly = rt(simple)
       simple = null // avoid accidental calls
       dolly.size() must be(2048)
       for (i <- 0 to 1337) {
@@ -95,12 +95,12 @@ class BitSetSpec extends WordSpec with MustMatchers {
       var out = new Output(1, -1)
       oldKryo.writeObject(out, element)
       out.flush()
-      var oldBytes = out.total()
+      val oldBytes = out.total()
       println("The old serializer needs " + oldBytes + " bytes")
       out = new Output(1, -1)
       newKryo.writeObject(out, element)
       out.flush()
-      var newBytes = out.total()
+      val newBytes = out.total()
       println("The new serializer needs " + newBytes + " bytes")
 
       oldBytes >= newBytes must be(true)

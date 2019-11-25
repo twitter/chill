@@ -17,7 +17,7 @@
 package com.twitter.chill.protobuf
 
 import com.twitter.chill.{KryoInstantiator, KryoPool}
-import com.twitter.chill.protobuf.TestMessages.{FatigueCount}
+import com.twitter.chill.protobuf.TestMessages.FatigueCount
 
 import com.esotericsoftware.kryo.Kryo
 
@@ -26,7 +26,7 @@ import com.google.protobuf.Message
 import org.scalatest._
 
 class ProtobufTest extends WordSpec with Matchers {
-  def buildFatigueCount(target: Long, id: Long, count: Int, recentClicks: List[Long]) = {
+  def buildFatigueCount(target: Long, id: Long, count: Int, recentClicks: List[Long]): FatigueCount = {
     val bldr = FatigueCount
       .newBuilder()
       .setTargetId(target)
@@ -39,7 +39,7 @@ class ProtobufTest extends WordSpec with Matchers {
 
   "Protobuf round-trips" in {
     val kpool = KryoPool.withByteArrayOutputStream(1, new KryoInstantiator {
-      override def newKryo() = {
+      override def newKryo(): Kryo = {
         val k = new Kryo
         k.addDefaultSerializer(classOf[Message], classOf[ProtobufSerializer])
         k
@@ -52,6 +52,6 @@ class ProtobufTest extends WordSpec with Matchers {
 
     // Without the protobuf serializer, this fails:
     val kpoolBusted = KryoPool.withByteArrayOutputStream(1, new KryoInstantiator)
-    an[Exception] should be thrownBy (kpoolBusted.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))))
+    an[Exception] should be thrownBy kpoolBusted.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L)))
   }
 }

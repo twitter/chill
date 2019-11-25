@@ -193,7 +193,7 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
     k.forClass[Symbol](new KSerializer[Symbol] {
         override def isImmutable = true
         def write(k: Kryo, out: Output, obj: Symbol): Unit = out.writeString(obj.name)
-        def read(k: Kryo, in: Input, cls: Class[Symbol]) = Symbol(in.readString)
+        def read(k: Kryo, in: Input, cls: Class[Symbol]): Symbol = Symbol(in.readString)
       })
       .forSubclass[Regex](new RegexSerializer)
       .forClass[ClassTag[Any]](new ClassTagSerializer[Any])

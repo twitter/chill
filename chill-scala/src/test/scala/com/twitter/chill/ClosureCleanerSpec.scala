@@ -233,10 +233,10 @@ object TestObject {
 }
 
 class TestClass extends Serializable {
-  var bar: Int = 1
+  val bar: Int = 1
   // this is not actually used by any closure and is not serializable
   var boom: NotSerializable = new NotSerializable {}
 
   // we really need outer because we access this.bar
-  var fn: Int => Int = (x: Int) => bar + x
+  val fn: Int => Int = (x: Int) => bar + x
 }

@@ -70,7 +70,7 @@ object ScroogeThriftStructSerializer {
     val newCodec = constructCodec(thriftStructClass)
     new ThriftStructSerializer[T] {
       val protocolFactory = new TBinaryProtocol.Factory
-      override def codec = newCodec
+      override def codec: ThriftStructCodec[T] = newCodec
     }
   }
 

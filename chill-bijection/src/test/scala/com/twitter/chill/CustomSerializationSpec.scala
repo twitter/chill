@@ -37,16 +37,18 @@ class CustomSerializationSpec extends WordSpec with Matchers with BaseProperties
       case class Point(x: Int, y: Int)
       case class Color(name: String)
       case class ColoredPoint(color: Color, point: Point) {
-        override def toString = color + ":" + point
+        override def toString: String = color + ":" + point
       }
 
       // write bijections
-      implicit val pointBijection =
+      implicit val pointBijection: Bijection[Point, (Int, Int)] =
         Bijection.build[Point, (Int, Int)](Point.unapply(_).get)((Point.apply _).tupled)
-      implicit val colorBijection = Bijection.build[Color, String](Color.unapply(_).get)(Color.apply)
-      implicit val coloredPointBijection = Bijection.build[ColoredPoint, (Color, Point)](
-        ColoredPoint.unapply(_).get
-      )((ColoredPoint.apply _).tupled)
+      implicit val colorBijection: Bijection[Color, String] =
+        Bijection.build[Color, String](Color.unapply(_).get)(Color.apply)
+      implicit val coloredPointBijection: Bijection[ColoredPoint, (Color, Point)] =
+        Bijection.build[ColoredPoint, (Color, Point)](
+          ColoredPoint.unapply(_).get
+        )((ColoredPoint.apply _).tupled)
 
       val myInst = { () =>
         (new ScalaKryoInstantiator).newKryo
@@ -65,11 +67,12 @@ class CustomSerializationSpec extends WordSpec with Matchers with BaseProperties
       rt(myInst, coloredPoint) should equal(coloredPoint)
     }
     "use bijections" in {
-      implicit val bij = Bijection.build[TestCaseClassForSerialization, (String, Int)] { s =>
-        (s.x, s.y)
-      } { tup =>
-        TestCaseClassForSerialization(tup._1, tup._2)
-      }
+      implicit val bij: Bijection[TestCaseClassForSerialization, (String, Int)] =
+        Bijection.build[TestCaseClassForSerialization, (String, Int)] { s =>
+          (s.x, s.y)
+        } { tup =>
+          TestCaseClassForSerialization(tup._1, tup._2)
+        }
 
       val inst = { () =>
         (new ScalaKryoInstantiator).newKryo

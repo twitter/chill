@@ -28,12 +28,12 @@ class AkkaTests extends WordSpec with Matchers {
   }
 
   case class IncActor() extends Actor {
-    def receive = {
+    def receive: Receive = {
       case x: Int => sender() ! (x + 1)
     }
   }
 
-  val system = ActorSystem(
+  val system: ActorSystem = ActorSystem(
     "example",
     ConfigFactory.parseString("""
     akka.actor.serializers {
@@ -48,7 +48,7 @@ class AkkaTests extends WordSpec with Matchers {
   )
 
   // Get the Serialization Extension
-  val serialization = SerializationExtension(system)
+  val serialization: Serialization = SerializationExtension(system)
 
   "AkkaSerializer" should {
     "be selected for tuples" in {

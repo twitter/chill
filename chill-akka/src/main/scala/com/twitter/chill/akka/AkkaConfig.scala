@@ -28,7 +28,7 @@ import scala.util.Try
  */
 class AkkaConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
   /* This is implementing a Java API so that has an assy format */
-  def get(key: String) =
+  def get(key: String): String =
     Try(typesafeConfig.getString(key)).toOption.orNull
 
   def set(key: String, value: String): Unit =
