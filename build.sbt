@@ -157,9 +157,7 @@ val ignoredABIProblems = {
     exclude[IncompatibleResultTypeProblem]("com.twitter.chill.FieldAccessFinder.visitMethod"),
     exclude[MissingClassProblem]("com.twitter.chill.FieldAccessFinder"),
     exclude[MissingTypesProblem]("com.twitter.chill.FieldAccessFinder"),
-    exclude[DirectMissingMethodProblem]("com.twitter.chill.FieldAccessFinder.this"),
-    exclude[DirectMissingMethodProblem]("com.twitter.chill.ScalaKryoInstantiator.newKryo"),
-    exclude[DirectMissingMethodProblem]("com.twitter.chill.EmptyScalaKryoInstantiator.newKryo")
+    exclude[DirectMissingMethodProblem]("com.twitter.chill.FieldAccessFinder.this")
   )
 }
 
