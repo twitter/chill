@@ -178,7 +178,11 @@ val ignoredABIProblems = {
     exclude[IncompatibleResultTypeProblem]("com.twitter.chill.FieldAccessFinder.visitMethod"),
     exclude[MissingClassProblem]("com.twitter.chill.FieldAccessFinder"),
     exclude[MissingTypesProblem]("com.twitter.chill.FieldAccessFinder"),
-    exclude[DirectMissingMethodProblem]("com.twitter.chill.FieldAccessFinder.this")
+    exclude[DirectMissingMethodProblem]("com.twitter.chill.FieldAccessFinder.this"),
+    exclude[IncompatibleResultTypeProblem]("com.twitter.chill.Tuple1*Serializer.read"),
+    exclude[IncompatibleMethTypeProblem]("com.twitter.chill.Tuple1*Serializer.write"),
+    exclude[IncompatibleResultTypeProblem]("com.twitter.chill.Tuple2*Serializer.read"),
+    exclude[IncompatibleMethTypeProblem]("com.twitter.chill.Tuple2*Serializer.write")
   )
 }
 
