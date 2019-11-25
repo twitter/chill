@@ -98,7 +98,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
       <name>Sam Ritchie</name>
       <url>http://twitter.com/sritchie</url>
         </developer>
-      </developers>),
+      </developers>,
   Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders(
     (Compile / scalaSource).value,
     scalaVersion.value
