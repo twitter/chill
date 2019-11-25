@@ -43,6 +43,6 @@ class ActorRefSerializer(system: ExtendedActorSystem) extends Serializer[ActorRe
     system.provider.resolveActorRef(path)
   }
 
-  override def write(kryo: Kryo, output: Output, obj: ActorRef) =
+  override def write(kryo: Kryo, output: Output, obj: ActorRef): Unit =
     output.writeString(Serialization.serializedActorPath(obj))
 }

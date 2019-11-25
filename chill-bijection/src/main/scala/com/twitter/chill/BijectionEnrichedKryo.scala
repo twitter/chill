@@ -32,7 +32,7 @@ object BijectionEnrichedKryo {
   )(implicit bij: ImplicitBijection[A, B], cmf: ClassTag[B]): KSerializer[A] =
     new KSerializer[A] {
       def write(k: Kryo, out: Output, obj: A): Unit = kser.write(k, out, bij(obj))
-      def read(k: Kryo, in: Input, cls: Class[A]) =
+      def read(k: Kryo, in: Input, cls: Class[A]): A =
         bij.invert(kser.read(k, in, cmf.runtimeClass.asInstanceOf[Class[B]]))
     }
 
@@ -73,7 +73,7 @@ class BijectionEnrichedKryo(k: Kryo) {
   def forClassViaBijection[A, B](
       bij: Bijection[A, B]
   )(implicit acmf: ClassTag[A], bcmf: ClassTag[B]): Kryo = {
-    implicit def implicitBij = bij
+    implicit def implicitBij: Bijection[A, B] = bij
     this.forClassViaBijection[A, B]
   }
 }

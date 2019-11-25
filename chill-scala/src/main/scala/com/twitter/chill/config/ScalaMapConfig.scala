@@ -29,7 +29,7 @@ class ScalaMapConfig(in: Map[String, String]) extends Config {
 
   def toMap: Map[String, String] = conf
 
-  def get(k: String) = conf.getOrElse(k, null)
+  def get(k: String): String = conf.getOrElse(k, null)
   def set(k: String, v: String): Unit =
     if (null == v) {
       conf -= k

@@ -92,7 +92,8 @@ class KryoBase extends Kryo {
   /* Fixes the case where Kryo's reflectasm doesn't work, even though it claims to
    * TODO this should be fixed in Kryo. When it is, remove this
    */
-  override def newInstantiator(cls: Class[_]) = newTypedInstantiator[AnyRef](cls.asInstanceOf[Class[AnyRef]])
+  override def newInstantiator(cls: Class[_]): ObjectInstantiator[AnyRef] =
+    newTypedInstantiator[AnyRef](cls.asInstanceOf[Class[AnyRef]])
 
   private[this] def newTypedInstantiator[T](cls: Class[T]) = {
     import Instantiators._
@@ -122,13 +123,12 @@ object Instantiators {
   // Use call by name:
   def forClass[T](t: Class[T])(fn: () => T): ObjectInstantiator[T] =
     new ObjectInstantiator[T] {
-      override def newInstance() =
+      override def newInstance(): T =
         try {
           fn()
         } catch {
-          case x: Exception => {
+          case x: Exception =>
             throw new KryoException("Error constructing instance of class: " + t.getName, x)
-          }
         }
     }
 
@@ -150,11 +150,10 @@ object Instantiators {
     try {
       c.getConstructor()
     } catch {
-      case _: Throwable => {
+      case _: Throwable =>
         val cons = c.getDeclaredConstructor()
         cons.setAccessible(true)
         cons
-      }
     }
 
   def normalJava[T](t: Class[T]): Try[ObjectInstantiator[T]] =

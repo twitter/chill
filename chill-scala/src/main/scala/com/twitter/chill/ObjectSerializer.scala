@@ -24,7 +24,7 @@ import _root_.java.lang.reflect.Field
  * Uses facts about how scala compiles object singletons to Java + reflection
  */
 class ObjectSerializer[T] extends KSerializer[T] {
-  val cachedObj = MMap[Class[_], Option[T]]()
+  val cachedObj: MMap[Class[_], Option[T]] = MMap[Class[_], Option[T]]()
 
   // Does nothing
   override def write(kser: Kryo, out: Output, obj: T): Unit = {}

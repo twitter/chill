@@ -24,8 +24,6 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import scala.collection.JavaConverters._
 
-import _root_.java.lang.{Iterable => JIterable}
-
 /**
  * a builder for the ReflectingInstantiator
  * use the copy(arg = value) to change values:
@@ -52,9 +50,9 @@ case class ReflectingInstantiatorBuilder(
     new ReflectingInstantiator(
       kryoClass,
       instantiatorStrategyClass,
-      classes.asJava.asInstanceOf[JIterable[ClassRegistrar[_]]],
-      serializers.asJava.asInstanceOf[JIterable[ReflectingRegistrar[_]]],
-      defaults.asJava.asInstanceOf[JIterable[ReflectingDefaultRegistrar[_]]],
+      classes.asJava,
+      serializers.asJava,
+      defaults.asJava,
       registrationRequired,
       skipMissing
     )

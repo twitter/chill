@@ -23,7 +23,7 @@ import _root_.java.util.Locale
 class ExtSomeRandom(val x: Int)
 
 class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
-  def getKryo = KryoSerializer.registered.newKryo
+  def getKryo: Kryo = KryoSerializer.registered.newKryo
 
   "KryoSerializers and KryoDeserializers" should {
     "Externalizer handle circular references with Java" in {
@@ -55,7 +55,7 @@ class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
       l3.update(1, new ExtSomeRandom(3)) // make a loop
       (l3(0) eq ext3) should equal(true)
       ext3.javaWorks should equal(false)
-      (jrt(ext3).get)(1).asInstanceOf[ExtSomeRandom].x should equal(l3(1).asInstanceOf[ExtSomeRandom].x)
+      jrt(ext3).get(1).asInstanceOf[ExtSomeRandom].x should equal(l3(1).asInstanceOf[ExtSomeRandom].x)
     }
 
     "Externalizer circular reference with scala tuples(java and kryo Serializable" in {
@@ -65,8 +65,8 @@ class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
       l4.update(1, (3, 7)) // make a loop
       (l4(0) eq ext4) should equal(true)
       ext4.javaWorks should equal(true)
-      (rt(ext4).get)(1) should equal(l4(1))
-      (jrt(ext4).get)(1) should equal(l4(1))
+      rt(ext4).get(1) should equal(l4(1))
+      jrt(ext4).get(1) should equal(l4(1))
     }
 
     "Externalizer handle circular references with non Kryo Serializable members" in {
@@ -76,8 +76,8 @@ class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
       l4.update(1, new Locale("en")) // make a loop
       (l4(0) eq ext4) should equal(true)
       ext4.javaWorks should equal(true)
-      (rt(new EmptyScalaKryoInstantiator(), ext4).get)(1)
-      (jrt(ext4).get)(1) should equal(l4(1))
+      rt(new EmptyScalaKryoInstantiator(), ext4).get(1)
+      jrt(ext4).get(1) should equal(l4(1))
     }
   }
 }

@@ -29,24 +29,24 @@ import scala.reflect.ClassTag
  */
 object AvroSerializer {
   def SpecificRecordSerializer[T <: SpecificRecordBase: ClassTag]: KSerializer[T] = {
-    implicit val inj = SpecificAvroCodecs[T]
+    implicit val inj: Injection[T, Array[Byte]] = SpecificAvroCodecs[T]
     InjectiveSerializer.asKryo
   }
 
   def SpecificRecordBinarySerializer[T <: SpecificRecordBase: ClassTag]: KSerializer[T] = {
-    implicit val inj = SpecificAvroCodecs.toBinary[T]
+    implicit val inj: Injection[T, Array[Byte]] = SpecificAvroCodecs.toBinary[T]
     InjectiveSerializer.asKryo
   }
 
   def SpecificRecordJsonSerializer[T <: SpecificRecordBase: ClassTag](schema: Schema): KSerializer[T] = {
     import com.twitter.bijection.StringCodec.utf8
-    implicit val inj = SpecificAvroCodecs.toJson[T](schema)
-    implicit val avroToArray = Injection.connect[T, String, Array[Byte]]
+    implicit val inj: Injection[T, String] = SpecificAvroCodecs.toJson[T](schema)
+    implicit val avroToArray: Injection[T, Array[Byte]] = Injection.connect[T, String, Array[Byte]]
     InjectiveSerializer.asKryo
   }
 
   def GenericRecordSerializer[T <: GenericRecord: ClassTag](schema: Schema = null): KSerializer[T] = {
-    implicit val inj = GenericAvroCodecs[T](schema)
+    implicit val inj: Injection[T, Array[Byte]] = GenericAvroCodecs[T](schema)
     InjectiveSerializer.asKryo
   }
 }
