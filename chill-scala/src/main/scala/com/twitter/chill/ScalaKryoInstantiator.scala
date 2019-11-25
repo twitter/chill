@@ -56,7 +56,7 @@ import scala.reflect.ClassTag
  * It has no registered serializers, just the standard Kryo configured for Kryo.
  */
 class EmptyScalaKryoInstantiator extends KryoInstantiator {
-  override def newKryo = {
+  override def newKryo: KryoBase = {
     val k = new KryoBase
     k.setRegistrationRequired(false)
     k.setInstantiatorStrategy(new org.objenesis.strategy.StdInstantiatorStrategy)
@@ -93,7 +93,7 @@ object ScalaKryoInstantiator extends Serializable {
 
 /** Makes an empty instantiator then registers everything */
 class ScalaKryoInstantiator extends EmptyScalaKryoInstantiator {
-  override def newKryo = {
+  override def newKryo: KryoBase = {
     val k = super.newKryo
     val reg = new AllScalaRegistrar
     reg(k)
