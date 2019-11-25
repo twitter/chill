@@ -8,10 +8,19 @@ val kryoVersion = "4.0.2"
 val scroogeVersion = "4.12.0"
 val asmVersion = "4.15"
 
+def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String): List[File] =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, y)) if y == 10 =>
+      new java.io.File(s"${srcBaseDir.getPath}-2.10") :: Nil
+    case Some((2, y)) if y >= 11 =>
+      new java.io.File(s"${srcBaseDir.getPath}-2.11+") :: Nil
+    case _ => Nil
+  }
+
 val sharedSettings = mimaDefaultSettings ++ Seq(
   organization := "com.twitter",
   scalaVersion := "2.11.12",
-  crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.8"),
+  crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.10"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   scalacOptions ++= {
     scalaVersion.value match {
@@ -89,7 +98,19 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
       <name>Sam Ritchie</name>
       <url>http://twitter.com/sritchie</url>
         </developer>
-      </developers>)
+      </developers>),
+  Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders(
+    (Compile / scalaSource).value,
+    scalaVersion.value
+  ),
+  Test / unmanagedSourceDirectories ++= scalaVersionSpecificFolders(
+    (Test / scalaSource).value,
+    scalaVersion.value
+  ),
+  Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders(
+    (Compile / javaSource).value,
+    scalaVersion.value
+  )
 )
 
 // Aggregated project
