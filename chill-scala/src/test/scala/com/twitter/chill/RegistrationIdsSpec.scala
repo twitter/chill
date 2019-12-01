@@ -1,8 +1,9 @@
 package com.twitter.chill
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class RegistrationIdsSpec extends WordSpec with Matchers {
+class RegistrationIdsSpec extends AnyWordSpec with Matchers {
   """
     |Projects using chill to long term persist serialized data (for example in event
     |sourcing scenarios) depend on the registration IDs of the pre-registered

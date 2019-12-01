@@ -22,11 +22,13 @@ import org.scalatest._
 
 import com.twitter.chill._
 import com.esotericsoftware.kryo.Kryo
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class TestInst extends KryoInstantiator { override def newKryo = new Kryo }
 class TestInstTwo extends KryoInstantiator { override def newKryo = new Kryo }
 
-class ReflectingInstantiatorTest extends WordSpec with Matchers {
+class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
   "A ConfiguredInstantiator" should {
     "work with a reflected instantiator" in {
       val conf = new JavaMapConfig

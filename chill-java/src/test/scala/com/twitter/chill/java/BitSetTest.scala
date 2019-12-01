@@ -8,8 +8,10 @@ import org.objenesis.strategy.StdInstantiatorStrategy
 import org.scalatest._
 
 import scala.util.Random
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class BitSetSpec extends WordSpec with MustMatchers {
+class BitSetSpec extends AnyWordSpec with Matchers {
   implicit val kryo: Kryo = new Kryo()
 
   def rt[A](a: A)(implicit k: Kryo): A = {

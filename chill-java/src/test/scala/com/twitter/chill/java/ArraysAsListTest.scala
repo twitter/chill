@@ -19,8 +19,10 @@ package com.twitter.chill.java
 
 import TestLists._
 import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ArraysAsListTest extends WordSpec with Matchers {
+class ArraysAsListTest extends AnyWordSpec with Matchers {
   "ArraysAsListSerializer" should {
     "byte[]" in {
       val list = getList(java.lang.Byte.TYPE)

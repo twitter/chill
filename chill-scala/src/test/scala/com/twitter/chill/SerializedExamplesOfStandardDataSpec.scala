@@ -4,9 +4,10 @@ import scala.collection.{JavaConversions, JavaConverters}
 import scala.collection.immutable.{HashMap, HashSet, ListMap, ListSet, NumericRange, Queue}
 import scala.runtime.VolatileByteRef
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class SerializedExamplesOfStandardDataSpec extends WordSpec with Matchers {
+class SerializedExamplesOfStandardDataSpec extends AnyWordSpec with Matchers {
   s"""
     |Projects using chill to persist serialized data (for example in event sourcing
     |scenarios) depend on the serialized representation of the pre-registered

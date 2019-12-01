@@ -23,6 +23,8 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks._
 
 import scala.reflect.ClassTag
 import scala.util.Try
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 object ClosureCleanerSpec {
   // scala 2.12.x has better Java 8 interop. Lambdas are serializable and implemented via
@@ -30,7 +32,7 @@ object ClosureCleanerSpec {
   val supportsSerializedLambda: Boolean = scala.util.Properties.versionString.contains("2.12")
 }
 
-class ClosureCleanerSpec extends WordSpec with Matchers {
+class ClosureCleanerSpec extends AnyWordSpec with Matchers {
   private val someSerializableValue = 1
   private def someSerializableMethod() = 1
 

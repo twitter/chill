@@ -20,6 +20,7 @@ import org.scalatest._
 
 import com.twitter.bijection.Injection
 import scala.util.Try
+import org.scalatest.wordspec.AnyWordSpec
 
 class NotSerializable {
   val x = "abcd"
@@ -29,7 +30,7 @@ class NotSerializable {
       case _                  => false
     }
 }
-class ExternalizerCodecSpec extends WordSpec {
+class ExternalizerCodecSpec extends AnyWordSpec {
   import ExternalizerCodec._
   import ExternalizerInjection._
 

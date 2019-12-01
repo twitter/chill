@@ -3,9 +3,10 @@ package com.twitter.chill
 import scala.collection.immutable.{HashMap, HashSet, ListMap, ListSet, Queue, TreeMap, TreeSet, WrappedString}
 import scala.collection.mutable
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class StandardDataRegistrationsSpec extends WordSpec with Matchers {
+class StandardDataRegistrationsSpec extends AnyWordSpec with Matchers {
   s"""
     |For projects using chill to persist serialized data (for example in event
     |sourcing scenarios), it can be beneficial or even required to turn on the

@@ -21,6 +21,8 @@ import org.scalatest._
 import com.twitter.bijection.Bijection
 
 import BijectionEnrichedKryo._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 object Foo {
   def Bar = 1
@@ -29,7 +31,7 @@ object Globals {
   var temp = false
 }
 
-class CustomSerializationSpec extends WordSpec with Matchers with BaseProperties {
+class CustomSerializationSpec extends AnyWordSpec with Matchers with BaseProperties {
   "Custom KryoSerializers and KryoDeserializers" should {
     "serialize objects that have registered serialization" in {
       /* These classes can be inside CustomSerializationSpec since their

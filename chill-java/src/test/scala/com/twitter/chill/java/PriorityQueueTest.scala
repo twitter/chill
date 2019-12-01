@@ -23,8 +23,10 @@ import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
 
 import org.objenesis.strategy.StdInstantiatorStrategy
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class PriorityQueueSpec extends WordSpec with Matchers {
+class PriorityQueueSpec extends AnyWordSpec with Matchers {
   def rt[A](k: Kryo, a: A): A = {
     val out = new Output(1000, -1)
     k.writeClassAndObject(out, a.asInstanceOf[AnyRef])

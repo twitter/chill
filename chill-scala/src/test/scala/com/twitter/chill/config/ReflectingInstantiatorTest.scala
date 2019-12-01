@@ -21,9 +21,11 @@ import org.scalatest._
 import com.twitter.chill.config._
 
 import org.objenesis.strategy.InstantiatorStrategy;
-import org.objenesis.strategy.StdInstantiatorStrategy;
+import org.objenesis.strategy.StdInstantiatorStrategy
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec;
 
-class ReflectingInstantiatorTest extends WordSpec with Matchers {
+class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
   "A ReflectingInstantiator" should {
     "set keys into a config as expected" in {
       val ri = ReflectingInstantiatorBuilder(

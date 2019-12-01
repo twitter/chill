@@ -17,6 +17,8 @@ limitations under the License.
 package com.twitter.chill
 
 import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 trait AwesomeFns {
   val myfun: Int => Int = { x: Int =>
@@ -42,7 +44,7 @@ object BaseFns2 extends AwesomeFn2 {
   def mult = 5
 }
 
-class FunctionSerialization extends WordSpec with Matchers with BaseProperties {
+class FunctionSerialization extends AnyWordSpec with Matchers with BaseProperties {
   "Serialize objects with Fns" should {
     "fn calling" in {
       //rt(fn).apply(4) should equal(8)

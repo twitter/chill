@@ -21,8 +21,10 @@ import org.scalatest._
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.serialization._
 import com.typesafe.config.ConfigFactory
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class AkkaTests extends WordSpec with Matchers {
+class AkkaTests extends AnyWordSpec with Matchers {
   object IncActor {
     def props: Props = Props(IncActor())
   }

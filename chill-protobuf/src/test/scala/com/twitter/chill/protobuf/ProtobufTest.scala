@@ -24,8 +24,10 @@ import com.esotericsoftware.kryo.Kryo
 import com.google.protobuf.Message
 
 import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ProtobufTest extends WordSpec with Matchers {
+class ProtobufTest extends AnyWordSpec with Matchers {
   def buildFatigueCount(target: Long, id: Long, count: Int, recentClicks: List[Long]): FatigueCount = {
     val bldr = FatigueCount
       .newBuilder()

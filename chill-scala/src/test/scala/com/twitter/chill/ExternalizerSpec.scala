@@ -19,10 +19,12 @@ package com.twitter.chill
 import org.scalatest._
 
 import _root_.java.util.Locale
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class ExtSomeRandom(val x: Int)
 
-class ExternalizerSpec extends WordSpec with Matchers with BaseProperties {
+class ExternalizerSpec extends AnyWordSpec with Matchers with BaseProperties {
   def getKryo: Kryo = KryoSerializer.registered.newKryo
 
   "KryoSerializers and KryoDeserializers" should {
