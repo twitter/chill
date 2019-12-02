@@ -27,6 +27,8 @@ import org.apache.hadoop.conf.Configuration
 
 import com.twitter.chill.config.ConfiguredInstantiator
 import com.twitter.chill.KryoInstantiator
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class StdKryoInstantiator extends KryoInstantiator {
   override def newKryo: Kryo = {
@@ -35,7 +37,7 @@ class StdKryoInstantiator extends KryoInstantiator {
     k
   }
 }
-class HadoopTests extends WordSpec with Matchers {
+class HadoopTests extends AnyWordSpec with Matchers {
   def rt[A <: AnyRef](k: KryoSerialization, a: A): A = {
     val out = new BAOut
     val cls = a.getClass.asInstanceOf[Class[AnyRef]]

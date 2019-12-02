@@ -25,6 +25,8 @@ import _root_.java.util.PriorityQueue
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 import scala.reflect._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /*
  * This is just a test case for Kryo to deal with. It should
@@ -51,7 +53,7 @@ trait ExampleUsingSelf { self =>
 
 case class Foo(m1: Map[String, Int], m2: Map[String, Seq[String]])
 
-class KryoSpec extends WordSpec with Matchers with BaseProperties {
+class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
   def roundtrip[T]: Matcher[T] = new Matcher[T] {
     def apply(t: T): MatchResult =
       MatchResult(

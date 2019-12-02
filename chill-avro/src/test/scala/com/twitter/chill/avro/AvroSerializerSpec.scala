@@ -22,12 +22,14 @@ import org.apache.avro.{Schema, SchemaBuilder}
 import org.apache.avro.generic.GenericData.Record
 
 import scala.reflect.ClassTag
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
  * @author Mansur Ashraf
  * @since 2/9/14.
  */
-class AvroSerializerSpec extends WordSpec with Matchers {
+class AvroSerializerSpec extends AnyWordSpec with Matchers {
   def getKryo[T: ClassTag](k: KSerializer[T]): KryoPool = {
     val inst = { () =>
       (new ScalaKryoInstantiator).newKryo.forClass(k)

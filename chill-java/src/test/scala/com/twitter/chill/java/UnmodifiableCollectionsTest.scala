@@ -19,8 +19,10 @@ package com.twitter.chill.java
 
 import TestCollections._
 import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class UnmodifiableCollectionsTest extends WordSpec with Matchers {
+class UnmodifiableCollectionsTest extends AnyWordSpec with Matchers {
   "UnmodifiableListSerializer" should {
     "UnmodifiableArrayList" in {
       val list = getUnmodifiableArrayList

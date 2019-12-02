@@ -26,8 +26,10 @@ import com.twitter.algebird.{
   QTree
 }
 import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class AlgebirdSerializersSpec extends WordSpec with Matchers {
+class AlgebirdSerializersSpec extends AnyWordSpec with Matchers {
   val kryo: KryoPool = {
     val inst = () => {
       val newK = (new ScalaKryoInstantiator).newKryo
