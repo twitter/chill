@@ -32,6 +32,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
   libraryDependencies ++= Seq(
     "org.scalacheck" %% "scalacheck" % "1.14.2" % "test",
     "org.scalatest" %% "scalatest" % "3.1.0" % "test",
+    "org.scalatestplus" %% "scalatestplus-scalacheck" % "3.1.0.0-RC2" % "test",
     "com.esotericsoftware" % "kryo-shaded" % kryoVersion
   ),
   parallelExecution in Test := true,
