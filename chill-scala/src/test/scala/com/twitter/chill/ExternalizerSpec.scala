@@ -16,8 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import org.scalatest._
-
 import _root_.java.util.Locale
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
