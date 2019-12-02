@@ -16,8 +16,6 @@
 
 package com.twitter.chill
 
-import org.scalatest._
-
 import com.twitter.bijection.Injection
 import scala.util.Try
 import org.scalatest.wordspec.AnyWordSpec
