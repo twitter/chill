@@ -10,21 +10,18 @@ val asmVersion = "4.15"
 
 def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String): List[File] =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, y)) if y == 10 =>
-      new java.io.File(s"${srcBaseDir.getPath}-2.10") :: Nil
-    case Some((2, y)) if y >= 11 =>
-      new java.io.File(s"${srcBaseDir.getPath}-2.11+") :: Nil
+    case Some((2, y)) if y <= 12 =>
+      new java.io.File(s"${srcBaseDir.getPath}-2.12-") :: Nil
     case _ => Nil
   }
 
 val sharedSettings = mimaDefaultSettings ++ Seq(
   organization := "com.twitter",
   scalaVersion := "2.11.12",
-  crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.10"),
+  crossScalaVersions := Seq("2.11.12", "2.12.10"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   scalacOptions ++= {
     scalaVersion.value match {
-      case v if v.startsWith("2.10") => Nil
       case v if v.startsWith("2.11") => Seq("-Ywarn-unused", "-Ywarn-unused-import")
       case _                         => Seq("-Ywarn-unused")
     }
