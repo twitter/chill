@@ -2,7 +2,7 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import sbtrelease.ReleaseStateTransformations._
 
 val akkaVersion = "2.4.16"
-val algebirdVersion = "0.13.5"
+val algebirdVersion = "0.13.6"
 val bijectionVersion = "0.9.6"
 val kryoVersion = "4.0.2"
 val scroogeVersion = "4.12.0"
@@ -209,6 +209,7 @@ lazy val chill = Project(
 ).settings(sharedSettings)
   .settings(
     name := "chill",
+    crossScalaVersions += "2.13.1",
     mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion),
     mimaBinaryIssueFilters ++= ignoredABIProblems,
     libraryDependencies += "org.apache.xbean" % "xbean-asm7-shaded" % asmVersion
@@ -315,6 +316,7 @@ lazy val chillAvro = module("avro")
 
 lazy val chillAlgebird = module("algebird")
   .settings(
+    crossScalaVersions += "2.13.1",
     libraryDependencies ++= Seq(
       "com.twitter" %% "algebird-core" % algebirdVersion
     )
