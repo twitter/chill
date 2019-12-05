@@ -11,16 +11,6 @@ matrix:
           "; scalafmtCheckAll; scalafmtSbtCheck"
           "; scalafixEnable; scalafix --check; test:scalafix --check"
 
-    - scala: 2.10.7
-      jdk: openjdk8
-      script:
-        - >
-          sbt
-          "++$TRAVIS_SCALA_VERSION clean"
-          "++$TRAVIS_SCALA_VERSION test"
-          "++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues"
-
-
     - scala: 2.11.12
       jdk: openjdk8
       script:
@@ -35,6 +25,15 @@ matrix:
         - bash <(curl -s https://codecov.io/bash)
 
     - scala: 2.12.10
+      jdk: openjdk8
+      script:
+        - >
+          sbt
+          "++$TRAVIS_SCALA_VERSION clean"
+          "++$TRAVIS_SCALA_VERSION test"
+          "++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues"
+
+    - scala: 2.13.1
       jdk: openjdk8
       script:
         - >
