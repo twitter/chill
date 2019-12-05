@@ -43,6 +43,7 @@ import com.twitter.chill.config.ConfiguredInstantiator
  * Kryo is not thread-safe so we use an object pool to avoid over allocating.
  */
 class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
+
   /**
    * You can override this to easily change your serializers.
    * If you do so, make sure to change the config to use the name of

@@ -97,12 +97,12 @@ class CustomSerializationSpec extends AnyWordSpec with Matchers with BasePropert
   }
   "handle a closure to println" in {
     Globals.temp = false
-    val bytes = KryoInjection(() => {
+    val bytes = KryoInjection { () =>
       // println is in the CustomSpec, calling that creates a closure that gets
       // the whole spec, which is not serializable
       Predef.println();
       Globals.temp = true
-    })
+    }
     val inv = KryoInjection.invert(bytes)
     inv.get.asInstanceOf[() => Unit].apply()
     Globals.temp should equal(true)

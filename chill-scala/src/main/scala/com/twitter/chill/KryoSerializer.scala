@@ -17,6 +17,7 @@ limitations under the License.
 package com.twitter.chill
 
 object KryoSerializer {
+
   /**
    * Return an instantiator that is configured to work well with scala
    * objects/classes, but has no serializers registered
