@@ -1,7 +1,7 @@
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import sbtrelease.ReleaseStateTransformations._
 
-val akkaVersion = "2.4.16"
+val akkaVersion = "2.6.0"
 val algebirdVersion = "0.13.6"
 val bijectionVersion = "0.9.6"
 val kryoVersion = "4.0.2"
@@ -217,7 +217,7 @@ lazy val chill = Project(
 
 def akka(scalaVersion: String) =
   (scalaVersion match {
-    case s if s.startsWith("2.10.") => "com.typesafe.akka" %% "akka-actor" % "2.3.16"
+    case s if s.startsWith("2.11.") => "com.typesafe.akka" %% "akka-actor" % "2.4.16"
     case _                          => "com.typesafe.akka" %% "akka-actor" % akkaVersion
   }) % "provided"
 
@@ -231,6 +231,7 @@ def scrooge(scalaVersion: String) = {
 
 lazy val chillAkka = module("akka")
   .settings(
+    crossScalaVersions += "2.13.1",
     resolvers += Resolver.typesafeRepo("releases"),
     libraryDependencies ++= Seq(
       "com.typesafe" % "config" % "1.4.0",
@@ -315,6 +316,7 @@ lazy val chillAvro = module("avro")
 
 lazy val chillAlgebird = module("algebird")
   .settings(
+    crossScalaVersions += "2.13.1",
     libraryDependencies ++= Seq(
       "com.twitter" %% "algebird-core" % algebirdVersion
     )
