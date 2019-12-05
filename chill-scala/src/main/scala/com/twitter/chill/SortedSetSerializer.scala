@@ -39,7 +39,7 @@ class SortedSetSerializer[T] extends KSerializer[SortedSet[T]] {
 
     // Go ahead and be faster, and not as functional cool, and be mutable in here
     var idx = 0
-    val builder = SortedSet.canBuildFrom[T](ordering)()
+    val builder = SortedSet.newBuilder[T](ordering)
     builder.sizeHint(size)
 
     while (idx < size) {

@@ -201,7 +201,7 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
       .forSubclass[scala.Enumeration#Value](new EnumerationSerializer)
 
     // use the singleton serializer for boxed Unit
-    val boxedUnit = scala.Unit.box(())
+    val boxedUnit = scala.runtime.BoxedUnit.UNIT
     k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
     new Java8ClosureRegistrar()(k)
@@ -269,17 +269,17 @@ class AllScalaRegistrar extends IKryoRegistrar {
       .forConcreteTraversableClass(HashSet[Any]())
       .forConcreteTraversableClass(HashSet[Any]('a))
       .forConcreteTraversableClass(Map[Any, Any]())
-      .forConcreteTraversableClass(HashMap())
+      .forConcreteTraversableClass(HashMap[Any, Any]())
       .forConcreteTraversableClass(HashMap('a -> 'a))
-      .forConcreteTraversableClass(ListMap())
+      .forConcreteTraversableClass(ListMap[Any, Any]())
       .forConcreteTraversableClass(ListMap('a -> 'a))
     k.register(classOf[Stream.Cons[_]], new StreamSerializer[Any])
     k.register(Stream.empty[Any].getClass)
     k.forClass[scala.runtime.VolatileByteRef](new VolatileByteRefSerializer)
     k.forClass[BigDecimal](new BigDecimalSerializer)
     k.register(Queue.empty[Any].getClass)
-    k.forConcreteTraversableClass(Map(1 -> 2).filterKeys(_ != 2))
-      .forConcreteTraversableClass(Map(1 -> 2).mapValues(_ + 1))
+    k.forConcreteTraversableClass(Map(1 -> 2).filterKeys(_ != 2).toMap)
+      .forConcreteTraversableClass(Map(1 -> 2).mapValues(_ + 1).toMap)
       .forConcreteTraversableClass(Map(1 -> 2).keySet)
   }
 }

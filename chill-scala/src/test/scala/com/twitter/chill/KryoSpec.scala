@@ -190,7 +190,7 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
       WeekDay.values.foreach { _ should roundtrip }
     }
     "handle asJavaIterable" in {
-      val col = scala.collection.JavaConversions.asJavaIterable(Seq(12345))
+      val col = Seq(12345).asJava
       col should roundtrip
     }
     "use java serialization" in {
@@ -334,10 +334,10 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
       serialize(1L to 10000L by 2L).size should be < MAX_RANGE_SIZE // some fixed size
       serialize(1L until 10000L).size should be < MAX_RANGE_SIZE // some fixed size
       serialize(1L until 10000L by 2L).size should be < MAX_RANGE_SIZE // some fixed size
-      serialize(1.0 to 10000.0).size should be < MAX_RANGE_SIZE // some fixed size
-      serialize(1.0 to 10000.0 by 2.0).size should be < MAX_RANGE_SIZE // some fixed size
-      serialize(1.0 until 10000.0).size should be < MAX_RANGE_SIZE // some fixed size
-      serialize(1.0 until 10000.0 by 2.0).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(BigDecimal(1.0) to BigDecimal(10000.0)).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(BigDecimal(1.0) to BigDecimal(10000.0) by 2.0).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(BigDecimal(1.0) until BigDecimal(10000.0)).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(BigDecimal(1.0) until BigDecimal(10000.0) by 2.0).size should be < MAX_RANGE_SIZE // some fixed size
     }
     "VolatileByteRef" in {
       import scala.runtime.VolatileByteRef

@@ -1,6 +1,7 @@
 package com.twitter.chill
 
-import scala.collection.{JavaConversions, JavaConverters}
+import scala.collection.JavaConverters
+import scala.collection.JavaConverters._
 import scala.collection.immutable.{HashMap, HashSet, ListMap, ListSet, NumericRange, Queue}
 import scala.runtime.VolatileByteRef
 
@@ -124,8 +125,7 @@ class SerializedExamplesOfStandardDataSpec extends AnyWordSpec with Matchers {
     32 -> ("IgECAgYCCg==" -> scala.collection.mutable.BitSet(3, 5)),
     33 -> ("IwEBJwECBgIK" -> scala.collection.mutable.HashMap(3 -> 5)),
     34 -> ("JAEBAgY=" -> scala.collection.mutable.HashSet(3)),
-    35 -> ("JQF3AQECBA==" ->
-      JavaConversions.asJavaCollection(Seq(2))), // Wrappers$IterableWrapper
+    35 -> ("JQF3AQECBA==" -> Seq(2).asJavaCollection), // Wrappers$IterableWrapper
     36 -> ("JgEDAYJh" -> Tuple1("a")),
     37 -> ("JwEDAYJhAwGCYg==" -> ("a", "b")),
     38 -> ("KAECAgIEAgY=" -> (1, 2, 3)),
@@ -244,17 +244,17 @@ class SerializedExamplesOfStandardDataSpec extends AnyWordSpec with Matchers {
     134 -> ("iAEBAA==" -> HashSet[Any]()),
     135 -> ("iQEBAUgBgmE=" -> HashSet[Any]('a)),
     136 -> ("igEBAA==" -> Map[Any, Any]()),
-    137 -> ("iwEBAA==" -> HashMap()),
+    137 -> ("iwEBAA==" -> HashMap[Any, Any]()),
     138 -> ("jAEBAScBSAGCYUgE" -> HashMap('a -> 'a)),
-    139 -> ("jQEBAA==" -> ListMap()),
+    139 -> ("jQEBAA==" -> ListMap[Any, Any]()),
     140 -> ("jgEBAScBSAGCYUgE" -> ListMap('a -> 'a)),
     141 -> ("jwEBdwEBAgI=" -> Stream(1)),
     142 -> ("kAEB" -> Stream()),
     143 -> ("kQEBCg==" -> new VolatileByteRef(10)),
     144 -> ("kgEBAQBqYXZhLm1hdGguQmlnRGVjaW1h7AECAgA=" -> math.BigDecimal(2)),
     145 -> ("kwEBAA==" -> (Queue.empty[Any], true)),
-    146 -> ("lAEBAScBAgICBA==" -> (Map(1 -> 2).filterKeys(_ != 2), true)),
-    147 -> ("lQEBAScBAgICBg==" -> (Map(1 -> 2).mapValues(_ + 1), true)),
+    146 -> ("lAEBAScBAgICBA==" -> (Map(1 -> 2).filterKeys(_ != 2).toMap, true)),
+    147 -> ("lQEBAScBAgICBg==" -> (Map(1 -> 2).mapValues(_ + 1).toMap, true)),
     148 -> ("lgEBAQIC" -> (Map(1 -> 2).keySet, true))
   )
 

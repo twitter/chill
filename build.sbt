@@ -12,6 +12,8 @@ def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String):
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, y)) if y <= 12 =>
       new java.io.File(s"${srcBaseDir.getPath}-2.12-") :: Nil
+    case Some((2, y)) if y >= 13 =>
+      new java.io.File(s"${srcBaseDir.getPath}-2.13+") :: Nil
     case _ => Nil
   }
 
@@ -206,6 +208,7 @@ lazy val chill = Project(
 ).settings(sharedSettings)
   .settings(
     name := "chill",
+    crossScalaVersions += "2.13.1",
     mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion),
     mimaBinaryIssueFilters ++= ignoredABIProblems,
     libraryDependencies += "org.apache.xbean" % "xbean-asm7-shaded" % asmVersion
