@@ -41,6 +41,7 @@ case class ReflectingInstantiatorBuilder(
     registrationRequired: Boolean = false,
     skipMissing: Boolean = false
 ) {
+
   /**
    * These casts appear to be needed because scala's type system is able
    * to express more carefully than java, but these variance-free Iterables
