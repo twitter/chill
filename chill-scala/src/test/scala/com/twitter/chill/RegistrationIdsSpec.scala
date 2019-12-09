@@ -145,7 +145,7 @@ class RegistrationIdsSpec extends AnyWordSpec with Matchers {
       |89 -> class java.util.Collections$UnmodifiableSet
       |90 -> class java.util.Collections$UnmodifiableSortedMap
       |91 -> class java.util.Collections$UnmodifiableSortedSet
-      |92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure""".stripMargin.lines
+      |92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure""".stripMargin.linesIterator
       .mkString("\n")
 
   private def expectedEntries_recent =
@@ -204,9 +204,9 @@ class RegistrationIdsSpec extends AnyWordSpec with Matchers {
       |145 -> class scala.collection.immutable.Queue$EmptyQueue$
       |146 -> class scala.collection.immutable.MapLike$$anon$1
       |147 -> class scala.collection.immutable.MapLike$$anon$2
-      |148 -> class scala.collection.immutable.MapLike$ImmutableDefaultKeySet""".stripMargin.lines
+      |148 -> class scala.collection.immutable.MapLike$ImmutableDefaultKeySet""".stripMargin.linesIterator
       .mkString("\n")
 
   private def expectedEntries_current =
-    (expectedEntries_0_9_2.lines ++ expectedEntries_recent.lines).mkString("\n")
+    (expectedEntries_0_9_2.linesIterator ++ expectedEntries_recent.linesIterator).mkString("\n")
 }
