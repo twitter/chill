@@ -41,7 +41,7 @@ class StandardDataRegistrationsSpec extends AnyWordSpec with Matchers {
         } catch {
           case e: Throwable =>
             val message = s"exception during serialization round trip for $original of ${original.getClass}:\n" +
-              e.toString.lines.next
+              e.toString.linesIterator.next
             assert(false, message)
         }
       def tuples(count: Int): Seq[(Int, Int)] = Seq.range(0, count).map(n => (n, n + 1))
