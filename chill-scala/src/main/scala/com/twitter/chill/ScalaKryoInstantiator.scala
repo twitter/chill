@@ -186,6 +186,7 @@ class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
 class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   def apply(k: Kryo): Unit = {
     new ScalaCollectionsRegistrar()(k)
+    new ScalaCollectionsRegistrarCompat()(k)
     new JavaWrapperCollectionRegistrar()(k)
 
     // Register all 22 tuple serializers and specialized serializers
