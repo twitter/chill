@@ -186,7 +186,6 @@ class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
 class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   def apply(k: Kryo): Unit = {
     new ScalaCollectionsRegistrar()(k)
-    new ScalaCollectionsRegistrarCompat()(k)
     new JavaWrapperCollectionRegistrar()(k)
 
     // Register all 22 tuple serializers and specialized serializers
@@ -209,6 +208,14 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   }
 }
 
+/** Registrar for everything that was registered in chill 0.10.0 */
+class AllScalaRegistrar_0_10_0 extends IKryoRegistrar {
+  def apply(k: Kryo): Unit = {
+    new AllScalaRegistrar_0_9_2()(k)
+    new ScalaCollectionsRegistrarCompat()(k)
+  }
+}
+
 /**
  * Registers all the scala (and java) serializers we have. The registrations are designed to cover most of
  * scala.collecion.immutable, so they can be used in long term persistence scenarios that run with
@@ -219,7 +226,7 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
  */
 class AllScalaRegistrar extends IKryoRegistrar {
   def apply(k: Kryo): Unit = {
-    new AllScalaRegistrar_0_9_2()(k)
+    new AllScalaRegistrar_0_10_0()(k)
 
     k.registerClasses(
         Seq(
