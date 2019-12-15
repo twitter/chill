@@ -1,10 +1,5 @@
 package com.twitter.chill
 
-import scala.collection.JavaConverters
-import scala.collection.JavaConverters._
-import scala.collection.immutable.{HashMap, HashSet, ListMap, ListSet, NumericRange, Queue}
-import scala.runtime.VolatileByteRef
-
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

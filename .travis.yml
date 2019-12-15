@@ -40,7 +40,6 @@ matrix:
           sbt
           "++$TRAVIS_SCALA_VERSION clean"
           "++$TRAVIS_SCALA_VERSION test"
-          "++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues"
 
     - scala: 2.12.10
       jdk: openjdk11
