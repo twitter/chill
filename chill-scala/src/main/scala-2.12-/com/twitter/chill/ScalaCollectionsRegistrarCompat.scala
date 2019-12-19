@@ -16,6 +16,13 @@ limitations under the License.
 
 package com.twitter.chill
 
+/**
+ * Scala collections registrar for compatibility between 2.12- and 2.13+.
+ *
+ * For 2.12- there's no extra classes that need to be registered.
+ * @see [[ScalaCollectionsRegistrar]] and [[AllScalaRegistrar]] for all the
+ * provided registrations.
+ */
 class ScalaCollectionsRegistrarCompat extends IKryoRegistrar {
   override def apply(newK: Kryo): Unit = ()
 }
