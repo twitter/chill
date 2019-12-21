@@ -29,7 +29,8 @@ import org.scalatest.wordspec.AnyWordSpec
 object ClosureCleanerSpec {
   // scala 2.12.x has better Java 8 interop. Lambdas are serializable and implemented via
   // invokeDynamic and the use of LambdaMetaFactory.
-  val supportsSerializedLambda: Boolean = scala.util.Properties.versionString.contains("2.12")
+  val supportsSerializedLambda: Boolean =
+    List("2.12", "2.13").exists(scala.util.Properties.versionString.contains)
 }
 
 class ClosureCleanerSpec extends AnyWordSpec with Matchers {

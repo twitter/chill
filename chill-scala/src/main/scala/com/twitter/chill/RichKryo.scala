@@ -21,7 +21,6 @@ import com.esotericsoftware.kryo.io.ByteBufferInputStream
 import _root_.java.io.{InputStream, Serializable}
 import _root_.java.nio.ByteBuffer
 
-import scala.collection.generic.CanBuildFrom
 import scala.util.control.Exception.allCatch
 
 import scala.reflect._
@@ -31,7 +30,7 @@ import scala.reflect._
  * TODO: make this a value-class in scala 2.10
  * This also follows the builder pattern to allow easily chaining this calls
  */
-class RichKryo(k: Kryo) {
+class RichKryo(val k: Kryo) extends RichKryoCompat {
   def alreadyRegistered(klass: Class[_]): Boolean =
     k.getClassResolver.getRegistration(klass) != null
 
@@ -42,32 +41,8 @@ class RichKryo(k: Kryo) {
     k
   }
 
-  def forTraversableSubclass[T, C <: Traversable[T]](
-      c: C with Traversable[T],
-      isImmutable: Boolean = true
-  )(implicit mf: ClassTag[C], cbf: CanBuildFrom[C, T, C]): Kryo = {
-    k.addDefaultSerializer(mf.runtimeClass, new TraversableSerializer(isImmutable)(cbf))
-    k
-  }
-
   def forClass[T](kser: KSerializer[T])(implicit cmf: ClassTag[T]): Kryo = {
     k.register(cmf.runtimeClass, kser)
-    k
-  }
-
-  def forTraversableClass[T, C <: Traversable[T]](
-      c: C with Traversable[T],
-      isImmutable: Boolean = true
-  )(implicit mf: ClassTag[C], cbf: CanBuildFrom[C, T, C]): Kryo =
-    forClass(new TraversableSerializer(isImmutable)(cbf))
-
-  def forConcreteTraversableClass[T, C <: Traversable[T]](
-      c: C with Traversable[T],
-      isImmutable: Boolean = true
-  )(implicit cbf: CanBuildFrom[C, T, C]): Kryo = {
-    // a ClassTag is not used here since its runtimeClass method does not return the concrete internal type
-    // that Scala uses for small immutable maps (i.e., scala.collection.immutable.Map$Map1)
-    k.register(c.getClass, new TraversableSerializer(isImmutable)(cbf))
     k
   }
 

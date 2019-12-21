@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Twitter, Inc.
+Copyright 2019 Twitter, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,18 +16,15 @@ limitations under the License.
 
 package com.twitter.chill
 
-import scala.collection.immutable.SortedMap
+import scala.collection.generic.CanBuildFrom
 
-class SortedMapSerializer[A, B] extends KSerializer[SortedMap[A, B]] {
-  type M = SortedMap[A, B]
-
-  def write(kser: Kryo, out: Output, map: M): Unit = {
-    //Write the size
-    out.writeInt(map.size, true)
-
-    // Write the ordering
-    kser.writeClassAndObject(out, map.ordering.asInstanceOf[AnyRef])
-    map.foreach { t =>
+class TraversableSerializer[T, C <: Traversable[T]](override val isImmutable: Boolean = true)(
+    implicit cbf: CanBuildFrom[C, T, C]
+) extends KSerializer[C] {
+  def write(kser: Kryo, out: Output, obj: C): Unit = {
+    //Write the size:
+    out.writeInt(obj.size, true)
+    obj.foreach { t =>
       val tRef = t.asInstanceOf[AnyRef]
       kser.writeClassAndObject(out, tRef)
       // After each intermediate object, flush
@@ -35,17 +32,15 @@ class SortedMapSerializer[A, B] extends KSerializer[SortedMap[A, B]] {
     }
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[M]): M = {
+  def read(kser: Kryo, in: Input, cls: Class[C]): C = {
     val size = in.readInt(true)
-    val ordering = kser.readClassAndObject(in).asInstanceOf[Ordering[A]]
-
     // Go ahead and be faster, and not as functional cool, and be mutable in here
     var idx = 0
-    val builder = SortedMap.newBuilder[A, B](ordering)
+    val builder = cbf()
     builder.sizeHint(size)
 
     while (idx < size) {
-      val item = kser.readClassAndObject(in).asInstanceOf[(A, B)]
+      val item = kser.readClassAndObject(in).asInstanceOf[T]
       builder += item
       idx += 1
     }

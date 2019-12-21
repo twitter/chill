@@ -1,5 +1,5 @@
 /*
-Copyright 2012 Twitter, Inc.
+Copyright 2019 Twitter, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@ limitations under the License.
 
 package com.twitter.chill
 
-import scala.collection.generic.CanBuildFrom
+import scala.collection.Factory
 
-class TraversableSerializer[T, C <: Traversable[T]](override val isImmutable: Boolean = true)(
-    implicit cbf: CanBuildFrom[C, T, C]
+class TraversableSerializer[T, C <: Iterable[T]](override val isImmutable: Boolean = true)(
+    implicit cbf: Factory[T, C]
 ) extends KSerializer[C] {
   def write(kser: Kryo, out: Output, obj: C): Unit = {
     //Write the size:
@@ -36,7 +36,7 @@ class TraversableSerializer[T, C <: Traversable[T]](override val isImmutable: Bo
     val size = in.readInt(true)
     // Go ahead and be faster, and not as functional cool, and be mutable in here
     var idx = 0
-    val builder = cbf()
+    val builder = cbf.newBuilder
     builder.sizeHint(size)
 
     while (idx < size) {

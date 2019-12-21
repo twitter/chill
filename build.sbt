@@ -1,8 +1,8 @@
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import sbtrelease.ReleaseStateTransformations._
 
-val akkaVersion = "2.4.16"
-val algebirdVersion = "0.13.5"
+val akkaVersion = "2.6.0"
+val algebirdVersion = "0.13.6"
 val bijectionVersion = "0.9.6"
 val kryoVersion = "4.0.2"
 val scroogeVersion = "4.12.0"
@@ -10,21 +10,20 @@ val asmVersion = "4.15"
 
 def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String): List[File] =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, y)) if y == 10 =>
-      new java.io.File(s"${srcBaseDir.getPath}-2.10") :: Nil
-    case Some((2, y)) if y >= 11 =>
-      new java.io.File(s"${srcBaseDir.getPath}-2.11+") :: Nil
+    case Some((2, y)) if y <= 12 =>
+      new java.io.File(s"${srcBaseDir.getPath}-2.12-") :: Nil
+    case Some((2, y)) if y >= 13 =>
+      new java.io.File(s"${srcBaseDir.getPath}-2.13+") :: Nil
     case _ => Nil
   }
 
 val sharedSettings = mimaDefaultSettings ++ Seq(
   organization := "com.twitter",
   scalaVersion := "2.11.12",
-  crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.10"),
+  crossScalaVersions := Seq("2.11.12", "2.12.10"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   scalacOptions ++= {
     scalaVersion.value match {
-      case v if v.startsWith("2.10") => Nil
       case v if v.startsWith("2.11") => Seq("-Ywarn-unused", "-Ywarn-unused-import")
       case _                         => Seq("-Ywarn-unused")
     }
@@ -209,6 +208,7 @@ lazy val chill = Project(
 ).settings(sharedSettings)
   .settings(
     name := "chill",
+    crossScalaVersions += "2.13.1",
     mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion),
     mimaBinaryIssueFilters ++= ignoredABIProblems,
     libraryDependencies += "org.apache.xbean" % "xbean-asm7-shaded" % asmVersion
@@ -217,7 +217,7 @@ lazy val chill = Project(
 
 def akka(scalaVersion: String) =
   (scalaVersion match {
-    case s if s.startsWith("2.10.") => "com.typesafe.akka" %% "akka-actor" % "2.3.16"
+    case s if s.startsWith("2.11.") => "com.typesafe.akka" %% "akka-actor" % "2.4.16"
     case _                          => "com.typesafe.akka" %% "akka-actor" % akkaVersion
   }) % "provided"
 
@@ -231,6 +231,7 @@ def scrooge(scalaVersion: String) = {
 
 lazy val chillAkka = module("akka")
   .settings(
+    crossScalaVersions += "2.13.1",
     resolvers += Resolver.typesafeRepo("releases"),
     libraryDependencies ++= Seq(
       "com.typesafe" % "config" % "1.4.0",
@@ -315,6 +316,7 @@ lazy val chillAvro = module("avro")
 
 lazy val chillAlgebird = module("algebird")
   .settings(
+    crossScalaVersions += "2.13.1",
     libraryDependencies ++= Seq(
       "com.twitter" %% "algebird-core" % algebirdVersion
     )
