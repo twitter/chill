@@ -217,7 +217,7 @@ lazy val chill = Project(
 
 def akka(scalaVersion: String) =
   (scalaVersion match {
-    case s if s.startsWith("2.11.") => "com.typesafe.akka" %% "akka-actor" % "2.4.16"
+    case s if s.startsWith("2.11.") => "com.typesafe.akka" %% "akka-actor" % "2.5.27"
     case _                          => "com.typesafe.akka" %% "akka-actor" % akkaVersion
   }) % "provided"
 
