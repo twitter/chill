@@ -5,7 +5,7 @@ val akkaVersion = "2.6.0"
 val algebirdVersion = "0.13.6"
 val bijectionVersion = "0.9.6"
 val kryoVersion = "4.0.2"
-val scroogeVersion = "4.12.0"
+val scroogeVersion = "19.12.0"
 val asmVersion = "4.15"
 
 def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String): List[File] =
@@ -160,7 +160,7 @@ val binaryCompatVersion = "0.9.2"
 
 def youngestForwardCompatible(subProj: String) =
   Some(subProj)
-    .filterNot(unreleasedModules.contains(_))
+    .filterNot(unreleasedModules.contains)
     .map { s =>
       if (javaOnly.contains(s))
         "com.twitter" % ("chill-" + s) % binaryCompatVersion
@@ -221,14 +221,6 @@ def akka(scalaVersion: String) =
     case _                          => "com.typesafe.akka" %% "akka-actor" % akkaVersion
   }) % "provided"
 
-def scrooge(scalaVersion: String) = {
-  val scroogeBase = "com.twitter" %% "scrooge-serializer"
-  scalaVersion match {
-    case s if s.startsWith("2.10.") => scroogeBase % "4.7.0" // the last 2.10 version
-    case _                          => scroogeBase % scroogeVersion
-  }
-}
-
 lazy val chillAkka = module("akka")
   .settings(
     crossScalaVersions += "2.13.1",
@@ -287,9 +279,10 @@ lazy val chillThrift = module("thrift").settings(
 
 lazy val chillScrooge = module("scrooge")
   .settings(
+    crossScalaVersions += "2.13.1",
     libraryDependencies ++= Seq(
       ("org.apache.thrift" % "libthrift" % "0.13.0").exclude("junit", "junit"),
-      scalaVersion(sv => scrooge(sv)).value
+      "com.twitter" %% "scrooge-serializer" % scroogeVersion
     )
   )
   .dependsOn(chill % "test->test;compile->compile")
