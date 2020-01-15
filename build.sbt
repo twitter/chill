@@ -3,7 +3,7 @@ import sbtrelease.ReleaseStateTransformations._
 
 val akkaVersion = "2.6.1"
 val algebirdVersion = "0.13.6"
-val bijectionVersion = "0.9.6"
+val bijectionVersion = "0.9.7"
 val kryoVersion = "4.0.2"
 val scroogeVersion = "19.12.0"
 val asmVersion = "4.15"
@@ -234,6 +234,7 @@ lazy val chillAkka = module("akka")
 
 lazy val chillBijection = module("bijection")
   .settings(
+    crossScalaVersions += "2.13.1",
     libraryDependencies ++= Seq(
       "com.twitter" %% "bijection-core" % bijectionVersion
     )
