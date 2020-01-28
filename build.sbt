@@ -1,7 +1,7 @@
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import sbtrelease.ReleaseStateTransformations._
 
-val akkaVersion = "2.6.2"
+val akkaVersion = "2.6.3"
 val algebirdVersion = "0.13.6"
 val bijectionVersion = "0.9.7"
 val kryoVersion = "4.0.2"
