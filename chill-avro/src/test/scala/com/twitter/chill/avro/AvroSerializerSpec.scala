@@ -31,9 +31,7 @@ import org.scalatest.wordspec.AnyWordSpec
  */
 class AvroSerializerSpec extends AnyWordSpec with Matchers {
   def getKryo[T: ClassTag](k: KSerializer[T]): KryoPool = {
-    val inst = { () =>
-      (new ScalaKryoInstantiator).newKryo.forClass(k)
-    }
+    val inst = { () => (new ScalaKryoInstantiator).newKryo.forClass(k) }
     KryoPool.withByteArrayOutputStream(1, inst)
   }
 

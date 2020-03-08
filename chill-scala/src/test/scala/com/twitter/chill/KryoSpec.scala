@@ -91,13 +91,9 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
         SortedSet[Long](),
         SortedSet(1L, 2L, 3L, 4L),
         BitSet(),
-        BitSet((0 until 1000).map { x: Int =>
-          x * x
-        }: _*),
+        BitSet((0 until 1000).map { x: Int => x * x }: _*),
         MBitSet(),
-        MBitSet((0 until 1000).map { x: Int =>
-          x * x
-        }: _*),
+        MBitSet((0 until 1000).map { x: Int => x * x }: _*),
         SortedMap[Long, String](),
         SortedMap("b" -> 2, "a" -> 1),
         ListMap("good" -> 0.5, "bad" -> -1.0),
@@ -121,7 +117,7 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
         BigDecimal(1000.24)
       ).asInstanceOf[List[AnyRef]]
 
-      test.foreach { _ should roundtrip }
+      test.foreach(_ should roundtrip)
     }
     "round trip a SortedSet" in {
       val a = SortedSet[Long]() // Test empty SortedSet
@@ -167,7 +163,7 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
         Array((1.0, 1.0), (2.0, 2.0)).toSeq,
         Array((1.0, "1.0"), (2.0, "2.0")).toSeq
       )
-      tests.foreach { _ should roundtrip }
+      tests.foreach(_ should roundtrip)
     }
     "handle lists of lists" in {
       List(("us", List(1)), ("jp", List(3, 2)), ("gb", List(3, 1))) should roundtrip
@@ -182,21 +178,17 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
       val list2 = rt(bigList)
       list2.size should equal(bigList.size)
       //Specs, it turns out, also doesn't deal with giant lists well:
-      list2.zip(bigList).foreach { tup =>
-        tup._1 should equal(tup._2)
-      }
+      list2.zip(bigList).foreach(tup => tup._1 should equal(tup._2))
     }
     "handle scala enums" in {
-      WeekDay.values.foreach { _ should roundtrip }
+      WeekDay.values.foreach(_ should roundtrip)
     }
     "handle asJavaIterable" in {
       val col = Seq(12345).asJava
       col should roundtrip
     }
     "use java serialization" in {
-      val kinst = { () =>
-        getKryo.javaForClass[TestCaseClassForSerialization]
-      }
+      val kinst = { () => getKryo.javaForClass[TestCaseClassForSerialization] }
       rtEquiv(kinst, TestCaseClassForSerialization("hey", 42)) should equal(true)
     }
     "work with Meatlocker" in {
@@ -238,7 +230,7 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
       val m3 = Map('a -> 'a, 'b -> 'b, 'c -> 'c)
       val m4 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd)
       val m5 = Map('a -> 'a, 'b -> 'b, 'c -> 'c, 'd -> 'd, 'e -> 'e)
-      Seq(m1, m2, m3, m4, m5).foreach { rtEquiv(inst, _) should equal(true) }
+      Seq(m1, m2, m3, m4, m5).foreach(rtEquiv(inst, _) should equal(true))
     }
     "handle small immutable sets when registration is required" in {
       val inst = { () =>
@@ -251,7 +243,7 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
       val s3 = Set('a, 'b, 'c)
       val s4 = Set('a, 'b, 'c, 'd)
       val s5 = Set('a, 'b, 'c, 'd, 'e)
-      Seq(s1, s2, s3, s4, s5).foreach { rtEquiv(inst, _) should equal(true) }
+      Seq(s1, s2, s3, s4, s5).foreach(rtEquiv(inst, _) should equal(true))
     }
     "handle nested mutable maps" in {
       val inst = { () =>
@@ -310,9 +302,7 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
     }
     "Handle Ordering.reverse" in {
       // This is exercising the synthetic field serialization in 2.10
-      val ord = Ordering.fromLessThan[(Int, Int)] { (l, r) =>
-        l._1 < r._1
-      }
+      val ord = Ordering.fromLessThan[(Int, Int)]((l, r) => l._1 < r._1)
       // Now with a reverse ordering:
       val qr = new PriorityQueue[(Int, Int)](3, ord.reverse)
       qr.add((2, 3))

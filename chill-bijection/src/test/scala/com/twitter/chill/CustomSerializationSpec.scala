@@ -70,9 +70,7 @@ class CustomSerializationSpec extends AnyWordSpec with Matchers with BasePropert
     }
     "use bijections" in {
       implicit val bij: Bijection[TestCaseClassForSerialization, (String, Int)] =
-        Bijection.build[TestCaseClassForSerialization, (String, Int)] { s =>
-          (s.x, s.y)
-        } { tup =>
+        Bijection.build[TestCaseClassForSerialization, (String, Int)](s => (s.x, s.y)) { tup =>
           TestCaseClassForSerialization(tup._1, tup._2)
         }
 

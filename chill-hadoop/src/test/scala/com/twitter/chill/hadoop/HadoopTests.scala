@@ -74,7 +74,7 @@ class HadoopTests extends AnyWordSpec with Matchers {
       val ks = new KryoSerialization(conf)
       val things = List(1.asInstanceOf[AnyRef], "hey", (1, 2))
 
-      things.map { rt(ks, _) } should equal(things)
+      things.map(rt(ks, _)) should equal(things)
     }
   }
 }
