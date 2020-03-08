@@ -48,7 +48,7 @@ class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
       val targs = obj.typeArguments
       out.writeInt(targs.size, true)
       out.flush
-      targs.foreach { writeInternal(kser, out, _) }
+      targs.foreach(writeInternal(kser, out, _))
     }
   }
 
@@ -63,9 +63,7 @@ class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
         Manifest.classType(clazz)
       } else {
         // We don't need to know the cls:
-        val typeArgs = (0 until targsCnt).map { _ =>
-          read(kser, in, null)
-        }
+        val typeArgs = (0 until targsCnt).map(_ => read(kser, in, null))
         Manifest.classType(clazz, typeArgs.head, typeArgs.tail: _*)
       }
     } else {

@@ -42,9 +42,7 @@ class LocaleSpec extends AnyWordSpec with Matchers {
       kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
       LocaleSerializer.registrar()(kryo)
 
-      Locale.getAvailableLocales.foreach { l =>
-        rt(kryo, l) should equal(l)
-      }
+      Locale.getAvailableLocales.foreach(l => rt(kryo, l) should equal(l))
     }
   }
 }

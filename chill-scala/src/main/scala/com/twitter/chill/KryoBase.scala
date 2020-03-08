@@ -53,7 +53,7 @@ class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolve
     }
 
   def isFn(klass: Class[_]): Boolean =
-    functions.find { _.isAssignableFrom(klass) }.isDefined
+    functions.find(_.isAssignableFrom(klass)).isDefined
 
   override def newDefaultSerializer(klass: Class[_]): KSerializer[_] =
     if (isSingleton(klass)) {
@@ -125,9 +125,7 @@ object Instantiators {
       elsefn: => ObjectInstantiator[T]
   ): ObjectInstantiator[T] =
     // Just go through and try each one,
-    it.flatMap { fn =>
-        fn(cls).toOption
-      }
+    it.flatMap(fn => fn(cls).toOption)
       .find(_ => true) // first element in traversable once (no headOption defined.)
       .getOrElse(elsefn)
 
@@ -150,9 +148,7 @@ object Instantiators {
       // Try it once, because this isn't always successful:
       access.newInstance
       // Okay, looks good:
-      Success(forClass(t) { () =>
-        access.newInstance()
-      })
+      Success(forClass(t)(() => access.newInstance()))
     } catch {
       case x: Throwable => Failure(x)
     }
@@ -170,9 +166,7 @@ object Instantiators {
   def normalJava[T](t: Class[T]): Try[ObjectInstantiator[T]] =
     try {
       val cons = getConstructor(t)
-      Success(forClass(t) { () =>
-        cons.newInstance()
-      })
+      Success(forClass(t)(() => cons.newInstance()))
     } catch {
       case x: Throwable => Failure(x)
     }

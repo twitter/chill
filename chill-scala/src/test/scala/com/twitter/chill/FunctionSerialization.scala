@@ -21,23 +21,17 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 trait AwesomeFns {
-  val myfun: Int => Int = { x: Int =>
-    2 * x
-  }
+  val myfun: Int => Int = { x: Int => 2 * x }
 }
 
 object BaseFns extends AwesomeFns {
-  val myfun2: Int => Int = { x: Int =>
-    4 * x
-  }
+  val myfun2: Int => Int = { x: Int => 4 * x }
   def apply(x: Int): Int = myfun.apply(x)
 }
 
 trait AwesomeFn2 {
   def mult: Int
-  val timesByMult: Int => Int = { x: Int =>
-    mult * x
-  }
+  val timesByMult: Int => Int = { x: Int => mult * x }
 }
 
 object BaseFns2 extends AwesomeFn2 {

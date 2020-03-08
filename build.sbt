@@ -63,9 +63,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
   publishConfiguration := publishConfiguration.value.withOverwrite(true),
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  pomIncludeRepository := { x =>
-    false
-  },
+  pomIncludeRepository := { x => false },
   publishTo := Some(
     if (version.value.trim.toUpperCase.endsWith("SNAPSHOT"))
       Opts.resolver.sonatypeSnapshots

@@ -30,10 +30,10 @@ class ObjectSerializer[T] extends KSerializer[T] {
   override def write(kser: Kryo, out: Output, obj: T): Unit = {}
 
   protected def createSingleton(cls: Class[_]): Option[T] =
-    moduleField(cls).map { _.get(null).asInstanceOf[T] }
+    moduleField(cls).map(_.get(null).asInstanceOf[T])
 
   protected def cachedRead(cls: Class[_]): Option[T] =
-    cachedObj.synchronized { cachedObj.getOrElseUpdate(cls, createSingleton(cls)) }
+    cachedObj.synchronized(cachedObj.getOrElseUpdate(cls, createSingleton(cls)))
 
   override def read(kser: Kryo, in: Input, cls: Class[T]): T = cachedRead(cls).get
 
@@ -41,8 +41,6 @@ class ObjectSerializer[T] extends KSerializer[T] {
 
   protected def moduleField(klass: Class[_]): Option[Field] =
     Some(klass)
-      .filter { _.getName.last == '$' }
-      .flatMap { k =>
-        allCatch.opt(k.getDeclaredField("MODULE$"))
-      }
+      .filter(_.getName.last == '$')
+      .flatMap(k => allCatch.opt(k.getDeclaredField("MODULE$")))
 }

@@ -65,5 +65,5 @@ class KryoInjectionInstance(lazyKryoP: => KryoPool) extends Injection[Any, Array
   }
 
   def apply(obj: Any): Array[Byte] = kryoP.toBytesWithClass(obj)
-  def invert(b: Array[Byte]): Try[Any] = Inversion.attempt(b) { kryoP.fromBytes(_) }
+  def invert(b: Array[Byte]): Try[Any] = Inversion.attempt(b)(kryoP.fromBytes(_))
 }

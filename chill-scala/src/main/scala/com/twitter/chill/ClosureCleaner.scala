@@ -128,9 +128,7 @@ object ClosureCleaner {
     while (stack.nonEmpty) {
       // mutated by InnerClosureFinder
       val set = MSet[Class[_]]()
-      AsmUtil.classReader(stack.pop()).foreach { cr =>
-        cr.accept(new InnerClosureFinder(set), 0)
-      }
+      AsmUtil.classReader(stack.pop()).foreach(cr => cr.accept(new InnerClosureFinder(set), 0))
       (set -- seen).foreach { cls =>
         seen += cls
         stack.push(cls)
@@ -144,14 +142,10 @@ object ClosureCleaner {
 
   private def getAccessedFields(cls: Class[_]): Map[Class[_], Set[Field]] = {
     val accessedFields = outerClassesOf(cls)
-      .foldLeft(MMap[Class[_], MSet[String]]()) { (m, cls) =>
-        m += ((cls, MSet[String]()))
-      }
+      .foldLeft(MMap[Class[_], MSet[String]]())((m, cls) => m += ((cls, MSet[String]())))
 
     (innerClassesOf(cls) + cls).foreach {
-      AsmUtil.classReader(_).foreach { cr =>
-        cr.accept(new FieldAccessFinder(accessedFields), 0)
-      }
+      AsmUtil.classReader(_).foreach(cr => cr.accept(new FieldAccessFinder(accessedFields), 0))
     }
 
     accessedFields.iterator.map {

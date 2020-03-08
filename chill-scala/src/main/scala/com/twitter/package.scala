@@ -33,7 +33,7 @@ package object chill {
     def apply(k: Kryo): Unit = fn(k)
   }
   implicit def toRegistrar(items: Iterable[IKryoRegistrar]): IKryoRegistrar = new IKryoRegistrar {
-    def apply(k: Kryo): Unit = items.foreach { _.apply(k) }
+    def apply(k: Kryo): Unit = items.foreach(_.apply(k))
   }
   def printIfRegistered(cls: Class[_]): IKryoRegistrar = new IKryoRegistrar {
     def apply(k: Kryo): Unit =

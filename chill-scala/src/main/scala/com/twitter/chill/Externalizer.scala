@@ -116,9 +116,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
       case t: Throwable =>
         Option(System.getenv.get("CHILL_EXTERNALIZER_DEBUG"))
           .filter(_.toBoolean)
-          .foreach { _ =>
-            t.printStackTrace
-          }
+          .foreach(_ => t.printStackTrace)
         doesJavaWork.set(Some(false))
         false
     } finally {
@@ -135,9 +133,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
       case t: Throwable =>
         Option(System.getenv.get("CHILL_EXTERNALIZER_DEBUG"))
           .filter(_.toBoolean)
-          .foreach { _ =>
-            t.printStackTrace
-          }
+          .foreach(_ => t.printStackTrace)
         None
     }
   private def fromBytes(b: Array[Byte], kryo: KryoInstantiator): Option[T] =
