@@ -5,7 +5,7 @@ val akkaVersion = "2.6.3"
 val algebirdVersion = "0.13.6"
 val bijectionVersion = "0.9.7"
 val kryoVersion = "4.0.2"
-val scroogeVersion = "20.1.0"
+val scroogeVersion = "20.3.0"
 val asmVersion = "4.15"
 
 def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String): List[File] =
