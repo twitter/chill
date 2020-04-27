@@ -31,8 +31,8 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
   scalariformPreferences := formattingPreferences,
   scalariformAutoformat := false,
   // Twitter Hadoop needs this, sorry 1.7 fans
-  javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
-  javacOptions in doc := Seq("-source", "1.6"),
+  javacOptions ++= Seq("-target", "1.8", "-source", "1.8", "-Xlint:-options"),
+  javacOptions in doc := Seq("-source", "1.8"),
   resolvers ++= Seq(
     Opts.resolver.sonatypeSnapshots,
     Opts.resolver.sonatypeReleases
