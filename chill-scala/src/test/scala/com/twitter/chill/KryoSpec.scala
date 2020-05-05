@@ -122,7 +122,10 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
     "round trip a SortedSet" in {
       val a = SortedSet[Long]() // Test empty SortedSet
       val b = SortedSet[Int](1, 2) // Test small SortedSet
-      val c = SortedSet[Int](1, 2, 3, 4, 6, 7, 8, 9, 10)(Ordering.fromLessThan((x, y) => x > y)) // Test with different ordering
+      val c =
+        SortedSet[Int](1, 2, 3, 4, 6, 7, 8, 9, 10)(
+          Ordering.fromLessThan((x, y) => x > y)
+        ) // Test with different ordering
       a should roundtrip
       b should roundtrip
       c should roundtrip
@@ -325,9 +328,13 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
       serialize(1L until 10000L).size should be < MAX_RANGE_SIZE // some fixed size
       serialize(1L until 10000L by 2L).size should be < MAX_RANGE_SIZE // some fixed size
       serialize(BigDecimal(1.0) to BigDecimal(10000.0)).size should be < MAX_RANGE_SIZE // some fixed size
-      serialize(BigDecimal(1.0) to BigDecimal(10000.0) by 2.0).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(
+        BigDecimal(1.0) to BigDecimal(10000.0) by 2.0
+      ).size should be < MAX_RANGE_SIZE // some fixed size
       serialize(BigDecimal(1.0) until BigDecimal(10000.0)).size should be < MAX_RANGE_SIZE // some fixed size
-      serialize(BigDecimal(1.0) until BigDecimal(10000.0) by 2.0).size should be < MAX_RANGE_SIZE // some fixed size
+      serialize(
+        BigDecimal(1.0) until BigDecimal(10000.0) by 2.0
+      ).size should be < MAX_RANGE_SIZE // some fixed size
     }
     "VolatileByteRef" in {
       import scala.runtime.VolatileByteRef
