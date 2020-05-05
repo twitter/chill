@@ -59,8 +59,8 @@ class BijectionEnrichedKryo(k: Kryo) {
   /**
    * B has to already be registered, then use the KSerializer[B] to create KSerialzer[A]
    */
-  def forClassViaBijection[A, B](
-      implicit bij: ImplicitBijection[A, B],
+  def forClassViaBijection[A, B](implicit
+      bij: ImplicitBijection[A, B],
       acmf: ClassTag[A],
       bcmf: ClassTag[B]
   ): Kryo = {

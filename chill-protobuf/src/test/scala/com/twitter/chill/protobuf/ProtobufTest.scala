@@ -40,13 +40,16 @@ class ProtobufTest extends AnyWordSpec with Matchers {
   }
 
   "Protobuf round-trips" in {
-    val kpool = KryoPool.withByteArrayOutputStream(1, new KryoInstantiator {
-      override def newKryo(): Kryo = {
-        val k = new Kryo
-        k.addDefaultSerializer(classOf[Message], classOf[ProtobufSerializer])
-        k
+    val kpool = KryoPool.withByteArrayOutputStream(
+      1,
+      new KryoInstantiator {
+        override def newKryo(): Kryo = {
+          val k = new Kryo
+          k.addDefaultSerializer(classOf[Message], classOf[ProtobufSerializer])
+          k
+        }
       }
-    })
+    )
 
     kpool.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))) should equal(
       buildFatigueCount(12L, -1L, 42, List(1L, 2L))

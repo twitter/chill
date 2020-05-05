@@ -83,9 +83,12 @@ object ClosureCleaner {
   // Return the $outer field for this class
   def outerFieldOf(c: Class[_]): Option[Field] =
     outerFields
-      .getOrElseUpdate(c, c.getDeclaredFields.find {
-        _.getName == OUTER
-      })
+      .getOrElseUpdate(
+        c,
+        c.getDeclaredFields.find {
+          _.getName == OUTER
+        }
+      )
 
   /**
    * this does reflection each time
@@ -258,8 +261,10 @@ class FieldAccessFinder(
       sig: String,
       exceptions: Array[String]
   ): MethodVisitor =
-    if (specificMethod.isDefined &&
-        (specificMethod.get.name != name || specificMethod.get.desc != desc)) {
+    if (
+      specificMethod.isDefined &&
+      (specificMethod.get.name != name || specificMethod.get.desc != desc)
+    ) {
       null
     } else {
       new MethodVisitor(ASM7) {
@@ -282,9 +287,11 @@ class FieldAccessFinder(
           output.keys.iterator.filter(_.getName == ownerName).foreach { cl =>
             // Check for calls a getter method for a variable in an interpreter wrapper object.
             // This means that the corresponding field will be accessed, so we should save it.
-            if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith(
-                  "$outer"
-                )) {
+            if (
+              op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith(
+                "$outer"
+              )
+            ) {
               output(cl) += name
             }
             val m = MethodIdentifier(cl, name, desc)
@@ -335,9 +342,11 @@ class InnerClosureFinder(output: MSet[Class[_]]) extends ClassVisitor(ASM7) {
     new MethodVisitor(ASM7) {
       override def visitMethodInsn(op: Int, owner: String, name: String, desc: String, itf: Boolean): Unit = {
         val argTypes = Type.getArgumentTypes(desc)
-        if (op == INVOKESPECIAL && name == "<init>" && argTypes.nonEmpty
-            && argTypes(0).toString.startsWith("L")
-            && argTypes(0).getInternalName == myName) {
+        if (
+          op == INVOKESPECIAL && name == "<init>" && argTypes.nonEmpty
+          && argTypes(0).toString.startsWith("L")
+          && argTypes(0).getInternalName == myName
+        ) {
           output += Class.forName(
             owner.replace('/', '.'),
             false,
