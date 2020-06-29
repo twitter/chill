@@ -16,8 +16,6 @@
 
 package com.twitter.chill
 
-import org.scalatest._
-
 import com.twitter.bijection.Bijection
 
 import BijectionEnrichedKryo._

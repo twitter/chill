@@ -25,7 +25,6 @@ import com.twitter.algebird.{
   MomentsGroup,
   QTree
 }
-import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

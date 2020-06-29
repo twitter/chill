@@ -14,7 +14,6 @@ limitations under the License.
  */
 package com.twitter.chill.avro
 
-import org.scalatest._
 import com.twitter.chill.{KSerializer, KryoPool, ScalaKryoInstantiator}
 import avro.FiscalRecord
 import org.apache.avro.generic.GenericRecordBuilder

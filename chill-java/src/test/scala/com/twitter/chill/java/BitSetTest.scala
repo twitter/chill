@@ -5,7 +5,6 @@ import java.util
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.io.{Input, Output}
 import org.objenesis.strategy.StdInstantiatorStrategy
-import org.scalatest._
 
 import scala.util.Random
 import org.scalatest.matchers.must.Matchers

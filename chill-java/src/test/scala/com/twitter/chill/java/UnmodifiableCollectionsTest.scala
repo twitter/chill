@@ -18,7 +18,6 @@
 package com.twitter.chill.java
 
 import TestCollections._
-import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

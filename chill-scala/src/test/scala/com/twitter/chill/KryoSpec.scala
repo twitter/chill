@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-import org.scalatest._
 import org.scalatest.matchers.{MatchResult, Matcher}
 
 import scala.collection.immutable.{BitSet, HashMap, HashSet, ListMap, ListSet, SortedMap, SortedSet}
