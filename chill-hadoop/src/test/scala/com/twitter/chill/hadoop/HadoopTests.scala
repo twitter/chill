@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.twitter.chill.hadoop
 
-import org.scalatest._
 
 import com.esotericsoftware.kryo.Kryo
 

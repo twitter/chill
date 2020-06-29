@@ -18,7 +18,6 @@ package com.twitter.chill.config
 
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties
-import org.scalatest._
 
 import com.twitter.chill._
 import com.esotericsoftware.kryo.Kryo
