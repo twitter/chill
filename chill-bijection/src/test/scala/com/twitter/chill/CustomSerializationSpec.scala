@@ -16,7 +16,6 @@
 
 package com.twitter.chill
 
-
 import com.twitter.bijection.Bijection
 
 import BijectionEnrichedKryo._

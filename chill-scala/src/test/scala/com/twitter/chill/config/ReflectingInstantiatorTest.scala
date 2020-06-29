@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.twitter.chill
 
-
 import com.twitter.chill.config._
 
 import org.objenesis.strategy.InstantiatorStrategy;

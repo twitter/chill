@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.twitter.chill.hadoop
 
-
 import com.esotericsoftware.kryo.Kryo
 
 import org.objenesis.strategy.StdInstantiatorStrategy

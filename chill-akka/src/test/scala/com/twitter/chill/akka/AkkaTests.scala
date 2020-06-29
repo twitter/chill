@@ -16,7 +16,6 @@ limitations under the License.
 
 package com.twitter.chill.akka
 
-
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.serialization._
 import com.typesafe.config.ConfigFactory
