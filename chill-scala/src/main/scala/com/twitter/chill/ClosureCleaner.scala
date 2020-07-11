@@ -198,7 +198,7 @@ object ClosureCleaner {
     accessedFieldsOf(in.getClass)
     // Go top down filling in the actual accessed fields:
     getOutersOf(in)
-    // the outer-most-outer is null:
+      // the outer-most-outer is null:
       .foldLeft(null: AnyRef) { (prevOuter, clsData) =>
         val (thisOuterCls, realOuter) = clsData
         // create a new outer class that does not have the constructor

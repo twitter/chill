@@ -126,7 +126,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
      * default serializers. The FIRST one found is the one used
      */
     newK
-    // wrapper array is abstract
+      // wrapper array is abstract
       .forSubclass[WrappedArray[Any]](new WrappedArraySerializer[Any])
       .forSubclass[BitSet](new BitSetSerializer)
       .forSubclass[SortedSet[Any]](new SortedSetSerializer)
