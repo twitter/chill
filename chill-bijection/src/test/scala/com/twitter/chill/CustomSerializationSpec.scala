@@ -52,7 +52,7 @@ class CustomSerializationSpec extends AnyWordSpec with Matchers with BasePropert
 
       val myInst = { () =>
         (new ScalaKryoInstantiator).newKryo
-        // use the implicit bijection by specifying the type
+          // use the implicit bijection by specifying the type
           .forClassViaBijection[Point, (Int, Int)]
           // use an explicit bijection, avoiding specifying the type
           .forClassViaBijection(pointBijection)
