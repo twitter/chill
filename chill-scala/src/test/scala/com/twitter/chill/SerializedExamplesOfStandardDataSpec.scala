@@ -46,21 +46,21 @@ class SerializedExamplesOfStandardDataSpec extends AnyWordSpec with Matchers {
                 checkSerialization(serialized, serId, scala, useObjectEquality = false)
           }
         }
-      // "all be covered by an example".in {
-      //   val serIds = Examples.map(_._1)
-      //   assert(serIds == serIds.distinct, "duplicate keys in examples map detected")
-      //   val exampleStrings = Examples.map(_._2._1)
-      //   assert(
-      //     exampleStrings == exampleStrings.distinct,
-      //     "duplicate example strings in examples map detected"
-      //   )
-      //   assert(
-      //     (serIds ++ SpecialCasesNotInExamplesMap).sorted ==
-      //       Seq.range(0, kryo.getNextRegistrationId),
-      //     s"there are approx ${kryo.getNextRegistrationId - serIds.size - SpecialCasesNotInExamplesMap.size} " +
-      //       "examples missing for preregistered classes"
-      //   )
-      // }
+      "all be covered by an example".in {
+        val serIds = Examples.map(_._1)
+        assert(serIds == serIds.distinct, "duplicate keys in examples map detected")
+        val exampleStrings = Examples.map(_._2._1)
+        assert(
+          exampleStrings == exampleStrings.distinct,
+          "duplicate example strings in examples map detected"
+        )
+        assert(
+          (serIds ++ SpecialCasesNotInExamplesMap).sorted ==
+            Seq.range(0, kryo.getNextRegistrationId),
+          s"there are approx ${kryo.getNextRegistrationId - serIds.size - SpecialCasesNotInExamplesMap.size} " +
+            "examples missing for preregistered classes"
+        )
+      }
     }
 
   val kryo: KryoBase = {
