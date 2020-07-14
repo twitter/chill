@@ -1,11 +1,11 @@
 /*
-Copyright 2019 Twitter, Inc.
+Copyright 2020 Twitter, Inc.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 3.1 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-3.1
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -111,60 +111,63 @@ object RegistrationIdsSpecData {
       |90 -> class java.util.Collections$UnmodifiableSortedMap
       |91 -> class java.util.Collections$UnmodifiableSortedSet
       |92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure
-      |93 -> class scala.collection.immutable.Range$Exclusive""".stripMargin.linesIterator.mkString("\n")
+      |93 -> class scala.collection.immutable.Range$Exclusive
+      |94 -> class scala.collection.immutable.Vector0$
+      |95 -> class scala.collection.immutable.Vector1""".stripMargin.linesIterator.mkString("\n")
 
   val RecentEntries =
-    """94 -> class [B
-      |95 -> class [S
-      |96 -> class [I
-      |97 -> class [J
-      |98 -> class [F
-      |99 -> class [D
-      |100 -> class [Z
-      |101 -> class [C
-      |102 -> class [Ljava.lang.String;
-      |103 -> class [Ljava.lang.Object;
-      |104 -> class java.lang.Class
-      |105 -> class java.lang.Object
-      |106 -> class scala.collection.mutable.ArraySeq$ofByte
-      |107 -> class scala.collection.mutable.ArraySeq$ofShort
-      |108 -> class scala.collection.mutable.ArraySeq$ofInt
-      |109 -> class scala.collection.mutable.ArraySeq$ofLong
-      |110 -> class scala.collection.mutable.ArraySeq$ofFloat
-      |111 -> class scala.collection.mutable.ArraySeq$ofDouble
-      |112 -> class scala.collection.mutable.ArraySeq$ofBoolean
-      |113 -> class scala.collection.mutable.ArraySeq$ofChar
-      |114 -> class scala.collection.mutable.ArraySeq$ofRef
-      |115 -> class scala.None$
-      |116 -> class scala.collection.immutable.Queue
-      |117 -> class scala.collection.immutable.Nil$
-      |118 -> class scala.collection.immutable.$colon$colon
-      |119 -> class scala.collection.immutable.Range
-      |120 -> class scala.collection.immutable.WrappedString
-      |121 -> class scala.collection.immutable.TreeSet
-      |122 -> class scala.collection.immutable.TreeMap
-      |123 -> class scala.math.Ordering$Byte$
-      |124 -> class scala.math.Ordering$Short$
-      |125 -> class scala.math.Ordering$Int$
-      |126 -> class scala.math.Ordering$Long$
-      |127 -> class scala.math.Ordering$Float$
-      |128 -> class scala.math.Ordering$Double$
-      |129 -> class scala.math.Ordering$Boolean$
-      |130 -> class scala.math.Ordering$Char$
-      |131 -> class scala.math.Ordering$String$
-      |132 -> class scala.collection.immutable.Set$EmptySet$
-      |133 -> class scala.collection.immutable.ListSet$EmptyListSet$
-      |134 -> class scala.collection.immutable.ListSet$Node
-      |135 -> class scala.collection.immutable.Map$EmptyMap$
-      |136 -> class scala.collection.immutable.ListMap$EmptyListMap$
-      |137 -> class scala.collection.immutable.ListMap$Node
-      |138 -> class scala.collection.immutable.Stream$Cons
-      |139 -> class scala.collection.immutable.Stream$Empty$
-      |140 -> class scala.runtime.VolatileByteRef
-      |141 -> class scala.math.BigDecimal
-      |142 -> class scala.collection.immutable.Queue$EmptyQueue$
-      |143 -> class scala.collection.immutable.MapOps$ImmutableKeySet""".stripMargin.linesIterator
-      .mkString("\n")
+    """96 -> class [B
+      |97 -> class [S
+      |98 -> class [I
+      |99 -> class [J
+      |100 -> class [F
+      |101 -> class [D
+      |102 -> class [Z
+      |103 -> class [C
+      |104 -> class [Ljava.lang.String;
+      |105 -> class [Ljava.lang.Object;
+      |106 -> class java.lang.Class
+      |107 -> class java.lang.Object
+      |108 -> class scala.collection.mutable.ArraySeq$ofByte
+      |109 -> class scala.collection.mutable.ArraySeq$ofShort
+      |110 -> class scala.collection.mutable.ArraySeq$ofInt
+      |111 -> class scala.collection.mutable.ArraySeq$ofLong
+      |112 -> class scala.collection.mutable.ArraySeq$ofFloat
+      |113 -> class scala.collection.mutable.ArraySeq$ofDouble
+      |114 -> class scala.collection.mutable.ArraySeq$ofBoolean
+      |115 -> class scala.collection.mutable.ArraySeq$ofChar
+      |116 -> class scala.collection.mutable.ArraySeq$ofRef
+      |117 -> class scala.None$
+      |118 -> class scala.collection.immutable.Queue
+      |119 -> class scala.collection.immutable.Nil$
+      |120 -> class scala.collection.immutable.$colon$colon
+      |121 -> class scala.collection.immutable.Range
+      |122 -> class scala.collection.immutable.WrappedString
+      |123 -> class scala.collection.immutable.TreeSet
+      |124 -> class scala.collection.immutable.TreeMap
+      |125 -> class scala.math.Ordering$Byte$
+      |126 -> class scala.math.Ordering$Short$
+      |127 -> class scala.math.Ordering$Int$
+      |128 -> class scala.math.Ordering$Long$
+      |129 -> class scala.math.Ordering$Float$
+      |130 -> class scala.math.Ordering$Double$
+      |131 -> class scala.math.Ordering$Boolean$
+      |132 -> class scala.math.Ordering$Char$
+      |133 -> class scala.math.Ordering$String$
+      |134 -> class scala.collection.immutable.Set$EmptySet$
+      |135 -> class scala.collection.immutable.ListSet$EmptyListSet$
+      |136 -> class scala.collection.immutable.ListSet$Node
+      |137 -> class scala.collection.immutable.Map$EmptyMap$
+      |138 -> class scala.collection.immutable.ListMap$EmptyListMap$
+      |139 -> class scala.collection.immutable.ListMap$Node
+      |140 -> class scala.collection.immutable.Stream$Cons
+      |141 -> class scala.collection.immutable.Stream$Empty$
+      |142 -> class scala.runtime.VolatileByteRef
+      |143 -> class scala.math.BigDecimal
+      |144 -> class scala.collection.immutable.Queue$EmptyQueue$
+      |145 -> class scala.collection.immutable.MapOps$ImmutableKeySet""".stripMargin.linesIterator.mkString(
+      "\n"
+    )
 
   val CurrentEntries =
     (Entries_0_10_0.linesIterator ++ RecentEntries.linesIterator).mkString("\n")

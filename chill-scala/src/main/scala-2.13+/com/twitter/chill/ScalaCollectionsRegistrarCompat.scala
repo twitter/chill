@@ -26,6 +26,10 @@ import scala.collection.immutable.Range
  * provided registrations.
  */
 class ScalaCollectionsRegistrarCompat extends IKryoRegistrar {
-  override def apply(newK: Kryo): Unit =
+  override def apply(newK: Kryo): Unit = {
     newK.register(classOf[Range.Exclusive])
+    newK
+      .forConcreteTraversableClass(Vector[Any]())
+      .forConcreteTraversableClass(Vector('a))
+  }
 }

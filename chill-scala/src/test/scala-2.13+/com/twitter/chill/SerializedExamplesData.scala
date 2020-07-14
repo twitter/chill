@@ -1,7 +1,7 @@
 /*
-Copyright 2019 Twitter, Inc.
+Copyright 2020Twitter, Inc.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.1(the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -36,9 +36,9 @@ object SerializedExamplesData {
     // Note: Instead of JavaConverters.***Converter(***).as***, in Scala 2.12
     // methods JavaConverters.*** can be used directly. For backwards compatibility,
     // the legacy methods to convert are used here.
-    10 -> ("DAF4AQECBA==" ->
+    10 -> ("DAF6AQECBA==" ->
       JavaConverters.seqAsJavaListConverter(Seq(2)).asJava), // Wrappers$SeqWrapper
-    11 -> ("DQEBAHNjYWxhLmNvbGxlY3Rpb24uQXJyYXlPcHMkQXJyYXlJdGVyYXRvciRtY0kkc/ABAgBiAQIEBA==" ->
+    11 -> ("DQEBAHNjYWxhLmNvbGxlY3Rpb24uQXJyYXlPcHMkQXJyYXlJdGVyYXRvciRtY0kkc/ABAgBkAQIEBA==" ->
       JavaConverters.asJavaIteratorConverter(Iterator(2)).asJava), // Wrappers$IteratorWrapper
     12 -> ("DgEaAQEnAQIEAgQ=" ->
       JavaConverters.mapAsJavaMapConverter(Map(2 -> 2)).asJava), // Wrappers$MapWrapper
@@ -53,7 +53,7 @@ object SerializedExamplesData {
     15 -> ("EQECBA==" -> Some(2)),
     16 -> ("EgECBA==" -> Left(2)),
     17 -> ("EwECBA==" -> Right(2)),
-    18 -> ("FAEBAgQ=" -> Vector(2)),
+    // 18 -> ("FAEBAgQ=" -> Vector(2)),
     19 -> ("FQEBAgQ=" -> Set(2)),
     20 -> ("FgECAgQCBg==" -> Set(2, 3)),
     21 -> ("FwEDAgQCBgII" -> Set(2, 3, 4)),
@@ -72,7 +72,7 @@ object SerializedExamplesData {
     32 -> ("IgECAgYCCg==" -> scala.collection.mutable.BitSet(3, 5)),
     33 -> ("IwEBJwECBgIK" -> scala.collection.mutable.HashMap(3 -> 5)),
     34 -> ("JAEBAgY=" -> scala.collection.mutable.HashSet(3)),
-    35 -> ("JQF4AQECBA==" -> Seq(2).asJavaCollection), // Wrappers$IterableWrapper
+    35 -> ("JQF6AQECBA==" -> Seq(2).asJavaCollection), // Wrappers$IterableWrapper
     36 -> ("JgEDAYJh" -> Tuple1("a")),
     37 -> ("JwEDAYJhAwGCYg==" -> ("a", "b")),
     38 -> ("KAECAgIEAgY=" -> (1, 2, 3)),
@@ -110,7 +110,7 @@ object SerializedExamplesData {
     70 -> ("SAGCYQ==" -> Symbol("a")),
     // 71 -> interface scala.reflect.ClassTag
     72 -> ("SgE=" -> runtime.BoxedUnit.UNIT),
-    73 -> ("SwEDawICAgQCBg==" -> _root_.java.util.Arrays.asList(1, 2, 3)),
+    73 -> ("SwEDbQICAgQCBg==" -> _root_.java.util.Arrays.asList(1, 2, 3)),
     74 -> ("TAECAAAAAAAAAAAAAAAAAAAAAA==" -> new _root_.java.util.BitSet(65)),
     75 -> ("TQEAAA==" -> new _root_.java.util.PriorityQueue[Int](7)),
     76 -> ("TgFhKuI=" -> _root_.java.util.regex.Pattern.compile("a*b")),
@@ -148,59 +148,61 @@ object SerializedExamplesData {
     // com.twitter.chill.Instantiators$ can not access a member of class java.util.Collections$UnmodifiableNavigableSet$EmptyNavigableSet with modifiers "public"
     // 92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure"""
     93 -> ("XwEGAAQEAgI=" -> collection.immutable.Range(1, 3)),
-    94 -> ("YAECgA==" -> Array(Byte.MinValue)),
-    95 -> ("YQECf/8=" -> Array(Short.MaxValue)),
-    96 -> ("YgEC/////w8=" -> Array(Int.MinValue)),
-    97 -> ("YwEC/v//////////" -> Array(Long.MaxValue)),
-    98 -> ("ZAECAAAAAQ==" -> Array(Float.MinPositiveValue)),
-    99 -> ("ZQEC/+////////8=" -> Array(Double.MinValue)),
-    100 -> ("ZgECAQ==" -> Array(true)),
-    101 -> ("ZwECAHg=" -> Array('x')),
-    102 -> ("aAECAWNh9A==" -> Array("cat")),
-    103 -> ("aQEDAgQDAW1vdXPl" -> Array(2, "mouse")),
-    104 -> ("agECAQ==" -> classOf[Int]),
-    105 -> ("awE=" -> new Object()),
-    106 -> ("bAEBBgFgAQKA" -> wrapByteArray(Array(Byte.MinValue))),
-    107 -> ("bQEBCAFhAQJ//w==" -> wrapShortArray(Array(Short.MaxValue))),
-    108 -> ("bgEBAgFiAQL/////Dw==" -> wrapIntArray(Array(Int.MinValue))),
-    109 -> ("bwEBCQFjAQL+//////////8=" -> wrapLongArray(Array(Long.MaxValue))),
-    110 -> ("cAEBBAFkAQIAAAAB" -> wrapFloatArray(Array(Float.MinPositiveValue))),
-    111 -> ("cQEBCgFlAQL/7////////w==" -> wrapDoubleArray(Array(Double.MinValue))),
-    112 -> ("cgEBBQFmAQIB" -> wrapBooleanArray(Array(true))),
-    113 -> ("cwEBBwFnAQIAeA==" -> wrapCharArray(Array('x'))),
-    114 -> ("dAEBAwBoAQIBY2H0" -> wrapRefArray(Array("cat"))),
-    115 -> ("dQE=" -> None),
-    116 -> ("dgEA" -> collection.immutable.Queue()),
-    117 -> ("dwEA" -> Nil),
-    118 -> ("eAEBAgQ=" -> (2 :: Nil)),
-    // 119 -> ("eAEGAAQEAgI=" -> collection.immutable.Range(1, 3)),
-    120 -> ("egEBdGHj" -> wrapString("tac")),
-    121 -> ("ewECfwECBAIG" -> collection.immutable.TreeSet(3, 2)),
-    122 -> ("fAEBfwEnAQIGAgQ=" -> collection.immutable.TreeMap(3 -> 2)),
-    123 -> ("fQE=" -> math.Ordering.Byte),
-    124 -> ("fgE=" -> math.Ordering.Short),
-    125 -> ("fwE=" -> math.Ordering.Int),
-    126 -> ("gAEB" -> math.Ordering.Long),
-    127 -> ("gQEB" -> math.Ordering.Float),
-    128 -> ("ggEB" -> math.Ordering.Double),
-    129 -> ("gwEB" -> math.Ordering.Boolean),
-    130 -> ("hAEB" -> math.Ordering.Char),
-    131 -> ("hQEB" -> math.Ordering.String),
-    132 -> ("hgEBAA==" -> Set[Any]()),
-    133 -> ("hwEBAA==" -> ListSet[Any]()),
-    134 -> ("iAEBAUgBgmE=" -> ListSet[Any]('a)),
-    135 -> ("iQEBAA==" -> Map[Any, Any]()),
-    136 -> ("igEBAA==" -> ListMap[Any, Any]()),
-    137 -> ("iwEBAScBSAGCYUgE" -> ListMap('a -> 'a)),
-    138 -> ("jAEBeAEBAgI=" -> Stream(1)),
-    139 -> ("jQEB" -> Stream()),
-    140 -> ("jgEBCg==" -> new VolatileByteRef(10)),
-    141 -> ("jwEBAQBqYXZhLm1hdGguQmlnRGVjaW1h7AECAgA=" -> math.BigDecimal(2)),
-    142 -> ("kAEBAA==" -> (Queue.empty[Any], true)),
-    143 -> ("kQEBAQIC" -> (Map(1 -> 2).keySet, true))
+    94 -> ("YAEA" -> Vector.empty[Int]),
+    95 -> ("YQEBAgI=" -> Vector(1)),
+    96 -> ("YgECgA==" -> Array(Byte.MinValue)),
+    97 -> ("YwECf/8=" -> Array(Short.MaxValue)),
+    98 -> ("ZAEC/////w8=" -> Array(Int.MinValue)),
+    99 -> ("ZQEC/v//////////" -> Array(Long.MaxValue)),
+    100 -> ("ZgECAAAAAQ==" -> Array(Float.MinPositiveValue)),
+    101 -> ("ZwEC/+////////8=" -> Array(Double.MinValue)),
+    102 -> ("aAECAQ==" -> Array(true)),
+    103 -> ("aQECAHg=" -> Array('x')),
+    104 -> ("agECAWNh9A==" -> Array("cat")),
+    105 -> ("awEDAgQDAW1vdXPl" -> Array(2, "mouse")),
+    106 -> ("bAECAQ==" -> classOf[Int]),
+    107 -> ("bQE=" -> new Object()),
+    108 -> ("bgEBBgFiAQKA" -> wrapByteArray(Array(Byte.MinValue))),
+    109 -> ("bwEBCAFjAQJ//w==" -> wrapShortArray(Array(Short.MaxValue))),
+    110 -> ("cAEBAgFkAQL/////Dw==" -> wrapIntArray(Array(Int.MinValue))),
+    111 -> ("cQEBCQFlAQL+//////////8=" -> wrapLongArray(Array(Long.MaxValue))),
+    112 -> ("cgEBBAFmAQIAAAAB" -> wrapFloatArray(Array(Float.MinPositiveValue))),
+    113 -> ("cwEBCgFnAQL/7////////w==" -> wrapDoubleArray(Array(Double.MinValue))),
+    114 -> ("dAEBBQFoAQIB" -> wrapBooleanArray(Array(true))),
+    115 -> ("dQEBBwFpAQIAeA==" -> wrapCharArray(Array('x'))),
+    116 -> ("dgEBAwBqAQIBY2H0" -> wrapRefArray(Array("cat"))),
+    117 -> ("dwE=" -> None),
+    118 -> ("eAEA" -> collection.immutable.Queue()),
+    119 -> ("eQEA" -> Nil),
+    120 -> ("egEBAgg=" -> (4 :: Nil)),
+    // 121-> ("eAEGAAQEAgI=" -> collection.immutable.Range(1, 3)),
+    122 -> ("fAEBdGHj" -> wrapString("tac")),
+    123 -> ("fQECgQEBAgQCBg==" -> collection.immutable.TreeSet(3, 2)),
+    124 -> ("fgEBgQEBJwECBgIE" -> collection.immutable.TreeMap(3 -> 2)),
+    125 -> ("fwE=" -> math.Ordering.Byte),
+    126 -> ("gAEB" -> math.Ordering.Short),
+    127 -> ("gQEB" -> math.Ordering.Int),
+    128 -> ("ggEB" -> math.Ordering.Long),
+    129 -> ("gwEB" -> math.Ordering.Float),
+    130 -> ("hAEB" -> math.Ordering.Double),
+    131 -> ("hQEB" -> math.Ordering.Boolean),
+    132 -> ("hgEB" -> math.Ordering.Char),
+    133 -> ("hwEB" -> math.Ordering.String),
+    134 -> ("iAEBAA==" -> Set[Any]()),
+    135 -> ("iQEBAA==" -> ListSet[Any]()),
+    136 -> ("igEBAUgBgmE=" -> ListSet[Any]('a)),
+    137 -> ("iwEBAA==" -> Map[Any, Any]()),
+    138 -> ("jAEBAA==" -> ListMap[Any, Any]()),
+    139 -> ("jQEBAScBSAGCYUgE" -> ListMap('a -> 'a)),
+    140 -> ("jgEBegEBAgI=" -> Stream(1)),
+    141 -> ("jwEB" -> Stream()),
+    142 -> ("kAEBCg==" -> new VolatileByteRef(10)),
+    143 -> ("kQEBAQBqYXZhLm1hdGguQmlnRGVjaW1h7AECAgA=" -> math.BigDecimal(2)),
+    144 -> ("kgEBAA==" -> (Queue.empty[Any], true)),
+    145 -> ("kwEBAQIC" -> (Map(1 -> 2).keySet, true))
   )
 
-  val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(9, 71, 84, 91, 92, 119)
+  val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(9, 18, 71, 84, 91, 92, 121)
 
   val OmitExamplesInScalaVersion: Map[String, Seq[Int]] = Map.empty
 }
