@@ -24,7 +24,7 @@ matrix:
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
-    - scala: 2.12.10
+    - scala: 2.12.12
       jdk: openjdk8
       script:
         - >
@@ -41,7 +41,7 @@ matrix:
           "++$TRAVIS_SCALA_VERSION clean"
           "++$TRAVIS_SCALA_VERSION test"
 
-    - scala: 2.12.10
+    - scala: 2.12.12
       jdk: openjdk11
       script:
         - >
