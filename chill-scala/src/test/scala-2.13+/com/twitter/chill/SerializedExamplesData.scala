@@ -53,7 +53,8 @@ object SerializedExamplesData {
     15 -> ("EQECBA==" -> Some(2)),
     16 -> ("EgECBA==" -> Left(2)),
     17 -> ("EwECBA==" -> Right(2)),
-    18 -> ("FAEBAgQ=" -> Vector(2)),
+    // 18 -> ("FAEBAgQ=" -> Vector(2)),
+    // new vector classes in 2.13 see 144, 145
     19 -> ("FQEBAgQ=" -> Set(2)),
     20 -> ("FgECAgQCBg==" -> Set(2, 3)),
     21 -> ("FwEDAgQCBgII" -> Set(2, 3, 4)),
@@ -65,9 +66,9 @@ object SerializedExamplesData {
     27 -> ("HQEEJwECBAIGJwECCAIKJwECDAIOJwECEAIS" -> Map(2 -> 3, 4 -> 5, 6 -> 7, 8 -> 9)),
     28 -> ("HgEA" -> HashMap.empty[Any, Any]),
     29 -> ("HwEMAAwIBgI=" -> new Range.Inclusive(3, 6, 1)),
-    30 -> ("IAEBAgoAAQgBAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMCBAIC" ->
+    30 -> ("IAECAgoAAAEAAQBzY2FsYS5tYXRoLk51bWVyaWMkSW50SXNJbnRlZ3JhbKQBAQADAgQCAg==" ->
       new NumericRange.Inclusive[Int](2, 5, 1)),
-    31 -> ("IQEBAgoAAAYBAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMCBAIC" ->
+    31 -> ("IQECAgoAAAAAAQBzY2FsYS5tYXRoLk51bWVyaWMkSW50SXNJbnRlZ3JhbKQBAQADAgQCAg==" ->
       new NumericRange.Exclusive[Int](2, 5, 1)),
     32 -> ("IgECAgYCCg==" -> scala.collection.mutable.BitSet(3, 5)),
     33 -> ("IwEBJwECBgIK" -> scala.collection.mutable.HashMap(3 -> 5)),
@@ -197,10 +198,12 @@ object SerializedExamplesData {
     140 -> ("jgEBCg==" -> new VolatileByteRef(10)),
     141 -> ("jwEBAQBqYXZhLm1hdGguQmlnRGVjaW1h7AECAgA=" -> math.BigDecimal(2)),
     142 -> ("kAEBAA==" -> (Queue.empty[Any], true)),
-    143 -> ("kQEBAQIC" -> (Map(1 -> 2).keySet, true))
+    143 -> ("kQEBAQIC" -> (Map(1 -> 2).keySet, true)),
+    144 -> ("kgEBAA==" -> Vector.empty[Int]),
+    145 -> ("kwEBAQIC" -> Vector(1))
   )
 
-  val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(9, 71, 84, 91, 92, 119)
+  val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(9, 18, 71, 84, 91, 92, 119)
 
   val OmitExamplesInScalaVersion: Map[String, Seq[Int]] = Map.empty
 }

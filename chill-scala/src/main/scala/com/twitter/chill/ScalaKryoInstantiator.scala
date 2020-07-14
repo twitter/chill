@@ -183,7 +183,7 @@ class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
 }
 
 /** Registrar for everything that was registered in chill 0.9.2 - included for backwards compatibility. */
-class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
+final private[chill] class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   def apply(k: Kryo): Unit = {
     new ScalaCollectionsRegistrar()(k)
     new JavaWrapperCollectionRegistrar()(k)
@@ -207,26 +207,11 @@ class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   }
 }
 
-/** Registrar for everything that was registered in chill 0.10.0 */
-class AllScalaRegistrar_0_10_0 extends IKryoRegistrar {
+/** Registrar for everything that was registered in chill 0.9.5 */
+final private[chill] class AllScalaRegistrar_0_9_5 extends IKryoRegistrar {
   def apply(k: Kryo): Unit = {
     new AllScalaRegistrar_0_9_2()(k)
-    new ScalaCollectionsRegistrarCompat()(k)
-  }
-}
-
-/**
- * Registers all the scala (and java) serializers we have. The registrations are designed to cover most of
- * scala.collecion.immutable, so they can be used in long term persistence scenarios that run with
- * setRegistrationRequired(true).
- *
- * When adding new serializers, add them to the end of the list, so compatibility is not broken needlessly
- * for projects using chill for long term persistence - see com.twitter.chill.RegistrationIdsSpec.
- */
-class AllScalaRegistrar extends IKryoRegistrar {
-  def apply(k: Kryo): Unit = {
-    new AllScalaRegistrar_0_10_0()(k)
-
+    new AllScalaRegistrarCompat_0_9_5()(k)
     k.registerClasses(
       Seq(
         classOf[Array[Byte]],
@@ -287,5 +272,20 @@ class AllScalaRegistrar extends IKryoRegistrar {
     k.forConcreteTraversableClass(Map(1 -> 2).filterKeys(_ != 2).toMap)
       .forConcreteTraversableClass(Map(1 -> 2).mapValues(_ + 1).toMap)
       .forConcreteTraversableClass(Map(1 -> 2).keySet)
+  }
+}
+
+/**
+ * Registers all the scala (and java) serializers we have. The registrations are designed to cover most of
+ * scala.collecion.immutable, so they can be used in long term persistence scenarios that run with
+ * setRegistrationRequired(true).
+ *
+ * When adding new serializers, add them to the end of the list, so compatibility is not broken needlessly
+ * for projects using chill for long term persistence - see com.twitter.chill.RegistrationIdsSpec.
+ */
+class AllScalaRegistrar extends IKryoRegistrar {
+  def apply(k: Kryo): Unit = {
+    new AllScalaRegistrar_0_9_5()(k)
+    new AllScalaRegistrarCompat()(k)
   }
 }

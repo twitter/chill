@@ -17,7 +17,8 @@ limitations under the License.
 package com.twitter.chill
 
 object RegistrationIdsSpecData {
-  val Entries_0_10_0 =
+
+  val Entries_0_9_5 =
     """0 -> int
       |1 -> class java.lang.String
       |2 -> float
@@ -111,10 +112,8 @@ object RegistrationIdsSpecData {
       |90 -> class java.util.Collections$UnmodifiableSortedMap
       |91 -> class java.util.Collections$UnmodifiableSortedSet
       |92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure
-      |93 -> class scala.collection.immutable.Range$Exclusive""".stripMargin.linesIterator.mkString("\n")
-
-  val RecentEntries =
-    """94 -> class [B
+      |93 -> class scala.collection.immutable.Range$Exclusive
+      |94 -> class [B
       |95 -> class [S
       |96 -> class [I
       |97 -> class [J
@@ -166,6 +165,11 @@ object RegistrationIdsSpecData {
       |143 -> class scala.collection.immutable.MapOps$ImmutableKeySet""".stripMargin.linesIterator
       .mkString("\n")
 
+  val RecentEntries =
+    """144 -> class scala.collection.immutable.Vector0$
+      |145 -> class scala.collection.immutable.Vector1""".stripMargin.linesIterator
+      .mkString("\n")
+
   val CurrentEntries =
-    (Entries_0_10_0.linesIterator ++ RecentEntries.linesIterator).mkString("\n")
+    (Entries_0_9_5.linesIterator ++ RecentEntries.linesIterator).mkString("\n")
 }

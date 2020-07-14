@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.twitter.chill
 
+import scala.collection.immutable.Range
+
 /**
  * Scala collections registrar for compatibility between 2.12- and 2.13+.
  *
@@ -23,6 +25,15 @@ package com.twitter.chill
  * @see [[ScalaCollectionsRegistrar]] and [[AllScalaRegistrar]] for all the
  * provided registrations.
  */
-class ScalaCollectionsRegistrarCompat extends IKryoRegistrar {
-  override def apply(newK: Kryo): Unit = ()
+private[chill] class AllScalaRegistrarCompat_0_9_5 extends IKryoRegistrar {
+  override def apply(newK: Kryo): Unit =
+    newK.register(classOf[Range.Exclusive])
+
+}
+
+private[chill] class AllScalaRegistrarCompat extends IKryoRegistrar {
+  override def apply(newK: Kryo): Unit =
+    newK
+      .forConcreteTraversableClass(Vector[Any]())
+      .forConcreteTraversableClass(Vector('a))
 }
