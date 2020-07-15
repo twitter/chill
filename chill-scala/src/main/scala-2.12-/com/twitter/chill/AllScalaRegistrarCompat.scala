@@ -26,3 +26,7 @@ package com.twitter.chill
 private[chill] class AllScalaRegistrarCompat_0_9_5 extends IKryoRegistrar {
   override def apply(newK: Kryo): Unit = ()
 }
+
+private[chill] class AllScalaRegistrarCompat extends IKryoRegistrar {
+  override def apply(newK: Kryo): Unit = ()
+}

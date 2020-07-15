@@ -165,7 +165,10 @@ object RegistrationIdsSpecData {
       |143 -> class scala.collection.immutable.MapOps$ImmutableKeySet""".stripMargin.linesIterator
       .mkString("\n")
 
-  val RecentEntries = ""
+  val RecentEntries =
+    """144 -> class scala.collection.immutable.Vector0$
+      |145 -> class scala.collection.immutable.Vector1""".stripMargin.linesIterator
+      .mkString("\n")
 
   val CurrentEntries =
     (Entries_0_9_5.linesIterator ++ RecentEntries.linesIterator).mkString("\n")

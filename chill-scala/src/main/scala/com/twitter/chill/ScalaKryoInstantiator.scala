@@ -284,5 +284,8 @@ final private[chill] class AllScalaRegistrar_0_9_5 extends IKryoRegistrar {
  * for projects using chill for long term persistence - see com.twitter.chill.RegistrationIdsSpec.
  */
 class AllScalaRegistrar extends IKryoRegistrar {
-  def apply(k: Kryo): Unit = new AllScalaRegistrar_0_9_5()(k)
+  def apply(k: Kryo): Unit = {
+    new AllScalaRegistrar_0_9_5()(k)
+    new AllScalaRegistrarCompat()(k)
+  }
 }
