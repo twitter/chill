@@ -38,13 +38,13 @@ class RegistrationIdsSpec extends AnyWordSpec with Matchers {
     |
     |For the ScalaKryoInstantiators, the registered classes""".stripMargin
     .should {
-      val compatibility = classOf[AllScalaRegistrar_0_10_0].getSimpleName
+      val compatibility = classOf[AllScalaRegistrar_0_9_5].getSimpleName
       (s"be as expected for the backward compatibility layer $compatibility,\n" +
         "  i.e. contain the list of registrations defined in this test.").in {
         val k = new KryoBase
-        new AllScalaRegistrar_0_10_0().apply(k)
-        if (registeredEntries(k) != Entries_0_10_0) printMessageFor(k, compatibility)
-        assert(registeredEntries(k) == Entries_0_10_0)
+        new AllScalaRegistrar_0_9_5().apply(k)
+        if (registeredEntries(k) != Entries_0_9_5) printMessageFor(k, compatibility)
+        assert(registeredEntries(k) == Entries_0_9_5)
       }
 
       val current = classOf[AllScalaRegistrar].getSimpleName

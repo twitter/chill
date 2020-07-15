@@ -25,7 +25,7 @@ import scala.collection.immutable.Range
  * @see [[ScalaCollectionsRegistrar]] and [[AllScalaRegistrar]] for all the
  * provided registrations.
  */
-class ScalaCollectionsRegistrarCompat extends IKryoRegistrar {
+private[chill] class AllScalaRegistrarCompat_0_9_5 extends IKryoRegistrar {
   override def apply(newK: Kryo): Unit = {
     newK.register(classOf[Range.Exclusive])
     newK
