@@ -8,7 +8,7 @@ jobs:
             project/plugins.sbt \
             project/build.properties > gha.cache.tmp
       - name: "~/.sbt\n\"~/.cache/coursier\"\n cache"
-        uses: "actions/cache@v1"
+        uses: "actions/cache@v2"
         with:
           key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
           path: |
@@ -33,7 +33,7 @@ jobs:
             project/plugins.sbt \
             project/build.properties > gha.cache.tmp
       - name: "~/.sbt\n\"~/.cache/coursier\"\n cache"
-        uses: "actions/cache@v1"
+        uses: "actions/cache@v2"
         with:
           key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
           path: |
@@ -52,7 +52,7 @@ jobs:
           - '11'
         scala:
           - '2.11.12'
-          - '2.12.10'
+          - '2.12.12'
   test:
     runs-on: ubuntu-latest
     steps:
@@ -62,7 +62,7 @@ jobs:
             project/plugins.sbt \
             project/build.properties > gha.cache.tmp
       - name: "~/.sbt\n\"~/.cache/coursier\"\n cache"
-        uses: "actions/cache@v1"
+        uses: "actions/cache@v2"
         with:
           key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
           path: |
@@ -80,7 +80,7 @@ jobs:
           - '8'
           - '11'
         scala:
-          - '2.12.10'
+          - '2.12.12'
           - '2.13.1'
   testWithCoverageReport:
     runs-on: ubuntu-latest
@@ -91,7 +91,7 @@ jobs:
             project/plugins.sbt \
             project/build.properties > gha.cache.tmp
       - name: "~/.sbt\n\"~/.cache/coursier\"\n cache"
-        uses: "actions/cache@v1"
+        uses: "actions/cache@v2"
         with:
           key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
           path: |

@@ -1,5 +1,5 @@
 let GithubActions =
-      https://raw.githubusercontent.com/regadas/github-actions-dhall/master/package.dhall sha256:37feb22e3fd5f7b6e0c94d1aaa94bf704422792fb898dbbcc5d1dabe9f9b3fbf
+      https://raw.githubusercontent.com/regadas/github-actions-dhall/master/package.dhall sha256:06e487b9ad805b241c3f01a09a3fddb4db1eb2b51f95cda2c99f63ad56dd607e
 
 let java = [ "8", "11" ]
 
@@ -50,7 +50,7 @@ let test =
               { run = "sbt \"++\${{matrix.scala}} test\"" }
           ]
       ⫽ { strategy = Some GithubActions.Strategy::{
-          , matrix = toMap { java, scala = [ "2.12.10", "2.13.1" ] }
+          , matrix = toMap { java, scala = [ "2.12.12", "2.13.1" ] }
           }
         }
 
@@ -68,7 +68,7 @@ let mimaReport =
               { run = "sbt \"++\${{matrix.scala}} mimaReportBinaryIssues\"" }
           ]
       ⫽ { strategy = Some GithubActions.Strategy::{
-          , matrix = toMap { java, scala = [ "2.11.12", "2.12.10" ] }
+          , matrix = toMap { java, scala = [ "2.11.12", "2.12.12" ] }
           }
         }
 
