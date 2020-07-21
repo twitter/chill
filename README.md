@@ -1,6 +1,6 @@
 ## Chill
 
-[![Build Status](https://secure.travis-ci.org/twitter/chill.png)](http://travis-ci.org/twitter/chill)
+![build](https://github.com/twitter/chill/workflows/ci/badge.svg)
 [![Codecov branch](https://img.shields.io/codecov/c/github/twitter/chill/develop.svg?maxAge=3600)](https://codecov.io/github/twitter/chill)
 [![Latest version](https://index.scala-lang.org/twitter/chill/chill/latest.svg?color=orange)](https://index.scala-lang.org/twitter/chill/chill)
 [![Chat](https://badges.gitter.im/twitter/chill.svg)](https://gitter.im/twitter/chill?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
