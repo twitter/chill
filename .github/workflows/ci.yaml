@@ -50,7 +50,7 @@ jobs:
           - "11"
         scala:
           - "2.12.12"
-          - "2.13.1"
+          - "2.13.3"
   testWithCoverageReport:
     runs-on: ubuntu-latest
     steps:
