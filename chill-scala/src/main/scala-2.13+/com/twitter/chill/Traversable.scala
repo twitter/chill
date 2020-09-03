@@ -18,8 +18,8 @@ package com.twitter.chill
 
 import scala.collection.Factory
 
-class TraversableSerializer[T, C <: Iterable[T]](override val isImmutable: Boolean = true)(
-    implicit cbf: Factory[T, C]
+class TraversableSerializer[T, C <: Iterable[T]](override val isImmutable: Boolean = true)(implicit
+    cbf: Factory[T, C]
 ) extends KSerializer[C] {
   def write(kser: Kryo, out: Output, obj: C): Unit = {
     //Write the size:
