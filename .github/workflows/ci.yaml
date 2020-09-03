@@ -19,11 +19,11 @@ jobs:
         uses: "olafurpg/setup-java@v6"
         with:
           java-version: "${{matrix.java}}"
-      - run: "sbt \"; scalafmtCheckAll; scalafmtSbtCheck\" \"; scalafixEnable; scalafix --check; test:scalafix --check\""
+      - run: 'sbt "; +scalafmtCheckAll; scalafmtSbtCheck" "; scalafixEnable; scalafix --check; test:scalafix --check"'
     strategy:
       matrix:
         java:
-          - '8'
+          - "8"
   mimaReport:
     runs-on: ubuntu-latest
     steps:
@@ -44,15 +44,15 @@ jobs:
         uses: "olafurpg/setup-java@v6"
         with:
           java-version: "${{matrix.java}}"
-      - run: "sbt \"++${{matrix.scala}} mimaReportBinaryIssues\""
+      - run: 'sbt "++${{matrix.scala}} mimaReportBinaryIssues"'
     strategy:
       matrix:
         java:
-          - '8'
-          - '11'
+          - "8"
+          - "11"
         scala:
-          - '2.11.12'
-          - '2.12.12'
+          - "2.11.12"
+          - "2.12.12"
   test:
     runs-on: ubuntu-latest
     steps:
@@ -73,15 +73,15 @@ jobs:
         uses: "olafurpg/setup-java@v6"
         with:
           java-version: "${{matrix.java}}"
-      - run: "sbt \"++${{matrix.scala}} test\""
+      - run: 'sbt "++${{matrix.scala}} test"'
     strategy:
       matrix:
         java:
-          - '8'
-          - '11'
+          - "8"
+          - "11"
         scala:
-          - '2.12.12'
-          - '2.13.1'
+          - "2.12.12"
+          - "2.13.1"
   testWithCoverageReport:
     runs-on: ubuntu-latest
     steps:
@@ -107,7 +107,7 @@ jobs:
     strategy:
       matrix:
         java:
-          - '8'
+          - "8"
 name: ci
 on:
   pull_request: {}
