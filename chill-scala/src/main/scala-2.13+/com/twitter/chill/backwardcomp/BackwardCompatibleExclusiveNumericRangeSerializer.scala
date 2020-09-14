@@ -33,7 +33,12 @@ class BackwardCompatibleExclusiveNumericRangeSerializer[T](kryo: Kryo, typ: Clas
     val start = kryo.readClassAndObject(input)
     val step = kryo.readClassAndObject(input)
 
-    for (field <- getFields) {
+    var idx = 0
+    val fields = getFields
+    while (idx < fields.length) {
+      val field = fields(idx)
+      idx = idx + 1
+
       field.getField.getName match {
         case "bitmap$0" => field.getField.set(result, bitmap0)
         case "end" => field.getField.set(result, end)
@@ -52,7 +57,12 @@ class BackwardCompatibleExclusiveNumericRangeSerializer[T](kryo: Kryo, typ: Clas
 
   override def write(kryo: Kryo, output: Output, `object`: T): Unit = {
     var length: Option[Int] = None
-    for (field <- getFields) {
+    var idx = 0
+    val fields = getFields
+    while (idx < fields.length) {
+      val field = fields(idx)
+      idx = idx + 1
+
       val value = field.getField.get(`object`)
       field.getField.getName match {
         case "bitmap$0" => output.writeByte(value.asInstanceOf[Byte])
