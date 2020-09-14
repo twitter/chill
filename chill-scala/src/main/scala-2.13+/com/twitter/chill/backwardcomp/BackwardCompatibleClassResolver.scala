@@ -99,9 +99,15 @@ class BackwardCompatibleClassResolver extends DefaultClassResolver {
       val nameId = classToNameId.get(placeholderType, -1)
       if (nameId != -1) {
         output.writeVarInt(nameId, true)
-        return
+      } else {
+        writeClassNameOnFirstEncounter(output, name, placeholderType)
       }
+    } else {
+      writeClassNameOnFirstEncounter(output, name, placeholderType)
     }
+  }
+
+  private def writeClassNameOnFirstEncounter[T](output: Output, name: String, placeholderType: Class[_]) = {
     // Only write the class name the first time encountered in object graph.
     val nameId = nextNameId
     nextNameId += 1
