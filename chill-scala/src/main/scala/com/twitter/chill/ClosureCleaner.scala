@@ -151,11 +151,10 @@ object ClosureCleaner {
       AsmUtil.classReader(_).foreach(cr => cr.accept(new FieldAccessFinder(accessedFields), 0))
     }
 
-    accessedFields.iterator.map {
-      case (cls, mset) =>
-        def toF(ss: Set[String]): Set[Field] = ss.map(cls.getDeclaredField)
-        val set = mset.toSet
-        (cls, toF(set))
+    accessedFields.iterator.map { case (cls, mset) =>
+      def toF(ss: Set[String]): Set[Field] = ss.map(cls.getDeclaredField)
+      val set = mset.toSet
+      (cls, toF(set))
     }.toMap
   }
 
