@@ -78,11 +78,6 @@ those.
 In addition to a `ScalaKryoInstantiator` which generates Kryo instances with options suitable for
 scala, chill provides a number of Kryo serializers for standard scala classes (see below).
 
-Supported scala versions: 
- * 2.13
- * 2.12
- * 2.11
-
 ### The MeatLocker
 
 Many existing systems use Java serialization. MeatLocker is an object that wraps a given instance
@@ -196,7 +191,7 @@ A list of contributors to the project can be found here: [Contributors](https://
 
 ## Maven
 
-Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.9.5` and each scala project is published for `2.10`, `2.11` and `2.12`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
+Chill modules are available on Maven Central. The current groupid and version for all modules is, respectively, `"com.twitter"` and  `0.9.5`. Each scala project is published for `2.11`, `2.12` and `2.13`. Search [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cchill) when in doubt.
 
 `chill-scala` is not published separately; to use it, reference `chill`. To add the dependency to your project using SBT:
 
