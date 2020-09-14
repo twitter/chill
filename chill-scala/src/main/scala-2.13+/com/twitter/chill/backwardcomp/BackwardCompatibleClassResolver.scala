@@ -16,7 +16,7 @@ package com.twitter.chill.backwardcomp
 import com.esotericsoftware.kryo.util.Util.{className, log}
 import com.esotericsoftware.kryo.util.{DefaultClassResolver, IdentityObjectIntMap, IntMap}
 import com.esotericsoftware.kryo.{Kryo, KryoException, Registration}
-import com.esotericsoftware.minlog.Log.{DEBUG, TRACE, trace}
+import com.esotericsoftware.minlog.Log.{trace, DEBUG, TRACE}
 import com.twitter.chill.{Input, Output}
 
 class BackwardCompatibleClassResolver extends DefaultClassResolver {
@@ -33,13 +33,12 @@ class BackwardCompatibleClassResolver extends DefaultClassResolver {
       classOf[Range.Exclusive] -> 118
     )
 
-  override def getRegistration(`type`: Class[_]): Registration = {
+  override def getRegistration(`type`: Class[_]): Registration =
     if (`type` == classOf[Range.Exclusive]) {
       getRegistration(118)
     } else {
       super.getRegistration(`type`)
     }
-  }
 
   override def getRegistration(classID: Int): Registration = {
     val registration = super.getRegistration(classID)
@@ -72,7 +71,8 @@ class BackwardCompatibleClassResolver extends DefaultClassResolver {
         readName(input)
       case _ =>
         val registration = getRegistration(classID - 2)
-        if (registration == null) throw new KryoException("Encountered unregistered class ID: " + (classID - 2))
+        if (registration == null)
+          throw new KryoException("Encountered unregistered class ID: " + (classID - 2))
         if (TRACE) trace("kryo", "Read class " + (classID - 2) + ": " + className(registration.getType))
 
         registration

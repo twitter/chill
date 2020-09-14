@@ -16,7 +16,8 @@ package com.twitter.chill.backwardcomp
 import com.esotericsoftware.kryo.serializers.FieldSerializer
 import com.twitter.chill.{Input, Kryo, ObjectSerializer, Output}
 
-class BackwardCompatibleJavaWrappersSerializer[T](kryo: Kryo, typ: Class[_]) extends FieldSerializer[T](kryo, typ) {
+class BackwardCompatibleJavaWrappersSerializer[T](kryo: Kryo, typ: Class[_])
+    extends FieldSerializer[T](kryo, typ) {
   import BackwardCompatibleJavaWrappersSerializer._
 
   override def read(kryo: Kryo, input: Input, typ: Class[T]): T = {
@@ -28,7 +29,9 @@ class BackwardCompatibleJavaWrappersSerializer[T](kryo: Kryo, typ: Class[_]) ext
   }
 
   override def write(kryo: Kryo, output: Output, `object`: T): Unit = {
-    kryo.getClassResolver.asInstanceOf[BackwardCompatibleClassResolver].writeFakeName(output, "scala.collection.convert.Wrappers$", OuterWrapper.getClass)
+    kryo.getClassResolver
+      .asInstanceOf[BackwardCompatibleClassResolver]
+      .writeFakeName(output, "scala.collection.convert.Wrappers$", OuterWrapper.getClass)
     kryo.writeObjectOrNull(output, OuterWrapper, new ObjectSerializer)
     super.write(kryo, output, `object`)
   }

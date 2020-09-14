@@ -18,9 +18,33 @@ import com.twitter.chill.java.{Java8ClosureRegistrar, PackageRegistrar}
 import com.twitter.chill._
 
 import scala.collection.JavaConverters._
-import scala.collection.immutable.{BitSet, HashMap, HashSet, ListMap, ListSet, NumericRange, Queue, Range, SortedMap, SortedSet, TreeMap, TreeSet, WrappedString}
+import scala.collection.immutable.{
+  BitSet,
+  HashMap,
+  HashSet,
+  ListMap,
+  ListSet,
+  NumericRange,
+  Queue,
+  Range,
+  SortedMap,
+  SortedSet,
+  TreeMap,
+  TreeSet,
+  WrappedString
+}
 import scala.collection.mutable
-import scala.collection.mutable.{Buffer, ListBuffer, WrappedArray, BitSet => MBitSet, HashMap => MHashMap, HashSet => MHashSet, Map => MMap, Queue => MQueue, Set => MSet}
+import scala.collection.mutable.{
+  Buffer,
+  ListBuffer,
+  WrappedArray,
+  BitSet => MBitSet,
+  HashMap => MHashMap,
+  HashSet => MHashSet,
+  Map => MMap,
+  Queue => MQueue,
+  Set => MSet
+}
 import scala.reflect.ClassTag
 import scala.util.matching.Regex
 
@@ -103,10 +127,14 @@ class BackwardCompatibleScalaCollectionsRegistrar extends IKryoRegistrar {
         Seq(classOf[Range.Inclusive], classOf[NumericRange.Inclusive[_]])
       )
 
-    newK.register(classOf[NumericRange.Exclusive[_]], new BackwardCompatibleExclusiveNumericRangeSerializer(newK, classOf[NumericRange.Exclusive[_]]))
+    newK.register(
+      classOf[NumericRange.Exclusive[_]],
+      new BackwardCompatibleExclusiveNumericRangeSerializer(newK, classOf[NumericRange.Exclusive[_]])
+    )
     // Add some maps
 
-    newK.forSubclass[SortedMap[Any, Any]](new SortedMapSerializer)
+    newK
+      .forSubclass[SortedMap[Any, Any]](new SortedMapSerializer)
       .forTraversableSubclass(ListMap.empty[Any, Any])
       .forTraversableSubclass(HashMap.empty[Any, Any])
       // The above ListMap/HashMap must appear before this:
@@ -133,8 +161,7 @@ class BackwardCompatibleAllScalaRegistrar_0_9_2 extends IKryoRegistrar {
       override def isImmutable = true
       def write(k: Kryo, out: Output, obj: Symbol): Unit = out.writeString(obj.name)
       def read(k: Kryo, in: Input, cls: Class[Symbol]): Symbol = Symbol(in.readString)
-    })
-      .forSubclass[Regex](new RegexSerializer)
+    }).forSubclass[Regex](new RegexSerializer)
       .forClass[ClassTag[Any]](new ClassTagSerializer[Any])
       .forSubclass[Manifest[Any]](new ManifestSerializer[Any])
       .forSubclass[scala.Enumeration#Value](new EnumerationSerializer)
@@ -201,8 +228,7 @@ class BackwardCompatibleAllScalaRegistrar extends IKryoRegistrar {
         Ordering.Char.getClass,
         Ordering.String.getClass
       )
-    )
-      .forConcreteTraversableClass(Set[Any]())
+    ).forConcreteTraversableClass(Set[Any]())
       .forConcreteTraversableClass(ListSet[Any]())
       .forConcreteTraversableClass(ListSet[Any]('a))
 
