@@ -78,6 +78,11 @@ those.
 In addition to a `ScalaKryoInstantiator` which generates Kryo instances with options suitable for
 scala, chill provides a number of Kryo serializers for standard scala classes (see below).
 
+Supported scala versions: 
+ * 2.13
+ * 2.12
+ * 2.11
+
 ### The MeatLocker
 
 Many existing systems use Java serialization. MeatLocker is an object that wraps a given instance
