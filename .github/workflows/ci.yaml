@@ -1,45 +1,24 @@
+name: ci
+on: [push, pull_request]
+
 jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v2.1.0"
-      - run: |
-          shasum build.sbt \
-            project/plugins.sbt \
-            project/build.properties > gha.cache.tmp
-      - name: "~/.sbt\n\"~/.cache/coursier\"\n cache"
-        uses: "actions/cache@v2"
-        with:
-          key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
-          path: |
-            ~/.sbt
-            "~/.cache/coursier"
-          restore-keys: sbt
-      - name: "java ${{matrix.java}} setup"
+      - name: cache SBT
+        uses: coursier/cache-action@v3
+      - name: "Java 8 setup"
         uses: "olafurpg/setup-java@v6"
         with:
-          java-version: "${{matrix.java}}"
+          java-version: "8"
       - run: 'sbt "; +scalafmtCheckAll; scalafmtSbtCheck" "; scalafixEnable; scalafix --check; test:scalafix --check"'
-    strategy:
-      matrix:
-        java:
-          - "8"
   mimaReport:
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v2.1.0"
-      - run: |
-          shasum build.sbt \
-            project/plugins.sbt \
-            project/build.properties > gha.cache.tmp
-      - name: "~/.sbt\n\"~/.cache/coursier\"\n cache"
-        uses: "actions/cache@v2"
-        with:
-          key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
-          path: |
-            ~/.sbt
-            "~/.cache/coursier"
-          restore-keys: sbt
+      - name: cache SBT
+        uses: coursier/cache-action@v3
       - name: "java ${{matrix.java}} setup"
         uses: "olafurpg/setup-java@v6"
         with:
@@ -57,18 +36,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v2.1.0"
-      - run: |
-          shasum build.sbt \
-            project/plugins.sbt \
-            project/build.properties > gha.cache.tmp
-      - name: "~/.sbt\n\"~/.cache/coursier\"\n cache"
-        uses: "actions/cache@v2"
-        with:
-          key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
-          path: |
-            ~/.sbt
-            "~/.cache/coursier"
-          restore-keys: sbt
+      - name: cache SBT
+        uses: coursier/cache-action@v3
       - name: "java ${{matrix.java}} setup"
         uses: "olafurpg/setup-java@v6"
         with:
@@ -86,29 +55,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v2.1.0"
-      - run: |
-          shasum build.sbt \
-            project/plugins.sbt \
-            project/build.properties > gha.cache.tmp
-      - name: "~/.sbt\n\"~/.cache/coursier\"\n cache"
-        uses: "actions/cache@v2"
-        with:
-          key: "${{ runner.os }}-sbt-${{ hashFiles('gha.cache.tmp') }}"
-          path: |
-            ~/.sbt
-            "~/.cache/coursier"
-          restore-keys: sbt
+      - name: cache SBT
+        uses: coursier/cache-action@v3
       - name: "java ${{matrix.java}} setup"
         uses: "olafurpg/setup-java@v6"
         with:
-          java-version: "${{matrix.java}}"
+          java-version: "8"
       - run: sbt coverage clean test coverageReport
       - run: "bash <(curl -s https://codecov.io/bash)"
-    strategy:
-      matrix:
-        java:
-          - "8"
-name: ci
-on:
-  pull_request: {}
-  push: {}
