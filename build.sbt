@@ -1,5 +1,4 @@
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
-import sbtrelease.ReleaseStateTransformations._
 
 val akkaVersion = "2.6.10"
 val algebirdVersion = "0.13.7"
@@ -44,38 +43,6 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
     "com.esotericsoftware" % "kryo-shaded" % kryoVersion
   ),
   parallelExecution in Test := true,
-  // Publishing options:
-  releaseCrossBuild := false, // needs to be false for sbt-doge
-  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  releaseProcess := Seq[ReleaseStep](
-    checkSnapshotDependencies,
-    inquireVersions,
-    runClean,
-    releaseStepCommandAndRemaining("+test"),
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    releaseStepCommandAndRemaining("+publishSigned"),
-    setNextVersion,
-    commitNextVersion,
-    pushChanges
-  ),
-  publishConfiguration := publishConfiguration.value.withOverwrite(true),
-  publishMavenStyle := true,
-  publishArtifact in Test := false,
-  pomIncludeRepository := { x => false },
-  publishTo := Some(
-    if (version.value.trim.toUpperCase.endsWith("SNAPSHOT"))
-      Opts.resolver.sonatypeSnapshots
-    else
-      Opts.resolver.sonatypeStaging
-  ),
-  scmInfo := Some(
-    ScmInfo(
-      url("https://github.com/twitter/chill"),
-      "scm:git:git@github.com:twitter/chill.git"
-    )
-  ),
   pomExtra := <url>https://github.com/twitter/chill</url>
         <licenses>
       <license>
@@ -118,7 +85,8 @@ lazy val chillAll = Project(
 ).settings(sharedSettings)
   .settings(noPublishSettings)
   .settings(
-    mimaPreviousArtifacts := Set.empty
+    mimaPreviousArtifacts := Set.empty,
+    crossScalaVersions := Nil
   )
   .aggregate(
     chill,
@@ -142,6 +110,7 @@ lazy val formattingPreferences = {
 }
 
 lazy val noPublishSettings = Seq(
+  skip in publish := true,
   publish := {},
   publishLocal := {},
   test := {},
