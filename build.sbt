@@ -3,7 +3,7 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 val akkaVersion = "2.6.13"
 val algebirdVersion = "0.13.7"
 val bijectionVersion = "0.9.7"
-val kryoVersion = "4.0.2"
+val kryoVersion = "5.0.3"
 val scroogeVersion = "21.2.0"
 val asmVersion = "4.15"
 
@@ -40,7 +40,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
     "org.scalacheck" %% "scalacheck" % "1.15.2" % "test",
     "org.scalatest" %% "scalatest" % "3.2.6" % "test",
     "org.scalatestplus" %% "scalatestplus-scalacheck" % "3.1.0.0-RC2" % "test",
-    "com.esotericsoftware" % "kryo-shaded" % kryoVersion
+    "com.esotericsoftware.kryo" % "kryo5" % kryoVersion
   ),
   parallelExecution in Test := true,
   pomExtra := <url>https://github.com/twitter/chill</url>
