@@ -17,10 +17,10 @@
 
 package com.twitter.chill.java;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -54,7 +54,7 @@ abstract class UnmodifiableJavaCollectionSerializer<T> extends Serializer<T> {
   
   @Override
   @SuppressWarnings("unchecked")
-  public T read(Kryo kryo, Input input, Class<T> type) {
+  public T read(Kryo kryo, Input input, Class<? extends T> type) {
     try {
       T u = (T) kryo.readClassAndObject(input);
       return newInstance(u);

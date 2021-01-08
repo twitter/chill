@@ -1,7 +1,7 @@
 package com.twitter.chill.java;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.serializers.ClosureSerializer;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.serializers.ClosureSerializer;
 import com.twitter.chill.IKryoRegistrar;
 
 /**

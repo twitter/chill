@@ -17,10 +17,10 @@ limitations under the License.
 package com.twitter.chill.java;
 
 import com.twitter.chill.IKryoRegistrar;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
+import com.esotericsoftware.kryo.kryo5.Serializer;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class IterableRegistrarSerializer extends Serializer<IterableRegistrar> {
     }
     kryo.writeClassAndObject(output, null);
   }
-  public IterableRegistrar read(Kryo kryo, Input input, Class<IterableRegistrar> type) {
+  public IterableRegistrar read(Kryo kryo, Input input, Class<? extends IterableRegistrar> type) {
     ArrayList<IKryoRegistrar> krs = new ArrayList<IKryoRegistrar>();
     IKryoRegistrar thisKr = (IKryoRegistrar)kryo.readClassAndObject(input);
     while(thisKr != null) {

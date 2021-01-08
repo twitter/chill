@@ -17,7 +17,7 @@ limitations under the License.
 package com.twitter.chill.storm;
 
 import org.apache.storm.serialization.IKryoFactory;
-import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.kryo5.Kryo;
 import java.util.Map;
 
 import com.twitter.chill.KryoInstantiator;

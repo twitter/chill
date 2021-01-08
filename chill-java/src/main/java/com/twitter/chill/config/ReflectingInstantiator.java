@@ -22,10 +22,10 @@ import com.twitter.chill.ClassRegistrar;
 import com.twitter.chill.ReflectingRegistrar;
 import com.twitter.chill.ReflectingDefaultRegistrar;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import org.objenesis.strategy.InstantiatorStrategy;
-import org.objenesis.strategy.StdInstantiatorStrategy;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.InstantiatorStrategy;
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.StdInstantiatorStrategy;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.reflect.InvocationTargetException;

@@ -26,7 +26,7 @@ import _root_.java.io.{
 }
 
 import _root_.java.util.concurrent.atomic.{AtomicBoolean, AtomicReference}
-import com.esotericsoftware.kryo.KryoSerializable
+import com.esotericsoftware.kryo.kryo5.KryoSerializable
 
 object Externalizer {
   /* Tokens used to distinguish if we used Kryo or Java */

@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill.java;
 
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
+import com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer;
 
 import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.SingleRegistrar;

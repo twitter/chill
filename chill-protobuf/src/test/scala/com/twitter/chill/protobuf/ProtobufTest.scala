@@ -19,7 +19,7 @@ package com.twitter.chill.protobuf
 import com.twitter.chill.{KryoInstantiator, KryoPool}
 import com.twitter.chill.protobuf.TestMessages.FatigueCount
 
-import com.esotericsoftware.kryo.Kryo
+import com.esotericsoftware.kryo.kryo5.Kryo
 
 import com.google.protobuf.Message
 
