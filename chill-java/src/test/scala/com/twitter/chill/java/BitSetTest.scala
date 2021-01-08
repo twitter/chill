@@ -2,9 +2,9 @@ package com.twitter.chill.java
 
 import java.util
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.{Input, Output}
-import org.objenesis.strategy.StdInstantiatorStrategy
+import com.esotericsoftware.kryo.kryo5.Kryo
+import com.esotericsoftware.kryo.kryo5.io.{Input, Output}
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.StdInstantiatorStrategy
 
 import scala.util.Random
 import org.scalatest.matchers.must.Matchers

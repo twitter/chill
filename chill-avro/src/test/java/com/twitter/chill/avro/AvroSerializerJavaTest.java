@@ -1,8 +1,8 @@
 package com.twitter.chill.avro;
 
 import avro.FiscalRecord;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
 import com.twitter.chill.KryoInstantiator;
 import com.twitter.chill.KryoPool;
 import org.apache.avro.Schema;

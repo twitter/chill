@@ -20,7 +20,7 @@ import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties
 
 import com.twitter.chill._
-import com.esotericsoftware.kryo.Kryo
+import com.esotericsoftware.kryo.kryo5.Kryo
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

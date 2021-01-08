@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 /**
  * A kryo {@link Serializer} for lists created via {@link Arrays#asList(Object...)}.
@@ -71,7 +71,7 @@ public class ArraysAsListSerializer extends Serializer<List<?>> {
     }
 
     @Override
-    public List<?> read(final Kryo kryo, final Input input, final Class<List<?>> type) {
+    public List<?> read(final Kryo kryo, final Input input, final Class<? extends List<?>> type) {
         final int length = input.readInt(true);
         Class<?> componentType = kryo.readClass(input).getType();
         try {

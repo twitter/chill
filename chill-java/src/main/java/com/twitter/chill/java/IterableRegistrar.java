@@ -18,8 +18,8 @@ package com.twitter.chill.java;
 
 import com.twitter.chill.IKryoRegistrar;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.DefaultSerializer;
 
 import java.util.Arrays;
 

@@ -16,9 +16,9 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.KryoException
+import com.esotericsoftware.kryo.kryo5.KryoException
 import com.esotericsoftware.reflectasm.ConstructorAccess
-import com.esotericsoftware.kryo.serializers.FieldSerializer
+import com.esotericsoftware.kryo.kryo5.Serializers.FieldSerializer
 import _root_.java.lang.Thread
 
 import org.objenesis.instantiator.ObjectInstantiator

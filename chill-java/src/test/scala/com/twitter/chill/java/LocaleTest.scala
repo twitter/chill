@@ -16,11 +16,10 @@ limitations under the License.
 
 package com.twitter.chill.java
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.Input
-import com.esotericsoftware.kryo.io.Output
-
-import org.objenesis.strategy.StdInstantiatorStrategy
+import com.esotericsoftware.kryo.kryo5.Kryo
+import com.esotericsoftware.kryo.kryo5.io.Input
+import com.esotericsoftware.kryo.kryo5.io.Output
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.StdInstantiatorStrategy
 
 import _root_.java.util.Locale
 import org.scalatest.matchers.should.Matchers
