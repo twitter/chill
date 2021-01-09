@@ -17,8 +17,7 @@ limitations under the License.
 package com.twitter.chill.hadoop
 
 import com.esotericsoftware.kryo.kryo5.Kryo
-
-import org.objenesis.strategy.StdInstantiatorStrategy
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.io.{ByteArrayInputStream => BAIn, ByteArrayOutputStream => BAOut}
 import org.apache.hadoop.conf.Configuration

@@ -20,7 +20,7 @@ import _root_.java.math.{BigDecimal => JBigDecimal}
 import _root_.scala.math.BigDecimal
 
 private class BigDecimalSerializer extends KSerializer[BigDecimal] {
-  override def read(kryo: Kryo, input: Input, cls: Class[BigDecimal]): BigDecimal = {
+  override def read(kryo: Kryo, input: Input, cls: Class[_ <: BigDecimal]): BigDecimal = {
     val jBigDec = kryo.readClassAndObject(input).asInstanceOf[JBigDecimal]
     BigDecimal(jBigDec)
   }

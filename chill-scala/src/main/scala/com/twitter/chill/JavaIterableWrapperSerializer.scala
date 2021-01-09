@@ -23,7 +23,7 @@ private class JavaIterableWrapperSerializer extends KSerializer[JIterable[_]] {
       kryo.writeClassAndObject(out, obj)
     }
 
-  override def read(kryo: Kryo, in: Input, clz: Class[JIterable[_]]): JIterable[_] =
+  override def read(kryo: Kryo, in: Input, clz: Class[_ <: JIterable[_]]): JIterable[_] =
     kryo.readClassAndObject(in) match {
       case scalaIterable: Iterable[_] =>
         asJavaIterableConverter(scalaIterable).asJava

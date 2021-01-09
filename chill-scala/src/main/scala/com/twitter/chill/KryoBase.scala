@@ -17,18 +17,18 @@ limitations under the License.
 package com.twitter.chill
 
 import com.esotericsoftware.kryo.kryo5.KryoException
-import com.esotericsoftware.reflectasm.ConstructorAccess
-import com.esotericsoftware.kryo.kryo5.Serializers.FieldSerializer
+import com.esotericsoftware.kryo.kryo5.reflectasm.ConstructorAccess;
+import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer
+import com.esotericsoftware.kryo.kryo5.objenesis.instantiator.ObjectInstantiator;
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.InstantiatorStrategy;
 import _root_.java.lang.Thread
 
-import org.objenesis.instantiator.ObjectInstantiator
-import org.objenesis.strategy.InstantiatorStrategy
 import _root_.java.lang.reflect.{Constructor, Modifier}
 
-import com.esotericsoftware.kryo.ClassResolver
-import com.esotericsoftware.kryo.ReferenceResolver
-import com.esotericsoftware.kryo.util.DefaultClassResolver
-import com.esotericsoftware.kryo.util.MapReferenceResolver
+import com.esotericsoftware.kryo.kryo5.ClassResolver
+import com.esotericsoftware.kryo.kryo5.ReferenceResolver
+import com.esotericsoftware.kryo.kryo5.util.DefaultClassResolver
+import com.esotericsoftware.kryo.kryo5.util.MapReferenceResolver
 
 import scala.util.{Failure, Success, Try}
 
@@ -81,10 +81,11 @@ class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolve
     } else {
       super.newDefaultSerializer(klass) match {
         case fs: FieldSerializer[_] =>
-          // Scala has a lot of synthetic fields that must be serialized:
-          // We also enable it by default in java since not wanting these fields
-          // serialized looks like the exception rather than the rule.
-          fs.setIgnoreSyntheticFields(false)
+          //Scala has a lot of synthetic fields that must be serialized:
+          //We also enable it by default in java since not wanting these fields
+          //serialized looks like the exception rather than the rule.
+//TODO
+//          fs.setIgnoreSyntheticFields(false)
 
           /**
            * This breaks scalding, but something like this should be used when working with the repl.

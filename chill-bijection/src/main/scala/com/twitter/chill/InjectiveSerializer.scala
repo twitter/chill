@@ -29,7 +29,7 @@ class InjectiveSerializer[T] private (injection: Injection[T, Array[Byte]])
     out.writeBytes(bytes)
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[T]): T = {
+  def read(kser: Kryo, in: Input, cls: Class[_ <: T]): T = {
     val bytes = new Array[Byte](in.readInt(true))
     in.readBytes(bytes)
     injection.invert(bytes).get
