@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.io.ByteBufferInputStream
+import com.esotericsoftware.kryo.kryo5.io.ByteBufferInputStream
 
 import _root_.java.io.{InputStream, Serializable}
 import _root_.java.nio.ByteBuffer
@@ -51,7 +51,7 @@ class RichKryo(val k: Kryo) extends RichKryoCompat {
    * avoid this if possible, but for very rare classes it is probably fine
    */
   def javaForClass[T <: Serializable](implicit cmf: ClassTag[T]): Kryo = {
-    k.register(cmf.runtimeClass, new com.esotericsoftware.kryo.serializers.JavaSerializer)
+    k.register(cmf.runtimeClass, new com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer)
     k
   }
 
@@ -60,7 +60,7 @@ class RichKryo(val k: Kryo) extends RichKryoCompat {
    * avoid this if possible, but for very rare classes it is probably fine
    */
   def javaForSubclass[T <: Serializable](implicit cmf: ClassTag[T]): Kryo = {
-    k.addDefaultSerializer(cmf.runtimeClass, new com.esotericsoftware.kryo.serializers.JavaSerializer)
+    k.addDefaultSerializer(cmf.runtimeClass, new com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer)
     k
   }
 

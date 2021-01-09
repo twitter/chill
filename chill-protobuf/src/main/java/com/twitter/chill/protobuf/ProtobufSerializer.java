@@ -66,7 +66,7 @@ public class ProtobufSerializer extends Serializer<Message> {
   }
 
   @Override
-  public Message read(Kryo kryo, Input input, Class<Message> pbClass) {
+  public Message read(Kryo kryo, Input input, Class<? extends Message> pbClass) {
     try {
       int size = input.readInt(true);
       byte[] barr = new byte[size];

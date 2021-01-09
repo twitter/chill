@@ -20,10 +20,10 @@ package com.twitter
  * Scala extensions to the Kryo serialization library.
  */
 package object chill {
-  type Kryo = com.esotericsoftware.kryo.Kryo
-  type KSerializer[T] = com.esotericsoftware.kryo.Serializer[T]
-  type Input = com.esotericsoftware.kryo.io.Input
-  type Output = com.esotericsoftware.kryo.io.Output
+  type Kryo = com.esotericsoftware.kryo.kryo5.Kryo
+  type KSerializer[T] = com.esotericsoftware.kryo.kryo5.Serializer[T]
+  type Input = com.esotericsoftware.kryo.kryo5.io.Input
+  type Output = com.esotericsoftware.kryo.kryo5.io.Output
 
   implicit def toRich(k: Kryo): RichKryo = new RichKryo(k)
   implicit def toInstantiator(fn: Function0[Kryo]): KryoInstantiator = new KryoInstantiator {

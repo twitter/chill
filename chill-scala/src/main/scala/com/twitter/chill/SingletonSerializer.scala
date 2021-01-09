@@ -21,5 +21,5 @@ package com.twitter.chill
 
 class SingletonSerializer[T](obj: T) extends KSerializer[T] {
   def write(kser: Kryo, out: Output, obj: T): Unit = {}
-  def read(kser: Kryo, in: Input, cls: Class[T]): T = obj
+  def read(kser: Kryo, in: Input, cls: Class[_ <: T]): T = obj
 }

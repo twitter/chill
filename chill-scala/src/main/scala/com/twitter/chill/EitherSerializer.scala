@@ -20,7 +20,7 @@ class LeftSerializer[A, B] extends KSerializer[Left[A, B]] {
   def write(kser: Kryo, out: Output, left: Left[A, B]): Unit =
     kser.writeClassAndObject(out, left.left.get)
 
-  def read(kser: Kryo, in: Input, cls: Class[Left[A, B]]): Left[A, B] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Left[A, B]]): Left[A, B] =
     Left(kser.readClassAndObject(in).asInstanceOf[A])
 }
 
@@ -28,6 +28,6 @@ class RightSerializer[A, B] extends KSerializer[Right[A, B]] {
   def write(kser: Kryo, out: Output, right: Right[A, B]): Unit =
     kser.writeClassAndObject(out, right.right.get)
 
-  def read(kser: Kryo, in: Input, cls: Class[Right[A, B]]): Right[A, B] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Right[A, B]]): Right[A, B] =
     Right(kser.readClassAndObject(in).asInstanceOf[B])
 }

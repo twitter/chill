@@ -20,7 +20,7 @@ class ClassManifestSerializer[T] extends KSerializer[ClassManifest[T]] {
   def write(kser: Kryo, out: Output, obj: ClassManifest[T]): Unit =
     kser.writeObject(out, obj.runtimeClass)
 
-  def read(kser: Kryo, in: Input, cls: Class[ClassManifest[T]]): ClassManifest[T] = {
+  def read(kser: Kryo, in: Input, cls: Class[_ <: ClassManifest[T]]): ClassManifest[T] = {
     val clazz = kser.readObject(in, classOf[Class[T]])
     ClassManifest.fromClass[T](clazz)
   }

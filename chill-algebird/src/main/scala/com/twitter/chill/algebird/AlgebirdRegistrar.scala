@@ -16,7 +16,7 @@ limitations under the License.
 package com.twitter.chill.algebird
 
 import com.esotericsoftware.kryo.kryo5.Kryo
-import com.esotericsoftware.kryo.kryo5.Serializers.FieldSerializer
+import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer
 
 import com.twitter.chill.IKryoRegistrar
 

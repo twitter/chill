@@ -22,6 +22,6 @@ class RegexSerializer extends KSerializer[Regex] {
   def write(kser: Kryo, out: Output, obj: Regex): Unit =
     out.writeString(obj.pattern.pattern)
 
-  def read(kser: Kryo, in: Input, cls: Class[Regex]): Regex =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Regex]): Regex =
     new Regex(in.readString)
 }
