@@ -105,7 +105,6 @@ lazy val chillAll = Project(
     chill,
     chillBijection,
     chillScrooge,
-    chillStorm,
     chillJava,
     chillHadoop,
     chillThrift,
@@ -127,7 +126,7 @@ lazy val noPublishSettings = Seq(
  * This returns the youngest jar we released that is compatible with the current.
  */
 val unreleasedModules = Set[String]("akka")
-val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
+val javaOnly = Set[String]("java", "hadoop", "thrift", "protobuf")
 val binaryCompatVersion = "0.9.2"
 
 def youngestForwardCompatible(subProj: String) =
@@ -144,7 +143,6 @@ val ignoredABIProblems = {
   import com.typesafe.tools.mima.core._
   import com.typesafe.tools.mima.core.ProblemFilters._
   Seq(
-    exclude[MissingTypesProblem]("com.twitter.chill.storm.BlizzardKryoFactory"),
     exclude[MissingTypesProblem]("com.twitter.chill.InnerClosureFinder"),
     exclude[IncompatibleResultTypeProblem]("com.twitter.chill.InnerClosureFinder.visitMethod"),
     exclude[IncompatibleResultTypeProblem]("com.twitter.chill.FieldAccessFinder.visitMethod"),
@@ -215,15 +213,6 @@ lazy val chillJava = module("java").settings(
   crossPaths := false,
   autoScalaLibrary := false
 )
-
-// This can only have java deps!
-lazy val chillStorm = module("storm")
-  .settings(
-    crossPaths := false,
-    autoScalaLibrary := false,
-    libraryDependencies += "org.apache.storm" % "storm-core" % "2.4.0" % "provided"
-  )
-  .dependsOn(chillJava)
 
 // This can only have java deps!
 lazy val chillHadoop = module("hadoop")
