@@ -84,8 +84,9 @@ class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolve
           //Scala has a lot of synthetic fields that must be serialized:
           //We also enable it by default in java since not wanting these fields
           //serialized looks like the exception rather than the rule.
-//TODO
-//          fs.setIgnoreSyntheticFields(false)
+          fs.getFieldSerializerConfig.setIgnoreSyntheticFields(false)
+          fs.updateFields()
+
 
           /**
            * This breaks scalding, but something like this should be used when working with the repl.
