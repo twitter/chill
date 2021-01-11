@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package com.twitter.chill.java
 
@@ -24,7 +24,7 @@ import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer.FieldSerializ
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class PriorityQueueSpec extends AnyWordSpec with Matchers {
+class PriorityQueueTest extends AnyWordSpec with Matchers {
   def rt[A](k: Kryo, a: A): A = {
     val out = new Output(1000, -1)
     k.writeClassAndObject(out, a.asInstanceOf[AnyRef])

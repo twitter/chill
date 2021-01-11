@@ -112,7 +112,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
     def useField[T](cls: Class[T]): Unit = {
       val fsConfig = new FieldSerializer.FieldSerializerConfig
       fsConfig.setIgnoreSyntheticFields(false) // scala generates a lot of these attributes
-      val fs = new com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer(newK, cls)
+      val fs = new com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer(newK, cls, fsConfig)
       newK.register(cls, fs)
     }
     // The wrappers are private classes:
