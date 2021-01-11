@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.chill.java
 
@@ -62,7 +62,8 @@ class PriorityQueueTest extends AnyWordSpec with Matchers {
       // using the ScalaKryoInstantiator
       val fsConfig = new FieldSerializerConfig()
       fsConfig.setIgnoreSyntheticFields(false)
-      val synthF = new com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer(kryo, ord.reverse.getClass, fsConfig)
+      val synthF =
+        new com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer(kryo, ord.reverse.getClass, fsConfig)
       kryo.register(ord.reverse.getClass, synthF)
       val qr = new java.util.PriorityQueue[(Int, Int)](3, ord.reverse)
       qr.add((2, 3))
