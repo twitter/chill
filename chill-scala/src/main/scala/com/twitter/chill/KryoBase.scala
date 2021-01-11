@@ -87,7 +87,6 @@ class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolve
           fs.getFieldSerializerConfig.setIgnoreSyntheticFields(false)
           fs.updateFields()
 
-
           /**
            * This breaks scalding, but something like this should be used when working with the repl.
            *
