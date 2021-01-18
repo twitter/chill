@@ -9,6 +9,9 @@ Extensions for the [Kryo serialization library](https://github.com/EsotericSoftw
 serializers and a set of classes to ease configuration of Kryo in systems like Hadoop, Storm,
 Akka, etc.
 
+### Compatibility
+
+Serialization compatibility is **NOT** guaranteed between releases, and for this reason, we don't recommend using it for long-term storage. Serialization is highly dependent on scala version compatibility and on the underlying Kryo serializers, which take different approaches to compatibility.
 
 ### Building Chill
 
