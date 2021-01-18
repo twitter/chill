@@ -65,9 +65,9 @@ object SerializedExamplesData {
     27 -> ("HQEEJwECBAIGJwECCAIKJwECDAIOJwECEAIS" -> Map(2 -> 3, 4 -> 5, 6 -> 7, 8 -> 9)),
     28 -> ("HgEA" -> HashMap.empty[Any, Any]),
     29 -> ("HwEMAAwIBgI=" -> new Range.Inclusive(3, 6, 1)),
-    30 -> ("IAEBAgoAAQgBAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMCBAIC" ->
+    30 -> ("IAECAgoAAAEAAQBzY2FsYS5tYXRoLk51bWVyaWMkSW50SXNJbnRlZ3JhbKQBAQADAgQCAg==" ->
       new NumericRange.Inclusive[Int](2, 5, 1)),
-    31 -> ("IQEBAgoAAAYBAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMCBAIC" ->
+    31 -> ("IQECAgoAAAAAAQBzY2FsYS5tYXRoLk51bWVyaWMkSW50SXNJbnRlZ3JhbKQBAQADAgQCAg==" ->
       new NumericRange.Exclusive[Int](2, 5, 1)),
     32 -> ("IgECAgYCCg==" -> scala.collection.mutable.BitSet(3, 5)),
     33 -> ("IwEBJwECBgIK" -> scala.collection.mutable.HashMap(3 -> 5)),
