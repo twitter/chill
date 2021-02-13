@@ -270,7 +270,7 @@ lazy val chillAvro = module("avro")
   .settings(
     libraryDependencies ++= Seq(
       "com.twitter" %% "bijection-avro" % bijectionVersion,
-      "junit" % "junit" % "4.13.1" % "test"
+      "junit" % "junit" % "4.13.2" % "test"
     )
   )
   .dependsOn(chill, chillJava, chillBijection)
