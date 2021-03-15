@@ -57,7 +57,7 @@ class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
       conf.toMap(ReflectingInstantiator.REGISTRATIONS).asInstanceOf[String].split(":").toSet should equal(
         Set(
           "scala.collection.immutable.List",
-          "scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer"
+          "scala.collection.immutable.List,com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer"
         )
       )
       conf
@@ -65,7 +65,7 @@ class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
         .asInstanceOf[String]
         .split(":")
         .toSet should equal(
-        Set("scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer")
+        Set("scala.collection.immutable.List,com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer")
       )
     }
     "roundtrip through a config" in {
