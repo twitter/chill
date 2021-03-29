@@ -142,11 +142,11 @@ object SerializedExamplesData {
         .unmodifiableSortedMap[Int, Int](_root_.java.util.Collections.emptySortedMap())),
     // 90 -> class java.util.Collections$UnmodifiableSortedSet
     // With the following implementation, we have a problem
-    // 91 -> ("XQEBAMEBamF2YS51dGlsLkNvbGxlY3Rpb25zJFVubW9kaWZpYWJsZU5hdmlnYWJsZVNldCRFbXB0eU5hdmlnYWJsZVNldAEA" ->
+    // 90 -> ("XQEBAMEBamF2YS51dGlsLkNvbGxlY3Rpb25zJFVubW9kaWZpYWJsZU5hdmlnYWJsZVNldCRFbXB0eU5hdmlnYWJsZVNldAEA" ->
     //   _root_.java.util.Collections.unmodifiableSortedSet[Int](_root_.java.util.Collections.emptySortedSet())),
     // because we get an exception in the test with the root cause:
     // com.twitter.chill.Instantiators$ can not access a member of class java.util.Collections$UnmodifiableNavigableSet$EmptyNavigableSet with modifiers "public"
-    // 92 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure"""
+    // 91 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure"""
     92 -> ("XgECgA==" -> Array(Byte.MinValue)),
     93 -> ("XwEC/38=" -> Array(Short.MaxValue)),
     94 -> ("YAEC/////w8=" -> Array(Int.MinValue)),
