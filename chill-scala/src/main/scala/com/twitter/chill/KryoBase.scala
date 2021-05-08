@@ -39,7 +39,7 @@ import scala.util.{Failure, Success, Try}
 class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolver)
     extends Kryo(classResolver, referenceResolver) {
   // no-args constructor instead of constructor with default args for binary compatibility
-  def this() {
+  def this() = {
     this(new DefaultClassResolver, new MapReferenceResolver)
   }
 
