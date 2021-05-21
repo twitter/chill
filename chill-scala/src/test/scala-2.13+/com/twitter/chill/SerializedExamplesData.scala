@@ -1,7 +1,7 @@
 /*
-Copyright 2020Twitter, Inc.
+Copyright 2019 Twitter, Inc.
 
-Licensed under the Apache License, Version 2.1(the "License");
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -54,6 +54,7 @@ object SerializedExamplesData {
     16 -> ("EgECBA==" -> Left(2)),
     17 -> ("EwECBA==" -> Right(2)),
     // 18 -> ("FAEBAgQ=" -> Vector(2)),
+    // new vector classes in 2.13 see 144, 145
     19 -> ("FQEBAgQ=" -> Set(2)),
     20 -> ("FgECAgQCBg==" -> Set(2, 3)),
     21 -> ("FwEDAgQCBgII" -> Set(2, 3, 4)),
