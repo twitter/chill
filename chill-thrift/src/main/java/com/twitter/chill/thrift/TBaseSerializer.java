@@ -25,21 +25,24 @@ import org.apache.thrift.TBase;
 import org.apache.thrift.TDeserializer;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
+import org.apache.thrift.transport.TTransportException;
 
 /**
  * Kryo serializer for Thrift instances.
  *
- * Note that this class is not thread-safe. (Kryo itself is not thread
- * safe, so this shouldn't be a concern.)
+ * Note that this class is not thread-safe. (Kryo itself is not thread safe, so
+ * this shouldn't be a concern.)
  *
- * Use this with
- * addDefaultSerializer(TBase.class, TBaseSerializer.class)
- * It still helps to .register your instances so the full class name
- * does not need to be written.
+ * Use this with addDefaultSerializer(TBase.class, TBaseSerializer.class) It
+ * still helps to .register your instances so the full class name does not need
+ * to be written.
  */
 public class TBaseSerializer extends Serializer<TBase> {
-  private final TSerializer serializer  = new TSerializer();
-  private final TDeserializer deserializer  = new TDeserializer();
+  private final TSerializer serializer = new TSerializer();
+  private final TDeserializer deserializer = new TDeserializer();
+
+  public TBaseSerializer() throws TTransportException {
+  }
 
   @Override
   public void write(Kryo kryo, Output output, TBase tBase) {
@@ -66,4 +69,3 @@ public class TBaseSerializer extends Serializer<TBase> {
     }
   }
 }
-
