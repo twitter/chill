@@ -18,8 +18,8 @@ package com.twitter.chill
 
 import com.twitter.chill.config._
 
-import org.objenesis.strategy.InstantiatorStrategy;
-import org.objenesis.strategy.StdInstantiatorStrategy
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.InstantiatorStrategy;
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.StdInstantiatorStrategy
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec;
 
@@ -32,13 +32,13 @@ class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
         serializers = Iterable(
           new ReflectingRegistrar(
             classOf[List[_]],
-            classOf[com.esotericsoftware.kryo.serializers.JavaSerializer]
+            classOf[com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer]
           )
         ),
         defaults = Iterable(
           new ReflectingDefaultRegistrar(
             classOf[List[_]],
-            classOf[com.esotericsoftware.kryo.serializers.JavaSerializer]
+            classOf[com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer]
           )
         ),
         skipMissing = true,
@@ -57,7 +57,7 @@ class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
       conf.toMap(ReflectingInstantiator.REGISTRATIONS).asInstanceOf[String].split(":").toSet should equal(
         Set(
           "scala.collection.immutable.List",
-          "scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer"
+          "scala.collection.immutable.List,com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer"
         )
       )
       conf
@@ -65,7 +65,7 @@ class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
         .asInstanceOf[String]
         .split(":")
         .toSet should equal(
-        Set("scala.collection.immutable.List,com.esotericsoftware.kryo.serializers.JavaSerializer")
+        Set("scala.collection.immutable.List,com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer")
       )
     }
     "roundtrip through a config" in {
@@ -75,13 +75,13 @@ class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
         serializers = Iterable(
           new ReflectingRegistrar(
             classOf[List[_]],
-            classOf[com.esotericsoftware.kryo.serializers.JavaSerializer]
+            classOf[com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer]
           )
         ),
         defaults = Iterable(
           new ReflectingDefaultRegistrar(
             classOf[List[_]],
-            classOf[com.esotericsoftware.kryo.serializers.JavaSerializer]
+            classOf[com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer]
           )
         ),
         skipMissing = true,
@@ -103,7 +103,7 @@ class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
         .withRegistrar {
           new ReflectingDefaultRegistrar(
             classOf[List[_]],
-            classOf[com.esotericsoftware.kryo.serializers.JavaSerializer]
+            classOf[com.esotericsoftware.kryo.kryo5.serializers.JavaSerializer]
           )
         }
       try {

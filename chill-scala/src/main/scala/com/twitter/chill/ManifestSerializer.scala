@@ -54,7 +54,7 @@ class ManifestSerializer[T] extends KSerializer[Manifest[T]] {
 
   def write(kser: Kryo, out: Output, obj: Manifest[T]): Unit = writeInternal(kser, out, obj)
 
-  def read(kser: Kryo, in: Input, cls: Class[Manifest[T]]): Manifest[T] = {
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Manifest[T]]): Manifest[T] = {
     val sidx = in.readInt(true)
     if (sidx == 0) {
       val clazz = kser.readObject(in, classOf[Class[T]])

@@ -33,7 +33,7 @@ class SortedSetSerializer[T] extends KSerializer[SortedSet[T]] {
     }
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[SortedSet[T]]): SortedSet[T] = {
+  def read(kser: Kryo, in: Input, cls: Class[_ <: SortedSet[T]]): SortedSet[T] = {
     val size = in.readInt(true)
     val ordering = kser.readClassAndObject(in).asInstanceOf[Ordering[T]]
 

@@ -22,6 +22,6 @@ class CleaningSerializer[T <: AnyRef](wrapped: KSerializer[T]) extends KSerializ
     wrapped.write(kser, out, item)
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[T]): T =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: T]): T =
     wrapped.read(kser, in, cls)
 }

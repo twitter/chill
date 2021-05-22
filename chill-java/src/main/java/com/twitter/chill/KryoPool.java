@@ -16,9 +16,9 @@ limitations under the License.
 
 package com.twitter.chill;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;

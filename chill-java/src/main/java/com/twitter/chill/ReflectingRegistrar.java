@@ -16,9 +16,9 @@ limitations under the License.
 
 package com.twitter.chill;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.util.Util;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.util.Util;
 
 /** Use reflection to instantiate a serializer.
  * Used when serializer classes are written to config files

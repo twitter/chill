@@ -16,10 +16,10 @@ limitations under the License.
 
 package com.twitter.chill.java;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.SingleRegistrar;
 
@@ -43,7 +43,7 @@ public class OldBitSetSerializer extends Serializer<BitSet> {
     }
 
     @Override
-    public BitSet read(Kryo kryo, Input input, Class<BitSet> bitSetClass) {
+    public BitSet read(Kryo kryo, Input input, Class<? extends BitSet> bitSetClass) {
         int len = input.readInt(true);
         BitSet ret = new BitSet(len);
 

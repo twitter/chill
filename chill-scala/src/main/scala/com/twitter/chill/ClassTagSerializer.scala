@@ -22,7 +22,7 @@ class ClassTagSerializer[T] extends KSerializer[ClassTag[T]] {
   def write(kser: Kryo, out: Output, obj: ClassTag[T]): Unit =
     kser.writeObject(out, obj.runtimeClass)
 
-  def read(kser: Kryo, in: Input, cls: Class[ClassTag[T]]): ClassTag[T] = {
+  def read(kser: Kryo, in: Input, cls: Class[_ <: ClassTag[T]]): ClassTag[T] = {
     val clazz = kser.readObject(in, classOf[Class[T]])
     ClassTag(clazz)
   }

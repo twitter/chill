@@ -18,9 +18,9 @@ package com.twitter.chill.config
 
 import com.twitter.chill._
 
-import com.esotericsoftware.kryo.Kryo;
-import org.objenesis.strategy.InstantiatorStrategy;
-import org.objenesis.strategy.StdInstantiatorStrategy;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.InstantiatorStrategy;
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.StdInstantiatorStrategy;
 
 import scala.collection.JavaConverters._
 

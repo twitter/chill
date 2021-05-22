@@ -16,10 +16,10 @@ limitations under the License.
 
 package com.twitter.chill.thrift;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 import org.apache.thrift.TBase;
 import org.apache.thrift.TDeserializer;
@@ -56,7 +56,7 @@ public class TBaseSerializer extends Serializer<TBase> {
   }
 
   @Override
-  public TBase read(Kryo kryo, Input input, Class<TBase> tBaseClass) {
+  public TBase read(Kryo kryo, Input input, Class<? extends TBase> tBaseClass) {
     try {
       TBase prototype = tBaseClass.newInstance();
       int tSize = input.readInt(true);

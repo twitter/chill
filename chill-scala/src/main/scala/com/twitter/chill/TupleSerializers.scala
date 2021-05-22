@@ -25,7 +25,7 @@ class Tuple1Serializer[A] extends KSerializer[Tuple1[A]] with Serializable {
   def write(kser: Kryo, out: Output, obj: Tuple1[A]): Unit = {
     kser.writeClassAndObject(out, obj._1); out.flush;
   }
-  def read(kser: Kryo, in: Input, cls: Class[Tuple1[A]]): Tuple1[A] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple1[A]]): Tuple1[A] =
     new Tuple1[A](
       kser.readClassAndObject(in).asInstanceOf[A]
     )
@@ -36,7 +36,7 @@ class Tuple2Serializer[A, B] extends KSerializer[Tuple2[A, B]] with Serializable
     kser.writeClassAndObject(out, obj._1); out.flush;
     kser.writeClassAndObject(out, obj._2); out.flush;
   }
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[A, B]]): Tuple2[A, B] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[A, B]]): Tuple2[A, B] =
     new Tuple2[A, B](
       kser.readClassAndObject(in).asInstanceOf[A],
       kser.readClassAndObject(in).asInstanceOf[B]
@@ -49,7 +49,7 @@ class Tuple3Serializer[A, B, C] extends KSerializer[Tuple3[A, B, C]] with Serial
     kser.writeClassAndObject(out, obj._2); out.flush;
     kser.writeClassAndObject(out, obj._3); out.flush;
   }
-  def read(kser: Kryo, in: Input, cls: Class[Tuple3[A, B, C]]): Tuple3[A, B, C] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple3[A, B, C]]): Tuple3[A, B, C] =
     new Tuple3[A, B, C](
       kser.readClassAndObject(in).asInstanceOf[A],
       kser.readClassAndObject(in).asInstanceOf[B],
@@ -64,7 +64,7 @@ class Tuple4Serializer[A, B, C, D] extends KSerializer[Tuple4[A, B, C, D]] with 
     kser.writeClassAndObject(out, obj._3); out.flush;
     kser.writeClassAndObject(out, obj._4); out.flush;
   }
-  def read(kser: Kryo, in: Input, cls: Class[Tuple4[A, B, C, D]]): Tuple4[A, B, C, D] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple4[A, B, C, D]]): Tuple4[A, B, C, D] =
     new Tuple4[A, B, C, D](
       kser.readClassAndObject(in).asInstanceOf[A],
       kser.readClassAndObject(in).asInstanceOf[B],
@@ -81,7 +81,7 @@ class Tuple5Serializer[A, B, C, D, E] extends KSerializer[Tuple5[A, B, C, D, E]]
     kser.writeClassAndObject(out, obj._4); out.flush;
     kser.writeClassAndObject(out, obj._5); out.flush;
   }
-  def read(kser: Kryo, in: Input, cls: Class[Tuple5[A, B, C, D, E]]): Tuple5[A, B, C, D, E] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple5[A, B, C, D, E]]): Tuple5[A, B, C, D, E] =
     new Tuple5[A, B, C, D, E](
       kser.readClassAndObject(in).asInstanceOf[A],
       kser.readClassAndObject(in).asInstanceOf[B],
@@ -100,7 +100,7 @@ class Tuple6Serializer[A, B, C, D, E, F] extends KSerializer[Tuple6[A, B, C, D, 
     kser.writeClassAndObject(out, obj._5); out.flush;
     kser.writeClassAndObject(out, obj._6); out.flush;
   }
-  def read(kser: Kryo, in: Input, cls: Class[Tuple6[A, B, C, D, E, F]]): Tuple6[A, B, C, D, E, F] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple6[A, B, C, D, E, F]]): Tuple6[A, B, C, D, E, F] =
     new Tuple6[A, B, C, D, E, F](
       kser.readClassAndObject(in).asInstanceOf[A],
       kser.readClassAndObject(in).asInstanceOf[B],
@@ -123,7 +123,7 @@ class Tuple7Serializer[A, B, C, D, E, F, G]
     kser.writeClassAndObject(out, obj._6); out.flush;
     kser.writeClassAndObject(out, obj._7); out.flush;
   }
-  def read(kser: Kryo, in: Input, cls: Class[Tuple7[A, B, C, D, E, F, G]]): Tuple7[A, B, C, D, E, F, G] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple7[A, B, C, D, E, F, G]]): Tuple7[A, B, C, D, E, F, G] =
     new Tuple7[A, B, C, D, E, F, G](
       kser.readClassAndObject(in).asInstanceOf[A],
       kser.readClassAndObject(in).asInstanceOf[B],
@@ -151,7 +151,7 @@ class Tuple8Serializer[A, B, C, D, E, F, G, H]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple8[A, B, C, D, E, F, G, H]]
+      cls: Class[_ <: Tuple8[A, B, C, D, E, F, G, H]]
   ): Tuple8[A, B, C, D, E, F, G, H] =
     new Tuple8[A, B, C, D, E, F, G, H](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -182,7 +182,7 @@ class Tuple9Serializer[A, B, C, D, E, F, G, H, I]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple9[A, B, C, D, E, F, G, H, I]]
+      cls: Class[_ <: Tuple9[A, B, C, D, E, F, G, H, I]]
   ): Tuple9[A, B, C, D, E, F, G, H, I] =
     new Tuple9[A, B, C, D, E, F, G, H, I](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -215,7 +215,7 @@ class Tuple10Serializer[A, B, C, D, E, F, G, H, I, J]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple10[A, B, C, D, E, F, G, H, I, J]]
+      cls: Class[_ <: Tuple10[A, B, C, D, E, F, G, H, I, J]]
   ): Tuple10[A, B, C, D, E, F, G, H, I, J] =
     new Tuple10[A, B, C, D, E, F, G, H, I, J](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -250,7 +250,7 @@ class Tuple11Serializer[A, B, C, D, E, F, G, H, I, J, K]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple11[A, B, C, D, E, F, G, H, I, J, K]]
+      cls: Class[_ <: Tuple11[A, B, C, D, E, F, G, H, I, J, K]]
   ): Tuple11[A, B, C, D, E, F, G, H, I, J, K] =
     new Tuple11[A, B, C, D, E, F, G, H, I, J, K](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -287,7 +287,7 @@ class Tuple12Serializer[A, B, C, D, E, F, G, H, I, J, K, L]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple12[A, B, C, D, E, F, G, H, I, J, K, L]]
+      cls: Class[_ <: Tuple12[A, B, C, D, E, F, G, H, I, J, K, L]]
   ): Tuple12[A, B, C, D, E, F, G, H, I, J, K, L] =
     new Tuple12[A, B, C, D, E, F, G, H, I, J, K, L](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -326,7 +326,7 @@ class Tuple13Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple13[A, B, C, D, E, F, G, H, I, J, K, L, M]]
+      cls: Class[_ <: Tuple13[A, B, C, D, E, F, G, H, I, J, K, L, M]]
   ): Tuple13[A, B, C, D, E, F, G, H, I, J, K, L, M] =
     new Tuple13[A, B, C, D, E, F, G, H, I, J, K, L, M](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -367,7 +367,7 @@ class Tuple14Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple14[A, B, C, D, E, F, G, H, I, J, K, L, M, N]]
+      cls: Class[_ <: Tuple14[A, B, C, D, E, F, G, H, I, J, K, L, M, N]]
   ): Tuple14[A, B, C, D, E, F, G, H, I, J, K, L, M, N] =
     new Tuple14[A, B, C, D, E, F, G, H, I, J, K, L, M, N](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -410,7 +410,7 @@ class Tuple15Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]]
+      cls: Class[_ <: Tuple15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]]
   ): Tuple15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O] =
     new Tuple15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -455,7 +455,7 @@ class Tuple16Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]]
+      cls: Class[_ <: Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]]
   ): Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P] =
     new Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -506,7 +506,7 @@ class Tuple17Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]]
+      cls: Class[_ <: Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]]
   ): Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q] =
     new Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -559,7 +559,7 @@ class Tuple18Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]]
+      cls: Class[_ <: Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]]
   ): Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R] =
     new Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -614,7 +614,7 @@ class Tuple19Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]]
+      cls: Class[_ <: Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]]
   ): Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S] =
     new Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -671,7 +671,7 @@ class Tuple20Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S,
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]]
+      cls: Class[_ <: Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]]
   ): Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T] =
     new Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -730,7 +730,7 @@ class Tuple21Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S,
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]]
+      cls: Class[_ <: Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]]
   ): Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U] =
     new Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -791,7 +791,7 @@ class Tuple22Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S,
   def read(
       kser: Kryo,
       in: Input,
-      cls: Class[Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]]
+      cls: Class[_ <: Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]]
   ): Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V] =
     new Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
       kser.readClassAndObject(in).asInstanceOf[A],
@@ -821,7 +821,7 @@ class Tuple22Serializer[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S,
 
 class Tuple1LongSerializer extends KSerializer[Tuple1[Long]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple1[Long]]): Tuple1[Long] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple1[Long]]): Tuple1[Long] =
     new Tuple1[Long](in.readLong)
   def write(kser: Kryo, out: Output, tup: Tuple1[Long]): Unit =
     out.writeLong(tup._1)
@@ -829,7 +829,7 @@ class Tuple1LongSerializer extends KSerializer[Tuple1[Long]] with Serializable {
 
 class Tuple1IntSerializer extends KSerializer[Tuple1[Int]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple1[Int]]): Tuple1[Int] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple1[Int]]): Tuple1[Int] =
     new Tuple1[Int](in.readInt)
   def write(kser: Kryo, out: Output, tup: Tuple1[Int]): Unit =
     out.writeInt(tup._1)
@@ -837,7 +837,7 @@ class Tuple1IntSerializer extends KSerializer[Tuple1[Int]] with Serializable {
 
 class Tuple1DoubleSerializer extends KSerializer[Tuple1[Double]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple1[Double]]): Tuple1[Double] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple1[Double]]): Tuple1[Double] =
     new Tuple1[Double](in.readDouble)
   def write(kser: Kryo, out: Output, tup: Tuple1[Double]): Unit =
     out.writeDouble(tup._1)
@@ -845,7 +845,7 @@ class Tuple1DoubleSerializer extends KSerializer[Tuple1[Double]] with Serializab
 
 class Tuple2LongLongSerializer extends KSerializer[Tuple2[Long, Long]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[Long, Long]]): Tuple2[Long, Long] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[Long, Long]]): Tuple2[Long, Long] =
     new Tuple2[Long, Long](in.readLong, in.readLong)
   def write(kser: Kryo, out: Output, tup: Tuple2[Long, Long]): Unit = {
     out.writeLong(tup._1)
@@ -855,7 +855,7 @@ class Tuple2LongLongSerializer extends KSerializer[Tuple2[Long, Long]] with Seri
 
 class Tuple2LongIntSerializer extends KSerializer[Tuple2[Long, Int]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[Long, Int]]): Tuple2[Long, Int] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[Long, Int]]): Tuple2[Long, Int] =
     new Tuple2[Long, Int](in.readLong, in.readInt)
   def write(kser: Kryo, out: Output, tup: Tuple2[Long, Int]): Unit = {
     out.writeLong(tup._1)
@@ -865,7 +865,7 @@ class Tuple2LongIntSerializer extends KSerializer[Tuple2[Long, Int]] with Serial
 
 class Tuple2LongDoubleSerializer extends KSerializer[Tuple2[Long, Double]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[Long, Double]]): Tuple2[Long, Double] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[Long, Double]]): Tuple2[Long, Double] =
     new Tuple2[Long, Double](in.readLong, in.readDouble)
   def write(kser: Kryo, out: Output, tup: Tuple2[Long, Double]): Unit = {
     out.writeLong(tup._1)
@@ -875,7 +875,7 @@ class Tuple2LongDoubleSerializer extends KSerializer[Tuple2[Long, Double]] with 
 
 class Tuple2IntLongSerializer extends KSerializer[Tuple2[Int, Long]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[Int, Long]]): Tuple2[Int, Long] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[Int, Long]]): Tuple2[Int, Long] =
     new Tuple2[Int, Long](in.readInt, in.readLong)
   def write(kser: Kryo, out: Output, tup: Tuple2[Int, Long]): Unit = {
     out.writeInt(tup._1)
@@ -885,7 +885,7 @@ class Tuple2IntLongSerializer extends KSerializer[Tuple2[Int, Long]] with Serial
 
 class Tuple2IntIntSerializer extends KSerializer[Tuple2[Int, Int]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[Int, Int]]): Tuple2[Int, Int] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[Int, Int]]): Tuple2[Int, Int] =
     new Tuple2[Int, Int](in.readInt, in.readInt)
   def write(kser: Kryo, out: Output, tup: Tuple2[Int, Int]): Unit = {
     out.writeInt(tup._1)
@@ -895,7 +895,7 @@ class Tuple2IntIntSerializer extends KSerializer[Tuple2[Int, Int]] with Serializ
 
 class Tuple2IntDoubleSerializer extends KSerializer[Tuple2[Int, Double]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[Int, Double]]): Tuple2[Int, Double] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[Int, Double]]): Tuple2[Int, Double] =
     new Tuple2[Int, Double](in.readInt, in.readDouble)
   def write(kser: Kryo, out: Output, tup: Tuple2[Int, Double]): Unit = {
     out.writeInt(tup._1)
@@ -905,7 +905,7 @@ class Tuple2IntDoubleSerializer extends KSerializer[Tuple2[Int, Double]] with Se
 
 class Tuple2DoubleLongSerializer extends KSerializer[Tuple2[Double, Long]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[Double, Long]]): Tuple2[Double, Long] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[Double, Long]]): Tuple2[Double, Long] =
     new Tuple2[Double, Long](in.readDouble, in.readLong)
   def write(kser: Kryo, out: Output, tup: Tuple2[Double, Long]): Unit = {
     out.writeDouble(tup._1)
@@ -915,7 +915,7 @@ class Tuple2DoubleLongSerializer extends KSerializer[Tuple2[Double, Long]] with 
 
 class Tuple2DoubleIntSerializer extends KSerializer[Tuple2[Double, Int]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[Double, Int]]): Tuple2[Double, Int] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[Double, Int]]): Tuple2[Double, Int] =
     new Tuple2[Double, Int](in.readDouble, in.readInt)
   def write(kser: Kryo, out: Output, tup: Tuple2[Double, Int]): Unit = {
     out.writeDouble(tup._1)
@@ -925,7 +925,7 @@ class Tuple2DoubleIntSerializer extends KSerializer[Tuple2[Double, Int]] with Se
 
 class Tuple2DoubleDoubleSerializer extends KSerializer[Tuple2[Double, Double]] with Serializable {
   setImmutable(true)
-  def read(kser: Kryo, in: Input, cls: Class[Tuple2[Double, Double]]): Tuple2[Double, Double] =
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Tuple2[Double, Double]]): Tuple2[Double, Double] =
     new Tuple2[Double, Double](in.readDouble, in.readDouble)
   def write(kser: Kryo, out: Output, tup: Tuple2[Double, Double]): Unit = {
     out.writeDouble(tup._1)

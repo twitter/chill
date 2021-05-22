@@ -16,10 +16,10 @@ limitations under the License.
 
 package com.twitter.chill.scrooge
 
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.Serializer
-import com.esotericsoftware.kryo.io.Input
-import com.esotericsoftware.kryo.io.Output
+import com.esotericsoftware.kryo.kryo5.Kryo
+import com.esotericsoftware.kryo.kryo5.Serializer
+import com.esotericsoftware.kryo.kryo5.io.Input
+import com.esotericsoftware.kryo.kryo5.io.Output
 import com.twitter.scrooge.{ThriftStruct, ThriftStructCodec, ThriftStructSerializer}
 import org.apache.thrift.protocol.TBinaryProtocol
 import scala.collection.mutable
@@ -102,7 +102,7 @@ class ScroogeThriftStructSerializer[T <: ThriftStruct] extends Serializer[T] {
   /* nb: thriftStructClass doesn't actually have type Class[T] it has type Class[_ <: T]
    * this lie is courtesy of the Kryo API
    * */
-  override def read(kryo: Kryo, input: Input, thriftStructClass: Class[T]): T =
+  override def read(kryo: Kryo, input: Input, thriftStructClass: Class[_ <: T]): T =
     // code reviewers: is this use of an anonymous inner class ok, or should I separate it out into something outside?
     try {
       val thriftStructSerializer = lookupThriftStructSerializer(thriftStructClass)

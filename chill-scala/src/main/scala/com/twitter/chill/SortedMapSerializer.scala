@@ -35,7 +35,7 @@ class SortedMapSerializer[A, B] extends KSerializer[SortedMap[A, B]] {
     }
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[M]): M = {
+  def read(kser: Kryo, in: Input, cls: Class[_ <: M]): M = {
     val size = in.readInt(true)
     val ordering = kser.readClassAndObject(in).asInstanceOf[Ordering[A]]
 

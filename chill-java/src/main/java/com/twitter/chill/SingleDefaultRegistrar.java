@@ -16,8 +16,8 @@ limitations under the License.
 
 package com.twitter.chill;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
 
 /** Set the default serializers for subclasses of the given class
  */

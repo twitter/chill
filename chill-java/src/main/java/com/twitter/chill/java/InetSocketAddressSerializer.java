@@ -16,10 +16,10 @@ limitations under the License.
 
 package com.twitter.chill.java;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.SingleRegistrar;
@@ -39,7 +39,7 @@ public class InetSocketAddressSerializer extends Serializer<InetSocketAddress> {
   }
 
   @Override
-  public InetSocketAddress read(Kryo kryo, Input input, Class<InetSocketAddress> klass) {
+  public InetSocketAddress read(Kryo kryo, Input input, Class<? extends InetSocketAddress> klass) {
     String host = input.readString();
     int port = input.readInt(true);
     return new InetSocketAddress(host, port);

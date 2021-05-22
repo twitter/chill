@@ -35,7 +35,7 @@ class ObjectSerializer[T] extends KSerializer[T] {
   protected def cachedRead(cls: Class[_]): Option[T] =
     cachedObj.synchronized(cachedObj.getOrElseUpdate(cls, createSingleton(cls)))
 
-  override def read(kser: Kryo, in: Input, cls: Class[T]): T = cachedRead(cls).get
+  override def read(kser: Kryo, in: Input, cls: Class[_ <: T]): T = cachedRead(cls).get
 
   def accepts(cls: Class[_]): Boolean = cachedRead(cls).isDefined
 

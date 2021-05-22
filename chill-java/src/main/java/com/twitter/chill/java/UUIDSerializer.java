@@ -16,10 +16,10 @@ limitations under the License.
 
 package com.twitter.chill.java;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.SingleRegistrar;
@@ -38,7 +38,7 @@ public class UUIDSerializer extends Serializer<UUID> {
         output.writeLong(uuid.getLeastSignificantBits(), false);
     }
 
-    @Override public UUID read(Kryo kryo, Input input, Class<UUID> uuidClass) {
+    @Override public UUID read(Kryo kryo, Input input, Class<? extends UUID> uuidClass) {
         return new UUID(input.readLong(false), input.readLong(false));
     }
 }

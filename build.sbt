@@ -3,7 +3,7 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 val akkaVersion = "2.6.14"
 val algebirdVersion = "0.13.8"
 val bijectionVersion = "0.9.7"
-val kryoVersion = "4.0.2"
+val kryoVersion = "5.0.3"
 val scroogeVersion = "21.2.0"
 val asmVersion = "4.15"
 
@@ -40,7 +40,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
     "org.scalacheck" %% "scalacheck" % "1.15.2" % "test",
     "org.scalatest" %% "scalatest" % "3.2.9" % "test",
     "org.scalatestplus" %% "scalatestplus-scalacheck" % "3.1.0.0-RC2" % "test",
-    "com.esotericsoftware" % "kryo-shaded" % kryoVersion
+    "com.esotericsoftware.kryo" % "kryo5" % kryoVersion
   ),
   parallelExecution in Test := true,
   pomExtra := <url>https://github.com/twitter/chill</url>
@@ -92,7 +92,6 @@ lazy val chillAll = Project(
     chill,
     chillBijection,
     chillScrooge,
-    chillStorm,
     chillJava,
     chillHadoop,
     chillThrift,
@@ -122,7 +121,7 @@ lazy val noPublishSettings = Seq(
  * with the current.
  */
 val unreleasedModules = Set[String]("akka")
-val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
+val javaOnly = Set[String]("java", "hadoop", "thrift", "protobuf")
 val binaryCompatVersion = "0.9.2"
 
 def youngestForwardCompatible(subProj: String) =
@@ -139,7 +138,6 @@ val ignoredABIProblems = {
   import com.typesafe.tools.mima.core._
   import com.typesafe.tools.mima.core.ProblemFilters._
   Seq(
-    exclude[MissingTypesProblem]("com.twitter.chill.storm.BlizzardKryoFactory"),
     exclude[MissingTypesProblem]("com.twitter.chill.InnerClosureFinder"),
     exclude[IncompatibleResultTypeProblem]("com.twitter.chill.InnerClosureFinder.visitMethod"),
     exclude[IncompatibleResultTypeProblem]("com.twitter.chill.FieldAccessFinder.visitMethod"),
@@ -213,15 +211,6 @@ lazy val chillJava = module("java").settings(
   crossPaths := false,
   autoScalaLibrary := false
 )
-
-// This can only have java deps!
-lazy val chillStorm = module("storm")
-  .settings(
-    crossPaths := false,
-    autoScalaLibrary := false,
-    libraryDependencies += "org.apache.storm" % "storm-core" % "1.0.6" % "provided"
-  )
-  .dependsOn(chillJava)
 
 // This can only have java deps!
 lazy val chillHadoop = module("hadoop")

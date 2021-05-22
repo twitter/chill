@@ -32,7 +32,7 @@ class TraversableSerializer[T, C <: Iterable[T]](override val isImmutable: Boole
     }
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[C]): C = {
+  def read(kser: Kryo, in: Input, cls: Class[_ <: C]): C = {
     val size = in.readInt(true)
     // Go ahead and be faster, and not as functional cool, and be mutable in here
     var idx = 0
