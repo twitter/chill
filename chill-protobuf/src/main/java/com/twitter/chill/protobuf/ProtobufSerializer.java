@@ -69,6 +69,9 @@ public class ProtobufSerializer extends Serializer<Message> {
   public Message read(Kryo kryo, Input input, Class<Message> pbClass) {
     try {
       int size = input.readInt(true);
+      if (size == 0) {
+        return (Message) pbClass.getMethod("getDefaultInstance").invoke(null);
+      }
       byte[] barr = new byte[size];
       input.readBytes(barr);
       return (Message)getParse(pbClass).invoke(null, barr);
