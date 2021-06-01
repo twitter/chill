@@ -27,7 +27,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class ProtobufTest extends AnyWordSpec with Matchers {
-  def buildKyroPoolWithProtoSer(): KryoPool = {
+  def buildKyroPoolWithProtoSer(): KryoPool =
     KryoPool.withByteArrayOutputStream(
       1,
       new KryoInstantiator {
@@ -38,7 +38,6 @@ class ProtobufTest extends AnyWordSpec with Matchers {
         }
       }
     )
-  }
 
   def buildFatigueCount(target: Long, id: Long, count: Int, recentClicks: List[Long]): FatigueCount = {
     val bldr = FatigueCount
