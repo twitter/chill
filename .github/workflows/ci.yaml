@@ -9,7 +9,7 @@ jobs:
       - name: cache SBT
         uses: coursier/cache-action@v6
       - name: "Java 8 setup"
-        uses: "olafurpg/setup-java@v10"
+        uses: "olafurpg/setup-java@v11"
         with:
           java-version: "8"
       - run: 'sbt "; +scalafmtCheckAll; scalafmtSbtCheck" "; scalafixEnable; scalafix --check; test:scalafix --check"'
@@ -20,7 +20,7 @@ jobs:
       - name: cache SBT
         uses: coursier/cache-action@v6
       - name: "java ${{matrix.java}} setup"
-        uses: "olafurpg/setup-java@v10"
+        uses: "olafurpg/setup-java@v11"
         with:
           java-version: "${{matrix.java}}"
       - run: 'sbt "++${{matrix.scala}} mimaReportBinaryIssues"'
@@ -39,7 +39,7 @@ jobs:
       - name: cache SBT
         uses: coursier/cache-action@v6
       - name: "java ${{matrix.java}} setup"
-        uses: "olafurpg/setup-java@v10"
+        uses: "olafurpg/setup-java@v11"
         with:
           java-version: "${{matrix.java}}"
       - run: 'sbt "++${{matrix.scala}} test"'
@@ -58,7 +58,7 @@ jobs:
       - name: cache SBT
         uses: coursier/cache-action@v6
       - name: "java ${{matrix.java}} setup"
-        uses: "olafurpg/setup-java@v10"
+        uses: "olafurpg/setup-java@v11"
         with:
           java-version: "8"
       - run: sbt coverage clean test coverageReport
