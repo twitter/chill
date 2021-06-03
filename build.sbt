@@ -18,7 +18,7 @@ def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String):
 
 val sharedSettings = mimaDefaultSettings ++ Seq(
   organization := "com.twitter",
-  scalaVersion := "2.11.12",
+  scalaVersion := "2.12.14",
   crossScalaVersions := Seq("2.11.12", "2.12.14"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   scalacOptions ++= {
@@ -261,10 +261,12 @@ lazy val chillProtobuf = module("protobuf")
     crossPaths := false,
     autoScalaLibrary := false,
     libraryDependencies ++= Seq(
-      "com.google.protobuf" % "protobuf-java" % "2.3.0" % "provided"
-    )
+      "com.google.protobuf" % "protobuf-java" % "3.17.1" % "provided"
+    ),
+    ProtobufConfig / sourceDirectory := (Test / sourceDirectory).value / "protobuf"
   )
   .dependsOn(chillJava)
+  .enablePlugins(ProtobufPlugin)
 
 lazy val chillAvro = module("avro")
   .settings(
