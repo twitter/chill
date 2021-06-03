@@ -50,21 +50,21 @@ public class ProtobufSerializer extends Serializer<Message> {
    * This is slow, so we should cache to avoid killing perf:
    * See: http://www.jguru.com/faq/view.jsp?EID=246569
    */
-  private Method getMethodFromCache(Class cls, String methodName, HashMap<Class, Method> methodCache) throws Exception {
+  private Method getMethodFromCache(Class cls, HashMap<Class, Method> methodCache, String methodName, Class... parameterTypes) throws Exception {
     Method meth = methodCache.get(cls);
     if (null == meth) {
-      meth = cls.getMethod(methodName, new Class[]{ byte[].class });
+      meth = cls.getMethod(methodName, parameterTypes);
       methodCache.put(cls, meth);
     }
     return meth;
   }
 
   protected Method getParse(Class cls) throws Exception {
-    return getMethodFromCache(cls,"parseFrom", parseMethodCache);
+    return getMethodFromCache(cls, parseMethodCache, "parseFrom", new Class[]{byte[].class});
   }
 
   protected Method getDefaultInstance(Class cls) throws Exception {
-    return getMethodFromCache(cls,"getDefaultInstance", defaultInstanceMethodCache);
+    return getMethodFromCache(cls, defaultInstanceMethodCache, "getDefaultInstance");
   }
 
   @Override
