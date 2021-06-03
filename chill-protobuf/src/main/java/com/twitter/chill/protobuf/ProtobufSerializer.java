@@ -43,24 +43,26 @@ public class ProtobufSerializer extends Serializer<Message> {
    * classes in play, which should not be very large.
    * We can replace with a LRU if we start to see any issues.
    */
-  final protected HashMap<Class, Method> parseMethodCache = new HashMap<Class, Method>();
+  // Cache for the `parseFrom(byte[] bytes)` method
+  final protected HashMap<Class, Method> methodCache = new HashMap<Class, Method>();
+  // Cache for the `getDefaultInstance()` method
   final protected HashMap<Class, Method> defaultInstanceMethodCache = new HashMap<Class, Method>();
 
   /**
    * This is slow, so we should cache to avoid killing perf:
    * See: http://www.jguru.com/faq/view.jsp?EID=246569
    */
-  private Method getMethodFromCache(Class cls, HashMap<Class, Method> methodCache, String methodName, Class... parameterTypes) throws Exception {
-    Method meth = methodCache.get(cls);
+  private Method getMethodFromCache(Class cls, HashMap<Class, Method> cache, String methodName, Class... parameterTypes) throws Exception {
+    Method meth = cache.get(cls);
     if (null == meth) {
       meth = cls.getMethod(methodName, parameterTypes);
-      methodCache.put(cls, meth);
+      cache.put(cls, meth);
     }
     return meth;
   }
 
   protected Method getParse(Class cls) throws Exception {
-    return getMethodFromCache(cls, parseMethodCache, "parseFrom", new Class[]{byte[].class});
+    return getMethodFromCache(cls, methodCache, "parseFrom", new Class[]{byte[].class});
   }
 
   protected Method getDefaultInstance(Class cls) throws Exception {
