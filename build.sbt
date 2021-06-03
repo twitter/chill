@@ -6,6 +6,7 @@ val bijectionVersion = "0.9.7"
 val kryoVersion = "4.0.2"
 val scroogeVersion = "21.2.0"
 val asmVersion = "4.15"
+val protobufVersion = "3.17.1"
 
 def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String): List[File] =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -260,8 +261,9 @@ lazy val chillProtobuf = module("protobuf")
   .settings(
     crossPaths := false,
     autoScalaLibrary := false,
-    libraryDependencies ++= Seq(
-      "com.google.protobuf" % "protobuf-java" % "2.3.0" % "provided"
+    libraryDependencies += "com.google.protobuf" % "protobuf-java" % protobufVersion % Provided,
+    Test / PB.targets := Seq(
+      PB.gens.java(protobufVersion) -> (Test / sourceManaged).value
     )
   )
   .dependsOn(chillJava)
