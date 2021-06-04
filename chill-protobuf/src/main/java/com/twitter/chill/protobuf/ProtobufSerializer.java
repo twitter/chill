@@ -62,7 +62,7 @@ public class ProtobufSerializer extends Serializer<Message> {
   }
 
   protected Method getParse(Class cls) throws Exception {
-    return getMethodFromCache(cls, methodCache, "parseFrom", new Class[]{byte[].class});
+    return getMethodFromCache(cls, methodCache, "parseFrom", byte[].class);
   }
 
   protected Method getDefaultInstance(Class cls) throws Exception {
