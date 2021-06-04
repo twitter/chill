@@ -12,4 +12,5 @@ message FatigueCount {
 enum Gender {
   MALE = 0;
   FEMALE = 1;
+  NONBINARY = 2;
 }
