@@ -43,19 +43,30 @@ public class ProtobufSerializer extends Serializer<Message> {
    * classes in play, which should not be very large.
    * We can replace with a LRU if we start to see any issues.
    */
+  // Cache for the `parseFrom(byte[] bytes)` method
   final protected HashMap<Class, Method> methodCache = new HashMap<Class, Method>();
+  // Cache for the `getDefaultInstance()` method
+  final protected HashMap<Class, Method> defaultInstanceMethodCache = new HashMap<Class, Method>();
 
   /**
    * This is slow, so we should cache to avoid killing perf:
    * See: http://www.jguru.com/faq/view.jsp?EID=246569
    */
-  protected Method getParse(Class cls) throws Exception {
-    Method meth = methodCache.get(cls);
+  private Method getMethodFromCache(Class cls, HashMap<Class, Method> cache, String methodName, Class... parameterTypes) throws Exception {
+    Method meth = cache.get(cls);
     if (null == meth) {
-      meth = cls.getMethod("parseFrom", new Class[]{ byte[].class });
-      methodCache.put(cls, meth);
+      meth = cls.getMethod(methodName, parameterTypes);
+      cache.put(cls, meth);
     }
     return meth;
+  }
+
+  protected Method getParse(Class cls) throws Exception {
+    return getMethodFromCache(cls, methodCache, "parseFrom", byte[].class);
+  }
+
+  protected Method getDefaultInstance(Class cls) throws Exception {
+    return getMethodFromCache(cls, defaultInstanceMethodCache, "getDefaultInstance");
   }
 
   @Override
@@ -69,6 +80,9 @@ public class ProtobufSerializer extends Serializer<Message> {
   public Message read(Kryo kryo, Input input, Class<Message> pbClass) {
     try {
       int size = input.readInt(true);
+      if (size == 0) {
+        return (Message) getDefaultInstance(pbClass).invoke(null);
+      }
       byte[] barr = new byte[size];
       input.readBytes(barr);
       return (Message)getParse(pbClass).invoke(null, barr);

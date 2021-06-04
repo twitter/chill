@@ -27,6 +27,18 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class ProtobufTest extends AnyWordSpec with Matchers {
+  def buildKyroPoolWithProtoSer(): KryoPool =
+    KryoPool.withByteArrayOutputStream(
+      1,
+      new KryoInstantiator {
+        override def newKryo(): Kryo = {
+          val k = new Kryo
+          k.addDefaultSerializer(classOf[Message], classOf[ProtobufSerializer])
+          k
+        }
+      }
+    )
+
   def buildFatigueCount(target: Long, id: Long, count: Int, recentClicks: List[Long]): FatigueCount = {
     val bldr = FatigueCount
       .newBuilder()
@@ -39,16 +51,7 @@ class ProtobufTest extends AnyWordSpec with Matchers {
   }
 
   "Protobuf round-trips" in {
-    val kpool = KryoPool.withByteArrayOutputStream(
-      1,
-      new KryoInstantiator {
-        override def newKryo(): Kryo = {
-          val k = new Kryo
-          k.addDefaultSerializer(classOf[Message], classOf[ProtobufSerializer])
-          k
-        }
-      }
-    )
+    val kpool = buildKyroPoolWithProtoSer()
 
     kpool.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))) should equal(
       buildFatigueCount(12L, -1L, 42, List(1L, 2L))
@@ -57,5 +60,11 @@ class ProtobufTest extends AnyWordSpec with Matchers {
     // Without the protobuf serializer, this fails:
     val kpoolBusted = KryoPool.withByteArrayOutputStream(1, new KryoInstantiator)
     an[Exception] should be thrownBy kpoolBusted.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L)))
+  }
+
+  "Default Instance of Should be Ser-DeSer correctly" in {
+    val kpool = buildKyroPoolWithProtoSer()
+
+    kpool.deepCopy(FatigueCount.getDefaultInstance) should equal(FatigueCount.getDefaultInstance)
   }
 }
