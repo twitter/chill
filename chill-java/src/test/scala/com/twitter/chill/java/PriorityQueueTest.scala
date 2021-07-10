@@ -17,9 +17,7 @@ limitations under the License.
 package com.twitter.chill.java
 
 import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.Input
-import com.esotericsoftware.kryo.io.Output
-
+import com.esotericsoftware.kryo.io.{Input, Output}
 import org.objenesis.strategy.StdInstantiatorStrategy
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -30,6 +28,24 @@ class PriorityQueueSpec extends AnyWordSpec with Matchers {
     k.writeClassAndObject(out, a.asInstanceOf[AnyRef])
     val in = new Input(out.toBytes)
     k.readClassAndObject(in).asInstanceOf[A]
+  }
+
+  "A PriorityQueue Serializer" should {
+    "serialize PriorityQueue with lambda expression" in {
+
+      val kryo = new Kryo()
+      kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
+      PriorityQueueSerializer.registrar()(kryo)
+
+      // this works well without registered PriorityQueueSerializer
+      TestPriorityQueue.serializeAndDeserializeQueue1()
+
+      // this works well with registered PriorityQueueSerializer and PriorityQueue instance (with non-lambda expression)
+      TestPriorityQueue.serializeAndDeserializeQueue2(kryo)
+
+      // this should work well but failed with PriorityQueueSerializer registered in kryo and PriorityQueue instance (with lambda expression)
+      TestPriorityQueue.serializeAndDeserializeQueue1(kryo)
+    }
   }
 
   "A PriorityQueue Serializer" should {
