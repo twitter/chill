@@ -47,13 +47,13 @@ class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolve
 
   protected var strategy: Option[InstantiatorStrategy] = None
 
-  val functions: Iterable[Class[_]] =
-    (0 to 22).map { idx =>
-      Class.forName("scala.Function" + idx.toString, true, Thread.currentThread().getContextClassLoader())
-    }
-
-  def isFn(klass: Class[_]): Boolean =
-    functions.find(_.isAssignableFrom(klass)).isDefined
+//  val functions: Iterable[Class[_]] =
+//    (0 to 22).map { idx =>
+//      Class.forName("scala.Function" + idx.toString, true, Thread.currentThread().getContextClassLoader())
+//    }
+//
+//  def isFn(klass: Class[_]): Boolean =
+//    functions.find(_.isAssignableFrom(klass)).isDefined
 
   override def newDefaultSerializer(klass: Class[_]): KSerializer[_] =
     if (isSingleton(klass)) {
