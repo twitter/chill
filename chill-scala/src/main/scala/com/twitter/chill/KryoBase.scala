@@ -46,30 +46,31 @@ class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolve
 
   protected var strategy: Option[InstantiatorStrategy] = None
 
-  val functions: Iterable[Class[_]] =
-    List(
-      classOf[Function0[_]],
-      classOf[Function1[_,_]],
-      classOf[Function2[_,_,_]],
-      classOf[Function3[_,_,_,_]],
-      classOf[Function4[_,_,_,_,_]],
-      classOf[Function5[_,_,_,_,_,_]],
-      classOf[Function6[_,_,_,_,_,_,_]],
-      classOf[Function7[_,_,_,_,_,_,_,_]],
-      classOf[Function8[_,_,_,_,_,_,_,_,_]],
-      classOf[Function9[_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function10[_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function11[_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function12[_,_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function13[_,_,_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function14[_,_,_,_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function15[_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function16[_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function17[_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function18[_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function20[_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function21[_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_]],
-      classOf[Function22[_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_]])
+  val functions: Iterable[Class[_]] = List(
+    classOf[Function0[_]],
+    classOf[Function1[_, _]],
+    classOf[Function2[_, _, _]],
+    classOf[Function3[_, _, _, _]],
+    classOf[Function4[_, _, _, _, _]],
+    classOf[Function5[_, _, _, _, _, _]],
+    classOf[Function6[_, _, _, _, _, _, _]],
+    classOf[Function7[_, _, _, _, _, _, _, _]],
+    classOf[Function8[_, _, _, _, _, _, _, _, _]],
+    classOf[Function9[_, _, _, _, _, _, _, _, _, _]],
+    classOf[Function10[_, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function11[_, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function12[_, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function13[_, _, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function14[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function15[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function16[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function17[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function18[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function19[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function20[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function21[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]],
+    classOf[Function22[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+  )
 
   def isFn(klass: Class[_]): Boolean =
     functions.find(_.isAssignableFrom(klass)).isDefined
