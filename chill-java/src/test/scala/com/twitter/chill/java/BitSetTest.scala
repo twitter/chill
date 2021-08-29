@@ -43,11 +43,8 @@ class BitSetSpec extends AnyWordSpec with Matchers {
     }
 
     /**
-     * My results:
-     * The old serializer took 2886ms
-     * The new serializer took 112ms
-     * The old serializer needs 2051 bytes
-     * The new serializer needs 258 bytes
+     * My results: The old serializer took 2886ms The new serializer took 112ms The old serializer needs 2051
+     * bytes The new serializer needs 258 bytes
      */
     "handle a BitSet efficiently" in {
       val oldKryo = new Kryo()

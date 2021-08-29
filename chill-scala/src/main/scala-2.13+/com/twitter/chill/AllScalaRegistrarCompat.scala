@@ -22,8 +22,8 @@ import scala.collection.immutable.Range
  * Scala collections registrar for compatibility between 2.12- and 2.13+.
  *
  * For 2.12- there's no extra classes that need to be registered.
- * @see [[ScalaCollectionsRegistrar]] and [[AllScalaRegistrar]] for all the
- * provided registrations.
+ * @see
+ *   [[ScalaCollectionsRegistrar]] and [[AllScalaRegistrar]] for all the provided registrations.
  */
 private[chill] class AllScalaRegistrarCompat_0_9_5 extends IKryoRegistrar {
   override def apply(newK: Kryo): Unit =

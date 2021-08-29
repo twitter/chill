@@ -87,12 +87,9 @@ class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolve
           fs.setIgnoreSyntheticFields(false)
 
           /**
-           * This breaks scalding, but something like this should be used when
-           * working with the repl.
+           * This breaks scalding, but something like this should be used when working with the repl.
            *
-           * if(isFn(klass))
-           * new CleaningSerializer(fs.asInstanceOf[FieldSerializer[AnyRef]])
-           * else
+           * if(isFn(klass)) new CleaningSerializer(fs.asInstanceOf[FieldSerializer[AnyRef]]) else
            */
           fs
         case x: KSerializer[_] => x

@@ -32,15 +32,15 @@ import scala.collection.immutable.{
   WrappedString
 }
 import scala.collection.mutable.{
-  Buffer,
-  ListBuffer,
-  WrappedArray,
   BitSet => MBitSet,
+  Buffer,
   HashMap => MHashMap,
   HashSet => MHashSet,
+  ListBuffer,
   Map => MMap,
   Queue => MQueue,
-  Set => MSet
+  Set => MSet,
+  WrappedArray
 }
 import scala.util.matching.Regex
 
@@ -52,8 +52,8 @@ import scala.collection.mutable
 import scala.reflect.ClassTag
 
 /**
- * This class has a no-arg constructor, suitable for use with reflection instantiation
- * It has no registered serializers, just the standard Kryo configured for Kryo.
+ * This class has a no-arg constructor, suitable for use with reflection instantiation It has no registered
+ * serializers, just the standard Kryo configured for Kryo.
  */
 class EmptyScalaKryoInstantiator extends KryoInstantiator {
   override def newKryo: KryoBase = {
@@ -102,8 +102,8 @@ class ScalaKryoInstantiator extends EmptyScalaKryoInstantiator {
 }
 
 /**
- * Note that additional scala collections registrations are provided by [[AllScalaRegistrar]]. They have not been
- * included in this registrar for backwards compatibility reasons.
+ * Note that additional scala collections registrations are provided by [[AllScalaRegistrar]]. They have not
+ * been included in this registrar for backwards compatibility reasons.
  */
 class ScalaCollectionsRegistrar extends IKryoRegistrar {
   def apply(newK: Kryo): Unit = {
@@ -280,8 +280,8 @@ final private[chill] class AllScalaRegistrar_0_9_5 extends IKryoRegistrar {
  * scala.collecion.immutable, so they can be used in long term persistence scenarios that run with
  * setRegistrationRequired(true).
  *
- * When adding new serializers, add them to the end of the list, so compatibility is not broken needlessly
- * for projects using chill for long term persistence - see com.twitter.chill.RegistrationIdsSpec.
+ * When adding new serializers, add them to the end of the list, so compatibility is not broken needlessly for
+ * projects using chill for long term persistence - see com.twitter.chill.RegistrationIdsSpec.
  */
 class AllScalaRegistrar extends IKryoRegistrar {
   def apply(k: Kryo): Unit = {

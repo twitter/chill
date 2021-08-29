@@ -24,7 +24,8 @@ import org.apache.avro.specific.SpecificRecordBase
 import scala.reflect.ClassTag
 
 /**
- * @author Mansur Ashraf
+ * @author
+ *   Mansur Ashraf
  * @since 2/9/14.
  */
 object AvroSerializer {

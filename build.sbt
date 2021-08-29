@@ -119,8 +119,7 @@ lazy val noPublishSettings = Seq(
 )
 
 /**
- * This returns the youngest jar we released that is compatible
- * with the current.
+ * This returns the youngest jar we released that is compatible with the current.
  */
 val unreleasedModules = Set[String]("akka")
 val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")

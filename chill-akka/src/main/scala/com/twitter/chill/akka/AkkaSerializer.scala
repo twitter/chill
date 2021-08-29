@@ -27,17 +27,16 @@ import com.twitter.chill.config.ConfiguredInstantiator
  *
  * {{{
  *
- *    akka.actor.serializers {
- *      kryo = "com.twitter.chill.akka.AkkaSerializer"
- *    }
+ *     akka.actor.serializers {
+ *       kryo = "com.twitter.chill.akka.AkkaSerializer"
+ *     }
  * }}}
  *
- * Then for the super-classes of all your message types,
- *   for instance, scala.Product, write:
+ * Then for the super-classes of all your message types, for instance, scala.Product, write:
  * {{{
- *    akka.actor.serialization-bindings {
- *      "scala.Product" = kryo
- *    }
+ *     akka.actor.serialization-bindings {
+ *       "scala.Product" = kryo
+ *     }
  * }}}
  *
  * Kryo is not thread-safe so we use an object pool to avoid over allocating.
@@ -45,17 +44,15 @@ import com.twitter.chill.config.ConfiguredInstantiator
 class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
 
   /**
-   * You can override this to easily change your serializers.
-   * If you do so, make sure to change the config to use the name of
-   * your new class
+   * You can override this to easily change your serializers. If you do so, make sure to change the config to
+   * use the name of your new class
    */
   def kryoInstantiator: KryoInstantiator =
     (new ScalaKryoInstantiator).withRegistrar(new ActorRefSerializer(system))
 
   /**
-   * Since each thread only needs 1 Kryo, the pool doesn't need more
-   * space than the number of threads. We guess that there are 4 hyperthreads /
-   * core and then multiple by the nember of cores.
+   * Since each thread only needs 1 Kryo, the pool doesn't need more space than the number of threads. We
+   * guess that there are 4 hyperthreads / core and then multiple by the nember of cores.
    */
   def poolSize: Int = {
     val GUESS_THREADS_PER_CORE = 4
@@ -73,10 +70,10 @@ class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
 }
 
 /**
- * Uses the Config system of chill.config to Configure at runtime which KryoInstantiator to use
- * Overriding kryoInstantiator and using your own class name is probably easier for most cases.
- * See ConfiguredInstantiator static methods for how to build up a correct Config with
- * your reflected or serialized instantiators.
+ * Uses the Config system of chill.config to Configure at runtime which KryoInstantiator to use Overriding
+ * kryoInstantiator and using your own class name is probably easier for most cases. See
+ * ConfiguredInstantiator static methods for how to build up a correct Config with your reflected or
+ * serialized instantiators.
  */
 class ConfiguredAkkaSerializer(system: ExtendedActorSystem) extends AkkaSerializer(system) {
   override def kryoInstantiator: KryoInstantiator =

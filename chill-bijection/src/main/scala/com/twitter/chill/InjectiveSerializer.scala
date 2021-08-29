@@ -5,11 +5,13 @@ import _root_.java.io.Serializable
 import com.twitter.bijection.Injection
 
 /**
- *  @author Oscar Boykin
- *  @author Sam Ritchie
+ * @author
+ *   Oscar Boykin
+ * @author
+ *   Sam Ritchie
  *
- * This KryoSerializer extension delegates the actual serialization to
- * an instance of Injection[T,Array[Byte]].
+ * This KryoSerializer extension delegates the actual serialization to an instance of
+ * Injection[T,Array[Byte]].
  */
 object InjectiveSerializer {
   // Importing this implicit into scope will allow bijections to be

@@ -25,7 +25,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 /**
- * @author Mansur Ashraf
+ * @author
+ *   Mansur Ashraf
  * @since 2/9/14.
  */
 class AvroSerializerSpec extends AnyWordSpec with Matchers {
