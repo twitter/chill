@@ -25,12 +25,8 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import scala.collection.JavaConverters._
 
 /**
- * a builder for the ReflectingInstantiator
- * use the copy(arg = value) to change values:
- * ReflectingInstantiatorBuilder()
- *   .copy(classes = List(classOf[Int]))
- *   .copy(skipMissing = true)
- *   .build
+ * a builder for the ReflectingInstantiator use the copy(arg = value) to change values:
+ * ReflectingInstantiatorBuilder() .copy(classes = List(classOf[Int])) .copy(skipMissing = true) .build
  */
 case class ReflectingInstantiatorBuilder(
     kryoClass: Class[_ <: Kryo] = classOf[Kryo],
@@ -43,9 +39,8 @@ case class ReflectingInstantiatorBuilder(
 ) {
 
   /**
-   * These casts appear to be needed because scala's type system is able
-   * to express more carefully than java, but these variance-free Iterables
-   * were defined in the Java code
+   * These casts appear to be needed because scala's type system is able to express more carefully than java,
+   * but these variance-free Iterables were defined in the Java code
    */
   def build: ReflectingInstantiator =
     new ReflectingInstantiator(

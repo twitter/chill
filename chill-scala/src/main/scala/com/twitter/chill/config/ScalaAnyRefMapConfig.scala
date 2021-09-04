@@ -23,8 +23,8 @@ object ScalaAnyRefMapConfig {
 }
 
 /**
- * A simple config backed by an immutable Map. Note that this replaces ScalaMapConfig because
- *  in cascading non-string values are perfectly legal.
+ * A simple config backed by an immutable Map. Note that this replaces ScalaMapConfig because in cascading
+ * non-string values are perfectly legal.
  */
 class ScalaAnyRefMapConfig(in: Map[AnyRef, AnyRef]) extends Config {
   private var conf = in

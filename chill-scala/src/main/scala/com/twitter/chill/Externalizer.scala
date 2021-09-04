@@ -41,10 +41,8 @@ object Externalizer {
 }
 
 /**
- * This is a more fault-tolerant MeatLocker
- * that tries first to do Java serialization,
- * and then falls back to Kryo serialization if that does not
- * work.
+ * This is a more fault-tolerant MeatLocker that tries first to do Java serialization, and then falls back to
+ * Kryo serialization if that does not work.
  */
 class Externalizer[T] extends Externalizable with KryoSerializable {
   // Either points to a result or a delegate Externalizer to fufil that result.
@@ -64,9 +62,8 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
   def get: T = getOption.get // This should never be None when get is called
 
   /**
-   * Unfortunately, Java serialization requires mutable objects if
-   * you are going to control how the serialization is done.
-   * Use the companion object to creat new instances of this
+   * Unfortunately, Java serialization requires mutable objects if you are going to control how the
+   * serialization is done. Use the companion object to creat new instances of this
    */
   def set(it: T): Unit =
     item match {
@@ -77,13 +74,9 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
     }
 
   /**
-   * Override this to configure Kryo creation with a named subclass,
-   * e.g.
-   * class MyExtern[T] extends Externalizer[T] {
-   *   override def kryo = myInstantiator
-   * }
-   * note that if this is not a named class on the classpath, we have to serialize
-   * the KryoInstantiator at the same time, which would increase size.
+   * Override this to configure Kryo creation with a named subclass, e.g. class MyExtern[T] extends
+   * Externalizer[T] { override def kryo = myInstantiator } note that if this is not a named class on the
+   * classpath, we have to serialize the KryoInstantiator at the same time, which would increase size.
    */
   protected def kryo: KryoInstantiator =
     (new ScalaKryoInstantiator).setReferences(true)

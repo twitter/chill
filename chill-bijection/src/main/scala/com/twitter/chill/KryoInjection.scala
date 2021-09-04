@@ -22,8 +22,8 @@ import _root_.java.io.Serializable
 import scala.util.Try
 
 /**
- * A default KryoInjection that uses the ScalaKryoInstantiator with
- * ByteArrayOutputStream as the backing buffer
+ * A default KryoInjection that uses the ScalaKryoInstantiator with ByteArrayOutputStream as the backing
+ * buffer
  */
 object KryoInjection extends Injection[Any, Array[Byte]] {
   def apply(obj: Any): Array[Byte] = ScalaKryoInstantiator.defaultPool.toBytesWithClass(obj)
@@ -32,26 +32,23 @@ object KryoInjection extends Injection[Any, Array[Byte]] {
   }
 
   /**
-   * Create a new KryoInjection instance that serializes items using
-   * the supplied KryoPool instance. For this to be serializable, you
-   * need the call by name semantics
+   * Create a new KryoInjection instance that serializes items using the supplied KryoPool instance. For this
+   * to be serializable, you need the call by name semantics
    */
   def instance(kryoPool: => KryoPool): Injection[Any, Array[Byte]] =
     new KryoInjectionInstance(kryoPool)
 
   /**
-   * Creates a small pool (size 2) and uses it as an Injection
-   *  Note the implicit in the package from () => Kryo to KryoInstatiator.
-   *  It is ESSENTIAL that this function is allocating new Kryos, or we will
-   *  not be thread-safe
+   * Creates a small pool (size 2) and uses it as an Injection Note the implicit in the package from () =>
+   * Kryo to KryoInstatiator. It is ESSENTIAL that this function is allocating new Kryos, or we will not be
+   * thread-safe
    */
   def instance(ki: KryoInstantiator, poolSize: Int = 2): Injection[Any, Array[Byte]] =
     new KryoInjectionInstance(KryoPool.withByteArrayOutputStream(poolSize, ki))
 }
 
 /**
- * Use this if you want to control the KryoPool.
- * This is thread-safe since the KryoPool is
+ * Use this if you want to control the KryoPool. This is thread-safe since the KryoPool is
  */
 class KryoInjectionInstance(lazyKryoP: => KryoPool) extends Injection[Any, Array[Byte]] {
   private val mutex = new AnyRef with Serializable // some serializable object

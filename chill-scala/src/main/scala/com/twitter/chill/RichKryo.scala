@@ -26,9 +26,8 @@ import scala.util.control.Exception.allCatch
 import scala.reflect._
 
 /**
- * Enrichment pattern to add methods to Kryo objects
- * TODO: make this a value-class in scala 2.10
- * This also follows the builder pattern to allow easily chaining this calls
+ * Enrichment pattern to add methods to Kryo objects TODO: make this a value-class in scala 2.10 This also
+ * follows the builder pattern to allow easily chaining this calls
  */
 class RichKryo(val k: Kryo) extends RichKryoCompat {
   def alreadyRegistered(klass: Class[_]): Boolean =
@@ -47,8 +46,8 @@ class RichKryo(val k: Kryo) extends RichKryoCompat {
   }
 
   /**
-   * Use Java serialization, which is very slow.
-   * avoid this if possible, but for very rare classes it is probably fine
+   * Use Java serialization, which is very slow. avoid this if possible, but for very rare classes it is
+   * probably fine
    */
   def javaForClass[T <: Serializable](implicit cmf: ClassTag[T]): Kryo = {
     k.register(cmf.runtimeClass, new com.esotericsoftware.kryo.serializers.JavaSerializer)
@@ -56,8 +55,8 @@ class RichKryo(val k: Kryo) extends RichKryoCompat {
   }
 
   /**
-   * Use Java serialization, which is very slow.
-   * avoid this if possible, but for very rare classes it is probably fine
+   * Use Java serialization, which is very slow. avoid this if possible, but for very rare classes it is
+   * probably fine
    */
   def javaForSubclass[T <: Serializable](implicit cmf: ClassTag[T]): Kryo = {
     k.addDefaultSerializer(cmf.runtimeClass, new com.esotericsoftware.kryo.serializers.JavaSerializer)

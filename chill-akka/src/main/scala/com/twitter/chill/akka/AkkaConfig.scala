@@ -23,8 +23,8 @@ import com.typesafe.config.ConfigFactory
 import scala.util.Try
 
 /**
- * Wraps the immutable typesafe.config.Config in a wrapper that
- * keeps track of the state and follows the semantics of ChillConfig
+ * Wraps the immutable typesafe.config.Config in a wrapper that keeps track of the state and follows the
+ * semantics of ChillConfig
  */
 class AkkaConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
   /* This is implementing a Java API so that has an assy format */

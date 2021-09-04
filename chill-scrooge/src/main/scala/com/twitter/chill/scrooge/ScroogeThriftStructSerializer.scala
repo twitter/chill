@@ -26,8 +26,7 @@ import scala.collection.mutable
 import scala.util.Try
 
 /**
- * Kryo serializer for Scrooge generated Thrift structs
- * this probably isn't thread safe, but neither is Kryo
+ * Kryo serializer for Scrooge generated Thrift structs this probably isn't thread safe, but neither is Kryo
  */
 object ScroogeThriftStructSerializer {
   /* don't serialize classToCodec because it contains anonymous inner ThriftStructSerializers that have reference to
@@ -41,8 +40,7 @@ object ScroogeThriftStructSerializer {
     companionClass.getField("MODULE$").get(null)
 
   /**
-   * For unions, we split on $ after the dot.
-   * this is costly, but only done once per Class
+   * For unions, we split on $ after the dot. this is costly, but only done once per Class
    */
   private[this] def codecForUnion[T <: ThriftStruct](maybeUnion: Class[T]): Try[ThriftStructCodec[T]] =
     Try(

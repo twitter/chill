@@ -43,8 +43,8 @@ class AlgebirdRegistrar extends IKryoRegistrar {
     k.addDefaultSerializer(classOf[HLL], new HLLSerializer)
 
     /**
-     * AdaptiveVector is IndexedSeq, which picks up the chill IndexedSeq serializer
-     * (which is its own bug), force using the fields serializer here
+     * AdaptiveVector is IndexedSeq, which picks up the chill IndexedSeq serializer (which is its own bug),
+     * force using the fields serializer here
      */
     k.register(classOf[DenseVector[_]], new FieldSerializer[DenseVector[_]](k, classOf[DenseVector[_]]))
 

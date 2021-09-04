@@ -6,11 +6,12 @@ import com.twitter.bijection.Injection
 import _root_.java.io.Serializable
 
 /**
- *  @author Sam Ritchie
- *  @author Oscar Boykin
+ * @author
+ *   Sam Ritchie
+ * @author
+ *   Oscar Boykin
  *
- * Convenience class that holds both a Class[T] and an Injection from
- * type T to Array[Byte].
+ * Convenience class that holds both a Class[T] and an Injection from type T to Array[Byte].
  */
 object InjectionRegistrar {
   def apply[T](klass: Class[T], injection: Injection[T, Array[Byte]]): InjectionRegistrar[T] =

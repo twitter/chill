@@ -6,8 +6,8 @@ import scala.collection.JavaConverters.asJavaIterableConverter
 /**
  * A Kryo serializer for serializing results returned by asJavaIterable.
  *
- * The underlying object is scala.collection.convert.Wrappers$IterableWrapper.
- * Kryo deserializes this into an AbstractCollection, which unfortunately doesn't work.
+ * The underlying object is scala.collection.convert.Wrappers$IterableWrapper. Kryo deserializes this into an
+ * AbstractCollection, which unfortunately doesn't work.
  *
  * Ported from Apache Spark's KryoSerializer.scala.
  */
