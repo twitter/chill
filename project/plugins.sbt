@@ -5,7 +5,7 @@ addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.3")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.9.0")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.3")
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.31")
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.5.7")
+addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.5.9")
 addSbtPlugin("com.thesamet" % "sbt-protoc" % "1.0.4")
 
 libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.11.5"
