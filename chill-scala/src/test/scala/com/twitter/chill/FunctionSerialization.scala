@@ -40,7 +40,7 @@ object BaseFns2 extends AwesomeFn2 {
 class FunctionSerialization extends AnyWordSpec with Matchers with BaseProperties {
   "Serialize objects with Fns" should {
     "fn calling" in {
-      //rt(fn).apply(4) should equal(8)
+      // rt(fn).apply(4) should equal(8)
       // In the object:
       rt(BaseFns.myfun2).apply(4) should equal(16)
 

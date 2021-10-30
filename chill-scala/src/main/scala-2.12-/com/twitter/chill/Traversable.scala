@@ -22,7 +22,7 @@ class TraversableSerializer[T, C <: Traversable[T]](override val isImmutable: Bo
     cbf: CanBuildFrom[C, T, C]
 ) extends KSerializer[C] {
   def write(kser: Kryo, out: Output, obj: C): Unit = {
-    //Write the size:
+    // Write the size:
     out.writeInt(obj.size, true)
     obj.foreach { t =>
       val tRef = t.asInstanceOf[AnyRef]

@@ -154,7 +154,7 @@ object ClosureCleaner {
     accessedFieldsMap.get(cls) match {
       case Some(s) => s
       case None    =>
-        //Compute and store:
+        // Compute and store:
         val af = getAccessedFields(cls)
         // Add all of af:
         accessedFieldsMap ++= af
