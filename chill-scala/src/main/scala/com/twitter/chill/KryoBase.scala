@@ -80,9 +80,9 @@ class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolve
     } else {
       super.newDefaultSerializer(klass) match {
         case fs: FieldSerializer[_] =>
-          //Scala has a lot of synthetic fields that must be serialized:
-          //We also enable it by default in java since not wanting these fields
-          //serialized looks like the exception rather than the rule.
+          // Scala has a lot of synthetic fields that must be serialized:
+          // We also enable it by default in java since not wanting these fields
+          // serialized looks like the exception rather than the rule.
           fs.setIgnoreSyntheticFields(false)
 
           /**

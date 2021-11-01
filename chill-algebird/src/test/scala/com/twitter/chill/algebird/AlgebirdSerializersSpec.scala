@@ -41,8 +41,8 @@ class AlgebirdSerializersSpec extends AnyWordSpec with Matchers {
 
   def roundtrip[X](x: X): Unit = {
     val bytes = kryo.toBytesWithClass(x)
-    //println("bytes size : " + bytes.size)
-    //println("bytes: " + new String(bytes, "UTF-8"))
+    // println("bytes size : " + bytes.size)
+    // println("bytes: " + new String(bytes, "UTF-8"))
     val result = kryo.fromBytes(bytes).asInstanceOf[X]
     result should equal(x)
   }

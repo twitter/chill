@@ -26,7 +26,7 @@ class EnumerationSerializer extends KSerializer[Enumeration#Value] {
 
   private def enumOf(v: Enumeration#Value): Enumeration =
     enumMap.synchronized {
-      //TODO: hacky, but not clear how to fix:
+      // TODO: hacky, but not clear how to fix:
       enumMap.getOrElseUpdate(
         v,
         outerMethod

@@ -20,7 +20,7 @@ import scala.collection.immutable.SortedSet
 
 class SortedSetSerializer[T] extends KSerializer[SortedSet[T]] {
   def write(kser: Kryo, out: Output, set: SortedSet[T]): Unit = {
-    //Write the size
+    // Write the size
     out.writeInt(set.size, true)
 
     // Write the ordering

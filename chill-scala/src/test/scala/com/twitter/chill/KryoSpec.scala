@@ -179,7 +179,7 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
       val bigList = (1 to 100000).toList
       val list2 = rt(bigList)
       list2.size should equal(bigList.size)
-      //Specs, it turns out, also doesn't deal with giant lists well:
+      // Specs, it turns out, also doesn't deal with giant lists well:
       list2.zip(bigList).foreach(tup => tup._1 should equal(tup._2))
     }
     "handle scala enums" in {
