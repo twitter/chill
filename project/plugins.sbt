@@ -6,6 +6,6 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.9.2")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.4")
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.32")
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.5.10")
-addSbtPlugin("com.thesamet" % "sbt-protoc" % "1.0.4")
+addSbtPlugin("com.thesamet" % "sbt-protoc" % "1.0.5")
 
 libraryDependencies += "com.thesamet.scalapb" %% "compilerplugin" % "0.11.6"
