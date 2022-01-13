@@ -166,7 +166,7 @@ lazy val chill = Project(
 ).settings(sharedSettings)
   .settings(
     name := "chill",
-    crossScalaVersions += "2.13.7",
+    crossScalaVersions += "2.13.8",
     mimaPreviousArtifacts := Set("com.twitter" %% "chill" % binaryCompatVersion),
     mimaBinaryIssueFilters ++= ignoredABIProblems,
     libraryDependencies += "org.apache.xbean" % "xbean-asm7-shaded" % asmVersion
@@ -181,7 +181,7 @@ def akka(scalaVersion: String) =
 
 lazy val chillAkka = module("akka")
   .settings(
-    crossScalaVersions += "2.13.7",
+    crossScalaVersions += "2.13.8",
     resolvers += Resolver.typesafeRepo("releases"),
     libraryDependencies ++= Seq(
       "com.typesafe" % "config" % "1.4.2",
@@ -192,7 +192,7 @@ lazy val chillAkka = module("akka")
 
 lazy val chillBijection = module("bijection")
   .settings(
-    crossScalaVersions += "2.13.7",
+    crossScalaVersions += "2.13.8",
     libraryDependencies ++= Seq(
       "com.twitter" %% "bijection-core" % bijectionVersion
     )
@@ -238,7 +238,7 @@ lazy val chillThrift = module("thrift").settings(
 
 lazy val chillScrooge = module("scrooge")
   .settings(
-    crossScalaVersions += "2.13.7",
+    crossScalaVersions += "2.13.8",
     libraryDependencies ++= Seq(
       ("org.apache.thrift" % "libthrift" % "0.16.0").exclude("junit", "junit"),
       "com.twitter" %% "scrooge-serializer" % scroogeVersion
@@ -269,7 +269,7 @@ lazy val chillAvro = module("avro")
 
 lazy val chillAlgebird = module("algebird")
   .settings(
-    crossScalaVersions += "2.13.7",
+    crossScalaVersions += "2.13.8",
     libraryDependencies ++= Seq(
       "com.twitter" %% "algebird-core" % algebirdVersion
     )
