@@ -230,8 +230,8 @@ lazy val chillHadoop = module("hadoop")
     autoScalaLibrary := false,
     libraryDependencies ++= Seq(
       "org.apache.hadoop" % "hadoop-core" % "1.2.1" % "provided",
-      "org.slf4j" % "slf4j-api" % "1.7.32",
-      "org.slf4j" % "slf4j-log4j12" % "1.7.32" % "provided"
+      "org.slf4j" % "slf4j-api" % "1.7.33",
+      "org.slf4j" % "slf4j-log4j12" % "1.7.33" % "provided"
     )
   )
   .dependsOn(chillJava)
