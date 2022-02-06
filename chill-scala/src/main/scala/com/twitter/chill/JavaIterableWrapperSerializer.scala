@@ -38,11 +38,10 @@ private object JavaIterableWrapperSerializer {
     asJavaIterableConverter(Seq.empty[Int]).asJava.getClass
 
   // Get the underlying method so we can use it to get the Scala collection for serialization.
-  private val underlyingMethodOpt = {
+  private val underlyingMethodOpt =
     try Some(wrapperClass.getDeclaredMethod("underlying"))
     catch {
       case e: Exception =>
         None
     }
-  }
 }

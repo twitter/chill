@@ -32,9 +32,8 @@ object ScroogeThriftStructSerializer {
   /* don't serialize classToCodec because it contains anonymous inner ThriftStructSerializers that have reference to
    * ScroogeThriftStructSerializer, which itself has a reference to classToCodec etc.
    */
-  @transient lazy private[this] val classToTSS: mutable.Map[Class[_], ThriftStructSerializer[_]] = {
+  @transient lazy private[this] val classToTSS: mutable.Map[Class[_], ThriftStructSerializer[_]] =
     mutable.Map()
-  }
 
   private def getObject[T](companionClass: Class[T]): AnyRef =
     companionClass.getField("MODULE$").get(null)
