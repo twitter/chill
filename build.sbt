@@ -1,6 +1,6 @@
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 
-val akkaVersion = "2.6.17"
+val akkaVersion = "2.6.19"
 val algebirdVersion = "0.13.9"
 val bijectionVersion = "0.9.7"
 val kryoVersion = "4.0.2"
