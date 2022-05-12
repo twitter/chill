@@ -32,8 +32,15 @@ private[chill] class AllScalaRegistrarCompat_0_9_5 extends IKryoRegistrar {
 }
 
 private[chill] class AllScalaRegistrarCompat extends IKryoRegistrar {
-  override def apply(newK: Kryo): Unit =
-    newK
-      .forConcreteTraversableClass(Vector[Any]())
-      .forConcreteTraversableClass(Vector('a))
+  override def apply(newK: Kryo): Unit = {
+    // creating actual BigVector is too heavy, just register the class by name
+    val t: TraversableSerializer[Any, Vector[_]] = new TraversableSerializer(true)
+    newK.forConcreteTraversableClass(Vector[Any]())
+    newK.forConcreteTraversableClass(Vector('a)) // Vector1
+    newK.register(Class.forName("scala.collection.immutable.Vector2"), t)
+    newK.register(Class.forName("scala.collection.immutable.Vector3"), t)
+    newK.register(Class.forName("scala.collection.immutable.Vector4"), t)
+    newK.register(Class.forName("scala.collection.immutable.Vector5"), t)
+    newK.register(Class.forName("scala.collection.immutable.Vector6"), t)
+  }
 }

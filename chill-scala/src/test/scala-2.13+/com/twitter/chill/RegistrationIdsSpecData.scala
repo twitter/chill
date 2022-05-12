@@ -167,7 +167,13 @@ object RegistrationIdsSpecData {
 
   val RecentEntries =
     """144 -> class scala.collection.immutable.Vector0$
-      |145 -> class scala.collection.immutable.Vector1""".stripMargin.linesIterator
+      |145 -> class scala.collection.immutable.Vector1
+      |146 -> class scala.collection.immutable.Vector2
+      |147 -> class scala.collection.immutable.Vector3
+      |148 -> class scala.collection.immutable.Vector4
+      |149 -> class scala.collection.immutable.Vector5
+      |150 -> class scala.collection.immutable.Vector6
+      |""".stripMargin.linesIterator
       .mkString("\n")
 
   val CurrentEntries =
