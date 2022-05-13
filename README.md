@@ -16,10 +16,10 @@ Serialization compatibility is **NOT** guaranteed between releases, and for this
 ### Building Chill
 
 ```bash
-./sbt
-> compile # to build chill
-> publishM2 # to publish chill to your local .m2 repo
-> publish-local # publish to local ivy repo.
+> sbt
+sbt:chill-all>  compile # to build chill
+sbt:chill-all>  publishM2 # to publish chill to your local .m2 repo
+sbt:chill-all>  publishLocal # publish to local ivy repo.
 ```
 
 Chill has a set of subprojects: chill-java, chill-hadoop, chill-storm and chill-scala.  Other than
