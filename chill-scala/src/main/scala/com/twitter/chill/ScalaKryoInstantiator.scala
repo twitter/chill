@@ -140,7 +140,9 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
       .forTraversableSubclass(ListBuffer.empty[Any], isImmutable = false)
       // add mutable Buffer before Vector, otherwise Vector is used
       .forTraversableSubclass(Buffer.empty[Any], isImmutable = false)
-      // Vector is a final class / Vector0
+      // Vector is a final class in 2.11 / 2.12
+      // for 2.13 we have specific implementations
+      // we should not match subclasses as if conflicts with wrappers
       .forTraversableClass(Vector.empty[Any])
       .forTraversableSubclass(ListSet.empty[Any])
       // specifically register small sets since Scala represents them differently
