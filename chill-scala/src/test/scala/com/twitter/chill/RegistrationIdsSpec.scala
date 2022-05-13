@@ -10,10 +10,11 @@ object RegistrationIdsSpec {
       .map(k.getRegistration)
       .takeWhile(_ != null)
       .map(r => s"${r.getId} -> ${r.getType}")
-      .mkString("\n")
 
-  private def printMessageFor(k: KryoBase, scope: String): Unit =
-    System.err.println(s"""\n\n
+  private class ErrorClue(k: KryoBase, scope: String) {
+    override def toString: String =
+      s"""
+         |
          |This test ($getClass)
          |will fail for $scope, most probably because the order of
          |registration IDs has changed or a registration was added or
@@ -21,7 +22,10 @@ object RegistrationIdsSpec {
          |that are currently found, so you can update the test's
          |expected values:
          |
-         |${registeredEntries(k)}\n\n\n""".stripMargin)
+         |${registeredEntries(k).mkString("\n")}
+         |
+         |""".stripMargin
+  }
 }
 
 class RegistrationIdsSpec extends AnyWordSpec with Matchers {
@@ -43,8 +47,10 @@ class RegistrationIdsSpec extends AnyWordSpec with Matchers {
         "  i.e. contain the list of registrations defined in this test.").in {
         val k = new KryoBase
         new AllScalaRegistrar_0_9_5().apply(k)
-        if (registeredEntries(k) != Entries_0_9_5) printMessageFor(k, compatibility)
-        assert(registeredEntries(k) == Entries_0_9_5)
+        val clue = new ErrorClue(k, compatibility)
+        registeredEntries(k).zip(Entries_0_9_5).foreach { case (r, c) =>
+          assert(r == c, clue)
+        }
       }
 
       val current = classOf[AllScalaRegistrar].getSimpleName
@@ -52,8 +58,10 @@ class RegistrationIdsSpec extends AnyWordSpec with Matchers {
         "  i.e. contain the list of registrations defined in this test.").in {
         val k = new KryoBase
         new AllScalaRegistrar().apply(k)
-        if (registeredEntries(k) != CurrentEntries) printMessageFor(k, current)
-        assert(registeredEntries(k) == CurrentEntries)
+        val clue = new ErrorClue(k, compatibility)
+        registeredEntries(k).zip(CurrentEntries).foreach { case (r, c) =>
+          assert(r == c, clue)
+        }
       }
     }
 }
