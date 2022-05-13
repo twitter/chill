@@ -133,7 +133,7 @@ class ClosureCleanerSpec extends AnyWordSpec with Matchers {
       assume(!ClosureCleanerSpec.supportsSerializedLambda)
       // currently this doesn't work with 2.12.x; SerializedLambda does not provide an outer ref.
       // need to find another way...
-      serializableFn(new TestClass().fn, before = false, after = true)
+      serializableFn(new TestClass.fn, before = false, after = true)
     }
 
     "clean outers with objects" in {
@@ -143,27 +143,27 @@ class ClosureCleanerSpec extends AnyWordSpec with Matchers {
     "clean complex nested closures (non LMF)" in {
       assume(!ClosureCleanerSpec.supportsSerializedLambda)
 
-      serializableFn(new NestedClosuresNotSerializable().getMapFn, before = false, after = true)
+      serializableFn(new NestedClosuresNotSerializable.getMapFn, before = false, after = true)
 
       class A(val f: Int => Int)
       class B(val f: Int => Int)
       class C extends A(x => x * x)
-      class D extends B(x => new C().f(x))
+      class D extends B(x => new C.f(x))
 
-      serializableFn(new D().f, before = false, after = true)
+      serializableFn(new D.f, before = false, after = true)
     }
 
     "clean complex nested closures (LMF)" in {
       assume(ClosureCleanerSpec.supportsSerializedLambda)
 
-      serializableFn(new NestedClosuresNotSerializable().getMapFn, before = true, after = true)
+      serializableFn(new NestedClosuresNotSerializable.getMapFn, before = true, after = true)
 
       class A(val f: Int => Int)
       class B(val f: Int => Int)
       class C extends A(x => x * x)
-      class D extends B(x => new C().f(x))
+      class D extends B(x => new C.f(x))
 
-      serializableFn(new D().f, before = false, after = true)
+      serializableFn(new D.f, before = false, after = true)
     }
   }
 

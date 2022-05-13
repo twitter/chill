@@ -60,7 +60,7 @@ class ProtobufTest extends AnyWordSpec with Matchers {
 
     // Without the protobuf serializer, it will use FieldSerializer
     // With newer versions of protoc code gen this might be ok but not advisable!
-    val kryoInstantiator = new KryoInstantiator()
+    val kryoInstantiator = new KryoInstantiator
     val ser = kryoInstantiator.newKryo().getSerializer(classOf[Message])
     ser shouldBe a[FieldSerializer[_]]
 

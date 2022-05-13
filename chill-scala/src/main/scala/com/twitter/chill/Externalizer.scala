@@ -96,7 +96,7 @@ class Externalizer[T] extends Externalizable with KryoSerializable {
   private def probeJavaWorks: Boolean = {
     if (!testing.compareAndSet(false, true)) return true
     try {
-      val baos = new ByteArrayOutputStream()
+      val baos = new ByteArrayOutputStream
       val oos = new ObjectOutputStream(baos)
       oos.writeObject(getOption)
       val bytes = baos.toByteArray

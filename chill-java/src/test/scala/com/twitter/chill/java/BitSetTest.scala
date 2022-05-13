@@ -11,7 +11,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class BitSetSpec extends AnyWordSpec with Matchers {
-  implicit val kryo: Kryo = new Kryo()
+  implicit val kryo: Kryo = new Kryo
 
   def rt[A](a: A)(implicit k: Kryo): A = {
     val out = new Output(1000, -1)
@@ -47,14 +47,14 @@ class BitSetSpec extends AnyWordSpec with Matchers {
      * bytes The new serializer needs 258 bytes
      */
     "handle a BitSet efficiently" in {
-      val oldKryo = new Kryo()
+      val oldKryo = new Kryo
       OldBitSetSerializer.registrar()(oldKryo)
 
-      val newKryo = new Kryo()
+      val newKryo = new Kryo
       BitSetSerializer.registrar()(newKryo)
 
       val element = new util.BitSet(2048)
-      val rnd = new Random()
+      val rnd = new Random
       for (i <- 0 to 2048) {
         element.set(i, rnd.nextBoolean())
       }

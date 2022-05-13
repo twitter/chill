@@ -45,7 +45,7 @@ class BitSetSerializer extends KSerializer[BitSet] {
       val bits = new Array[Long](i.readInt(true) / 64 + 1)
       (0 until size).foreach { step =>
         sum += i.readInt(true)
-        bits(sum / 64) |= 1L << (sum % 64)
+        bits(sum / 64) |= 1L << sum % 64
       }
       BitSet.fromBitMask(bits)
     }

@@ -10,9 +10,9 @@ val protobufVersion = "3.19.1"
 
 def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String): List[File] =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, y)) if y <= 12 =>
+    case Some(2, y) if y <= 12 =>
       new java.io.File(s"${srcBaseDir.getPath}-2.12-") :: Nil
-    case Some((2, y)) if y >= 13 =>
+    case Some(2, y) if y >= 13 =>
       new java.io.File(s"${srcBaseDir.getPath}-2.13+") :: Nil
     case _ => Nil
   }

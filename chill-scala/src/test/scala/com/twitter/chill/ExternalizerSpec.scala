@@ -37,7 +37,7 @@ class ExternalizerSpec extends AnyWordSpec with Matchers with BaseProperties {
       val l = Array[AnyRef](null)
       val ext = Externalizer(l)
       l.update(0, ext) // make a loop
-      (l(0) eq ext) should equal(true)
+      l(0) eq ext should equal(true)
       ext.javaWorks should equal(true)
 
       val nonJavaSer = Array(new ExtSomeRandom(2))
@@ -53,7 +53,7 @@ class ExternalizerSpec extends AnyWordSpec with Matchers with BaseProperties {
       val ext3 = Externalizer(l3)
       l3.update(0, ext3) // make a loop
       l3.update(1, new ExtSomeRandom(3)) // make a loop
-      (l3(0) eq ext3) should equal(true)
+      l3(0) eq ext3 should equal(true)
       ext3.javaWorks should equal(false)
       jrt(ext3).get(1).asInstanceOf[ExtSomeRandom].x should equal(l3(1).asInstanceOf[ExtSomeRandom].x)
     }
@@ -63,7 +63,7 @@ class ExternalizerSpec extends AnyWordSpec with Matchers with BaseProperties {
       val ext4 = Externalizer(l4)
       l4.update(0, ext4) // make a loop
       l4.update(1, (3, 7)) // make a loop
-      (l4(0) eq ext4) should equal(true)
+      l4(0) eq ext4 should equal(true)
       ext4.javaWorks should equal(true)
       rt(ext4).get(1) should equal(l4(1))
       jrt(ext4).get(1) should equal(l4(1))
@@ -74,9 +74,9 @@ class ExternalizerSpec extends AnyWordSpec with Matchers with BaseProperties {
       val ext4 = Externalizer(l4)
       l4.update(0, ext4) // make a loop
       l4.update(1, new Locale("en")) // make a loop
-      (l4(0) eq ext4) should equal(true)
+      l4(0) eq ext4 should equal(true)
       ext4.javaWorks should equal(true)
-      rt(new EmptyScalaKryoInstantiator(), ext4).get(1)
+      rt(new EmptyScalaKryoInstantiator, ext4).get(1)
       jrt(ext4).get(1) should equal(l4(1))
     }
   }

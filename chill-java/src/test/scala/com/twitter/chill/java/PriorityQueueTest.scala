@@ -36,10 +36,10 @@ class PriorityQueueSpec extends AnyWordSpec with Matchers {
     "handle PriorityQueue" in {
       import scala.collection.JavaConverters._
 
-      val kryo = new Kryo()
+      val kryo = new Kryo
       kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
       PriorityQueueSerializer.registrar()(kryo)
-      new Java8ClosureRegistrar()(kryo)
+      new Java8ClosureRegistrar(kryo)
       val ord = Ordering.fromLessThan[(Int, Int)]((l, r) => l._1 < r._1)
       val q = new java.util.PriorityQueue[(Int, Int)](3, ord)
       q.add((2, 3))

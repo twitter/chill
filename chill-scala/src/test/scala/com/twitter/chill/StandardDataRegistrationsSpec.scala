@@ -21,7 +21,7 @@ class StandardDataRegistrationsSpec extends AnyWordSpec with Matchers {
     |In addition to what is ensured by ${classOf[KryoSpec].getSimpleName},
     |the ScalaKryoInstantiator with setRegistrationRequired(true)""".stripMargin
     .should {
-      def registrationRequiredInstantiator = new ScalaKryoInstantiator() {
+      def registrationRequiredInstantiator = new ScalaKryoInstantiator {
         override def newKryo: KryoBase = {
           val k = super.newKryo
           k.setRegistrationRequired(true)

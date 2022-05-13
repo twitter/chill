@@ -42,7 +42,7 @@ class RegistrationIdsSpec extends AnyWordSpec with Matchers {
       (s"be as expected for the backward compatibility layer $compatibility,\n" +
         "  i.e. contain the list of registrations defined in this test.").in {
         val k = new KryoBase
-        new AllScalaRegistrar_0_9_5().apply(k)
+        new AllScalaRegistrar_0_9_5.apply(k)
         if (registeredEntries(k) != Entries_0_9_5) printMessageFor(k, compatibility)
         assert(registeredEntries(k) == Entries_0_9_5)
       }
@@ -51,7 +51,7 @@ class RegistrationIdsSpec extends AnyWordSpec with Matchers {
       (s"be as expected for the current $current,\n" +
         "  i.e. contain the list of registrations defined in this test.").in {
         val k = new KryoBase
-        new AllScalaRegistrar().apply(k)
+        new AllScalaRegistrar.apply(k)
         if (registeredEntries(k) != CurrentEntries) printMessageFor(k, current)
         assert(registeredEntries(k) == CurrentEntries)
       }

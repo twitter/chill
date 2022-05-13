@@ -131,7 +131,7 @@ object SerializedExamplesData {
     86 -> ("WAEBAGphdmEudXRpbC5Db2xsZWN0aW9ucyRFbXB0eUxpc/QB" ->
       _root_.java.util.Collections.unmodifiableList(_root_.java.util.Collections.EMPTY_LIST)),
     87 -> ("WQEBAGphdmEudXRpbC5MaW5rZWRMaXP0AQA=" ->
-      _root_.java.util.Collections.unmodifiableList(new _root_.java.util.LinkedList[Int]())),
+      _root_.java.util.Collections.unmodifiableList(new _root_.java.util.LinkedList[Int])),
     88 -> ("WgEBAGphdmEudXRpbC5Db2xsZWN0aW9ucyRTaW5nbGV0b25NYfABAgICBA==" ->
       _root_.java.util.Collections
         .unmodifiableMap[Int, Int](_root_.java.util.Collections.singletonMap(1, 2))),
@@ -158,7 +158,7 @@ object SerializedExamplesData {
     101 -> ("ZwECAWNh9A==" -> Array("cat")),
     102 -> ("aAEDAgQDAW1vdXPl" -> Array(2, "mouse")),
     103 -> ("aQECAQ==" -> classOf[Int]),
-    104 -> ("agE=" -> new Object()),
+    104 -> ("agE=" -> new Object),
     105 -> ("awEBBgFfAQKA" -> wrapByteArray(Array(Byte.MinValue))),
     106 -> ("bAEBCAFgAQJ//w==" -> wrapShortArray(Array(Short.MaxValue))),
     107 -> ("bQEBAgFhAQL/////Dw==" -> wrapIntArray(Array(Int.MinValue))),

@@ -128,7 +128,7 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
       a should roundtrip
       b should roundtrip
       c should roundtrip
-      (rt(c) + 5) should equal(c + 5)
+      rt(c) + 5 should equal(c + 5)
     }
     "round trip a ListSet" in {
       val a = ListSet[Long]() // Test empty SortedSet
@@ -173,7 +173,7 @@ class KryoSpec extends AnyWordSpec with Matchers with BaseProperties {
     "handle scala singletons" in {
       List(Nil, None) should roundtrip
       None should roundtrip
-      (rt(None) eq None) should equal(true)
+      rt(None) eq None should equal(true)
     }
     "serialize a giant list" in {
       val bigList = (1 to 100000).toList

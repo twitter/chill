@@ -33,7 +33,7 @@ object ExternalizerCodec {
 
 class ExternalizerCodec[T] extends Injection[Externalizer[T], Array[Byte]] {
   def apply(extern: Externalizer[T]): Array[Byte] = {
-    val baos = new ByteArrayOutputStream()
+    val baos = new ByteArrayOutputStream
     val oos = new ObjectOutputStream(baos)
     oos.writeObject(extern)
     baos.toByteArray

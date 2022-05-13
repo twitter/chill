@@ -64,12 +64,12 @@ class SerializedExamplesOfStandardDataSpec extends AnyWordSpec with Matchers {
     }
 
   val kryo: KryoBase = {
-    val instantiator = new ScalaKryoInstantiator()
+    val instantiator = new ScalaKryoInstantiator
     instantiator.setRegistrationRequired(true)
     instantiator.newKryo
   }
   val pool: KryoPool =
-    KryoPool.withByteArrayOutputStream(4, new ScalaKryoInstantiator())
+    KryoPool.withByteArrayOutputStream(4, new ScalaKryoInstantiator)
   def err(message: String): Unit =
     System.err.println(s"\n##########\n$message\n##########\n")
   def err(message: String, serialized: String): Unit =

@@ -52,7 +52,7 @@ class FunctionSerialization extends AnyWordSpec with Matchers with BasePropertie
     }
     "Handle traits with abstract vals/def" in {
       val bf2 = rt(BaseFns2)
-      (bf2 eq BaseFns2) should equal(true)
+      bf2 eq BaseFns2 should equal(true)
       bf2 should equal(BaseFns2)
       bf2.timesByMult(10) should equal(50)
       val rtTBM = rt(BaseFns2.timesByMult)

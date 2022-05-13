@@ -33,14 +33,14 @@ trait BaseProperties {
 
   def rtEquiv[T](t: T): Boolean = {
     val serdeser = rt(t)
-    serdeser == t && (serdeser.getClass.asInstanceOf[Class[Any]] == t.getClass
-      .asInstanceOf[Class[Any]])
+    serdeser == t && serdeser.getClass.asInstanceOf[Class[Any]] == t.getClass
+      .asInstanceOf[Class[Any]]
   }
 
   def rtEquiv[T](k: KryoInstantiator, t: T): Boolean = {
     val serdeser = rt(k, t)
-    serdeser == t && (serdeser.getClass.asInstanceOf[Class[Any]] == t.getClass
-      .asInstanceOf[Class[Any]])
+    serdeser == t && serdeser.getClass.asInstanceOf[Class[Any]] == t.getClass
+      .asInstanceOf[Class[Any]]
   }
 
   // using java serialization. TODO: remove when this is shipped in bijection

@@ -117,8 +117,8 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
     useField(List(1, 2, 3).asJava.getClass)
     useField(List(1, 2, 3).iterator.asJava.getClass)
     useField(Map(1 -> 2, 4 -> 3).asJava.getClass)
-    useField(new _root_.java.util.ArrayList().asScala.getClass)
-    useField(new _root_.java.util.HashMap().asScala.getClass)
+    useField(new _root_.java.util.ArrayList.asScala.getClass)
+    useField(new _root_.java.util.HashMap.asScala.getClass)
 
     /*
      * Note that subclass-based use: addDefaultSerializers, else: register
@@ -185,8 +185,8 @@ class JavaWrapperCollectionRegistrar extends IKryoRegistrar {
 /** Registrar for everything that was registered in chill 0.9.2 - included for backwards compatibility. */
 final private[chill] class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
   def apply(k: Kryo): Unit = {
-    new ScalaCollectionsRegistrar()(k)
-    new JavaWrapperCollectionRegistrar()(k)
+    new ScalaCollectionsRegistrar(k)
+    new JavaWrapperCollectionRegistrar(k)
 
     // Register all 22 tuple serializers and specialized serializers
     ScalaTupleSerialization.register(k)
@@ -203,15 +203,15 @@ final private[chill] class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
     val boxedUnit = scala.runtime.BoxedUnit.UNIT
     k.register(boxedUnit.getClass, new SingletonSerializer(boxedUnit))
     PackageRegistrar.all()(k)
-    new Java8ClosureRegistrar()(k)
+    new Java8ClosureRegistrar(k)
   }
 }
 
 /** Registrar for everything that was registered in chill 0.9.5 */
 final private[chill] class AllScalaRegistrar_0_9_5 extends IKryoRegistrar {
   def apply(k: Kryo): Unit = {
-    new AllScalaRegistrar_0_9_2()(k)
-    new AllScalaRegistrarCompat_0_9_5()(k)
+    new AllScalaRegistrar_0_9_2(k)
+    new AllScalaRegistrarCompat_0_9_5(k)
     k.registerClasses(
       Seq(
         classOf[Array[Byte]],
@@ -285,7 +285,7 @@ final private[chill] class AllScalaRegistrar_0_9_5 extends IKryoRegistrar {
  */
 class AllScalaRegistrar extends IKryoRegistrar {
   def apply(k: Kryo): Unit = {
-    new AllScalaRegistrar_0_9_5()(k)
-    new AllScalaRegistrarCompat()(k)
+    new AllScalaRegistrar_0_9_5(k)
+    new AllScalaRegistrarCompat(k)
   }
 }

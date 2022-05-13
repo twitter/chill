@@ -29,7 +29,7 @@ class AkkaTests extends AnyWordSpec with Matchers {
 
   case class IncActor() extends Actor {
     def receive: Receive = { case x: Int =>
-      sender() ! (x + 1)
+      sender() ! x + 1
     }
   }
 
