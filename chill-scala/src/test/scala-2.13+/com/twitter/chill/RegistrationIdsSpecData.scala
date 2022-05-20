@@ -164,7 +164,6 @@ object RegistrationIdsSpecData {
       |142 -> class scala.collection.immutable.Queue$EmptyQueue$
       |143 -> class scala.collection.immutable.MapOps$ImmutableKeySet""".stripMargin.linesIterator.toStream
 
-
   val RecentEntries =
     """144 -> class scala.collection.immutable.Vector0$
       |145 -> class scala.collection.immutable.Vector1
