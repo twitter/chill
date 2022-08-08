@@ -162,14 +162,16 @@ object RegistrationIdsSpecData {
       |140 -> class scala.runtime.VolatileByteRef
       |141 -> class scala.math.BigDecimal
       |142 -> class scala.collection.immutable.Queue$EmptyQueue$
-      |143 -> class scala.collection.immutable.MapOps$ImmutableKeySet""".stripMargin.linesIterator
-      .mkString("\n")
+      |143 -> class scala.collection.immutable.MapOps$ImmutableKeySet""".stripMargin.linesIterator.toStream
 
   val RecentEntries =
     """144 -> class scala.collection.immutable.Vector0$
-      |145 -> class scala.collection.immutable.Vector1""".stripMargin.linesIterator
-      .mkString("\n")
+      |145 -> class scala.collection.immutable.Vector1
+      |146 -> class scala.collection.immutable.Vector2
+      |147 -> class scala.collection.immutable.Vector3
+      |148 -> class scala.collection.immutable.Vector4
+      |149 -> class scala.collection.immutable.Vector5
+      |150 -> class scala.collection.immutable.Vector6""".stripMargin.linesIterator.toStream
 
-  val CurrentEntries =
-    (Entries_0_9_5.linesIterator ++ RecentEntries.linesIterator).mkString("\n")
+  val CurrentEntries = Entries_0_9_5 #::: RecentEntries
 }

@@ -166,11 +166,9 @@ object RegistrationIdsSpecData {
       |145 -> class scala.collection.immutable.Queue$EmptyQueue$
       |146 -> class scala.collection.immutable.MapLike$$anon$1
       |147 -> class scala.collection.immutable.MapLike$$anon$2
-      |148 -> class scala.collection.immutable.MapLike$ImmutableDefaultKeySet""".stripMargin.linesIterator
-      .mkString("\n")
+      |148 -> class scala.collection.immutable.MapLike$ImmutableDefaultKeySet""".stripMargin.linesIterator.toStream
 
-  val RecentEntries = ""
+  val RecentEntries = Stream.empty
 
-  val CurrentEntries =
-    (Entries_0_9_5.linesIterator ++ RecentEntries.linesIterator).mkString("\n")
+  val CurrentEntries = Entries_0_9_5 #::: RecentEntries
 }

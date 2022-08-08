@@ -200,10 +200,16 @@ object SerializedExamplesData {
     142 -> ("kAEBAA==" -> (Queue.empty[Any], true)),
     143 -> ("kQEBAQIC" -> (Map(1 -> 2).keySet, true)),
     144 -> ("kgEBAA==" -> Vector.empty[Int]),
-    145 -> ("kwEBAQIC" -> Vector(1))
+    145 -> ("kwEBAQIC" -> Vector(1)),
+    146 -> ("lAEBQAIC" + "AgIC" * 42 -> Vector.fill(1 << 5 + 1)(1))
+    // Skip BigVectors. too slow
+    // 147 -> ("" -> Vector.fill(1 << 10 + 1)(1)),
+    // 148 -> ("" -> Vector.fill(1 << 15 + 1)(1)),
+    // 149 -> ("" -> Vector.fill(1 << 20 + 1)(1)),
+    // 150 -> ("" -> Vector.fill(1 << 25 + 1)(1)),
   )
 
-  val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(9, 18, 71, 84, 91, 92, 119)
+  val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(9, 18, 71, 84, 91, 92, 119, 147, 148, 149, 150)
 
   val OmitExamplesInScalaVersion: Map[String, Seq[Int]] = Map.empty
 }
