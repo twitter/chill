@@ -28,8 +28,6 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
       case _                         => Seq("-Ywarn-unused")
     }
   },
-  scalariformPreferences := formattingPreferences,
-  scalariformAutoformat := false,
   // Twitter Hadoop needs this, sorry 1.7 fans
   javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
   javacOptions in doc := Seq("-source", "1.6"),
@@ -102,13 +100,6 @@ lazy val chillAll = Project(
     chillAvro,
     chillAlgebird
   )
-
-lazy val formattingPreferences = {
-  import scalariform.formatter.preferences._
-  FormattingPreferences()
-    .setPreference(AlignParameters, false)
-    .setPreference(PreserveSpaceBeforeArguments, true)
-}
 
 lazy val noPublishSettings = Seq(
   skip in publish := true,
