@@ -64,7 +64,8 @@ class EmptyScalaKryoInstantiator extends KryoInstantiator {
     // Handle cases where we may have an odd classloader setup like with libjars
     // for hadoop
     val classLoader = Thread.currentThread.getContextClassLoader
-    k.setClassLoader(classLoader)
+    if (classLoader != null)
+      k.setClassLoader(classLoader)
 
     k
   }
