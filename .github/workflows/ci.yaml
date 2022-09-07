@@ -31,7 +31,7 @@ jobs:
           - "11"
         scala:
           - "2.11.12"
-          - "2.12.15"
+          - "2.12.16"
   test:
     runs-on: ubuntu-latest
     steps:
@@ -49,8 +49,8 @@ jobs:
           - "8"
           - "11"
         scala:
-          - "2.12.15"
-          - "2.13.6"
+          - "2.12.16"
+          - "2.13.7"
   testWithCoverageReport:
     runs-on: ubuntu-latest
     steps:
