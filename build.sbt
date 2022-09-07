@@ -17,20 +17,33 @@ def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String):
     case _ => Nil
   }
 
-val sharedSettings = mimaDefaultSettings ++ Seq(
+val sharedSettings = Seq(
   organization := "com.twitter",
   scalaVersion := "2.11.12",
   crossScalaVersions := Seq("2.11.12", "2.12.16"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   scalacOptions ++= {
     scalaVersion.value match {
-      case v if v.startsWith("2.11") => Seq("-Ywarn-unused", "-Ywarn-unused-import")
-      case _                         => Seq("-Ywarn-unused")
+      case v if v.startsWith("2.11") => Seq("-Ywarn-unused", "-Ywarn-unused-import", "-target:jvm-1.8")
+      case _                         => Seq("-Ywarn-unused", "-release", "8")
     }
   },
   // Twitter Hadoop needs this, sorry 1.7 fans
-  javacOptions ++= Seq("-target", "1.6", "-source", "1.6", "-Xlint:-options"),
-  javacOptions in doc := Seq("-source", "1.6"),
+  javacOptions ++= Seq("-target", "1.8", "-source", "1.8", "-Xlint:-options"),
+  Test / fork := true,
+  Test / javaOptions ++= {
+    sys.props("java.version") match {
+      case v if v.startsWith("17") =>
+        Seq(
+          "--add-opens",
+          "java.base/java.util=ALL-UNNAMED",
+          "--add-opens",
+          "java.base/java.lang.invoke=ALL-UNNAMED"
+        )
+      case _ => Seq.empty
+    }
+  },
+  doc / javacOptions := Seq("-source", "1.8"),
   resolvers ++= Seq(
     Opts.resolver.sonatypeSnapshots,
     Opts.resolver.sonatypeReleases
@@ -41,7 +54,7 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
     "org.scalatestplus" %% "scalatestplus-scalacheck" % "3.1.0.0-RC2" % "test",
     "com.esotericsoftware" % "kryo-shaded" % kryoVersion
   ),
-  parallelExecution in Test := true,
+  Test / parallelExecution := true,
   pomExtra := <url>https://github.com/twitter/chill</url>
         <licenses>
       <license>
@@ -102,7 +115,7 @@ lazy val chillAll = Project(
   )
 
 lazy val noPublishSettings = Seq(
-  skip in publish := true,
+  publish / skip := true,
   publish := {},
   publishLocal := {},
   test := {},
