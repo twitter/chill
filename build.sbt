@@ -33,7 +33,8 @@ val sharedSettings = mimaDefaultSettings ++ Seq(
   javacOptions in doc := Seq("-source", "1.6"),
   resolvers ++= Seq(
     Opts.resolver.sonatypeSnapshots,
-    Opts.resolver.sonatypeReleases
+    Opts.resolver.sonatypeReleases,
+    "clojars".at("https://clojars.org/repo")
   ),
   libraryDependencies ++= Seq(
     "org.scalacheck" %% "scalacheck" % "1.15.2" % "test",
@@ -210,7 +211,7 @@ lazy val chillStorm = module("storm")
   .settings(
     crossPaths := false,
     autoScalaLibrary := false,
-    libraryDependencies += "org.apache.storm" % "storm-core" % "1.0.6" % "provided"
+    libraryDependencies += "org.apache.storm" % "storm-core" % "2.4.0" % "provided"
   )
   .dependsOn(chillJava)
 
