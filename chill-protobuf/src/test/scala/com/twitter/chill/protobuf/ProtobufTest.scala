@@ -20,7 +20,6 @@ import com.twitter.chill.{KryoInstantiator, KryoPool}
 import com.twitter.chill.protobuf.TestMessages.FatigueCount
 
 import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 import com.google.protobuf.Message
 
@@ -55,17 +54,6 @@ class ProtobufTest extends AnyWordSpec with Matchers {
     val kpool = buildKyroPoolWithProtoSer()
 
     kpool.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))) should equal(
-      buildFatigueCount(12L, -1L, 42, List(1L, 2L))
-    )
-
-    // Without the protobuf serializer, it will use FieldSerializer
-    // With newer versions of protoc code gen this might be ok but not advisable!
-    val kryoInstantiator = new KryoInstantiator()
-    val ser = kryoInstantiator.newKryo().getSerializer(classOf[Message])
-    ser shouldBe a[FieldSerializer[_]]
-
-    val kpoolBusted = KryoPool.withByteArrayOutputStream(1, kryoInstantiator)
-    kpoolBusted.deepCopy(buildFatigueCount(12L, -1L, 42, List(1L, 2L))) should equal(
       buildFatigueCount(12L, -1L, 42, List(1L, 2L))
     )
   }
