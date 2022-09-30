@@ -20,7 +20,6 @@ import com.twitter.chill.{KryoInstantiator, KryoPool}
 import com.twitter.chill.protobuf.TestMessages.FatigueCount
 
 import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 import com.google.protobuf.Message
 
