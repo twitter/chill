@@ -18,7 +18,7 @@ package com.twitter.chill
 
 import scala.collection.JavaConverters
 import scala.collection.JavaConverters._
-import scala.collection.immutable.{HashMap, HashSet, ListMap, ListSet, NumericRange, Queue}
+import scala.collection.immutable.{ArraySeq, HashMap, HashSet, ListMap, ListSet, NumericRange, Queue}
 import scala.runtime.VolatileByteRef
 
 object SerializedExamplesData {
@@ -201,12 +201,21 @@ object SerializedExamplesData {
     143 -> ("kQEBAQIC" -> (Map(1 -> 2).keySet, true)),
     144 -> ("kgEBAA==" -> Vector.empty[Int]),
     145 -> ("kwEBAQIC" -> Vector(1)),
-    146 -> ("lAEBQAIC" + "AgIC" * 42 -> Vector.fill(1 << 5 + 1)(1))
+    146 -> ("lAEBQAIC" + "AgIC" * 42 -> Vector.fill(1 << 5 + 1)(1)),
     // Skip BigVectors. too slow
     // 147 -> ("" -> Vector.fill(1 << 10 + 1)(1)),
     // 148 -> ("" -> Vector.fill(1 << 15 + 1)(1)),
     // 149 -> ("" -> Vector.fill(1 << 20 + 1)(1)),
     // 150 -> ("" -> Vector.fill(1 << 25 + 1)(1)),
+    151 -> ("mQEBAQKA" -> ArraySeq(Byte.MinValue)),
+    152 -> ("mgEBAQJ//w==" -> ArraySeq(Short.MaxValue)),
+    153 -> ("mwEBAQL/////Dw==" -> ArraySeq(Int.MinValue)),
+    154 -> ("nAEBAQL+//////////8=" -> ArraySeq(Long.MaxValue)),
+    155 -> ("nQEBAQIAAAAB" -> ArraySeq(Float.MinPositiveValue)),
+    156 -> ("ngEBAQL/7////////w==" -> ArraySeq(Double.MinValue)),
+    157 -> ("nwEBAQIB" -> ArraySeq(true)),
+    158 -> ("oAEBAQIAeA==" -> ArraySeq('x')),
+    159 -> ("oQEBaAECAWNh9A==" -> ArraySeq("cat"))
   )
 
   val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(9, 18, 71, 84, 91, 92, 119, 147, 148, 149, 150)
