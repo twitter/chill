@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill
 
-import scala.collection.immutable.Range
+import scala.collection.immutable.{ArraySeq, Range}
 
 /**
  * Scala collections registrar for compatibility between 2.12- and 2.13+.
@@ -42,5 +42,18 @@ private[chill] class AllScalaRegistrarCompat extends IKryoRegistrar {
     newK.register(Class.forName("scala.collection.immutable.Vector4"), t)
     newK.register(Class.forName("scala.collection.immutable.Vector5"), t)
     newK.register(Class.forName("scala.collection.immutable.Vector6"), t)
+    newK.registerClasses(
+      Seq(
+        ArraySeq.unsafeWrapArray(Array[Byte]()).getClass,
+        ArraySeq.unsafeWrapArray(Array[Short]()).getClass,
+        ArraySeq.unsafeWrapArray(Array[Int]()).getClass,
+        ArraySeq.unsafeWrapArray(Array[Long]()).getClass,
+        ArraySeq.unsafeWrapArray(Array[Float]()).getClass,
+        ArraySeq.unsafeWrapArray(Array[Double]()).getClass,
+        ArraySeq.unsafeWrapArray(Array[Boolean]()).getClass,
+        ArraySeq.unsafeWrapArray(Array[Char]()).getClass,
+        ArraySeq.unsafeWrapArray(Array[String]()).getClass
+      )
+    )
   }
 }
