@@ -3,7 +3,6 @@
  * and it will generate the Kryo serializers for all Scala tuples
  */
 
-
 import java.io.PrintWriter
 import java.util.Date
 import java.text.SimpleDateFormat
@@ -31,59 +30,59 @@ import _root_.java.io.Serializable
 // scala tuple_serializers.scala
 """
 
-def timestamp : String = {
+def timestamp: String = {
   val dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z")
   dateFormat.format(new Date)
 }
 
 // Returns a string like A,B,C
 // for use inside tuple type parameters
-def typeList(i : Int, initC : Char = 'A') = {
+def typeList(i: Int, initC: Char = 'A') = {
   val init = initC.toInt
-  (0 until i).map { idx => (idx + init).toChar }.mkString(",")
+  (0 until i).map(idx => (idx + init).toChar).mkString(",")
 }
 
 // Returns Tuple2[A,B] or Tuple3[A,B,C]
-def tupleType(i : Int, initC : Char = 'A') = {
+def tupleType(i: Int, initC: Char = 'A') =
   "Tuple%d[%s]".format(i, typeList(i, initC))
-}
 
-def makeWrite(size : Int) : String = {
+def makeWrite(size: Int): String = {
   val head = """  def write(kser : Kryo, out : Output, obj : %s): Unit = {
 """.format(tupleType(size))
-  val unrolled = (1 to size).map { i =>
-  "    kser.writeClassAndObject(out, obj._%d); out.flush;".format(i)
-    }.mkString("\n")
+  val unrolled = (1 to size)
+    .map { i =>
+      "    kser.writeClassAndObject(out, obj._%d); out.flush;".format(i)
+    }
+    .mkString("\n")
   head + unrolled + "\n  }\n"
 }
 
-def readAndCast(pos : Int) : String = {
+def readAndCast(pos: Int): String =
   """      kser.readClassAndObject(in).asInstanceOf[%s]""".format(('A'.toInt + pos - 1).toChar.toString)
-}
 
-def makeRead(size : Int) : String = {
+def makeRead(size: Int): String = {
   val ttype = tupleType(size)
   val head = """  def read(kser: Kryo, in: Input, cls: Class[%s]) : %s = {
 """.format(ttype, ttype)
   val instantiation = """    new %s(
 """.format(ttype)
-  val reads = (1 to size).map { readAndCast(_) }.mkString(",\n")
+  val reads = (1 to size).map(readAndCast(_)).mkString(",\n")
   head + instantiation + reads + """
     )
   }
 """
 }
 
-def makeSerializer(size : Int) : String = {
+def makeSerializer(size: Int): String = {
   val tList = typeList(size)
   val tType = tupleType(size)
   ("""class Tuple%dSerializer[%s] extends KSerializer[%s] with Serializable {
   setImmutable(true)
-""".format(size,tList,tType)) + makeWrite(size) + makeRead(size) + "}"
+""".format(size, tList, tType)) + makeWrite(size) + makeRead(size) + "}"
 }
 
-def register(size : Int) : String = {
-  val anyArgs = (1 to size).map { i => "Any" }.mkString(",")
+def register(size: Int): String = {
+  val anyArgs = (1 to size).map(i => "Any").mkString(",")
   val ttype = "Tuple%d[%s]".format(size, anyArgs)
   val ser = "new Tuple%dSerializer[%s]".format(size, anyArgs)
   """    newK.register(classOf[%s], %s)""".format(ttype, ser)
@@ -92,9 +91,12 @@ def register(size : Int) : String = {
 val typeMap = Map("Long" -> "J", "Int" -> "I", "Double" -> "D")
 val spTypes = List("Long", "Int", "Double")
 
-val spPairs = for(a <- spTypes; b <- spTypes) yield (a,b)
+val spPairs = for {
+  a <- spTypes
+  b <- spTypes
+} yield (a, b)
 
-def spTup1(scalaVersion: String)(typeNm : String) : String = {
+def spTup1(scalaVersion: String)(typeNm: String): String =
   scalaVersion match {
     case "2.10" =>
       """
@@ -124,9 +126,7 @@ def spTup1(scalaVersion: String)(typeNm : String) : String = {
       """.replace("TYPE", typeNm)
   }
 
-}
-
-def spTup2(scalaVersion: String)(typeNm1 : String, typeNm2 : String) : String = {
+def spTup2(scalaVersion: String)(typeNm1: String, typeNm2: String): String =
   scalaVersion match {
     case "2.10" =>
       """
@@ -140,10 +140,11 @@ def spTup2(scalaVersion: String)(typeNm1 : String, typeNm2 : String) : String = 
           out.writeTYPE2(tup._2$mcSHORT2$sp)
         }
       }
-      """.replace("TYPE1", typeNm1)
-          .replace("SHORT1", typeMap(typeNm1))
-          .replace("TYPE2", typeNm2)
-          .replace("SHORT2", typeMap(typeNm2))
+      """
+        .replace("TYPE1", typeNm1)
+        .replace("SHORT1", typeMap(typeNm1))
+        .replace("TYPE2", typeNm2)
+        .replace("SHORT2", typeMap(typeNm2))
     case _ =>
       """
       class Tuple2TYPE1TYPE2Serializer extends KSerializer[Tuple2[TYPE1, TYPE2]] with Serializable {
@@ -156,24 +157,24 @@ def spTup2(scalaVersion: String)(typeNm1 : String, typeNm2 : String) : String = 
           out.writeTYPE2(tup._2)
         }
       }
-      """.replace("TYPE1", typeNm1)
+      """
+        .replace("TYPE1", typeNm1)
         .replace("TYPE2", typeNm2)
   }
 
-}
-
-def registerSp1(scalaVersion: String)(typeNm : String) : String = {
+def registerSp1(scalaVersion: String)(typeNm: String): String =
   scalaVersion match {
     case "2.10" =>
       """newK.register(classOf[Tuple1$mcSHORT$sp], new Tuple1TYPESerializer)"""
-        .replace("TYPE", typeNm).replace("SHORT", typeMap(typeNm))
+        .replace("TYPE", typeNm)
+        .replace("SHORT", typeMap(typeNm))
     case _ =>
       """newK.register(Class.forName("scala.Tuple1$mcSHORT$sp"), new Tuple1TYPESerializer)"""
-        .replace("TYPE", typeNm).replace("SHORT", typeMap(typeNm))
+        .replace("TYPE", typeNm)
+        .replace("SHORT", typeMap(typeNm))
   }
-}
 
-def registerSp2(scalaVersion: String)(typeNm1 : String, typeNm2 : String) : String = {
+def registerSp2(scalaVersion: String)(typeNm1: String, typeNm2: String): String =
   scalaVersion match {
     case "2.10" =>
       """newK.register(classOf[Tuple2$mcSHORT1SHORT2$sp], new Tuple2TYPE1TYPE2Serializer)"""
@@ -188,40 +189,33 @@ def registerSp2(scalaVersion: String)(typeNm1 : String, typeNm2 : String) : Stri
         .replace("TYPE2", typeNm2)
         .replace("SHORT2", typeMap(typeNm2))
   }
-}
 
-def objectHelper(scalaVersion: String) : String = {
-"""object ScalaTupleSerialization extends Serializable {
+def objectHelper(scalaVersion: String): String =
+  """object ScalaTupleSerialization extends Serializable {
   def register: IKryoRegistrar = new IKryoRegistrar {
     def apply(newK : Kryo): Unit = {
 
-""" + ((1 to 22).map { size => register(size) }.mkString("\n")) + "\n" +
-  (spTypes.map(registerSp1(scalaVersion)).mkString("\n")) + "\n" +
-  (spPairs.map { t => registerSp2(scalaVersion)(t._1, t._2) }.mkString("\n")) + "\n" +
-"""    }
+""" + ((1 to 22).map(size => register(size)).mkString("\n")) + "\n" +
+    (spTypes.map(registerSp1(scalaVersion)).mkString("\n")) + "\n" +
+    (spPairs.map(t => registerSp2(scalaVersion)(t._1, t._2)).mkString("\n")) + "\n" +
+    """    }
   }
 }
 """
-}
 
 val scalaVersions = ("scala-2.10", "2.10") :: ("scala-2.11+", "2.11") :: Nil
 
-scalaVersions.foreach {
-  case (dir, version) =>
-    ///////////////////////////////////////////////////////////////////
-    // Actually output the code here:
-    val file = new java.io.File(s"../chill-scala/src/main/$dir/com/twitter/chill/TupleSerializers.scala")
-    val writer = new PrintWriter(file)
+scalaVersions.foreach { case (dir, version) =>
+  ///////////////////////////////////////////////////////////////////
+  // Actually output the code here:
+  val file = new java.io.File(s"../chill-scala/src/main/$dir/com/twitter/chill/TupleSerializers.scala")
+  val writer = new PrintWriter(file)
 
-    writer.println(header.format(timestamp))
-    (1 to 22).map(makeSerializer).foreach(writer.println)
-    spTypes.map(spTup1(version)).foreach(writer.println)
-    spPairs.foreach { t => writer.println(spTup2(version)(t._1, t._2)) }
+  writer.println(header.format(timestamp))
+  (1 to 22).map(makeSerializer).foreach(writer.println)
+  spTypes.map(spTup1(version)).foreach(writer.println)
+  spPairs.foreach(t => writer.println(spTup2(version)(t._1, t._2)))
 
-    writer.println(objectHelper(version))
-    writer.close()
+  writer.println(objectHelper(version))
+  writer.close()
 }
-
-
-
-
