@@ -6,7 +6,7 @@ val bijectionVersion = "0.9.7"
 val kryoVersion = "4.0.2"
 val scroogeVersion = "21.2.0"
 val asmVersion = "4.16"
-val protobufVersion = "3.22.0"
+val protobufVersion = "3.22.1"
 
 def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String): List[File] =
   CrossVersion.partialVersion(scalaVersion) match {
