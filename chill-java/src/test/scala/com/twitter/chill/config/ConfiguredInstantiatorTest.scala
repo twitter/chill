@@ -27,6 +27,14 @@ import org.scalatest.wordspec.AnyWordSpec
 class TestInst extends KryoInstantiator { override def newKryo = new Kryo }
 class TestInstTwo extends KryoInstantiator { override def newKryo = new Kryo }
 
+class DefaultKryoInstantiator extends KryoInstantiator {
+  override def newKryo: Kryo = {
+    val k = new Kryo
+    k.setRegistrationRequired(false)
+    k
+  }
+}
+
 class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
   "A ConfiguredInstantiator" should {
     "work with a reflected instantiator" in {
@@ -38,7 +46,7 @@ class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
     }
     "work with a serialized instantiator" in {
       val conf = new JavaMapConfig
-      ConfiguredInstantiator.setSerialized(conf, new TestInst)
+      ConfiguredInstantiator.setSerialized(conf, classOf[DefaultKryoInstantiator], new TestInst)
       val cci = new ConfiguredInstantiator(conf)
       // Here is the only assert:
       cci.getDelegate.getClass should equal(classOf[TestInst])
@@ -46,7 +54,7 @@ class ReflectingInstantiatorTest extends AnyWordSpec with Matchers {
       val cci2 = new ConfiguredInstantiator(conf)
       cci.getDelegate should equal(cci2.getDelegate)
       // Set a new serialized and verify caching is still correct:
-      ConfiguredInstantiator.setSerialized(conf, new TestInstTwo)
+      ConfiguredInstantiator.setSerialized(conf, classOf[DefaultKryoInstantiator], new TestInstTwo)
       val cci3 = new ConfiguredInstantiator(conf)
       cci3.getDelegate.getClass should equal(classOf[TestInstTwo])
       (cci3.getDelegate should not).equal(cci2.getDelegate)

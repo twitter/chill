@@ -27,9 +27,19 @@ import com.twitter.chill.KryoInstantiator
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
+
+class AnyKryoInstantiator extends KryoInstantiator {
+  override def newKryo: Kryo = {
+    val k = new Kryo
+    k.register(Class.forName("com.twitter.chill.hadoop.HadoopTests"))
+    k.register(Class.forName("scala.collection.immutable.List"))
+    k
+  }
+}
 class StdKryoInstantiator extends KryoInstantiator {
   override def newKryo: Kryo = {
     val k = new Kryo
+    k.register(Class.forName("scala.Tuple2$mcII$sp"))
     k.setInstantiatorStrategy(new StdInstantiatorStrategy)
     k
   }
@@ -55,7 +65,7 @@ class HadoopTests extends AnyWordSpec with Matchers {
     "accept anything" in {
       val conf = new Configuration
       val hc = new HadoopConfig(conf)
-      ConfiguredInstantiator.setReflect(hc, classOf[KryoInstantiator])
+      ConfiguredInstantiator.setReflect(hc, classOf[AnyKryoInstantiator])
 
       val ks = new KryoSerialization(conf)
       Seq(classOf[List[_]], classOf[Int], this.getClass).forall { cls =>
