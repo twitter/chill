@@ -109,67 +109,9 @@ object RegistrationIdsSpecData {
       |88 -> class java.util.Collections$UnmodifiableSet
       |89 -> class java.util.Collections$UnmodifiableSortedMap
       |90 -> class java.util.Collections$UnmodifiableSortedSet
-      |91 -> class com.esotericsoftware.kryo.kryo5.serializers.ClosureSerializer$Closure""".stripMargin.linesIterator
-      .mkString("\n")
+      |91 -> class com.esotericsoftware.kryo.kryo5.serializers.ClosureSerializer$Closure""".stripMargin.linesIterator.toStream
 
-  val RecentEntries =
-    """92 -> class [B
-      |93 -> class [S
-      |94 -> class [I
-      |95 -> class [J
-      |96 -> class [F
-      |97 -> class [D
-      |98 -> class [Z
-      |99 -> class [C
-      |100 -> class [Ljava.lang.String;
-      |101 -> class [Ljava.lang.Object;
-      |102 -> class java.lang.Class
-      |103 -> class java.lang.Object
-      |104 -> class scala.collection.mutable.WrappedArray$ofByte
-      |105 -> class scala.collection.mutable.WrappedArray$ofShort
-      |106 -> class scala.collection.mutable.WrappedArray$ofInt
-      |107 -> class scala.collection.mutable.WrappedArray$ofLong
-      |108 -> class scala.collection.mutable.WrappedArray$ofFloat
-      |109 -> class scala.collection.mutable.WrappedArray$ofDouble
-      |110 -> class scala.collection.mutable.WrappedArray$ofBoolean
-      |111 -> class scala.collection.mutable.WrappedArray$ofChar
-      |112 -> class scala.collection.mutable.WrappedArray$ofRef
-      |113 -> class scala.None$
-      |114 -> class scala.collection.immutable.Queue
-      |115 -> class scala.collection.immutable.Nil$
-      |116 -> class scala.collection.immutable.$colon$colon
-      |117 -> class scala.collection.immutable.Range
-      |118 -> class scala.collection.immutable.WrappedString
-      |119 -> class scala.collection.immutable.TreeSet
-      |120 -> class scala.collection.immutable.TreeMap
-      |121 -> class scala.math.Ordering$Byte$
-      |122 -> class scala.math.Ordering$Short$
-      |123 -> class scala.math.Ordering$Int$
-      |124 -> class scala.math.Ordering$Long$
-      |125 -> class scala.math.Ordering$Float$
-      |126 -> class scala.math.Ordering$Double$
-      |127 -> class scala.math.Ordering$Boolean$
-      |128 -> class scala.math.Ordering$Char$
-      |129 -> class scala.math.Ordering$String$
-      |130 -> class scala.collection.immutable.Set$EmptySet$
-      |131 -> class scala.collection.immutable.ListSet$EmptyListSet$
-      |132 -> class scala.collection.immutable.ListSet$Node
-      |133 -> class scala.collection.immutable.HashSet$EmptyHashSet$
-      |134 -> class scala.collection.immutable.HashSet$HashSet1
-      |135 -> class scala.collection.immutable.Map$EmptyMap$
-      |136 -> class scala.collection.immutable.HashMap$EmptyHashMap$
-      |137 -> class scala.collection.immutable.HashMap$HashMap1
-      |138 -> class scala.collection.immutable.ListMap$EmptyListMap$
-      |139 -> class scala.collection.immutable.ListMap$Node
-      |140 -> class scala.collection.immutable.Stream$Cons
-      |141 -> class scala.collection.immutable.Stream$Empty$
-      |142 -> class scala.runtime.VolatileByteRef
-      |143 -> class scala.math.BigDecimal
-      |144 -> class scala.collection.immutable.Queue$EmptyQueue$
-      |145 -> class scala.collection.immutable.MapLike$$anon$1
-      |146 -> class scala.collection.immutable.MapLike$$anon$2
-      |147 -> class scala.collection.immutable.MapLike$ImmutableDefaultKeySet""".stripMargin.linesIterator
-      .mkString("\n")
+  val RecentEntries = Stream.empty
 
   val CurrentEntries = Entries_0_9_5 #::: RecentEntries
 }
