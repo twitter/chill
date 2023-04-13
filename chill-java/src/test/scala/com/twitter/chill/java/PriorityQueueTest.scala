@@ -39,10 +39,12 @@ class PriorityQueueTest extends AnyWordSpec with Matchers {
       val kryo = new Kryo()
 
       if (util.Properties.versionString.matches("""^version 2.11.\d+$""")) {
-         kryo.register(Class.forName("scala.math.Ordering$$anon$9"))
-         kryo.register(
-            Class.forName("com.twitter.chill.java.PriorityQueueTest$$anonfun$1$$anonfun$apply$mcV$sp$1$$anonfun$2")
-         )
+        kryo.register(Class.forName("scala.math.Ordering$$anon$9"))
+        kryo.register(
+          Class.forName(
+            "com.twitter.chill.java.PriorityQueueTest$$anonfun$1$$anonfun$apply$mcV$sp$1$$anonfun$2"
+          )
+        )
       }
 
       if (util.Properties.versionString.matches("""^version 2.1[2-3].\d+$""")) {

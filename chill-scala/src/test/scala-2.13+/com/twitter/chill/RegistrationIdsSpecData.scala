@@ -181,6 +181,5 @@ object RegistrationIdsSpecData {
       |157 -> class scala.collection.immutable.ArraySeq$ofChar
       |158 -> class scala.collection.immutable.ArraySeq$ofRef""".stripMargin.linesIterator.toStream
 
-
   val CurrentEntries = Entries_0_9_5 #::: RecentEntries
 }

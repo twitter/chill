@@ -27,7 +27,6 @@ import com.twitter.chill.KryoInstantiator
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-
 class AnyKryoInstantiator extends KryoInstantiator {
   override def newKryo: Kryo = {
     val k = new Kryo

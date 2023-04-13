@@ -218,7 +218,7 @@ object SerializedExamplesData {
     158 -> ("oAEBZwECAWNh9A==" -> ArraySeq("cat"))
   )
 
-  val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(17, 22, 27, 70, 83, 90,  91, 118,  146, 147, 148, 149)
+  val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(17, 22, 27, 70, 83, 90, 91, 118, 146, 147, 148, 149)
 
   val OmitExamplesInScalaVersion: Map[String, Seq[Int]] = Map.empty
 }
