@@ -37,10 +37,19 @@ class PriorityQueueTest extends AnyWordSpec with Matchers {
       import scala.collection.JavaConverters._
 
       val kryo = new Kryo()
-      kryo.register(Class.forName("scala.math.Ordering$$anon$9"))
-      kryo.register(
-        Class.forName("com.twitter.chill.java.PriorityQueueTest$$anonfun$1$$anonfun$apply$mcV$sp$1$$anonfun$2")
-      )
+
+      if (util.Properties.versionString.matches("""^version 2.11.\d+$""")) {
+         kryo.register(Class.forName("scala.math.Ordering$$anon$9"))
+         kryo.register(
+            Class.forName("com.twitter.chill.java.PriorityQueueTest$$anonfun$1$$anonfun$apply$mcV$sp$1$$anonfun$2")
+         )
+      }
+
+      if (util.Properties.versionString.matches("""^version 2.1[2-3].\d+$""")) {
+        kryo.register(Class.forName("scala.math.Ordering$$anon$4"))
+        kryo.register(Class.forName("com.twitter.chill.java.PriorityQueueTest"))
+      }
+
       kryo.register(Class.forName("scala.Tuple2$mcII$sp"))
       kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
       PriorityQueueSerializer.registrar()(kryo)

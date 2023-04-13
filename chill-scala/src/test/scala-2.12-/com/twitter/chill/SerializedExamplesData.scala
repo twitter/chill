@@ -64,8 +64,8 @@ object SerializedExamplesData {
     25 -> ("GwEDJgECBAIGJgECCAIKJgECDAIO" -> Map(2 -> 3, 4 -> 5, 6 -> 7)),
     26 -> ("HAEEJgECBAIGJgECCAIKJgECDAIOJgECEAIS" -> Map(2 -> 3, 4 -> 5, 6 -> 7, 8 -> 9)),
     // 27 -> class HashMap$HashTrieMap
-    28 -> ("HgEMAAwIBgIO" -> new Range.Inclusive(3, 6, 1)),
-    29 -> ("IAEBAgoAAQABAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMIAgQCAg==" ->
+    28 -> ("HgEMAAwIBgI=" -> new Range.Inclusive(3, 6, 1)),
+    29 -> ("HwEBAgoAAQABAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMIAgQCAg==" ->
       new NumericRange.Inclusive[Int](2, 5, 1)),
     30 -> ("IAEBAgoAAAABAHNjYWxhLm1hdGguTnVtZXJpYyRJbnRJc0ludGVncmFspAEBAAMGAgQCAg==" ->
       new NumericRange.Exclusive[Int](2, 5, 1)),
@@ -172,8 +172,8 @@ object SerializedExamplesData {
     114 -> ("dAEA" -> collection.immutable.Queue()),
     115 -> ("dQEA" -> Nil),
     116 -> ("dgEBAgQ=" -> (2 :: Nil)),
-    117 -> ("dwEGAAQEAgIG" -> collection.immutable.Range(1, 3)),
-    118 -> ("eQEBdGHj" -> wrapString("tac")),
+    117 -> ("dwEGAAQEAgI=" -> collection.immutable.Range(1, 3)),
+    118 -> ("eAEBdGHj" -> wrapString("tac")),
     119 -> ("eQECfQECBAIG" -> collection.immutable.TreeSet(3, 2)),
     120 -> ("egEBfQEmAQIGAgQ=" -> collection.immutable.TreeMap(3 -> 2)),
     121 -> ("ewE=" -> math.Ordering.Byte),
@@ -208,9 +208,11 @@ object SerializedExamplesData {
   val SpecialCasesNotInExamplesMap: Seq[Int] = Seq(22, 27, 70, 83, 90, 91)
 
   // In older Scala versions, instances of the following classes have a serialized representation that differs from
-  // the current Scala version 2.12.6:
-  // 11 -> scala.collection.convert.Wrappers.IteratorWrapper
-  // 29 -> scala.collection.immutable.Range$Inclusive
+  // the current Scala version 2.12.17:
+  // 10 -> scala.collection.convert.Wrappers.IteratorWrapper
+  // 28 -> scala.collection.immutable.Range$Inclusive
+  // 117 -> scala.collection.immutable.Range
+
   val OmitExamplesInScalaVersion: Map[String, Seq[Int]] =
-    Map("2.10." -> Seq(11, 29, 118), "2.11." -> Seq(29, 118))
+    Map("2.10." -> Seq(10, 28, 117), "2.11." -> Seq(28, 117))
 }

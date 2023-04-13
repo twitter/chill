@@ -111,10 +111,8 @@ object RegistrationIdsSpecData {
       |89 -> class java.util.Collections$UnmodifiableSortedMap
       |90 -> class java.util.Collections$UnmodifiableSortedSet
       |91 -> class com.esotericsoftware.kryo.kryo5.serializers.ClosureSerializer$Closure
-      |92 -> class scala.collection.immutable.Range$Exclusive""".stripMargin.linesIterator.mkString("\n")
-
-  val RecentEntries =
-    """93 -> class [B
+      |92 -> class scala.collection.immutable.Range$Exclusive
+      |93 -> class [B
       |94 -> class [S
       |95 -> class [I
       |96 -> class [J
@@ -163,8 +161,26 @@ object RegistrationIdsSpecData {
       |139 -> class scala.runtime.VolatileByteRef
       |140 -> class scala.math.BigDecimal
       |141 -> class scala.collection.immutable.Queue$EmptyQueue$
-      |142 -> class scala.collection.immutable.MapOps$ImmutableKeySet""".stripMargin.linesIterator
-      .mkString("\n")
+      |142 -> class scala.collection.immutable.MapOps$ImmutableKeySet""".stripMargin.linesIterator.toStream
+
+  val RecentEntries =
+    """143 -> class scala.collection.immutable.Vector0$
+      |144 -> class scala.collection.immutable.Vector1
+      |145 -> class scala.collection.immutable.Vector2
+      |146 -> class scala.collection.immutable.Vector3
+      |147 -> class scala.collection.immutable.Vector4
+      |148 -> class scala.collection.immutable.Vector5
+      |149 -> class scala.collection.immutable.Vector6
+      |150 -> class scala.collection.immutable.ArraySeq$ofByte
+      |151 -> class scala.collection.immutable.ArraySeq$ofShort
+      |152 -> class scala.collection.immutable.ArraySeq$ofInt
+      |153 -> class scala.collection.immutable.ArraySeq$ofLong
+      |154 -> class scala.collection.immutable.ArraySeq$ofFloat
+      |155 -> class scala.collection.immutable.ArraySeq$ofDouble
+      |156 -> class scala.collection.immutable.ArraySeq$ofBoolean
+      |157 -> class scala.collection.immutable.ArraySeq$ofChar
+      |158 -> class scala.collection.immutable.ArraySeq$ofRef""".stripMargin.linesIterator.toStream
+
 
   val CurrentEntries = Entries_0_9_5 #::: RecentEntries
 }
