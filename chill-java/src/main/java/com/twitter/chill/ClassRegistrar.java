@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.twitter.chill;
 
-import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.Kryo;
 
 /** Register this class to be used with the default serializer for this class */
 public class ClassRegistrar<T> implements IKryoRegistrar {

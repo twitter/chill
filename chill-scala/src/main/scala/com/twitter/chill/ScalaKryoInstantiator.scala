@@ -46,7 +46,7 @@ import scala.util.matching.Regex
 import com.twitter.chill.java.{Java8ClosureRegistrar, PackageRegistrar}
 import _root_.java.io.Serializable
 
-import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer
+import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -60,7 +60,7 @@ class EmptyScalaKryoInstantiator extends KryoInstantiator {
   override def newKryo: KryoBase = {
     val k = new KryoBase
     k.setRegistrationRequired(false)
-    k.setInstantiatorStrategy(new com.esotericsoftware.kryo.kryo5.objenesis.strategy.StdInstantiatorStrategy)
+    k.setInstantiatorStrategy(new org.objenesis.strategy.StdInstantiatorStrategy)
 
     // Handle cases where we may have an odd classloader setup like with libjars
     // for hadoop
@@ -113,7 +113,7 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
     def useField[T](cls: Class[T]): Unit = {
       val fsConfig = new FieldSerializer.FieldSerializerConfig
       fsConfig.setIgnoreSyntheticFields(false) // scala generates a lot of these attributes
-      val fs = new com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer(newK, cls, fsConfig)
+      val fs = new com.esotericsoftware.kryo.serializers.FieldSerializer(newK, cls, fsConfig)
       newK.register(cls, fs)
     }
     // The wrappers are private classes:

@@ -53,7 +53,7 @@ val sharedSettings = Seq(
     "org.scalacheck" %% "scalacheck" % "1.15.2" % "test",
     "org.scalatest" %% "scalatest" % "3.2.15" % "test",
     "org.scalatestplus" %% "scalatestplus-scalacheck" % "3.1.0.0-RC2" % "test",
-    "com.esotericsoftware.kryo" % "kryo5" % kryoVersion
+    "com.esotericsoftware" % "kryo" % kryoVersion
   ),
   Test / parallelExecution := true,
   pomExtra := <url>https://github.com/twitter/chill</url>

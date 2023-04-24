@@ -16,11 +16,11 @@ limitations under the License.
 
 package com.twitter.chill.java
 
-import com.esotericsoftware.kryo.kryo5.Kryo
-import com.esotericsoftware.kryo.kryo5.io.Input
-import com.esotericsoftware.kryo.kryo5.io.Output
-import com.esotericsoftware.kryo.kryo5.objenesis.strategy.StdInstantiatorStrategy
-import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer.FieldSerializerConfig
+import com.esotericsoftware.kryo.Kryo
+import com.esotericsoftware.kryo.io.Input
+import com.esotericsoftware.kryo.io.Output
+import org.objenesis.strategy.StdInstantiatorStrategy
+import com.esotericsoftware.kryo.serializers.FieldSerializer.FieldSerializerConfig
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -79,7 +79,7 @@ class PriorityQueueTest extends AnyWordSpec with Matchers {
       val fsConfig = new FieldSerializerConfig()
       fsConfig.setIgnoreSyntheticFields(false)
       val synthF =
-        new com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer(kryo, ord.reverse.getClass, fsConfig)
+        new com.esotericsoftware.kryo.serializers.FieldSerializer(kryo, ord.reverse.getClass, fsConfig)
       kryo.register(ord.reverse.getClass, synthF)
       val qr = new java.util.PriorityQueue[(Int, Int)](3, ord.reverse)
       qr.add((2, 3))

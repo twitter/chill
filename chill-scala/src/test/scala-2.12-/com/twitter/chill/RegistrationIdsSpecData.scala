@@ -109,7 +109,7 @@ object RegistrationIdsSpecData {
       |88 -> class java.util.Collections$UnmodifiableSet
       |89 -> class java.util.Collections$UnmodifiableSortedMap
       |90 -> class java.util.Collections$UnmodifiableSortedSet
-      |91 -> class com.esotericsoftware.kryo.kryo5.serializers.ClosureSerializer$Closure
+      |91 -> class com.esotericsoftware.kryo.serializers.ClosureSerializer$Closure
       |92 -> class [B
       |93 -> class [S
       |94 -> class [I

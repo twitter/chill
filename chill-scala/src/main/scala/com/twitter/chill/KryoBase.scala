@@ -16,18 +16,18 @@ limitations under the License.
 
 package com.twitter.chill
 
-import com.esotericsoftware.kryo.kryo5.KryoException
-import com.esotericsoftware.kryo.kryo5.reflectasm.ConstructorAccess;
-import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer
-import com.esotericsoftware.kryo.kryo5.objenesis.instantiator.ObjectInstantiator;
-import com.esotericsoftware.kryo.kryo5.objenesis.strategy.InstantiatorStrategy;
+import com.esotericsoftware.kryo.KryoException
+import com.esotericsoftware.reflectasm.ConstructorAccess;
+import com.esotericsoftware.kryo.serializers.FieldSerializer
+import org.objenesis.instantiator.ObjectInstantiator;
+import org.objenesis.strategy.InstantiatorStrategy;
 
 import _root_.java.lang.reflect.{Constructor, Modifier}
 
-import com.esotericsoftware.kryo.kryo5.ClassResolver
-import com.esotericsoftware.kryo.kryo5.ReferenceResolver
-import com.esotericsoftware.kryo.kryo5.util.DefaultClassResolver
-import com.esotericsoftware.kryo.kryo5.util.MapReferenceResolver
+import com.esotericsoftware.kryo.ClassResolver
+import com.esotericsoftware.kryo.ReferenceResolver
+import com.esotericsoftware.kryo.util.DefaultClassResolver
+import com.esotericsoftware.kryo.util.MapReferenceResolver
 
 import scala.util.{Failure, Success, Try}
 

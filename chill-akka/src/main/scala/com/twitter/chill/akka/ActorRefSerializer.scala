@@ -14,8 +14,8 @@ package com.twitter.chill.akka
  */
 import akka.actor.{ActorPath, ActorRef, ExtendedActorSystem}
 import akka.serialization.Serialization
-import com.esotericsoftware.kryo.kryo5.{Kryo, Serializer}
-import com.esotericsoftware.kryo.kryo5.io.{Input, Output}
+import com.esotericsoftware.kryo.{Kryo, Serializer}
+import com.esotericsoftware.kryo.io.{Input, Output}
 
 import com.twitter.chill.{toRich, IKryoRegistrar}
 
