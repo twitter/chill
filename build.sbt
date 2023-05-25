@@ -3,7 +3,7 @@ import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 val akkaVersion = "2.6.20"
 val algebirdVersion = "0.13.9"
 val bijectionVersion = "0.9.7"
-val kryoVersion = "4.0.2"
+val kryoVersion = "4.0.3"
 val scroogeVersion = "21.2.0"
 val asmVersion = "4.16"
 val protobufVersion = "3.22.2"
