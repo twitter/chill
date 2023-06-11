@@ -20,7 +20,7 @@ def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String):
 val sharedSettings = Seq(
   organization := "com.twitter",
   scalaVersion := "2.11.12",
-  crossScalaVersions := Seq("2.11.12", "2.12.17", "2.13.8"),
+  crossScalaVersions := Seq("2.11.12", "2.12.17", "2.13.11"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   scalacOptions ++= {
     scalaVersion.value match {
