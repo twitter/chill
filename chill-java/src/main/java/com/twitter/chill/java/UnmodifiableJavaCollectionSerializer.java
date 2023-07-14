@@ -54,7 +54,7 @@ abstract class UnmodifiableJavaCollectionSerializer<T> extends Serializer<T> {
   
   @Override
   @SuppressWarnings("unchecked")
-  public T read(Kryo kryo, Input input, Class<T> type) {
+  public T read(Kryo kryo, Input input, Class<? extends T> type) {
     try {
       T u = (T) kryo.readClassAndObject(input);
       return newInstance(u);

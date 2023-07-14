@@ -38,7 +38,7 @@ public class SqlTimeSerializer extends Serializer<Time> {
     }
 
     @Override
-    public Time read(Kryo kryo, Input input, Class<Time> timeClass) {
+    public Time read(Kryo kryo, Input input, Class<? extends Time> timeClass) {
         return new Time(input.readLong(true));
     }
 }

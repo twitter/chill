@@ -39,7 +39,7 @@ public class InetSocketAddressSerializer extends Serializer<InetSocketAddress> {
   }
 
   @Override
-  public InetSocketAddress read(Kryo kryo, Input input, Class<InetSocketAddress> klass) {
+  public InetSocketAddress read(Kryo kryo, Input input, Class<? extends InetSocketAddress> klass) {
     String host = input.readString();
     int port = input.readInt(true);
     return new InetSocketAddress(host, port);

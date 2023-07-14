@@ -32,7 +32,7 @@ public class IterableRegistrarSerializer extends Serializer<IterableRegistrar> {
     }
     kryo.writeClassAndObject(output, null);
   }
-  public IterableRegistrar read(Kryo kryo, Input input, Class<IterableRegistrar> type) {
+  public IterableRegistrar read(Kryo kryo, Input input, Class<? extends IterableRegistrar> type) {
     ArrayList<IKryoRegistrar> krs = new ArrayList<IKryoRegistrar>();
     IKryoRegistrar thisKr = (IKryoRegistrar)kryo.readClassAndObject(input);
     while(thisKr != null) {

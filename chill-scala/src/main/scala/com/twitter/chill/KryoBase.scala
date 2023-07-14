@@ -17,11 +17,11 @@ limitations under the License.
 package com.twitter.chill
 
 import com.esotericsoftware.kryo.KryoException
-import com.esotericsoftware.reflectasm.ConstructorAccess
+import com.esotericsoftware.reflectasm.ConstructorAccess;
 import com.esotericsoftware.kryo.serializers.FieldSerializer
+import org.objenesis.instantiator.ObjectInstantiator;
+import org.objenesis.strategy.InstantiatorStrategy;
 
-import org.objenesis.instantiator.ObjectInstantiator
-import org.objenesis.strategy.InstantiatorStrategy
 import _root_.java.lang.reflect.{Constructor, Modifier}
 
 import com.esotericsoftware.kryo.ClassResolver
@@ -83,7 +83,8 @@ class KryoBase(classResolver: ClassResolver, referenceResolver: ReferenceResolve
           // Scala has a lot of synthetic fields that must be serialized:
           // We also enable it by default in java since not wanting these fields
           // serialized looks like the exception rather than the rule.
-          fs.setIgnoreSyntheticFields(false)
+          fs.getFieldSerializerConfig.setIgnoreSyntheticFields(false)
+          fs.updateFields()
 
           /**
            * This breaks scalding, but something like this should be used when working with the repl.

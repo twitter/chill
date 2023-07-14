@@ -81,7 +81,7 @@ public class BitSetSerializer extends Serializer<BitSet> implements Serializable
     }
 
     @Override
-    public BitSet read(Kryo kryo, Input input, Class<BitSet> bitSetClass) {
+    public BitSet read(Kryo kryo, Input input, Class<? extends BitSet> bitSetClass) {
         int len = input.readInt(true);
         long[] target = new long[len];
 

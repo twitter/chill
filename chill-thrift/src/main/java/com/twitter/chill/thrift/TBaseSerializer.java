@@ -56,7 +56,7 @@ public class TBaseSerializer extends Serializer<TBase> {
   }
 
   @Override
-  public TBase read(Kryo kryo, Input input, Class<TBase> tBaseClass) {
+  public TBase read(Kryo kryo, Input input, Class<? extends TBase> tBaseClass) {
     try {
       TBase prototype = tBaseClass.newInstance();
       int tSize = input.readInt(true);

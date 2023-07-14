@@ -38,7 +38,7 @@ public class RegexSerializer extends Serializer<Pattern> {
     }
 
     @Override
-    public Pattern read(Kryo kryo, Input input, Class<Pattern> patternClass) {
+    public Pattern read(Kryo kryo, Input input, Class<? extends Pattern> patternClass) {
         return Pattern.compile(input.readString());
     }
 }

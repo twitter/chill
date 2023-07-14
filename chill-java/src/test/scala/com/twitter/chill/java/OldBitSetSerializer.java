@@ -43,7 +43,7 @@ public class OldBitSetSerializer extends Serializer<BitSet> {
     }
 
     @Override
-    public BitSet read(Kryo kryo, Input input, Class<BitSet> bitSetClass) {
+    public BitSet read(Kryo kryo, Input input, Class<? extends BitSet> bitSetClass) {
         int len = input.readInt(true);
         BitSet ret = new BitSet(len);
 

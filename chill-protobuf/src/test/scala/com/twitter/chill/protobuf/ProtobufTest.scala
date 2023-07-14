@@ -16,6 +16,7 @@
 
 package com.twitter.chill.protobuf
 
+import com.twitter.chill.java.UnmodifiableListSerializer
 import com.twitter.chill.{KryoInstantiator, KryoPool}
 import com.twitter.chill.protobuf.TestMessages.FatigueCount
 
@@ -33,6 +34,15 @@ class ProtobufTest extends AnyWordSpec with Matchers {
       new KryoInstantiator {
         override def newKryo(): Kryo = {
           val k = new Kryo
+          k.addDefaultSerializer(classOf[Message], classOf[ProtobufSerializer])
+          k.register(Class.forName("com.twitter.chill.protobuf.TestMessages$FatigueCount"))
+          k.register(Class.forName("java.util.ArrayList"))
+          k.register(
+            Class.forName("java.util.Collections$UnmodifiableRandomAccessList"),
+            new UnmodifiableListSerializer
+          )
+          k.register(Class.forName("com.google.protobuf.UnknownFieldSet"))
+          k.register(Class.forName("java.util.Collections$EmptyMap"))
           k.addDefaultSerializer(classOf[Message], classOf[ProtobufSerializer])
           k
         }

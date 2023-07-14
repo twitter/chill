@@ -96,10 +96,7 @@ class ScroogeThriftStructSerializer[T <: ThriftStruct] extends Serializer[T] {
         throw new RuntimeException("Could not serialize ThriftStruct of type " + thriftStruct.getClass, e)
     }
 
-  /* nb: thriftStructClass doesn't actually have type Class[T] it has type Class[_ <: T]
-   * this lie is courtesy of the Kryo API
-   * */
-  override def read(kryo: Kryo, input: Input, thriftStructClass: Class[T]): T =
+  override def read(kryo: Kryo, input: Input, thriftStructClass: Class[_ <: T]): T =
     // code reviewers: is this use of an anonymous inner class ok, or should I separate it out into something outside?
     try {
       val thriftStructSerializer = lookupThriftStructSerializer(thriftStructClass)

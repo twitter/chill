@@ -43,7 +43,7 @@ class EnumerationSerializer extends KSerializer[Enumeration#Value] {
     out.writeInt(obj.id)
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[Enumeration#Value]): Enumeration#Value = {
+  def read(kser: Kryo, in: Input, cls: Class[_ <: Enumeration#Value]): Enumeration#Value = {
     // Note due to the ObjectSerializer, this only really writes the class.
     val enum = kser.readClassAndObject(in).asInstanceOf[Enumeration]
     enum(in.readInt).asInstanceOf[Enumeration#Value]

@@ -43,9 +43,10 @@ import scala.collection.mutable.{
   WrappedArray
 }
 import scala.util.matching.Regex
-
 import com.twitter.chill.java.{Java8ClosureRegistrar, PackageRegistrar}
 import _root_.java.io.Serializable
+
+import com.esotericsoftware.kryo.serializers.FieldSerializer
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -110,8 +111,9 @@ class ScalaCollectionsRegistrar extends IKryoRegistrar {
   def apply(newK: Kryo): Unit = {
     // for binary compat this is here, but could be moved to RichKryo
     def useField[T](cls: Class[T]): Unit = {
-      val fs = new com.esotericsoftware.kryo.serializers.FieldSerializer(newK, cls)
-      fs.setIgnoreSyntheticFields(false) // scala generates a lot of these attributes
+      val fsConfig = new FieldSerializer.FieldSerializerConfig
+      fsConfig.setIgnoreSyntheticFields(false) // scala generates a lot of these attributes
+      val fs = new com.esotericsoftware.kryo.serializers.FieldSerializer(newK, cls, fsConfig)
       newK.register(cls, fs)
     }
     // The wrappers are private classes:
@@ -196,7 +198,7 @@ final private[chill] class AllScalaRegistrar_0_9_2 extends IKryoRegistrar {
     k.forClass[Symbol](new KSerializer[Symbol] {
       override def isImmutable = true
       def write(k: Kryo, out: Output, obj: Symbol): Unit = out.writeString(obj.name)
-      def read(k: Kryo, in: Input, cls: Class[Symbol]): Symbol = Symbol(in.readString)
+      def read(k: Kryo, in: Input, cls: Class[_ <: Symbol]): Symbol = Symbol(in.readString)
     }).forSubclass[Regex](new RegexSerializer)
       .forClass[ClassTag[Any]](new ClassTagSerializer[Any])
       .forSubclass[Manifest[Any]](new ManifestSerializer[Any])

@@ -38,7 +38,7 @@ public class SqlDateSerializer extends Serializer<Date> {
     }
 
     @Override
-    public Date read(Kryo kryo, Input input, Class<Date> dateClass) {
+    public Date read(Kryo kryo, Input input, Class<? extends Date> dateClass) {
         return new Date(input.readLong(true));
     }
 }

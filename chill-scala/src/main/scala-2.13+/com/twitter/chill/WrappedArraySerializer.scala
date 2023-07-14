@@ -27,7 +27,7 @@ class WrappedArraySerializer[T] extends KSerializer[ArraySeq[T]] {
     kser.writeClassAndObject(out, obj.array)
   }
 
-  def read(kser: Kryo, in: Input, cls: Class[ArraySeq[T]]): ArraySeq[T] = {
+  def read(kser: Kryo, in: Input, cls: Class[_ <: ArraySeq[T]]): ArraySeq[T] = {
     // Write the class-manifest, we don't use writeClass because it
     // uses the registration system, and this class might not be registered
     val clazz = kser.readObject(in, classOf[Class[T]])

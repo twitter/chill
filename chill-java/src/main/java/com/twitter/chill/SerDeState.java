@@ -43,7 +43,7 @@ public class SerDeState {
   /** Call this when to reset the state to the initial state */
   public void clear() {
     input.setBuffer(EMPTY_BUFFER);
-    output.clear();
+    output.reset();
   }
 
   public void setInput(byte[] in) { input.setBuffer(in); }

@@ -19,12 +19,12 @@ package com.twitter.chill.java
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
-
 import org.objenesis.strategy.StdInstantiatorStrategy
+import com.esotericsoftware.kryo.serializers.FieldSerializer.FieldSerializerConfig
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class PriorityQueueSpec extends AnyWordSpec with Matchers {
+class PriorityQueueTest extends AnyWordSpec with Matchers {
   def rt[A](k: Kryo, a: A): A = {
     val out = new Output(1000, -1)
     k.writeClassAndObject(out, a.asInstanceOf[AnyRef])
@@ -37,6 +37,22 @@ class PriorityQueueSpec extends AnyWordSpec with Matchers {
       import scala.collection.JavaConverters._
 
       val kryo = new Kryo()
+
+      if (util.Properties.versionString.matches("""^version 2.11.\d+$""")) {
+        kryo.register(Class.forName("scala.math.Ordering$$anon$9"))
+        kryo.register(
+          Class.forName(
+            "com.twitter.chill.java.PriorityQueueTest$$anonfun$1$$anonfun$apply$mcV$sp$1$$anonfun$2"
+          )
+        )
+      }
+
+      if (util.Properties.versionString.matches("""^version 2.1[2-3].\d+$""")) {
+        kryo.register(Class.forName("scala.math.Ordering$$anon$4"))
+        kryo.register(Class.forName("com.twitter.chill.java.PriorityQueueTest"))
+      }
+
+      kryo.register(Class.forName("scala.Tuple2$mcII$sp"))
       kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
       PriorityQueueSerializer.registrar()(kryo)
       new Java8ClosureRegistrar()(kryo)
@@ -60,8 +76,10 @@ class PriorityQueueSpec extends AnyWordSpec with Matchers {
       // Now with a reverse ordering
       // Note that in chill-scala, synthetic fields are not ignored by default
       // using the ScalaKryoInstantiator
-      val synthF = new com.esotericsoftware.kryo.serializers.FieldSerializer(kryo, ord.reverse.getClass)
-      synthF.setIgnoreSyntheticFields(false)
+      val fsConfig = new FieldSerializerConfig()
+      fsConfig.setIgnoreSyntheticFields(false)
+      val synthF =
+        new com.esotericsoftware.kryo.serializers.FieldSerializer(kryo, ord.reverse.getClass, fsConfig)
       kryo.register(ord.reverse.getClass, synthF)
       val qr = new java.util.PriorityQueue[(Int, Int)](3, ord.reverse)
       qr.add((2, 3))

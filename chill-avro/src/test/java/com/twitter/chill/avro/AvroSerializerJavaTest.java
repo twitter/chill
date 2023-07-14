@@ -3,6 +3,7 @@ package com.twitter.chill.avro;
 import avro.FiscalRecord;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 import com.twitter.chill.KryoInstantiator;
 import com.twitter.chill.KryoPool;
 import org.apache.avro.Schema;
@@ -11,7 +12,6 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecordBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.objenesis.strategy.StdInstantiatorStrategy;
 import scala.reflect.ClassTag;
 
 import static org.junit.Assert.assertEquals;

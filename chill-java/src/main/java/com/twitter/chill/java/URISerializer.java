@@ -38,7 +38,7 @@ public class URISerializer extends Serializer<java.net.URI> {
     }
 
     @Override
-    public URI read(Kryo kryo, Input input, Class<URI> uriClass) {
+    public URI read(Kryo kryo, Input input, Class<? extends URI> uriClass) {
         return URI.create(input.readString());
     }
 }

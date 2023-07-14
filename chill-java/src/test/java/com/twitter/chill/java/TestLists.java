@@ -51,8 +51,9 @@ public class TestLists {
         ));
     }
 
-    public static <T> T serializeAndDeserialize(T t) {
+    public static <T> T serializeAndDeserialize(T t) throws ClassNotFoundException {
         Output output = new Output(1000, -1);
+        kryo.register(Class.forName("java.util.List"));
         kryo.writeClassAndObject(output, t);
         Input input = new Input(output.toBytes());
         return (T) kryo.readClassAndObject(input);

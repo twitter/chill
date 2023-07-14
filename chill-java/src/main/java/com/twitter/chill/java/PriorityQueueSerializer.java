@@ -62,7 +62,7 @@ class PriorityQueueSerializer extends Serializer<PriorityQueue<?>> {
       o.flush();
     }
   }
-  public PriorityQueue<?> read(Kryo k, Input i, Class<PriorityQueue<?>> c) {
+  public PriorityQueue<?> read(Kryo k, Input i, Class<? extends PriorityQueue<?>> c) {
     Comparator<Object> comp = (Comparator<Object>)k.readClassAndObject(i);
     int sz = i.readInt(true);
     // can't create with size 0:

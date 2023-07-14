@@ -39,7 +39,7 @@ public class TimestampSerializer extends Serializer<Timestamp> {
     }
 
     @Override
-    public Timestamp read(Kryo kryo, Input input, Class<Timestamp> timestampClass) {
+    public Timestamp read(Kryo kryo, Input input, Class<? extends Timestamp> timestampClass) {
         Timestamp ts = new Timestamp(input.readLong(true));
         ts.setNanos(input.readInt(true));
         return ts;
