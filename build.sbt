@@ -196,7 +196,7 @@ lazy val chillAkka = module("akka")
   .settings(
     resolvers += Resolver.typesafeRepo("releases"),
     libraryDependencies ++= Seq(
-      "com.typesafe" % "config" % "1.4.2",
+      "com.typesafe" % "config" % "1.4.3",
       scalaVersion(sv => akka(sv)).value
     )
   )
