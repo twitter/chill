@@ -221,7 +221,7 @@ lazy val chillStorm = module("storm")
   .settings(
     crossPaths := false,
     autoScalaLibrary := false,
-    libraryDependencies += "org.apache.storm" % "storm-core" % "2.4.0" % "provided"
+    libraryDependencies += "org.apache.storm" % "storm-core" % "2.6.1" % "provided"
   )
   .dependsOn(chillJava)
 
