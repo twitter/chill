@@ -14,15 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package com.twitter.chill.akka
+package com.twitter.chill.pekko
 
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-import akka.serialization._
+import org.apache.pekko.actor.{Actor, ActorRef, ActorSystem, Props}
+import org.apache.pekko.serialization._
 import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class AkkaTests extends AnyWordSpec with Matchers {
+class PekkoTests extends AnyWordSpec with Matchers {
   object IncActor {
     def props: Props = Props(IncActor())
   }
@@ -36,13 +36,13 @@ class AkkaTests extends AnyWordSpec with Matchers {
   val system: ActorSystem = ActorSystem(
     "example",
     ConfigFactory.parseString("""
-    akka.actor.serializers {
-      kryo = "com.twitter.chill.akka.AkkaSerializer"
+    pekko.actor.serializers {
+      kryo = "com.twitter.chill.pekko.PekkoSerializer"
     }
 
-    akka.actor.serialization-bindings {
+    pekko.actor.serialization-bindings {
       "scala.Product" = kryo
-      "akka.actor.ActorRef" = kryo
+      "org.apache.pekko.actor.ActorRef" = kryo
     }
 """)
   )
@@ -50,18 +50,18 @@ class AkkaTests extends AnyWordSpec with Matchers {
   // Get the Serialization Extension
   val serialization: Serialization = SerializationExtension(system)
 
-  "AkkaSerializer" should {
+  "PekkoSerializer" should {
     "be selected for tuples" in {
       // Find the Serializer for it
       val serializer = serialization.findSerializerFor((1, 2, 3))
-      serializer.getClass.equals(classOf[AkkaSerializer]) should equal(true)
+      serializer.getClass.equals(classOf[PekkoSerializer]) should equal(true)
     }
 
     def actorRef(i: Int) = system.actorOf(IncActor.props, "incActor" + i)
 
     "be selected for ActorRef" in {
       val serializer = serialization.findSerializerFor(actorRef(1))
-      serializer.getClass.equals(classOf[AkkaSerializer]) should equal(true)
+      serializer.getClass.equals(classOf[PekkoSerializer]) should equal(true)
     }
 
     "serialize and deserialize ActorRef successfully" in {

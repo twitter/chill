@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package com.twitter.chill.akka
+package com.twitter.chill.pekko
 
-import akka.actor.ExtendedActorSystem
-import akka.serialization.Serializer
+import org.apache.pekko.actor.ExtendedActorSystem
+import org.apache.pekko.serialization.Serializer
 
 import com.twitter.chill._
 import com.twitter.chill.config.ConfiguredInstantiator
@@ -27,21 +27,21 @@ import com.twitter.chill.config.ConfiguredInstantiator
  *
  * {{{
  *
- *     akka.actor.serializers {
- *       kryo = "com.twitter.chill.akka.AkkaSerializer"
+ *     org.apache.pekko.actor.serializers {
+ *       kryo = "com.twitter.chill.org.apache.pekko.PekkoSerializer"
  *     }
  * }}}
  *
  * Then for the super-classes of all your message types, for instance, scala.Product, write:
  * {{{
- *     akka.actor.serialization-bindings {
+ *     org.apache.pekko.actor.serialization-bindings {
  *       "scala.Product" = kryo
  *     }
  * }}}
  *
  * Kryo is not thread-safe so we use an object pool to avoid over allocating.
  */
-class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
+class PekkoSerializer(system: ExtendedActorSystem) extends Serializer {
 
   /**
    * You can override this to easily change your serializers. If you do so, make sure to change the config to
@@ -75,8 +75,8 @@ class AkkaSerializer(system: ExtendedActorSystem) extends Serializer {
  * ConfiguredInstantiator static methods for how to build up a correct Config with your reflected or
  * serialized instantiators.
  */
-class ConfiguredAkkaSerializer(system: ExtendedActorSystem) extends AkkaSerializer(system) {
+class ConfiguredPekkoSerializer(system: ExtendedActorSystem) extends PekkoSerializer(system) {
   override def kryoInstantiator: KryoInstantiator =
-    new ConfiguredInstantiator(new AkkaConfig(system.settings.config))
+    new ConfiguredInstantiator(new PekkoConfig(system.settings.config))
       .withRegistrar(new ActorRefSerializer(system))
 }

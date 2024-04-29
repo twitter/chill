@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package com.twitter.chill.akka
+package com.twitter.chill.pekko
 
 import com.twitter.chill.config.{Config => ChillConfig}
 import com.typesafe.config.{Config => TypesafeConfig}
@@ -26,7 +26,7 @@ import scala.util.Try
  * Wraps the immutable typesafe.config.Config in a wrapper that keeps track of the state and follows the
  * semantics of ChillConfig
  */
-class AkkaConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
+class PekkoConfig(var typesafeConfig: TypesafeConfig) extends ChillConfig {
   /* This is implementing a Java API so that has an assy format */
   def get(key: String): String =
     Try(typesafeConfig.getString(key)).toOption.orNull

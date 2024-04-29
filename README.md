@@ -139,14 +139,14 @@ KryoInjection can be composed with Bijections and Injections from `com.twitter.b
 
 To use, add a key to your config like:
 ```
-    akka.actor.serializers {
-      kryo = "com.twitter.chill.akka.AkkaSerializer"
+    pekko.actor.serializers {
+      kryo = "com.twitter.chill.pekko.PekkoSerializer"
     }
 ```
 
 Then for the super-classes of all your message types, for instance, `java.io.Serializable` (all case classes and case objects are serializable), write:
 ```scala
-   akka.actor.serialization-bindings {
+   pekko.actor.serialization-bindings {
      "java.io.Serializable" = kryo
    }
 ```
@@ -154,13 +154,13 @@ Then for the super-classes of all your message types, for instance, `java.io.Ser
 With this in place you can now [disable Java serialization entirely](https://doc.akka.io/docs/akka/current/remoting.html#disable-java-serializer):
 
 ```scala
-akka.actor {
+pekko.actor {
   # Set this to on to enable serialization-bindings defined in
   # additional-serialization-bindings. Those are by default not included
   # for backwards compatibility reasons. They are enabled by default if
-  # akka.remote.artery.enabled=on.
-  enable-additional-serialization-bindings = on
-  
+  # pekko.remote.artery.enabled=on.
+          enable-additional-serialization-bindings = on
+
   allow-java-serialization = off
 }
 ```

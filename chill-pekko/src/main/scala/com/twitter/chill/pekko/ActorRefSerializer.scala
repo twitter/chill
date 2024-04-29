@@ -1,4 +1,4 @@
-package com.twitter.chill.akka
+package com.twitter.chill.pekko
 
 /**
  * Copyright 2012 Roman Levenstein
@@ -12,15 +12,15 @@ package com.twitter.chill.akka
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
-import akka.actor.{ActorPath, ActorRef, ExtendedActorSystem}
-import akka.serialization.Serialization
+import org.apache.pekko.actor.{ActorPath, ActorRef, ExtendedActorSystem}
+import org.apache.pekko.serialization.Serialization
 import com.esotericsoftware.kryo.{Kryo, Serializer}
 import com.esotericsoftware.kryo.io.{Input, Output}
 
 import com.twitter.chill.{toRich, IKryoRegistrar}
 
 /**
- * * This module provides helper classes for serialization of Akka-specific classes.
+ * * This module provides helper classes for serialization of Pekko-specific classes.
  *
  * @author
  *   Roman Levenstein

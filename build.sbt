@@ -1,9 +1,9 @@
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 
-val akkaVersion = "2.6.20"
+val pekkoVersion = "1.0.2"
 val algebirdVersion = "0.13.9"
 val bijectionVersion = "0.9.7"
-val kryoVersion = "4.0.2"
+val kryoVersion = "4.0.3"
 val scroogeVersion = "21.2.0"
 val asmVersion = "4.16"
 val protobufVersion = "3.22.2"
@@ -19,8 +19,8 @@ def scalaVersionSpecificFolders(srcBaseDir: java.io.File, scalaVersion: String):
 
 val sharedSettings = Seq(
   organization := "com.twitter",
-  scalaVersion := "2.11.12",
-  crossScalaVersions := Seq("2.11.12", "2.12.17", "2.13.8"),
+  scalaVersion := "2.12.17",
+  crossScalaVersions := Seq("2.12.17", "2.13.8"),
   scalacOptions ++= Seq("-unchecked", "-deprecation"),
   scalacOptions ++= {
     scalaVersion.value match {
@@ -57,26 +57,26 @@ val sharedSettings = Seq(
   ),
   Test / parallelExecution := true,
   pomExtra := <url>https://github.com/twitter/chill</url>
-        <licenses>
+    <licenses>
       <license>
-      <name>Apache 2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        <name>Apache 2</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         <distribution>repo</distribution>
-      <comments>A business-friendly OSS license</comments>
+        <comments>A business-friendly OSS license</comments>
       </license>
-      </licenses>
-      <developers>
+    </licenses>
+    <developers>
       <developer>
-      <id>oscar</id>
-      <name>Oscar Boykin</name>
-      <url>http://twitter.com/posco</url>
-        </developer>
+        <id>oscar</id>
+        <name>Oscar Boykin</name>
+        <url>http://twitter.com/posco</url>
+      </developer>
       <developer>
-      <id>sritchie</id>
-      <name>Sam Ritchie</name>
-      <url>http://twitter.com/sritchie</url>
-        </developer>
-      </developers>,
+        <id>sritchie</id>
+        <name>Sam Ritchie</name>
+        <url>http://twitter.com/sritchie</url>
+      </developer>
+    </developers>,
   Compile / unmanagedSourceDirectories ++= scalaVersionSpecificFolders(
     (Compile / scalaSource).value,
     scalaVersion.value
@@ -110,7 +110,7 @@ lazy val chillAll = Project(
     chillHadoop,
     chillThrift,
     chillProtobuf,
-    chillAkka,
+    chillPekko,
     chillAvro,
     chillAlgebird
   )
@@ -126,7 +126,7 @@ lazy val noPublishSettings = Seq(
 /**
  * This returns the youngest jar we released that is compatible with the current.
  */
-val unreleasedModules = Set[String]("akka")
+val unreleasedModules = Set[String]("pekko")
 val javaOnly = Set[String]("storm", "java", "hadoop", "thrift", "protobuf")
 val binaryCompatVersion = "0.9.2"
 
@@ -186,18 +186,14 @@ lazy val chill = Project(
   )
   .dependsOn(chillJava)
 
-def akka(scalaVersion: String) =
-  (scalaVersion match {
-    case s if s.startsWith("2.11.") => "com.typesafe.akka" %% "akka-actor" % "2.5.32"
-    case _                          => "com.typesafe.akka" %% "akka-actor" % akkaVersion
-  }) % "provided"
+def pekko(scalaVersion: String) = "org.apache.pekko" %% "pekko-actor" % pekkoVersion % "provided"
 
-lazy val chillAkka = module("akka")
+lazy val chillPekko = module("pekko")
   .settings(
     resolvers += Resolver.typesafeRepo("releases"),
     libraryDependencies ++= Seq(
       "com.typesafe" % "config" % "1.4.2",
-      scalaVersion(sv => akka(sv)).value
+      scalaVersion(sv => pekko(sv)).value
     )
   )
   .dependsOn(chill % "test->test;compile->compile")
